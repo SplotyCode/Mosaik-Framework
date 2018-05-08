@@ -2,7 +2,7 @@ package me.david.davidlib.event;
 
 public class Event {
 
-    public void callGloabal() {
+    public void callGlobal() {
         call(GlobalEventManager.getInstance());
     }
 

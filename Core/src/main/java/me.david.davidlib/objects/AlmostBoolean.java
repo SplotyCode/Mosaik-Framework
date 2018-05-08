@@ -6,7 +6,7 @@ public enum AlmostBoolean {
     NO,
     MAYBE;
 
-    public static final AlmostBoolean fromBoolean(final boolean value) {
+    public static AlmostBoolean fromBoolean(final boolean value) {
         return value ? YES : NO;
     }
 

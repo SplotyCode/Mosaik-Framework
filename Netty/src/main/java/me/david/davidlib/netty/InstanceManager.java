@@ -39,7 +39,8 @@ public class InstanceManager<T extends INetServer> {
     }
 
     private int getBestPort() {
-        if (!freePorts.isEmpty()) return freePorts.stream().findFirst().get();
+        Optional<Integer> optional = freePorts.stream().findFirst();
+        if (optional.isPresent()) return optional.get();
 
         while (true) {
             currentPort++;
@@ -54,7 +55,7 @@ public class InstanceManager<T extends INetServer> {
 
         T server = optional.get();
 
-        /* Maby start a new server instance? */
+        /* Maybe start a new server instance? */
         if (server.currentConnections() != 0 && servers.size() < maxInstances) {
             int port = getBestPort();
             server = serverStarter.startServer(port);

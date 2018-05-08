@@ -14,18 +14,18 @@ public class EventManager {
             if (method.getParameterTypes().length == 1 && method.isAnnotationPresent(EventTarget.class)) {
                 final Class<? extends Event> clazz = (Class<? extends Event>) method.getParameterTypes()[0];
                 final EventMethod eventmethod = new EventMethod(method, obj);
-                final EventTarget anotation = method.getAnnotation(EventTarget.class);
+                final EventTarget annotation = method.getAnnotation(EventTarget.class);
 
                 if (listeners.containsKey(clazz)) {
                     HashMap<Integer, ArrayList<EventMethod>> data = listeners.get(clazz);
-                    if (data.containsKey(anotation.priority())) {
-                        ArrayList<EventMethod> list = data.get(anotation.priority());
+                    if (data.containsKey(annotation.priority())) {
+                        ArrayList<EventMethod> list = data.get(annotation.priority());
                         list.add(eventmethod);
-                    } else data.put(anotation.priority(), new ArrayList<EventMethod>(){{
+                    } else data.put(annotation.priority(), new ArrayList<EventMethod>(){{
                         add(eventmethod);
                     }});
                 } else listeners.put(clazz, new HashMap<Integer, ArrayList<EventMethod>>(){{
-                    put(anotation.priority(), new ArrayList<EventMethod>(){{
+                    put(annotation.priority(), new ArrayList<EventMethod>(){{
                         add(eventmethod);
                     }});
                 }});
@@ -48,8 +48,8 @@ public class EventManager {
         for (Map.Entry<Class<? extends Event>, HashMap<Integer, ArrayList<EventMethod>>> method : listeners.entrySet()) {
             if (method.getKey().getSimpleName().equals(name)) {
                 HashMap<Integer, ArrayList<EventMethod>> listeners = method.getValue();
-                listeners.keySet().stream().sorted(Integer::compare).forEach(prio -> {
-                    for (EventMethod listener : listeners.get(prio)) {
+                listeners.keySet().stream().sorted(Integer::compare).forEach(priority -> {
+                    for (EventMethod listener : listeners.get(priority)) {
                         try {
                             listener.getMethod().invoke(listener.getSource(), event);
                         } catch (ReflectiveOperationException ex) {

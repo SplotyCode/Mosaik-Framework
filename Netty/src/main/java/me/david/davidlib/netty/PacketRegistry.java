@@ -3,7 +3,9 @@ package me.david.davidlib.netty;
 import me.david.davidlib.netty.packets.Packet;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class PacketRegistry<T extends Packet> {
 
@@ -15,10 +17,11 @@ public class PacketRegistry<T extends Packet> {
     }
 
     public int getIdByPacket(T packet) {
-        return packets.entrySet()
+        Optional<Map.Entry<Integer, Class<? extends T>>> optional =  packets.entrySet()
                 .stream()
                 .filter(entry -> Objects.equals(entry.getValue(), packet.getClass()))
-                .findFirst().get().getKey();
+                .findFirst();
+        return optional.map(Map.Entry::getKey).orElse(-1);
     }
 
     public Class<? extends T> getPacketById(int id) {

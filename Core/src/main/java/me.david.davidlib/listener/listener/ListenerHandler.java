@@ -17,6 +17,7 @@ public class ListenerHandler<L extends Listener> {
         this.listeners = listeners;
     }
 
+    @SafeVarargs
     public ListenerHandler(L... listeners){
         this();
         this.listeners.addAll(new ArrayList<>(Arrays.asList(listeners)));

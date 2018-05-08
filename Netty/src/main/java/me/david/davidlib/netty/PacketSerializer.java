@@ -91,14 +91,14 @@ public class PacketSerializer extends ByteBuf {
     }
 
     public void writeString(String string) {
-        byte[] abyte = string.getBytes(CharsetUtil.UTF_8);
-        this.writeVarInt(abyte.length);
-        this.writeBytes(abyte);
+        byte[] bytes = string.getBytes(CharsetUtil.UTF_8);
+        this.writeVarInt(bytes.length);
+        this.writeBytes(bytes);
     }
 
     public ArrayList<String> readStringList(){
         int i = readVarInt();
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         while(i != 0) {
             list.add(readString());
             i--;
@@ -108,7 +108,7 @@ public class PacketSerializer extends ByteBuf {
 
     public ArrayList<Integer> readIntList(){
         int i = readVarInt();
-        ArrayList<Integer> list = new ArrayList<Integer>();
+        ArrayList<Integer> list = new ArrayList<>();
         while(i != 0) {
             list.add(readVarInt());
             i--;
@@ -118,7 +118,7 @@ public class PacketSerializer extends ByteBuf {
 
     public ArrayList<UUID> readUUIDList(){
         int i = readVarInt();
-        ArrayList<UUID> list = new ArrayList<UUID>();
+        ArrayList<UUID> list = new ArrayList<>();
         while(i != 0) {
             list.add(readUUID());
             i--;

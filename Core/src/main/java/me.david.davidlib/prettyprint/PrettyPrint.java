@@ -47,25 +47,25 @@ public class PrettyPrint {
         if (o == null)
             return "null";
         //System.out.println(field.getName() + " : " + o.toString());
-        Class<?> arraytype = o.getClass().getComponentType();
-        if (arraytype != null) {
-            if (!arraytype.isPrimitive()) {
+        Class<?> arrayType = o.getClass().getComponentType();
+        if (arrayType != null) {
+            if (!arrayType.isPrimitive()) {
                 return Arrays.deepToString((Object[]) o);
-            } else if (arraytype.equals(Integer.TYPE)) {
+            } else if (arrayType.equals(Integer.TYPE)) {
                 return Arrays.toString((int[]) o);
-            } else if (arraytype.equals(Double.TYPE)) {
+            } else if (arrayType.equals(Double.TYPE)) {
                 return Arrays.toString((double[]) o);
-            } else if (arraytype.equals(Boolean.TYPE)) {
+            } else if (arrayType.equals(Boolean.TYPE)) {
                 return Arrays.toString((boolean[]) o);
-            } else if (arraytype.equals(Short.TYPE)) {
+            } else if (arrayType.equals(Short.TYPE)) {
                 return Arrays.toString((short[]) o);
-            } else if (arraytype.equals(Long.TYPE)) {
+            } else if (arrayType.equals(Long.TYPE)) {
                 return Arrays.toString((long[]) o);
-            } else if (arraytype.equals(Float.TYPE)) {
+            } else if (arrayType.equals(Float.TYPE)) {
                 return Arrays.toString((float[]) o);
-            } else if (arraytype.equals(Character.TYPE)) {
+            } else if (arrayType.equals(Character.TYPE)) {
                 return Arrays.toString((char[]) o);
-            } else if (arraytype.equals(Byte.TYPE)) {
+            } else if (arrayType.equals(Byte.TYPE)) {
                 return Arrays.toString((byte[]) o);
             } else {
                 return "?????????";
@@ -93,7 +93,7 @@ public class PrettyPrint {
         } else if (o instanceof Calendar) {
             DateFormat f = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.UK);
             Calendar c = (Calendar) o;
-            return f.format(c.getTime()) + " millisec=" + c.get(Calendar.MILLISECOND);
+            return f.format(c.getTime()) + " milliSecond=" + c.get(Calendar.MILLISECOND);
         } else if(o instanceof String || o instanceof Number || o instanceof Boolean || field.getAnnotation(IgnorePrint.class) != null){
             return o.toString();
         }else {

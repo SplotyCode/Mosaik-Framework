@@ -8,10 +8,10 @@ import java.util.function.Consumer;
 public interface INetServer {
 
     /*
-     * void setOnInActiv(Consumer<ChannelHandlerContext> consumer);
-    *  void setOnActiv(Consumer<ChannelHandlerContext> consumer);
-    *  Consumer<ChannelHandlerContext> getOnInActiv();
-    *  Consumer<ChannelHandlerContext> getOnActiv();
+     * void setOnInActive(Consumer<ChannelHandlerContext> consumer);
+    *  void setOnActive(Consumer<ChannelHandlerContext> consumer);
+    *  Consumer<ChannelHandlerContext> getOnInActive();
+    *  Consumer<ChannelHandlerContext> getOnActive();
     */
 
     Consumer<ChannelPipeline> constructPipeline();

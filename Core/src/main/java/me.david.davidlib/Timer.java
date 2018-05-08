@@ -18,7 +18,7 @@ public class Timer implements Cloneable {
     }
 
     @Override
-    protected Timer clone() {
+    public Timer clone() {
         try {
             return (Timer) super.clone();
         } catch (CloneNotSupportedException e) {
