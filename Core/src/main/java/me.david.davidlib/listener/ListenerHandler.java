@@ -1,4 +1,4 @@
-package me.david.davidlib.listener.listener;
+package me.david.davidlib.listener;
 
 import java.util.ArrayList;
 import java.util.Arrays;

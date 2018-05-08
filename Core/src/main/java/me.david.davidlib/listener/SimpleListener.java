@@ -1,4 +1,4 @@
-package me.david.davidlib.listener.listener;
+package me.david.davidlib.listener;
 
 public interface SimpleListener<T> extends Listener {
 
