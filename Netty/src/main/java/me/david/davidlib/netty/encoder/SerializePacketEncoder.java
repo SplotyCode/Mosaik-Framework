@@ -1,13 +1,15 @@
-package me.david.davidlib.netty;
+package me.david.davidlib.netty.encoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.AllArgsConstructor;
+import me.david.davidlib.netty.PacketRegistry;
+import me.david.davidlib.netty.PacketSerializer;
 import me.david.davidlib.netty.packets.SerializePacket;
 
 @AllArgsConstructor
-public class PacketEncoder extends MessageToByteEncoder<SerializePacket> {
+public class SerializePacketEncoder extends MessageToByteEncoder<SerializePacket> {
 
     private PacketRegistry<SerializePacket> packetRegistry;
 

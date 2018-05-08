@@ -11,6 +11,13 @@ public class PacketRegistry<T extends Packet> {
 
     private HashMap<Integer, Class<? extends T>> packets = new HashMap<>();
 
+    private int id = -1;
+
+    public PacketRegistry add(Class<? extends T> clazz) {
+        id++;
+        return add(id, clazz);
+    }
+
     public PacketRegistry add(int id, Class<? extends T> clazz) {
         packets.put(id, clazz);
         return this;
