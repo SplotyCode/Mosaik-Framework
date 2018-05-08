@@ -1,4 +1,4 @@
-package me.david.davidlib.netty;
+package me.david.davidlib.netty.packets;
 
 import java.io.IOException;
 
