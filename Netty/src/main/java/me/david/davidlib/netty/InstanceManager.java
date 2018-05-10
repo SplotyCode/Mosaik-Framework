@@ -1,13 +1,13 @@
 package me.david.davidlib.netty;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import me.david.davidlib.listener.ListenerHandler;
+import me.david.davidlib.netty.server.INetServer;
 
 import java.util.*;
 
-@AllArgsConstructor
-public class InstanceManager<T extends INetServer> {
+public class InstanceManager<T extends INetServer> extends ListenerHandler<InstanceListener> {
 
     @Getter @Setter private HashMap<Integer, T> servers = new HashMap<>();
     @Getter @Setter private int minPort, maxPort, maxInstances, startInstances;
@@ -23,19 +23,28 @@ public class InstanceManager<T extends INetServer> {
 
     }
 
+    public InstanceManager(int minPort, int maxPort, int maxInstances, int startInstances, ServerStarter<T> serverStarter) {
+        this.minPort = minPort;
+        this.maxPort = maxPort;
+        this.maxInstances = maxInstances;
+        this.startInstances = startInstances;
+        this.serverStarter = serverStarter;
+    }
+
     public void start() {
         if (startInstances == 0) startInstances = 1;
         currentPort = minPort;
 
         int i = 0;
         while (i != startInstances){
-            int port = currentPort + 1;
-            if (!portBlockList.contains(port)) {
-                servers.put(port, serverStarter.startServer(port));
+            if (!portBlockList.contains(currentPort)) {
+                servers.put(currentPort, serverStarter.startServer(currentPort));
                 i++;
+                call(listener -> listener.startServer(currentPort, true));
             }
             currentPort++;
         }
+        call(listener -> listener.startInstances(startInstances));
     }
 
     private int getBestPort() {
@@ -60,6 +69,7 @@ public class InstanceManager<T extends INetServer> {
             int port = getBestPort();
             server = serverStarter.startServer(port);
             servers.put(port, server);
+            call(listener -> listener.startServer(port, false));
         /* All servers are full */
         } else if (server.maxConnections() >= server.currentConnections()) {
             return null;

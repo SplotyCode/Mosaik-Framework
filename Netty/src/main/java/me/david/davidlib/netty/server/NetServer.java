@@ -1,4 +1,4 @@
-package me.david.davidlib.netty;
+package me.david.davidlib.netty.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -39,12 +39,8 @@ public class NetServer<P extends Packet> extends Thread implements INetServer {
     }
 
     @Override
-    public synchronized void start() {
-        try {
-            startServer().sync();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void run() {
+        startServer();
     }
 
     @Override

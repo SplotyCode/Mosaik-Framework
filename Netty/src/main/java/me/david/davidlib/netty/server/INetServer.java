@@ -1,4 +1,4 @@
-package me.david.davidlib.netty;
+package me.david.davidlib.netty.server;
 
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPipeline;
