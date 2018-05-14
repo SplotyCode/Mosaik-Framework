@@ -23,6 +23,10 @@ public class NetClient extends Thread implements INetClient {
     @Getter private Channel channel;
     @Getter @Setter private Runnable close = null;
 
+    public NetClient(final SocketAddress address) {
+        this.address = address;
+    }
+
     @Override
     public ChannelFuture startServer() {
         this.workerGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
@@ -35,16 +39,24 @@ public class NetClient extends Thread implements INetClient {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             System.out.println("Client channel Started!");
-
+                            new ClientConnectedEvent(NetClient.this).callGlobal();
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             constructPipeline.accept(pipeline);
                         }
                     });
-
+            System.out.println("test");
             this.channel = bootstrap.connect(address).sync().channel();
             ChannelFuture f = channel.closeFuture().addListener(future -> NetClient.this.workerGroup.shutdownGracefully());
             if(this.close != null) {
-                f.addListener(future -> close.run());
+                f.addListener(future -> {
+                    close.run();
+                    ClientReconnectEvent event = new ClientReconnectEvent(this);
+                    event.callGlobal();
+                    if (!event.isCanceled()) {
+                        Thread.sleep(event.getSleepTime());
+                        run();
+                    }
+                });
             }
             return f;
         } catch (Exception e) {
