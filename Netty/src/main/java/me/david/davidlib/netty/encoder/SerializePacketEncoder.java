@@ -18,7 +18,7 @@ public class SerializePacketEncoder extends MessageToByteEncoder<SerializePacket
         int id = packetRegistry.getIdByPacket(packet);
         if(id == -1) {
             throw new NullPointerException("Could not find id to packet: " + packet.getClass().getSimpleName());
-        }
+        } else System.out.println("Encoder: Id: " + id + " " + packet.getClass().getSimpleName());
         PacketSerializer ps = new PacketSerializer(output);
         ps.writeVarInt(id);
         packet.write(ps);

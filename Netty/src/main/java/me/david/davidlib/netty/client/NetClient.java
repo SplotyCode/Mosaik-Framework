@@ -10,6 +10,9 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.Getter;
 import lombok.Setter;
+import me.david.davidlib.netty.PacketRegistry;
+import me.david.davidlib.netty.packets.SerializePacket;
+import me.david.davidlib.netty.server.GenerelChannelIntilializer;
 
 import java.net.SocketAddress;
 import java.util.function.Consumer;
@@ -20,45 +23,34 @@ public class NetClient extends Thread implements INetClient {
     @Setter Consumer<ChannelPipeline> constructPipeline;
 
     @Getter private EventLoopGroup workerGroup;
-    @Getter private Channel channel;
-    @Getter @Setter private Runnable close = null;
 
-    public NetClient(final SocketAddress address) {
+    @Getter private PacketRegistry<SerializePacket> packetRegistry;
+
+    public NetClient(final SocketAddress address, PacketRegistry<SerializePacket> packetRegistry) {
         this.address = address;
+        this.packetRegistry = packetRegistry;
     }
 
     @Override
     public ChannelFuture startServer() {
         this.workerGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         try {
-            Bootstrap bootstrap = new Bootstrap()
-                    .group(workerGroup)
-                    .channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            System.out.println("Client channel Started!");
-                            new ClientConnectedEvent(NetClient.this).callGlobal();
-                            ChannelPipeline pipeline = socketChannel.pipeline();
-                            constructPipeline.accept(pipeline);
-                        }
-                    });
-            System.out.println("test");
-            this.channel = bootstrap.connect(address).sync().channel();
-            ChannelFuture f = channel.closeFuture().addListener(future -> NetClient.this.workerGroup.shutdownGracefully());
-            if(this.close != null) {
-                f.addListener(future -> {
-                    close.run();
-                    ClientReconnectEvent event = new ClientReconnectEvent(this);
-                    event.callGlobal();
-                    if (!event.isCanceled()) {
-                        Thread.sleep(event.getSleepTime());
-                        run();
-                    }
-                });
+            new Bootstrap()
+                .group(workerGroup)
+                .channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class)
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .handler(new GenerelChannelIntilializer(packetRegistry,  (ch) -> {
+                    constructPipeline.accept(ch.pipeline());
+                }))
+                .connect(address).sync().channel().closeFuture().sync();
+            ClientReconnectEvent event = new ClientReconnectEvent(this);
+            event.callGlobal();
+            System.out.println("Der Client wurde gestoppt");
+            if (!event.isCanceled()) {
+                System.out.println("Reconnecting in " + event.getSleepTime()/1000 + " seconds");
+                Thread.sleep(event.getSleepTime());
+                run();
             }
-            return f;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,7 +64,7 @@ public class NetClient extends Thread implements INetClient {
 
     @Override
     public void shutDown() {
-        channel.close();
+        workerGroup.shutdownGracefully();
     }
 
     @Override

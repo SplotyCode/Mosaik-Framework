@@ -21,7 +21,7 @@ public class BufPacketEncoder extends MessageToByteEncoder<BufPacket> {
             int id = packetRegistry.getIdByPacket(packet);
             if(id == -1) {
                 throw new NullPointerException("Could not find id to packet: " + packet.getClass().getSimpleName());
-            }
+            } else System.out.println("Encoder: " + id + " " + packet.getClass().getSimpleName());
             os.writeInt(id);
             packet.write(os);
         }

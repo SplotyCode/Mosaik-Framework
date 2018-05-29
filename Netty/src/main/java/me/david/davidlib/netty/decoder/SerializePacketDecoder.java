@@ -20,9 +20,9 @@ public class SerializePacketDecoder extends ByteToMessageDecoder {
         PacketSerializer ps = new PacketSerializer(bytebuf);
         int id = ps.readVarInt();
         SerializePacket packet = packetRegistry.createPacket(id);
-        if(packet == null) {
+        if (packet == null) {
             throw new NullPointerException("Cloud not find that Packet");
-        }
+        } else System.out.println("Docoder: Id: " + id + " " + packet.getClass().getSimpleName());
         packet.read(ps);
         output.add(packet);
     }

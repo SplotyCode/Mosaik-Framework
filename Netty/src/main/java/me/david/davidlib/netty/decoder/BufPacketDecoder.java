@@ -21,14 +21,12 @@ public class BufPacketDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext ctx, ByteBuf bytebuf, List<Object> output) throws Exception {
         try (ByteBufInputStream is = new ByteBufInputStream(bytebuf)) {
             int id = is.readInt();
-            if (packetRegistry.exists(id)) {
-                BufPacket packet = packetRegistry.createPacket(id);
-                if(packet == null) {
-                    throw new NullPointerException("Cloud not find that Packet");
-                }
-                packet.read(is);
-                output.add(packet);
-            }
+            BufPacket packet = packetRegistry.createPacket(id);
+            if(packet == null) {
+                throw new NullPointerException("Cloud not find that Packet");
+            } else System.out.println("Decoder: " + id + " " + packet.getClass().getSimpleName());
+            packet.read(is);
+            output.add(packet);
         }
     }
 

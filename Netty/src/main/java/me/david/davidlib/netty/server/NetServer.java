@@ -8,9 +8,15 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import lombok.Getter;
 import lombok.Setter;
+import me.david.davidlib.netty.PacketRegistry;
+import me.david.davidlib.netty.decoder.BufPacketDecoder;
+import me.david.davidlib.netty.encoder.BufPacketEncoder;
 import me.david.davidlib.netty.packets.Packet;
+import me.david.davidlib.netty.packets.SerializePacket;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -18,8 +24,6 @@ import java.util.function.Consumer;
 public class NetServer<P extends Packet> extends Thread implements INetServer {
 
     @Getter private EventLoopGroup bossGroup, workerGroup;
-    @Getter private Channel channel;
-    @Getter @Setter private Runnable close;
     @Setter Consumer<ChannelPipeline> constructPipeline;
 
     private final AtomicInteger connections = new AtomicInteger();
@@ -29,13 +33,17 @@ public class NetServer<P extends Packet> extends Thread implements INetServer {
 
     private ConnectionCounter connectionCounter = new ConnectionCounter();
 
-    public NetServer(int port) {
+    @Getter private PacketRegistry<SerializePacket> packetRegistry;
+
+    public NetServer(int port, PacketRegistry<SerializePacket> packetRegistry) {
         this.port = port;
+        this.packetRegistry = packetRegistry;
     }
 
     @Override
     public void shutDown() {
-        channel.close();
+        NetServer.this.bossGroup.shutdownGracefully();
+        NetServer.this.workerGroup.shutdownGracefully();
     }
 
     @Override
@@ -52,33 +60,23 @@ public class NetServer<P extends Packet> extends Thread implements INetServer {
             ServerBootstrap bootstrap = new ServerBootstrap()
                     .group(bossGroup, workerGroup)
                     .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel channel) throws Exception {
-                            System.out.println("Client connected");
-                            ChannelPipeline pipeline = channel.pipeline();
-                            pipeline.addFirst(connectionCounter);
-                            constructPipeline().accept(pipeline);
-                        }
-                    })
+                    .childHandler(new GenerelChannelIntilializer(packetRegistry,  (ch) -> {
+                        ch.pipeline().addLast(connectionCounter);
+                        constructPipeline.accept(ch.pipeline());
+                    }))
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
-            this.channel = bootstrap.bind(port).channel();
-            ChannelFuture future = this.channel.closeFuture().addListener((ChannelFutureListener) (channelFuture) -> {
-                NetServer.this.bossGroup.shutdownGracefully();
-                NetServer.this.workerGroup.shutdownGracefully();
-            });
-            if (this.close != null)
-                return future.addListener((ChannelFutureListener) channelFuture -> this.close.run());
-            return future;
+
+            ChannelFuture future = bootstrap.bind(port).sync();
+            future.channel().closeFuture().sync();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public class ConnectionCounter extends SimpleChannelInboundHandler<P>{
-
-        @Override protected void channelRead0(ChannelHandlerContext channelHandlerContext, P packet) throws Exception {}
+    @ChannelHandler.Sharable
+    public class ConnectionCounter extends SimpleChannelInboundHandler {
 
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
@@ -94,6 +92,11 @@ public class NetServer<P extends Packet> extends Thread implements INetServer {
                 int newValue = connections.intValue() + 1;
                 connections.set(newValue);
             }
+        }
+
+        @Override
+        protected void channelRead0(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
+
         }
     }
 
