@@ -72,8 +72,8 @@ public class StringUtils {
         return true;
     }
 
-    public static double toLong(String str){
-        return Float.parseFloat(str);
+    public static long toLong(String str){
+        return Long.parseLong(str);
     }
 
 }
