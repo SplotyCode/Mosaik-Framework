@@ -72,6 +72,15 @@ public class StringUtils {
         return true;
     }
 
+    public static boolean isInteger(String str){
+        try {
+            Integer.valueOf(str);
+        } catch (NumberFormatException ex){
+            return false;
+        }
+        return true;
+    }
+
     public static long toLong(String str){
         return Long.parseLong(str);
     }
