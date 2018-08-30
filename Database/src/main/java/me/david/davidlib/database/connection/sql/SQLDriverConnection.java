@@ -1,10 +1,13 @@
-package me.david.davidlib.database.connection;
+package me.david.davidlib.database.connection.sql;
+
+import me.david.davidlib.database.connection.AbstractConnection;
+import me.david.davidlib.database.connection.ConnectionException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class SQLConnection extends AbstractConnection {
+public abstract class SQLDriverConnection extends AbstractConnection {
 
     private Connection connection;
 
@@ -35,17 +38,12 @@ public class SQLConnection extends AbstractConnection {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return null;
-    }
-
-    @Override
-    public AbstractConnection connect(String host, String user, String password, String database, int port) {
-        return null;
-    }
-
-    @Override
-    public AbstractConnection connect(String host, String database, int port) {
-        return null;
+        try {
+            connection = DriverManager.getConnection(string);
+        } catch (SQLException ex) {
+            throw new ConnectionException("SQL Exception on Connecting with DriverManager", ex);
+        }
+        return this;
     }
 
     @Override

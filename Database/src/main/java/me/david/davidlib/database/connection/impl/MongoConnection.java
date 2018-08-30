@@ -1,8 +1,8 @@
-package me.david.davidlib.database.connection;
+package me.david.davidlib.database.connection.impl;
 
 import com.mongodb.MongoClient;
-import com.mongodb.event.*;
 import lombok.Getter;
+import me.david.davidlib.database.connection.AbstractConnection;
 
 public class MongoConnection extends AbstractConnection {
 
