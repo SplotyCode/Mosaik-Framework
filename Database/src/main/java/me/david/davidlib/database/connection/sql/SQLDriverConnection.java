@@ -34,11 +34,6 @@ public abstract class SQLDriverConnection extends AbstractConnection {
     @Override
     public AbstractConnection connect(String string) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
             connection = DriverManager.getConnection(string);
         } catch (SQLException ex) {
             throw new ConnectionException("SQL Exception on Connecting with DriverManager", ex);
