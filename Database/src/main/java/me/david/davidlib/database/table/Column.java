@@ -17,6 +17,12 @@ import java.lang.annotation.Target;
 public @interface Column {
 
     /**
+     * The name of the Field
+     * If no name is set it will use the Name of the Class
+     */
+    String name() default "";
+
+    /**
      * The Type of the Field is only interesting for SQL.
      * By Default we will try to convert the Java Type to the Database Type
      * SQL Example:
@@ -24,10 +30,9 @@ public @interface Column {
      */
     @SQL @Casandra RowType type() default RowType.NONE;
 
-    /**
-     * The name of the Field
-     * If no name is set it will use the Name of the Class
-     */
-    String name() default "";
+    @SQL @Casandra int[] typeParameters() default {};
+
+    @SQL @Casandra int size() default 0;
+
 
 }
