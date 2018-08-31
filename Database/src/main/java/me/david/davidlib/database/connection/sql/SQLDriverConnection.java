@@ -1,5 +1,6 @@
 package me.david.davidlib.database.connection.sql;
 
+import lombok.Getter;
 import me.david.davidlib.database.connection.AbstractConnection;
 import me.david.davidlib.database.connection.ConnectionException;
 
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 
 public abstract class SQLDriverConnection<T extends SQLDriverConnection> extends AbstractConnection<T> {
 
-    private Connection connection;
+    @Getter private Connection connection;
 
     @Override
     public boolean isConnected() {

@@ -10,7 +10,7 @@ public class Database {
 
     private Database() {}
 
-    @Getter @Setter private Connection defaultConnection;
+    @Getter @Setter private Connection<?> defaultConnection;
 
 
 

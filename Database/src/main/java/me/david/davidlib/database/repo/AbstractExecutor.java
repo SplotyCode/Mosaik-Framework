@@ -10,17 +10,15 @@ import me.david.davidlib.utils.ReflectionUtil;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
-public abstract class AbstractExecutor<T> implements TableExecutor<T> {
+public abstract class AbstractExecutor<T, C extends Connection> implements TableExecutor<T, C> {
 
-    private Class<?> clazz = new TypeToken<T>(getClass()){}.getRawType();
-    private Table table;
-    private String name;
+    protected Class<?> clazz = new TypeToken<T>(getClass()){}.getRawType();
+    protected Table table;
+    protected String name;
 
-    private HashMap<String, FieldObject> fields = new HashMap<>();
-    private FieldObject primary = null;
+    protected HashMap<String, FieldObject> fields = new HashMap<>();
+    protected FieldObject primary = null;
 
     public AbstractExecutor() {
         if (!clazz.isAnnotationPresent(Table.class)) {
