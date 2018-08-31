@@ -13,6 +13,10 @@ public class FieldObject {
     private Field field;
     private String name;
 
+    private boolean autoIncrement,
+                    notNull,
+                    primary;
+
     public FieldObject(Column column, Field field) {
         this.column = column;
         this.field = field;
@@ -22,5 +26,9 @@ public class FieldObject {
         } else {
             name = column.name();
         }
+
+        autoIncrement = field.isAnnotationPresent(AutoIncrement.class);
+        notNull = field.isAnnotationPresent(NotNull.class);
+        primary = field.isAnnotationPresent(Primary.class);
     }
 }
