@@ -2,10 +2,10 @@ package me.david.davidlib.database.connection;
 
 import me.david.davidlib.utils.StringUtils;
 
-public abstract class AbstractConnection implements Connection<AbstractConnection> {
+public abstract class AbstractConnection<T extends AbstractConnection> implements Connection<T> {
 
     @Override
-    public AbstractConnection connect(String host, String database) {
+    public T connect(String host, String database) {
         if (host.contains(":")) {
             String[] split = host.split(":");
             if (split.length == 2) {
@@ -20,7 +20,7 @@ public abstract class AbstractConnection implements Connection<AbstractConnectio
     }
 
     @Override
-    public AbstractConnection connect(String host, String user, String password, String database) {
+    public T connect(String host, String user, String password, String database) {
         if (host.contains(":")) {
             String[] split = host.split(":");
             if (split.length == 2) {

@@ -20,6 +20,4 @@ public @interface Table {
     */
     String name() default "";
 
-    Class clazz();
-
 }

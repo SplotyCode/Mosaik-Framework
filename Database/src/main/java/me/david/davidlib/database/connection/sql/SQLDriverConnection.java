@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public abstract class SQLDriverConnection extends AbstractConnection {
+public abstract class SQLDriverConnection<T extends SQLDriverConnection> extends AbstractConnection<T> {
 
     private Connection connection;
 
@@ -32,13 +32,13 @@ public abstract class SQLDriverConnection extends AbstractConnection {
     }
 
     @Override
-    public AbstractConnection connect(String string) {
+    public T connect(String string) {
         try {
             connection = DriverManager.getConnection(string);
         } catch (SQLException ex) {
             throw new ConnectionException("SQL Exception on Connecting with DriverManager", ex);
         }
-        return this;
+        return (T) this;
     }
 
     @Override

@@ -21,5 +21,5 @@ public class OracleConnection extends SQLDriverConnection {
     public int getDefaultPort() {
         return 1521;
     }
-    
+
 }
