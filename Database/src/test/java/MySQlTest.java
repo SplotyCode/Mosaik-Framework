@@ -2,7 +2,7 @@ import lombok.Data;
 import me.david.davidlib.database.connection.Connection;
 import me.david.davidlib.database.connection.impl.MySQLConnection;
 import me.david.davidlib.database.repo.TableExecutor;
-import me.david.davidlib.database.table.Field;
+import me.david.davidlib.database.table.Column;
 import me.david.davidlib.database.table.Primary;
 import me.david.davidlib.database.table.RowType;
 import me.david.davidlib.database.table.Table;
@@ -25,10 +25,10 @@ public class MySQlTest {
     @Data
     public class Person {
 
-        @Field
+        @Column
         private String firstName, lastName;
 
-        @Field(type = RowType.TEXT)
+        @Column(type = RowType.TEXT)
         @Primary
         private String email;
 

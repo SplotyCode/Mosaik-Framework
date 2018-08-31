@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Field {
+public @interface Column {
 
     /**
      * The Type of the Field is only interesting for SQL.
