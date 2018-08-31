@@ -1,11 +1,10 @@
 import lombok.Data;
 import me.david.davidlib.database.connection.Connection;
 import me.david.davidlib.database.connection.impl.MySQLConnection;
+import me.david.davidlib.database.connection.sql.SQLDriverConnection;
+import me.david.davidlib.database.repo.SQLExcecutor;
 import me.david.davidlib.database.repo.TableExecutor;
-import me.david.davidlib.database.table.Column;
-import me.david.davidlib.database.table.Primary;
-import me.david.davidlib.database.table.RowType;
-import me.david.davidlib.database.table.Table;
+import me.david.davidlib.database.table.*;
 import org.junit.jupiter.api.Test;
 
 public class MySQlTest {
@@ -15,9 +14,7 @@ public class MySQlTest {
         Connection<MySQLConnection> connection = new MySQLConnection().connect("localhost", "database");
         connection.makeDefault();
 
-        TableExecutor<Person> repo = null;
-
-        repo.delete();
+        TableExecutor<Person, SQLDriverConnection> repo = new SQLExcecutor<>();
 
     }
 
@@ -28,7 +25,12 @@ public class MySQlTest {
         @Column
         private String firstName, lastName;
 
-        @Column(type = RowType.TEXT)
+        @Column
+        @AutoIncrement
+        @NotNull
+        private long id;
+
+        @Column(type = ColumnType.TEXT)
         @Primary
         private String email;
 

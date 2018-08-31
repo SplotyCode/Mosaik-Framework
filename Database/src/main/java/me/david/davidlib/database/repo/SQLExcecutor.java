@@ -1,6 +1,7 @@
 package me.david.davidlib.database.repo;
 
 import me.david.davidlib.database.connection.sql.SQLDriverConnection;
+import me.david.davidlib.database.table.FieldObject;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -22,7 +23,11 @@ public class SQLExcecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
 
     @Override
     public void create(SQLDriverConnection connection) {
-
+        StringBuilder builder = new StringBuilder("CREATE TABLE ");
+        builder.append(name).append(" (");
+        for (FieldObject object : fields.values()) {
+            builder.append(object.getName()).append(" ");
+        }
     }
 
     @Override

@@ -28,7 +28,7 @@ public @interface Column {
      * SQL Example:
      *   String <-> Varchar
      */
-    @SQL @Casandra RowType type() default RowType.NONE;
+    @SQL @Casandra ColumnType type() default ColumnType.NONE;
 
     @SQL @Casandra int[] typeParameters() default {};
 
