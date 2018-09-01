@@ -2,6 +2,8 @@ package me.david.davidlib.database.repo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 public final class Filters {
 
@@ -12,39 +14,76 @@ public final class Filters {
         GREATER,
         LESS,
         LESS_OR_EQUAL,
-        GREATOR_OR_EQUAL
+        GREATOR_OR_EQUAL,
+
+        /* Complex */
+        AND,
+        OR
 
     }
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Filter {
 
-        private String field;
-        private FilterType type;
-        private Object value;
+        protected FilterType type;
 
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    public static class ValueFilter extends Filter {
+
+        protected String field;
+        private Object object;
+
+        public ValueFilter(String field, FilterType type, Object object) {
+            super(type);
+            this.field = field;
+            this.object = object;
+        }
+
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    public static class ComplexFilter extends Filter {
+
+        private Filter[] filters;
+
+        public ComplexFilter(FilterType type, Filter... filters) {
+            super(type);
+            this.filters = filters;
+        }
     }
 
     public static Filter eq(String field, Object value) {
-        return new Filter(field, FilterType.EQUAL, value);
+        return new ValueFilter(field, FilterType.EQUAL, value);
     }
 
     public static Filter gt(String field, Object value) {
-        return new Filter(field, FilterType.GREATER, value);
+        return new ValueFilter(field, FilterType.GREATER, value);
     }
 
     public static Filter lt(String field, Object value) {
-        return new Filter(field, FilterType.LESS, value);
+        return new ValueFilter(field, FilterType.LESS, value);
     }
 
     public static Filter gte(String field, Object value) {
-        return new Filter(field, FilterType.GREATOR_OR_EQUAL, value);
+        return new ValueFilter(field, FilterType.GREATOR_OR_EQUAL, value);
     }
 
     public static Filter lte(String field, Object value) {
-        return new Filter(field, FilterType.LESS_OR_EQUAL, value);
+        return new ValueFilter(field, FilterType.LESS_OR_EQUAL, value);
     }
 
+    public static Filter and(Filter... filters) {
+        return new ComplexFilter(FilterType.AND, filters);
+    }
+
+    public static Filter or(Filter... filters) {
+        return new ComplexFilter(FilterType.AND, filters);
+    }
 
 }

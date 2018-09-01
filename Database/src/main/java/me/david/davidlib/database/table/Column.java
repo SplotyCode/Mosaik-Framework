@@ -8,10 +8,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/*
-* This Annotation Represents a Database Field
-* Or In Some SQL Database Rows
-*/
+/**
+ * This Annotation Represents a Database Field
+ * Or In Some SQL Database Rows
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Column {
@@ -31,8 +31,5 @@ public @interface Column {
     @SQL @Casandra ColumnType type() default ColumnType.NONE;
 
     @SQL @Casandra int[] typeParameters() default {};
-
-    @SQL @Casandra int size() default 0;
-
 
 }
