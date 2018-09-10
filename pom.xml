@@ -12,6 +12,7 @@
         <module>Netty</module>
         <module>Core</module>
         <module>Database</module>
+        <module>Automatisation</module>
     </modules>
 
     <build>
