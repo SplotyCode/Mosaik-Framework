@@ -14,7 +14,7 @@ public final class Filters {
         GREATER,
         LESS,
         LESS_OR_EQUAL,
-        GREATOR_OR_EQUAL,
+        GREATER_OR_EQUAL,
 
         /* Complex */
         AND,
@@ -62,6 +62,11 @@ public final class Filters {
         return new ValueFilter(field, FilterType.EQUAL, value);
     }
 
+    public static Filter notEq(String field, Object value) {
+        return new ValueFilter(field, FilterType.NOTEQUAL, value);
+    }
+
+
     public static Filter gt(String field, Object value) {
         return new ValueFilter(field, FilterType.GREATER, value);
     }
@@ -71,7 +76,7 @@ public final class Filters {
     }
 
     public static Filter gte(String field, Object value) {
-        return new ValueFilter(field, FilterType.GREATOR_OR_EQUAL, value);
+        return new ValueFilter(field, FilterType.GREATER_OR_EQUAL, value);
     }
 
     public static Filter lte(String field, Object value) {
@@ -83,7 +88,7 @@ public final class Filters {
     }
 
     public static Filter or(Filter... filters) {
-        return new ComplexFilter(FilterType.AND, filters);
+        return new ComplexFilter(FilterType.OR, filters);
     }
 
 }
