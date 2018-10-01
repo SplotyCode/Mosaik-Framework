@@ -1,13 +1,13 @@
 package me.david.davidlib.math;
 
-public class Vector3D extends Vector {
+public class Vector2D extends Vector {
 
-    public Vector3D() {
-        super(3);
+    public Vector2D() {
+        super(2);
     }
 
-    public Vector3D(double x, double y, double z) {
-        super(x, y, z);
+    public Vector2D(double x, double y) {
+        super(x, y);
     }
 
     public double getX() {
@@ -18,20 +18,12 @@ public class Vector3D extends Vector {
         return values[1];
     }
 
-    public double getZ() {
-        return values[2];
-    }
-
     public void setX(double x) {
         values[0] = x;
     }
 
     public void setY(double y) {
         values[1] = y;
-    }
-
-    public void setZ(double z) {
-        values[2] = z;
     }
 
 }
