@@ -31,7 +31,7 @@ public class LayerdTickExecutor implements TickExecutor {
         }
     }
 
-    @Override public void postTick() {}
     @Override public void preTick() {}
+    @Override public void postTick() {}
 
 }

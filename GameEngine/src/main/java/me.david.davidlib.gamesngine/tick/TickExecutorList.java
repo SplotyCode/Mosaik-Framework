@@ -20,7 +20,7 @@ public class TickExecutorList extends ArrayList<ExecutorTask> implements TickExe
         if (!contains(task)) throw new TickRegistryExcetion("ExecutorTask us not installed");
     }
 
-    @Override public void postTick() {}
     @Override public void preTick() {}
+    @Override public void postTick() {}
 
 }

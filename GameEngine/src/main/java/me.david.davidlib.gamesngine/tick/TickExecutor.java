@@ -4,7 +4,7 @@ public interface TickExecutor {
 
     void runTick();
 
-    void postTick();
     void preTick();
+    void postTick();
 
 }
