@@ -1,6 +1,7 @@
 package me.david.davidlib.gamesngine.gameloop;
 
 import lombok.Getter;
+import me.david.davidlib.gamesngine.tick.TickExecutor;
 
 public class UnInteruplyGameLoop implements GameLoop {
 
@@ -13,18 +14,27 @@ public class UnInteruplyGameLoop implements GameLoop {
 
     @Override
     public void start() {
-        if (running) throw new GameLoopExecption("Game loop is already running");
+        if (running) throw new GameLoopException("Game loop is already running");
         running = true;
-        while (running) {
-            preTick();
-            runTick();
-            postTick();
+        try {
+            while (running) {
+                try {
+                    preTick();
+                    runTick();
+                    postTick();
+                } catch (Exception ex) {
+                    throw new GameLoopTickExepction("Exception while running current tick", ex);
+                }
+
+            }
+        } catch (Exception ex) {
+            throw new GameLoopException("Exception while running GameLoop", ex);
         }
     }
 
     @Override
     public void setTickExecutor(TickExecutor tickExecutor) {
-        if (running) throw new GameLoopExecption("Can not set TickExecutor while GameLoop is running!");
+        if (running) throw new GameLoopException("Can not set TickExecutor while GameLoop is running!");
         this.tickExecutor = tickExecutor;
     }
 
@@ -36,7 +46,7 @@ public class UnInteruplyGameLoop implements GameLoop {
 
     @Override
     public void end() {
-        if (!running) throw new GameLoopExecption("Game loop is not running");
+        if (!running) throw new GameLoopException("Game loop is not running");
         running = false;
     }
 

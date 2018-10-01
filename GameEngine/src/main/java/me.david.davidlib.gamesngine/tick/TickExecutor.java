@@ -1,4 +1,4 @@
-package me.david.davidlib.gamesngine.gameloop;
+package me.david.davidlib.gamesngine.tick;
 
 public interface TickExecutor {
 

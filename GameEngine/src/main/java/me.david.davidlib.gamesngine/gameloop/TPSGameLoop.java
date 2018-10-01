@@ -1,6 +1,7 @@
 package me.david.davidlib.gamesngine.gameloop;
 
 import lombok.Getter;
+import me.david.davidlib.gamesngine.tick.TickExecutor;
 import me.david.davidlib.utils.ThreadUtil;
 
 public class TPSGameLoop implements GameLoop {
@@ -20,7 +21,7 @@ public class TPSGameLoop implements GameLoop {
 
     @Override
     public void setTickExecutor(TickExecutor tickExecutor) {
-        if (running) throw new GameLoopExecption("Can not set TickExecutor while GameLoop is running!");
+        if (running) throw new GameLoopException("Can not set TickExecutor while GameLoop is running!");
         this.tickExecutor = tickExecutor;
     }
 
@@ -32,30 +33,38 @@ public class TPSGameLoop implements GameLoop {
 
     @Override
     public void start() {
-        if (running) throw new GameLoopExecption("Game loop is already running");
+        if (running) throw new GameLoopException("Game loop is already running");
         running = true;
 
         long delay = 1000 / tps;
 
-        while (running) {
-            long start = System.currentTimeMillis();
+        try {
+            while (running) {
+                long start = System.currentTimeMillis();
 
-            runTick();
+                try {
+                    runTick();
+                } catch (Exception ex) {
+                    throw new GameLoopTickExepction("Exception while running current tick", ex);
+                }
 
-            long end = System.currentTimeMillis() - start;
+                long end = System.currentTimeMillis() - start;
 
-            long sleepDelay = delay - end;
-            if (sleepDelay > 0) {
-                ThreadUtil.sleep(sleepDelay);
-            } else if (sleepDelay < 0) {
-                cantKeepUp(delay, end);
+                long sleepDelay = delay - end;
+                if (sleepDelay > 0) {
+                    ThreadUtil.sleep(sleepDelay);
+                } else if (sleepDelay < 0) {
+                    cantKeepUp(delay, end);
+                }
             }
+        } catch (Exception ex) {
+            throw new GameLoopException("Exception while running GameLoop", ex);
         }
     }
 
     @Override
     public void end() {
-        if (!running) throw new GameLoopExecption("Game loop is not running");
+        if (!running) throw new GameLoopException("Game loop is not running");
         running = false;
     }
 

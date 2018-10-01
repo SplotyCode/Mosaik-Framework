@@ -1,5 +1,7 @@
 package me.david.davidlib.gamesngine.gameloop;
 
+import me.david.davidlib.gamesngine.tick.TickExecutor;
+
 public interface GameLoop {
 
     TickExecutor getTickExecutor();
