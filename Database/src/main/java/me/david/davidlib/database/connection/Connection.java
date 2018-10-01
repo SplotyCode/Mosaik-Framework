@@ -1,7 +1,6 @@
 package me.david.davidlib.database.connection;
 
 import me.david.davidlib.database.Database;
-import me.david.davidlib.utils.StringUtils;
 
 public interface Connection<T extends Connection> {
 
