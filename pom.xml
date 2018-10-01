@@ -13,6 +13,7 @@
         <module>Core</module>
         <module>Database</module>
         <module>Automatisation</module>
+        <module>GameEngine</module>
     </modules>
 
     <build>
