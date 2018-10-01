@@ -7,7 +7,7 @@ import lombok.Getter;
 public class Vector {
 
     @Getter private final int size;
-    @Getter private final double[] values;
+    @Getter protected final double[] values;
 
     public Vector(int size) {
         this.values = new double[size];

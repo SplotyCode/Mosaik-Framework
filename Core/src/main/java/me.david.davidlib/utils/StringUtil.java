@@ -5,7 +5,7 @@ import sun.misc.FloatingDecimal;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public final class StringUtils {
+public final class StringUtil {
 
     public static boolean isEmpty(String str){
         return str == null || str.length() == 0;
