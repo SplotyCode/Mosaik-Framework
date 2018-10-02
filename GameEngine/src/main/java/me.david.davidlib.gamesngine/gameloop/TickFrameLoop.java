@@ -9,7 +9,7 @@ import me.david.davidlib.utils.ThreadUtil;
 /**
  * This Game Loop while call Ticks at a consistent rate
  * It will try to catch up with tick if it is behind (up to 20 ticks)
- * It has as many render cycles as it can or as the fpsCap allow
+ * It has as many render cycles as it can or as the fpsCap allows
  */
 
 /*
