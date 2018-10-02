@@ -1,7 +1,5 @@
 package me.david.davidlib.utils;
 
-import sun.misc.FloatingDecimal;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -47,7 +45,7 @@ public final class StringUtil {
     }
 
     public static float toFloat(String str){
-        return FloatingDecimal.parseFloat(str);
+        return Float.valueOf(str);
     }
 
     public static boolean isDouble(String str){
@@ -60,7 +58,7 @@ public final class StringUtil {
     }
 
     public static double toDouble(String str){
-        return FloatingDecimal.parseDouble(str);
+        return Double.parseDouble(str);
     }
 
     public static boolean isLong(String str){
