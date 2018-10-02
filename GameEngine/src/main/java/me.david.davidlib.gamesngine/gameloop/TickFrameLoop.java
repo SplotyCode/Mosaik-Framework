@@ -80,7 +80,7 @@ public class TickFrameLoop implements GameLoop, Overloadable {
 
                 long renderTime = delay - end;
                 if (renderTime < 0) {
-                    for (int i = 0;i < Math.min(renderTime / delay, 20);i++) {
+                    for (int i = 0;i < Math.min(Math.abs(renderTime) / delay, 20);i++) {
                         try {
                             runTick();
                             tickCycles++;
@@ -93,7 +93,7 @@ public class TickFrameLoop implements GameLoop, Overloadable {
                     if (lastFrameTime == 0) lastFrameTime = renderTime;
                     long totalFrameTime = 0;
                     for (int i = 0; i < renderTime / lastFrameTime; i++) {
-                        if (renderCycles > fpsCap) {
+                        if (renderCycles >= fpsCap) {
                             break;
                         }
                         long renderStart = System.currentTimeMillis();
