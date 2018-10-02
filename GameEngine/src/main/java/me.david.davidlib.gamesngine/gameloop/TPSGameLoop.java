@@ -4,7 +4,7 @@ import lombok.Getter;
 import me.david.davidlib.gamesngine.tick.TickExecutor;
 import me.david.davidlib.utils.ThreadUtil;
 
-public class TPSGameLoop implements GameLoop {
+public class TPSGameLoop implements GameLoop, Overloadable {
 
     @Getter private final int tps;
     @Getter private boolean running;
@@ -77,6 +77,7 @@ public class TPSGameLoop implements GameLoop {
 
     @Override public void preTick() {}
     @Override public void postTick() {}
-    public void cantKeepUp(long normal, long current) {}
+
+    @Override public void cantKeepUp(long normal, long current) {}
 
 }

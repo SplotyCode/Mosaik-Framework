@@ -14,7 +14,7 @@ import me.david.davidlib.gamesngine.tick.TickExecutor;
 /*
  * TODO: be able to change the maximum catch up ticks
  */
-public class TickFrameLoop implements GameLoop {
+public class TickFrameLoop implements GameLoop, Overloadable {
 
     @Getter private final int tps, fpsCap;
     @Getter private boolean running;
@@ -113,5 +113,6 @@ public class TickFrameLoop implements GameLoop {
     @Override public void preTick() {}
     @Override public void postTick() {}
 
-    public void cantKeepUp(long normal, long current) {}
+    @Override public void cantKeepUp(long normal, long current) {}
+
 }
