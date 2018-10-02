@@ -5,6 +5,15 @@ import lombok.Setter;
 import me.david.davidlib.gamesngine.render.Renderer;
 import me.david.davidlib.gamesngine.tick.TickExecutor;
 
+/**
+ * This Game Loop while call Ticks at a consistent rate
+ * It will try to catch up with tick if it is behind (up to 20 ticks)
+ * It has as many render cycles as it can or as the fpsCap allow
+ */
+
+/*
+ * TODO: be able to change the maximum catch up ticks
+ */
 public class TickFrameLoop implements GameLoop {
 
     @Getter private final int tps, fpsCap;
@@ -103,5 +112,6 @@ public class TickFrameLoop implements GameLoop {
 
     @Override public void preTick() {}
     @Override public void postTick() {}
+
     public void cantKeepUp(long normal, long current) {}
 }
