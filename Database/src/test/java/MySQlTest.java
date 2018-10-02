@@ -11,10 +11,10 @@ public class MySQlTest {
 
     @Test
     public void testConnection() {
-        Connection<MySQLConnection> connection = new MySQLConnection().connect("localhost", "database");
-        connection.makeDefault();
+//        Connection<MySQLConnection> connection = new MySQLConnection().connect("localhost", "database");
+  //      connection.makeDefault();
 
-        TableExecutor<Person, SQLDriverConnection> repo = new SQLExcecutor<>();
+    //    TableExecutor<Person, SQLDriverConnection> repo = new SQLExcecutor<>();
 
     }
 

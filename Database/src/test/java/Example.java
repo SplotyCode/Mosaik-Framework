@@ -20,7 +20,7 @@ public class Example {
 
         TableExecutor<User, SQLDriverConnection> executor = new SQLExcecutor<>();
 
-        User user = executor.selectFirst(Filters.and(Filters.eq("a", ads), Filters.eq("a", "a")));
+        User user = executor.selectFirst(Filters.and(Filters.eq("a", "ads"), Filters.eq("a", "a")));
         executor.save(user);
 
         String str = "A";
