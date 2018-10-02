@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.david.davidlib.gamesngine.render.Renderer;
 import me.david.davidlib.gamesngine.tick.TickExecutor;
+import me.david.davidlib.utils.ThreadUtil;
 
 /**
  * This Game Loop while call Ticks at a consistent rate
@@ -20,6 +21,8 @@ public class TickFrameLoop implements GameLoop, Overloadable {
     @Getter private boolean running;
     @Getter private TickExecutor tickExecutor;
     @Getter @Setter private Renderer renderer;
+
+    @Getter private int currentFps, currentTps;
 
     public TickFrameLoop(int tps, int fpsCap) {
         this.tps = tps;
@@ -52,12 +55,23 @@ public class TickFrameLoop implements GameLoop, Overloadable {
         long delay = 1000 / tps;
         long lastFrameTime = 0;
 
+        int renderCycles = 0, tickCycles = 0;
+        long lastStatReset = System.currentTimeMillis();
+
         try {
             while (running) {
+                if (System.currentTimeMillis() - lastStatReset > 1000) {
+                    currentTps = tickCycles;
+                    currentFps = renderCycles;
+                    renderCycles = 0;
+                    tickCycles = 0;
+                    lastStatReset = System.currentTimeMillis();
+                }
                 long start = System.currentTimeMillis();
 
                 try {
                     runTick();
+                    tickCycles++;
                 } catch (Exception ex) {
                     throw new GameLoopTickExepction("Exception while running current tick", ex);
                 }
@@ -69,6 +83,7 @@ public class TickFrameLoop implements GameLoop, Overloadable {
                     for (int i = 0;i < Math.min(renderTime / delay, 20);i++) {
                         try {
                             runTick();
+                            tickCycles++;
                         } catch (Exception ex) {
                             throw new GameLoopTickExepction("Exception while running current tick", ex);
                         }
@@ -77,18 +92,25 @@ public class TickFrameLoop implements GameLoop, Overloadable {
                 } else if (renderTime > 0) {
                     if (lastFrameTime == 0) lastFrameTime = renderTime;
                     long totalFrameTime = 0;
-                    for (int i = 0; i < Math.min(renderTime / lastFrameTime, fpsCap); i++) {
+                    for (int i = 0; i < renderTime / lastFrameTime; i++) {
+                        if (renderCycles > fpsCap) {
+                            break;
+                        }
                         long renderStart = System.currentTimeMillis();
                         try {
                             renderer.render();
+                            renderCycles++;
                         } catch (Exception ex) {
-                            throw new GameLoopTickExepction("Exception while drawing the screen");
+                            throw new GameLoopTickExepction("Exception while drawing the screen", ex);
                         }
                         lastFrameTime = Math.max(System.currentTimeMillis() - renderStart, 1);
                         totalFrameTime += lastFrameTime;
                         if (renderTime - totalFrameTime < lastFrameTime) {
                             break;
                         }
+                    }
+                    if (totalFrameTime < renderTime) {
+                        ThreadUtil.sleep(renderTime - totalFrameTime);
                     }
                 }
             }
