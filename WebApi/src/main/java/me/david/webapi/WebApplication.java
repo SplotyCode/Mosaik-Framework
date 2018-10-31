@@ -10,7 +10,6 @@ import me.david.webapi.server.WebServer;
 
 import java.io.IOException;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WebApplication {
 
     @Getter private static WebApplication instance;

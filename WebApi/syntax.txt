@@ -1,0 +1,31 @@
+$variable$
+
+$@pattern$
+
+    $pattern_variable$
+
+$@@$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+Time: $time$
+
+
