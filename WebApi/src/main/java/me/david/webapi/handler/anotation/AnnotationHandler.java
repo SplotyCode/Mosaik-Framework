@@ -64,4 +64,9 @@ public class AnnotationHandler implements HttpHandler {
         }
         return false;
     }
+
+    @Override
+    public int priority() {
+        return global.getPriority();
+    }
 }
