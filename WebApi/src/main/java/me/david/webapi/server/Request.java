@@ -13,7 +13,8 @@ public class Request {
     private String ipAddress;
     private Method method;
     private HashMap<String, String> headers = new HashMap<>();
-    private String httpVersion;
+    private HashMap<String, String> get = new HashMap<>();
+    private HashMap<String, String> post = new HashMap<>();
 
     public boolean isGet() {
         return method.isStandart() && method.getStandardMethod() == Method.StandardMethod.GET;
