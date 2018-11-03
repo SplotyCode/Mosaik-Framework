@@ -33,7 +33,7 @@ public class ListenerHandler<L extends Listener> {
             listeners.remove(listener);
     }
 
-    protected void call(Consumer<L> consumer){
+    public void call(Consumer<L> consumer){
         listeners.forEach(consumer);
     }
 
