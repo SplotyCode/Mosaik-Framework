@@ -9,13 +9,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@AllArgsConstructor
 @Getter
 public class StringManipulator implements ResponseManipulator {
 
     private ManipulateData manipulateData;
     private String input;
     private Set<Replacement> replacements = new HashSet<>();
+
+    public StringManipulator(String input) {
+        this.input = input;
+        manipulateData = new ManipulateData(input);
+    }
 
     @Override
     public ResponseManipulator variable(String str, Object obj) {

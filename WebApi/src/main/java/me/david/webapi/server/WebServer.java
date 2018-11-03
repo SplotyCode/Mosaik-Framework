@@ -6,4 +6,9 @@ public interface WebServer {
 
     void shutdown();
 
+    boolean isRunning();
+
+    void installErrorFactory();
+    void uninstallErrorFactory();
+
 }

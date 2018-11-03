@@ -8,6 +8,6 @@ public interface Transformer<R> {
 
     boolean transformable(Parameter parameter);
 
-    R transform(Parameter parameter, Request request);
+    R transform(Parameter parameter, Request request) throws TransformerException;
 
 }

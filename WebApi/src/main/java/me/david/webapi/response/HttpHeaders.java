@@ -6,6 +6,8 @@ public enum HttpHeaders {
     CONTENT_ENCODING,
     SERVER,
     DATE,
-    CONTENT_TYPE
+    CONTENT_TYPE,
+    CONTENT_LENGTH,
+    CONNECTION
 
 }

@@ -19,18 +19,24 @@ public class WebApplication {
 
     public static void start(WebApplication application) {
         instance = application;
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (instance.webServer != null) {
+                instance.webServer.shutdown();
+            }
+        }, "WebServer Shutdown Thread"));
     }
 
-    public void listen(int port) {
-        manager.initalize();
-        webServer.listen(port);
+    public static void listen(int port) {
+        instance.manager.initalize();
+        instance.webServer.listen(port);
     }
 
-    public void setWebServer(WebServer webServer) {
-        if (this.webServer != null) {
+    public static void setWebServer(WebServer webServer) {
+        if (instance.webServer != null) {
             webServer.shutdown();
         }
-        this.webServer = webServer;
+        instance.webServer = webServer;
     }
 
     public void registerTransformer(Class<? extends Transformer> transformer) {
@@ -42,8 +48,10 @@ public class WebApplication {
     }
 
     public void registerTransformer(Transformer transformer) {
-        if (!manager.getGlobalTransformer().contains(transformer))
+        if (!manager.getGlobalTransformer().contains(transformer)) {
             manager.getGlobalTransformer().add(transformer);
+            System.out.println("Registered tranformer: " + transformer.getClass().getSimpleName());
+        }
     }
 
     public void registerTransformer(String clazz) {
@@ -65,6 +73,12 @@ public class WebApplication {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public class Config {
+
+
+
     }
 
 }

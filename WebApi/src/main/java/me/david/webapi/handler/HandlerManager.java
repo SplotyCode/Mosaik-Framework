@@ -5,6 +5,8 @@ import me.david.davidlib.utils.init.InitialisedOnce;
 import me.david.webapi.WebApplication;
 import me.david.webapi.handler.anotation.AnnotationHandlerFinder;
 import me.david.webapi.handler.anotation.transform.Transformer;
+import me.david.webapi.response.Response;
+import me.david.webapi.server.HandleRequestException;
 import me.david.webapi.server.Request;
 
 import java.util.ArrayList;
@@ -23,20 +25,20 @@ public class HandlerManager extends InitialisedOnce {
         allHandlers.addAll(finder.search());
     }
 
-    public void handleRequest(Request request) {
+    public Response handleRequest(Request request) throws HandleRequestException {
         List<HttpHandler> handlers = allHandlers.stream().filter(handler -> handler.valid(request)).sorted(Comparator.comparingInt(HttpHandler::priority)).collect(Collectors.toList());
-
         for (HttpHandler handler : handlers) {
             if (handler.handle(request))
                 break;
         }
+        return request.getResponse();
     }
 
     @Override
     protected void init() {
+        WebApplication.getInstance().registerTransformers("me.david.webapi.handler.anotation.transform.defaulttransformer");
+
         addFinder(StaticHandlerFinder.getInstance());
         addFinder(new AnnotationHandlerFinder());
-
-        WebApplication.getInstance().registerTransformers("me.david.webapi.handler.anotation.transform.defaulttransformer");
     }
 }

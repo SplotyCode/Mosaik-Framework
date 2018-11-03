@@ -6,8 +6,19 @@ import lombok.Getter;
 public class Method {
 
     private String method;
-    private boolean standart;
+    private boolean standard;
     private StandardMethod standardMethod;
+
+    public Method(String raw) {
+        method = raw;
+        try {
+            standardMethod = StandardMethod.valueOf(raw.toUpperCase());
+            standard = true;
+        } catch (IllegalArgumentException ex) {
+            standardMethod = null;
+            standard = false;
+        }
+    }
 
     public enum StandardMethod {
 

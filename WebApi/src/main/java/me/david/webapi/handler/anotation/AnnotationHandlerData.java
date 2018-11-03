@@ -1,6 +1,7 @@
 package me.david.webapi.handler.anotation;
 
 import lombok.*;
+import me.david.davidlib.objects.Pair;
 import me.david.webapi.WebApplication;
 import me.david.webapi.handler.anotation.check.*;
 import me.david.webapi.handler.anotation.handle.UseTransformer;
@@ -93,17 +94,17 @@ public class AnnotationHandlerData {
     @Getter
     public static class SupAnnotationHandlerData extends AnnotationHandlerData {
 
-        private Method method;
-        private TreeMap<Transformer, Parameter> parameters = new TreeMap<>();
+        private Method targetMethod;
+        private List<Pair<Transformer, Parameter>> parameters = new ArrayList<>();
 
         public SupAnnotationHandlerData(Annotation[] annotations, Method method) {
             super(annotations);
-            this.method = method;
+            this.targetMethod = method;
             boolean found;
             for (Parameter parameter : method.getParameters()) {
                 if (parameter.isAnnotationPresent(UseTransformer.class)) {
                     try {
-                        parameters.put(parameter.getAnnotation(UseTransformer.class).value().newInstance(), parameter);
+                        parameters.add(new Pair<>(parameter.getAnnotation(UseTransformer.class).value().newInstance(), parameter));
                     } catch (InstantiationException | IllegalAccessException e) {
                         e.printStackTrace();
                     }
@@ -112,7 +113,7 @@ public class AnnotationHandlerData {
                 found = false;
                 for (Transformer transformer : costomTransformers) {
                     if (transformer.transformable(parameter)) {
-                        parameters.put(transformer, parameter);
+                        parameters.add(new Pair<>(transformer, parameter));
                         found = true;
                         break;
                     }
@@ -120,7 +121,7 @@ public class AnnotationHandlerData {
                 if (found) continue;
                 for (Transformer transformer : WebApplication.getInstance().getManager().getGlobalTransformer()) {
                     if (transformer.transformable(parameter)) {
-                        parameters.put(transformer, parameter);
+                        parameters.add(new Pair<>(transformer, parameter));
                         break;
                     }
                 }

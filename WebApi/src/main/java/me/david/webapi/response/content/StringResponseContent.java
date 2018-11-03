@@ -33,6 +33,6 @@ public class StringResponseContent implements ManipulateableContent {
 
     @Override
     public ResponseManipulator manipulate() {
-        return new StringManipulator();
+        return new StringManipulator(str);
     }
 }
