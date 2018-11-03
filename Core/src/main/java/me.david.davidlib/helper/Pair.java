@@ -1,15 +1,13 @@
-package me.david.davidlib.objects;
+package me.david.davidlib.helper;
 
-public class Trible<A, B, C> {
+public class Pair <A, B> {
 
     private A one;
     private B two;
-    private C tree;
 
-    public Trible(A one, B two, C tree) {
+    public Pair(A one, B two) {
         this.one = one;
         this.two = two;
-        this.tree = tree;
     }
 
     public A getOne() {
@@ -26,13 +24,5 @@ public class Trible<A, B, C> {
 
     public void setTwo(B two) {
         this.two = two;
-    }
-
-    public C getTree() {
-        return tree;
-    }
-
-    public void setTree(C tree) {
-        this.tree = tree;
     }
 }

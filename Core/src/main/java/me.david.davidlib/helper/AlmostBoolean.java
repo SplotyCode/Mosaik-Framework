@@ -1,4 +1,4 @@
-package me.david.davidlib.objects;
+package me.david.davidlib.helper;
 
 public enum AlmostBoolean {
 
