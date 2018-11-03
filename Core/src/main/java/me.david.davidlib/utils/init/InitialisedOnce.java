@@ -8,8 +8,8 @@ public abstract class InitialisedOnce implements Initialisable {
 
     public final void initalize() {
         if (initialised) throw new AlreadyInitailizedException();
-        initialised = true;
         init();
+        initialised = true;
     }
 
     protected abstract void init();
