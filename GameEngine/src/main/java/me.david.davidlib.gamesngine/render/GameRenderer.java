@@ -21,8 +21,8 @@ public class GameRenderer implements Renderer {
     @Override
     public void render() {
         window.clear();
-        renderer2d.render();
         renderer3d.render();
+        renderer2d.render();
         window.update(gameLoop);
     }
 

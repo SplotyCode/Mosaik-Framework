@@ -17,6 +17,9 @@ public class TestTickFrameLoop {
             public void runTick() {
                 ThreadUtil.sleep(5);
                 System.out.println("FPS: " + loop.getCurrentFps() + " TPS: " + loop.getCurrentTps());
+                if (loop.getCurrentFps() > 5) {
+                    System.exit(0);
+                }
             }
             @Override public void preTick() {}
             @Override public void postTick() {}

@@ -2,6 +2,7 @@ package me.david.davidlib.gamesngine.window;
 
 import lombok.Getter;
 import me.david.davidlib.gamesngine.gameloop.GameLoop;
+import me.david.davidlib.gamesngine.input.Keyboard;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
@@ -51,6 +52,7 @@ public class Window {
                     (vidmode.height() - pHeight.get(0)) / 2
             );
         }
+        glfwSetKeyCallback(id, new Keyboard());
         glfwMakeContextCurrent(id);
         // Enable v-sync
         glfwSwapInterval(1);
@@ -62,6 +64,7 @@ public class Window {
 
     public void clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void update(GameLoop loop) {

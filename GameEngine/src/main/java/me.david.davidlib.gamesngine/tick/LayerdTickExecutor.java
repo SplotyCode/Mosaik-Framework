@@ -1,6 +1,6 @@
 package me.david.davidlib.gamesngine.tick;
 
-import me.david.davidlib.objects.Pair;
+import me.david.davidlib.helper.Pair;
 
 import java.util.Map;
 import java.util.TreeMap;
