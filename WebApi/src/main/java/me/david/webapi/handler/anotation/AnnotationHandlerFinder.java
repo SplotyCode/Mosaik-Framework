@@ -1,6 +1,7 @@
 package me.david.webapi.handler.anotation;
 
 import lombok.Getter;
+import me.david.davidlib.annotation.Disabled;
 import me.david.davidlib.utils.ClassFinderHelper;
 import me.david.webapi.handler.HandlerFinder;
 import me.david.webapi.handler.HandlerManager;
@@ -29,6 +30,9 @@ public class AnnotationHandlerFinder implements HandlerFinder {
             for (Class<?> clazz : ClassFinderHelper.getUserClasses()) {
                 System.out.println("Inspecting: " + clazz.getName());
                 for (Class<Annotation> annotation : handlerAnotation) {
+                    if (clazz.isAnnotationPresent(Disabled.class)) {
+                        break;
+                    }
                     if (clazz.isAnnotationPresent(annotation)) {
                         add(clazz, handlers);
                         break;
