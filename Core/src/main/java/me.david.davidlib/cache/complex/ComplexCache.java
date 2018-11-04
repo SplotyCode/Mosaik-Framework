@@ -10,7 +10,7 @@ import me.david.davidlib.listener.ListenerHandler;
 
 public class ComplexCache<T> implements Cache<T> {
 
-    @Getter private ListenerHandler<CacheListener<T>> handler = new ListenerHandler<>();
+    @Setter @Getter private ListenerHandler<CacheListener<T>> handler = new ListenerHandler<>();
 
     @Getter private CacheResolver<T> resolver;
     @Getter private CacheValidator<T> validator;
