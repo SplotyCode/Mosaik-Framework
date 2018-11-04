@@ -13,6 +13,8 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.*;
 import me.david.webapi.WebApplication;
+import me.david.webapi.WebApplicationType;
+import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.response.Response;
 import me.david.webapi.response.error.ErrorDocument;
 import me.david.webapi.response.error.ErrorHandler;
@@ -28,8 +30,14 @@ public class NettyWebServer implements WebServer {
     private ChannelFuture channel;
     private EventLoopGroup loopGroup;
 
-    private WebServerHandler handler = new WebServerHandler();
+    private WebServerHandler handler;
     private ErrorHandler errorHandler = new ErrorHandler();
+
+    private HandlerManager handlerManager;
+
+    public NettyWebServer(WebApplicationType webApplication) {
+        handlerManager = webApplication.getWebHandler();
+    }
 
     @Override
     public void listen(int port) {
@@ -50,7 +58,7 @@ public class NettyWebServer implements WebServer {
                         p.addLast("aggregator", new HttpObjectAggregator(512*1024));
                         p.addLast(new HttpResponseEncoder());
                         p.addLast(new HttpContentCompressor());
-                        p.addLast("handler", new WebServerHandler());
+                        p.addLast("handler", handler);
                     }
                 })
                 .childOption(ChannelOption.ALLOCATOR, new PooledByteBufAllocator(true))
@@ -103,7 +111,7 @@ public class NettyWebServer implements WebServer {
                         HttpUtil.isKeepAlive(nettyRequest)
                 );
 
-                Response response = WebApplication.getInstance().getManager().handleRequest(request);
+                Response response = handlerManager.handleRequest(request);
                 response.finish(request);
 
                 ByteBuf content = Unpooled.buffer(128);

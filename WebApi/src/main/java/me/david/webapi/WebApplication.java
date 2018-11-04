@@ -10,6 +10,7 @@ import me.david.webapi.server.WebServer;
 
 import java.io.IOException;
 
+@Deprecated
 public class WebApplication {
 
     @Getter private static WebApplication instance;
@@ -73,12 +74,6 @@ public class WebApplication {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public class Config {
-
-
-
     }
 
 }

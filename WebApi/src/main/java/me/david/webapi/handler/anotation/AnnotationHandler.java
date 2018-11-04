@@ -1,6 +1,7 @@
 package me.david.webapi.handler.anotation;
 
 import me.david.davidlib.helper.Pair;
+import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.HttpHandler;
 import me.david.webapi.handler.anotation.transform.Transformer;
 import me.david.webapi.handler.anotation.transform.TransformerException;
@@ -22,14 +23,14 @@ public class AnnotationHandler implements HttpHandler {
     private AnnotationHandlerData global;
     private List<AnnotationHandlerData.SupAnnotationHandlerData> subs = new ArrayList<>();
 
-    public AnnotationHandler(Object handlerObj) {
+    public AnnotationHandler(Object handlerObj, HandlerManager manager) {
         this.handlerObj = handlerObj;
         global = new AnnotationHandlerData(handlerObj.getClass().getAnnotations());
 
         for (Method method : handlerObj.getClass().getMethods()) {
             for (Class<Annotation> annotation : AnnotationHandlerFinder.getHandlerAnotation()) {
                 if (method.isAnnotationPresent(annotation)) {
-                    subs.add(new AnnotationHandlerData.SupAnnotationHandlerData(method.getDeclaredAnnotations(), method));
+                    subs.add(new AnnotationHandlerData.SupAnnotationHandlerData(method.getDeclaredAnnotations(), method, manager));
                     break;
                 }
             }

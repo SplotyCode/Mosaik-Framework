@@ -3,6 +3,7 @@ package me.david.webapi.handler.anotation;
 import lombok.*;
 import me.david.davidlib.helper.Pair;
 import me.david.webapi.WebApplication;
+import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.anotation.check.*;
 import me.david.webapi.handler.anotation.handle.UseTransformer;
 import me.david.webapi.handler.anotation.transform.Transformer;
@@ -97,7 +98,7 @@ public class AnnotationHandlerData {
         private Method targetMethod;
         private List<Pair<Transformer, Parameter>> parameters = new ArrayList<>();
 
-        public SupAnnotationHandlerData(Annotation[] annotations, Method method) {
+        public SupAnnotationHandlerData(Annotation[] annotations, Method method, HandlerManager handler) {
             super(annotations);
             this.targetMethod = method;
             boolean found;
@@ -119,7 +120,7 @@ public class AnnotationHandlerData {
                     }
                 }
                 if (found) continue;
-                for (Transformer transformer : WebApplication.getInstance().getManager().getGlobalTransformer()) {
+                for (Transformer transformer : handler.getGlobalTransformer()) {
                     if (transformer.transformable(parameter)) {
                         parameters.add(new Pair<>(transformer, parameter));
                         break;

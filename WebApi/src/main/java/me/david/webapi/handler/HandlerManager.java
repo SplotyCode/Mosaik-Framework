@@ -36,9 +36,7 @@ public class HandlerManager extends InitialisedOnce {
 
     @Override
     protected void init() {
-        WebApplication.getInstance().registerTransformers("me.david.webapi.handler.anotation.transform.defaulttransformer");
-
         addFinder(StaticHandlerFinder.getInstance());
-        addFinder(new AnnotationHandlerFinder());
+        addFinder(new AnnotationHandlerFinder(this));
     }
 }
