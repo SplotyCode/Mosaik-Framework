@@ -12,18 +12,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.*;
-import me.david.webapi.WebApplication;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.response.Response;
-import me.david.webapi.response.error.ErrorDocument;
 import me.david.webapi.response.error.ErrorHandler;
 
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.Map;
-
-import static io.netty.buffer.Unpooled.copiedBuffer;
 
 public class NettyWebServer implements WebServer {
 

@@ -1,9 +1,4 @@
 import lombok.Data;
-import me.david.davidlib.database.connection.Connection;
-import me.david.davidlib.database.connection.impl.MySQLConnection;
-import me.david.davidlib.database.connection.sql.SQLDriverConnection;
-import me.david.davidlib.database.repo.SQLExcecutor;
-import me.david.davidlib.database.repo.TableExecutor;
 import me.david.davidlib.database.table.*;
 import org.junit.jupiter.api.Test;
 

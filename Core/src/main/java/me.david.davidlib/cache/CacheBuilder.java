@@ -5,10 +5,7 @@ import lombok.Getter;
 import me.david.davidlib.cache.complex.ComplexCache;
 import me.david.davidlib.cache.complex.resolver.CacheResolver;
 import me.david.davidlib.cache.complex.validator.CacheValidator;
-import me.david.davidlib.cache.complex.validator.TimeValidator;
 import me.david.davidlib.listener.ListenerHandler;
-
-import java.util.Collection;
 
 public class CacheBuilder<T> {
 

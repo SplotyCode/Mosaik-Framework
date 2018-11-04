@@ -1,7 +1,5 @@
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import me.david.davidlib.database.connection.Connection;
-import me.david.davidlib.database.connection.impl.MongoConnection;
 import me.david.davidlib.database.connection.impl.MySQLConnection;
 import me.david.davidlib.database.connection.sql.SQLDriverConnection;
 import me.david.davidlib.database.repo.Filters;

@@ -1,7 +1,6 @@
 import me.david.davidlib.Main;
 import me.david.davidlib.application.Application;
 import me.david.davidlib.application.BootContext;
-import me.david.davidlib.application.IShutdownManager;
 import me.david.davidlib.datafactory.DataFactory;
 import me.david.webapi.WebApplicationType;
 

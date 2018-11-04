@@ -2,7 +2,6 @@ package me.david.webapi.handler;
 
 import lombok.Getter;
 import me.david.davidlib.utils.init.InitialisedOnce;
-import me.david.webapi.WebApplication;
 import me.david.webapi.handler.anotation.AnnotationHandlerFinder;
 import me.david.webapi.handler.anotation.transform.Transformer;
 import me.david.webapi.response.Response;

@@ -6,9 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.AllArgsConstructor;
 import me.david.davidlib.netty.PacketRegistry;
-import me.david.davidlib.netty.PacketSerializer;
 import me.david.davidlib.netty.packets.BufPacket;
-import me.david.davidlib.netty.packets.SerializePacket;
 
 @AllArgsConstructor
 public class BufPacketEncoder extends MessageToByteEncoder<BufPacket> {

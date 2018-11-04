@@ -1,7 +1,5 @@
 package me.david.davidlib.database.connection.sql;
 
-import me.david.davidlib.database.connection.AbstractConnection;
-
 public abstract class AbstractSQLConnection<T extends AbstractSQLConnection> extends SQLDriverConnection<T> {
 
     protected abstract String getSQLPrefix();
