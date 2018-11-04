@@ -10,4 +10,8 @@ public class BootContext {
     private String[] args;
     private long startTime;
 
+    public long getUpTime() {
+        return System.currentTimeMillis() - startTime;
+    }
+
 }
