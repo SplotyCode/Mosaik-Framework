@@ -29,7 +29,7 @@ public class Main {
         for (Class<?> clazz : ClassFinderHelper.getUserClasses()) {
             if (Application.class.isAssignableFrom(clazz) &&
                     !Modifier.isAbstract(clazz.getModifiers()) &&
-                    clazz.isAnnotationPresent(Disabled.class)) {
+                    !clazz.isAnnotationPresent(Disabled.class)) {
                 try {
                     Application application = (Application) clazz.newInstance();
                     applications.add(application);
@@ -47,8 +47,8 @@ public class Main {
             application.getApplicationTypes().forEach(type -> {
                 try {
                     application.getClass().getMethod("initType", BootContext.class, type).invoke(application, bootData, null);
-                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    throw new BootException("Could not init Application Type " + type.getClass().getSimpleName() + " in " + application.getName());
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+                    throw new BootException("Could not init Application Type " + type.getSimpleName() + " in " + application.getName(), ex);
                 }
             });
             application.start(bootData);

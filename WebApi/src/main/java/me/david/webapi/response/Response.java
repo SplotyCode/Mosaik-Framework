@@ -24,6 +24,7 @@ public class Response {
 
     public Response(ResponseContent content) {
         this.content = content;
+        setContentType(ContentType.TEXT_HTML);
     }
 
     public Response setHeader(HttpHeaders httpHeader, String value) {

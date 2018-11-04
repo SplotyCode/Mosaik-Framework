@@ -7,7 +7,7 @@ import java.lang.reflect.Parameter;
 
 public abstract class AnnotatedTransformer<A extends Annotation, R> implements Transformer<R> {
 
-    private Class<? extends A> annotation;
+    protected Class<? extends A> annotation;
 
     public AnnotatedTransformer(Class<? extends A> annotation) {
         this.annotation = annotation;

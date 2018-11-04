@@ -8,8 +8,8 @@ import java.util.List;
 
 public abstract class Application implements IApplication {
 
-    @Getter private ShutdownManager localShutdownManager;
-    private static ShutdownManager globalShutdownManager;
+    @Getter private ShutdownManager localShutdownManager = new ShutdownManager();
+    private static ShutdownManager globalShutdownManager = new ShutdownManager();
 
     @Getter private DataFactory dataFactory = new DataFactory();
     @Getter private DataFactory config = new DataFactory();

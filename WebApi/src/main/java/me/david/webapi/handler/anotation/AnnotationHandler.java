@@ -5,6 +5,7 @@ import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.HttpHandler;
 import me.david.webapi.handler.anotation.transform.Transformer;
 import me.david.webapi.handler.anotation.transform.TransformerException;
+import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.server.HandleRequestException;
 import me.david.webapi.server.Request;
 
@@ -13,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +32,8 @@ public class AnnotationHandler implements HttpHandler {
         for (Method method : handlerObj.getClass().getMethods()) {
             for (Class<Annotation> annotation : AnnotationHandlerFinder.getHandlerAnotation()) {
                 if (method.isAnnotationPresent(annotation)) {
-                    subs.add(new AnnotationHandlerData.SupAnnotationHandlerData(method.getDeclaredAnnotations(), method, manager));
+                    AnnotationHandlerData.SupAnnotationHandlerData data = new AnnotationHandlerData.SupAnnotationHandlerData(method.getDeclaredAnnotations(), method, manager);
+                    subs.add(data);
                     break;
                 }
             }
@@ -44,7 +47,13 @@ public class AnnotationHandler implements HttpHandler {
 
     @Override
     public boolean handle(Request request) throws HandleRequestException {
+        if (global.getLoadingError() != null) {
+            throw new HandleRequestException("Trying to work with crashed Handler: " + handlerObj.getClass().getSimpleName(), global.getLoadingError());
+        }
         for (AnnotationHandlerData.SupAnnotationHandlerData sup : subs.stream().filter(sub -> sub.valid(request)).sorted(Comparator.comparingInt(AnnotationHandlerData::getPriority)).collect(Collectors.toList())) {
+            if (sup.getLoadingError() != null) {
+                throw new HandleRequestException("Count not use Handler Method: " + sup.getDisplayName() + "because it fails loading on startup", sup.getLoadingError());
+            }
             Object[] objects = new Object[sup.getParameters().size()];
             int i = 0;
             for (Pair<Transformer, Parameter> pair : sup.getParameters()) {
@@ -56,8 +65,13 @@ public class AnnotationHandler implements HttpHandler {
                 i++;
             }
             try {
-                boolean cancel = (boolean) sup.getTargetMethod().invoke(handlerObj, objects);
-                if (cancel) return true;
+                Object result = sup.getTargetMethod().invoke(handlerObj, objects);
+                if (sup.isReturnContext()) {
+                    request.getResponse().setContent((ResponseContent) result);
+                } else {
+                    boolean cancel = (boolean) result;
+                    if (cancel) return true;
+                }
             } catch (IllegalAccessException | InvocationTargetException ex) {
                 throw new HandleRequestException("Could not invoke Method: " + sup.getTargetMethod().getName(), ex);
             }

@@ -6,10 +6,12 @@ import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.anotation.check.*;
 import me.david.webapi.handler.anotation.handle.UseTransformer;
 import me.david.webapi.handler.anotation.transform.Transformer;
+import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.server.Request;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
@@ -24,6 +26,7 @@ public class AnnotationHandlerData {
     private boolean costomMethod = false;
     private List<String> neededGet = new ArrayList<>(), neededPost = new ArrayList<>();
     private HashMap<String, String> getMustBe = new HashMap<>(), postMustBe = new HashMap<>();
+    private Throwable loadingError = null;
 
     protected List<Transformer> costomTransformers = new ArrayList<>();
 
@@ -59,7 +62,7 @@ public class AnnotationHandlerData {
                     try {
                         costomTransformers.add(transformer.newInstance());
                     } catch (InstantiationException | IllegalAccessException e) {
-                        e.printStackTrace();
+                        loadingError = e;
                     }
                 }
             }
@@ -96,36 +99,54 @@ public class AnnotationHandlerData {
 
         private Method targetMethod;
         private List<Pair<Transformer, Parameter>> parameters = new ArrayList<>();
+        private boolean returnContext;
+        private String displayName;
 
         public SupAnnotationHandlerData(Annotation[] annotations, Method method, HandlerManager handler) {
             super(annotations);
-            this.targetMethod = method;
-            boolean found;
-            for (Parameter parameter : method.getParameters()) {
-                if (parameter.isAnnotationPresent(UseTransformer.class)) {
-                    try {
-                        parameters.add(new Pair<>(parameter.getAnnotation(UseTransformer.class).value().newInstance(), parameter));
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                }
-                found = false;
-                for (Transformer transformer : costomTransformers) {
-                    if (transformer.transformable(parameter)) {
-                        parameters.add(new Pair<>(transformer, parameter));
-                        found = true;
+            try {
+                displayName = method.getDeclaringClass().getSimpleName() + "#" + method.getName();
+                this.targetMethod = method;
+                if (Modifier.isAbstract(method.getModifiers()))
+                    throw new IllegalHandlerException("Handler might not be abstract" + method.getDeclaringClass().getSimpleName() + "#" + method.getName());
+                boolean found;
+                for (Parameter parameter : method.getParameters()) {
+                    if (parameter.isAnnotationPresent(UseTransformer.class)) {
+                        try {
+                            parameters.add(new Pair<>(parameter.getAnnotation(UseTransformer.class).value().newInstance(), parameter));
+                        } catch (InstantiationException | IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     }
-                }
-                if (found) continue;
-                for (Transformer transformer : handler.getGlobalTransformer()) {
-                    if (transformer.transformable(parameter)) {
-                        parameters.add(new Pair<>(transformer, parameter));
-                        break;
+                    found = false;
+                    for (Transformer transformer : costomTransformers) {
+                        if (transformer.transformable(parameter)) {
+                            parameters.add(new Pair<>(transformer, parameter));
+                            found = true;
+                            break;
+                        }
                     }
+                    if (found) continue;
+                    for (Transformer transformer : handler.getGlobalTransformer()) {
+                        if (transformer.transformable(parameter)) {
+                            parameters.add(new Pair<>(transformer, parameter));
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) throw new IllegalHandlerException("Could not find transformer for " + parameter.getName() + " in " + displayName);
                 }
+                returnContext = ResponseContent.class.isAssignableFrom(method.getReturnType());
+                if (!returnContext && method.getReturnType() != boolean.class && method.getReturnType() != Boolean.class) {
+                    throw new IllegalHandlerException("Invalid method type of handler " + displayName);
+                }
+            } catch (IllegalHandlerException ex) {
+                setLoadingError(ex);
+            } catch (Exception ex) {
+                setLoadingError(new IllegalHandlerException("Exception while parsing handler", ex));
             }
+
         }
     }
 

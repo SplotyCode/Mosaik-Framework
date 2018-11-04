@@ -18,6 +18,7 @@ import me.david.webapi.response.Response;
 import me.david.webapi.response.error.ErrorHandler;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.Map;
 
 public class NettyWebServer implements WebServer {
@@ -25,7 +26,7 @@ public class NettyWebServer implements WebServer {
     private ChannelFuture channel;
     private EventLoopGroup loopGroup;
 
-    private WebServerHandler handler;
+    private WebServerHandler handler = new WebServerHandler();
     private ErrorHandler errorHandler = new ErrorHandler();
 
     private HandlerManager handlerManager;
@@ -36,6 +37,7 @@ public class NettyWebServer implements WebServer {
 
     @Override
     public void listen(int port) {
+        System.out.println("Starting WebServer under " + port);
         loopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         try {
             final InetSocketAddress address = new InetSocketAddress(port);
@@ -78,7 +80,7 @@ public class NettyWebServer implements WebServer {
 
     @Override
     public boolean isRunning() {
-        return !loopGroup.isShutdown() && !loopGroup.isTerminated() && !loopGroup.isShuttingDown();
+        return loopGroup != null && !loopGroup.isShutdown() && !loopGroup.isTerminated() && !loopGroup.isShuttingDown();
     }
 
     @Override
@@ -98,13 +100,16 @@ public class NettyWebServer implements WebServer {
         protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
             if (msg instanceof FullHttpRequest) {
                 FullHttpRequest nettyRequest = (FullHttpRequest) msg;
-
+                QueryStringDecoder uri = new QueryStringDecoder(nettyRequest.uri());
                 Request request = new Request(
-                        nettyRequest.uri(),
+                        uri.path(),
                         ctx.channel().remoteAddress().toString(),
                         new Method(nettyRequest.method().name()),
                         HttpUtil.isKeepAlive(nettyRequest)
                 );
+                for (Map.Entry<String, List<String>> get : uri.parameters().entrySet()) {
+                    request.getGet().put(get.getKey(), get.getValue().get(0));
+                }
 
                 Response response = handlerManager.handleRequest(request);
                 response.finish(request);
@@ -137,11 +142,15 @@ public class NettyWebServer implements WebServer {
             response.finish(null);
             ByteBuf byteBuf = Unpooled.buffer();
             byteBuf.writeBytes(response.getRawContent(), response.getRawContent().available());
-            ctx.writeAndFlush(new DefaultFullHttpResponse(
+            DefaultFullHttpResponse nettyResponse = new DefaultFullHttpResponse(
                     convertHttpVersion(response.getHttpVersion()),
                     HttpResponseStatus.valueOf(response.getResponseCode()),
                     byteBuf
-            ));
+            );
+            for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
+                nettyResponse.headers().set(pair.getKey(), pair.getValue());
+            }
+            ctx.writeAndFlush(nettyResponse);
         }
     }
 

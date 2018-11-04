@@ -21,7 +21,7 @@ public interface WebApplicationType extends ApplicationType {
         getDataFactory().putData(handlerManager, new HandlerManager());
         getLocalShutdownManager().addShutdownTask(() -> {
             WebServer server = getData(webServer);
-            if (server != null)
+            if (server != null && server.isRunning())
                 server.shutdown();
         });
         registerGlobalTransformers("me.david.webapi.handler.anotation.transform.defaulttransformer");
