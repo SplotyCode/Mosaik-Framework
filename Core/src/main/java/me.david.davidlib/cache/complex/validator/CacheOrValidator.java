@@ -19,4 +19,7 @@ public class CacheOrValidator<T> implements CacheValidator<T> {
     public boolean isValid(Cache<T> cache, T value) {
         return validators.stream().anyMatch(validator -> validator.isValid(cache, value));
     }
+
+    @Override public void valueChange(T value) {}
+
 }
