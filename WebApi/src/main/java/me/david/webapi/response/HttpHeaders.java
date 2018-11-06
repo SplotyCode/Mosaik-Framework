@@ -8,6 +8,7 @@ public enum HttpHeaders {
     DATE,
     CONTENT_TYPE,
     CONTENT_LENGTH,
-    CONNECTION
+    CONNECTION,
+    LOCATION
 
 }

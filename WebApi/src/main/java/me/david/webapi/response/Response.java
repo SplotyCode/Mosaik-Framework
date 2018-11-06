@@ -59,6 +59,15 @@ public class Response {
         }
     }
 
+    public void redirect(String url, int errorCode) {
+        responseCode = errorCode;
+        setHeader(HttpHeaders.LOCATION, url);
+    }
+
+    public void redirect(String url, boolean permanent) {
+        redirect(url, permanent ? 308 : 307);
+    }
+
 
 
 }
