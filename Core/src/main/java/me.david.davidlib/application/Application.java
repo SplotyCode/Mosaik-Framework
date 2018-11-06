@@ -16,7 +16,7 @@ public abstract class Application implements IApplication {
     @Getter private List<Class<ApplicationType>> applicationTypes = new ArrayList<>();
 
     public abstract void start(BootContext context);
-    public abstract void configurise(DataFactory config);
+    public void configurise(DataFactory config) {};
 
     @Override
     public Application getApplication() {
