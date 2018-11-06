@@ -8,6 +8,7 @@ import me.david.davidlib.datafactory.DataKey;
 import me.david.webapi.handler.HandlerFinder;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.anotation.transform.Transformer;
+import me.david.webapi.response.error.ErrorFactory;
 import me.david.webapi.server.WebServer;
 
 import java.io.IOException;
@@ -48,6 +49,14 @@ public interface WebApplicationType extends ApplicationType {
         if (server.isRunning())
             server.shutdown();
         server.listen(port);
+    }
+
+    default void installErrorFactory(ErrorFactory factory) {
+        getWebServer().installErrorFactory(factory);
+    }
+
+    default void uninstallErrorFactory(ErrorFactory factory) {
+        getWebServer().uninstallErrorFactory(factory);
     }
 
     default void setWebServer(WebServer server) {

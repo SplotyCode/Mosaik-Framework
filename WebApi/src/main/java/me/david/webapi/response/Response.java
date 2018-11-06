@@ -3,6 +3,8 @@ package me.david.webapi.response;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import me.david.webapi.WebApplicationType;
+import me.david.webapi.config.WebConfig;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.response.content.StringResponseContent;
 import me.david.webapi.server.HandleRequestException;
@@ -44,9 +46,12 @@ public class Response {
         return this;
     }
 
-    public void finish(Request request) {
+    public void finish(Request request, WebApplicationType application) {
         if (content == null) {
-            content = new StringResponseContent("No Content Provided");
+            content = application.getConfig(WebConfig.NO_CONTENT_RESPONSE);
+            if (content == null) {
+                content = new StringResponseContent("No Content Provided");
+            }
         }
         try {
             rawContent = content.getInputStream();

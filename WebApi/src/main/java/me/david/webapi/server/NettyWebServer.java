@@ -31,8 +31,10 @@ public class NettyWebServer implements WebServer {
     private ErrorHandler errorHandler = new ErrorHandler();
 
     private HandlerManager handlerManager;
+    private WebApplicationType application;
 
     public NettyWebServer(WebApplicationType webApplication) {
+        application = webApplication;
         handlerManager = webApplication.getWebHandler();
     }
 
@@ -113,7 +115,7 @@ public class NettyWebServer implements WebServer {
                 }
 
                 Response response = handlerManager.handleRequest(request);
-                response.finish(request);
+                response.finish(request, application);
 
                 ByteBuf content = Unpooled.buffer(128);
                 content.writeBytes(response.getRawContent(), response.getRawContent().available());
@@ -140,7 +142,7 @@ public class NettyWebServer implements WebServer {
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             Response response = errorHandler.handleError(cause);
-            response.finish(null);
+            response.finish(null, application);
             ByteBuf byteBuf = Unpooled.buffer();
             byteBuf.writeBytes(response.getRawContent(), response.getRawContent().available());
             DefaultFullHttpResponse nettyResponse = new DefaultFullHttpResponse(
