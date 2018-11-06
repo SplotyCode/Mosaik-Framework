@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @AllArgsConstructor
-public class StaticStringContent implements ResponseContent {
+public class StaticFileContent implements ResponseContent {
 
     private File file;
 
