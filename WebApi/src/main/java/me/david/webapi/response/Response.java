@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.response.content.StringResponseContent;
+import me.david.webapi.server.HandleRequestException;
 import me.david.webapi.server.Request;
 
 import java.io.IOException;
@@ -33,6 +34,7 @@ public class Response {
     }
 
     public Response setHeader(String httpHeader, String value) {
+        if (value == null) throw new HandleRequestException("Can not set a header to Null");
         headers.put(httpHeader, value);
         return this;
     }
