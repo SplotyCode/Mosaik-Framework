@@ -6,7 +6,7 @@ import me.david.davidlib.utils.ClassFinderHelper;
 import me.david.webapi.handler.HandlerFinder;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.HttpHandler;
-import me.david.webapi.handler.anotation.check.Handler;
+import me.david.webapi.handler.anotation.check.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -16,7 +16,15 @@ import java.util.List;
 
 public class AnnotationHandlerFinder implements HandlerFinder {
 
-    @Getter private static Class<Annotation>[] handlerAnotation = new Class[]{Handler.class};
+    @Getter private static Class<Annotation>[] handlerAnotation = new Class[]{
+            Handler.class, AddTransforwer.class,
+            First.class, GetMustBe.class,
+            Last.class, Mapping.class,
+            NeedGetMethod.class, NeedGetParameter.class,
+            NeedMethod.class, NeedPostMethod.class,
+            NeedPostParameter.class, PostMustBe.class,
+            Priority.class
+    };
     private HandlerManager handlerManager;
 
     public AnnotationHandlerFinder(HandlerManager handlerManager) {
