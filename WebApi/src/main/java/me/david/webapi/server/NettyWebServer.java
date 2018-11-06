@@ -15,6 +15,7 @@ import io.netty.handler.codec.http.*;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.response.Response;
+import me.david.webapi.response.error.ErrorFactory;
 import me.david.webapi.response.error.ErrorHandler;
 
 import java.net.InetSocketAddress;
@@ -84,13 +85,13 @@ public class NettyWebServer implements WebServer {
     }
 
     @Override
-    public void installErrorFactory() {
-
+    public void installErrorFactory(ErrorFactory factory) {
+        errorHandler.installErrorFactory(factory);
     }
 
     @Override
-    public void uninstallErrorFactory() {
-
+    public void uninstallErrorFactory(ErrorFactory factory) {
+        errorHandler.uninstallErrorFactory(factory);
     }
 
     @ChannelHandler.Sharable
@@ -103,7 +104,7 @@ public class NettyWebServer implements WebServer {
                 QueryStringDecoder uri = new QueryStringDecoder(nettyRequest.uri());
                 Request request = new Request(
                         uri.path(),
-                        ctx.channel().remoteAddress().toString(),
+                        transformIpAddress(ctx.channel().remoteAddress().toString()),
                         new Method(nettyRequest.method().name()),
                         HttpUtil.isKeepAlive(nettyRequest)
                 );
@@ -163,5 +164,10 @@ public class NettyWebServer implements WebServer {
             default:
                 throw new IllegalStateException(version.name() + " Http Version is not supported by netty");
         }
+    }
+
+    private String transformIpAddress(String address) {
+        //Normal Netty Ip Addresses: /127.0.0.1:52480
+        return address.substring(1).split(":")[0];
     }
 }

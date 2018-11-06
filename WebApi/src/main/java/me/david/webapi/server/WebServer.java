@@ -1,5 +1,7 @@
 package me.david.webapi.server;
 
+import me.david.webapi.response.error.ErrorFactory;
+
 public interface WebServer {
 
     void listen(int port);
@@ -8,7 +10,7 @@ public interface WebServer {
 
     boolean isRunning();
 
-    void installErrorFactory();
-    void uninstallErrorFactory();
+    void installErrorFactory(ErrorFactory factory);
+    void uninstallErrorFactory(ErrorFactory factory);
 
 }
