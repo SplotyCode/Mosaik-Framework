@@ -18,9 +18,13 @@ public interface IApplication {
     Collection<Class<ApplicationType>> getApplicationTypes();
 
     DataFactory getDataFactory();
-
     default <T> T getData(DataKey<T> key) {
         return getDataFactory().getData(key);
+    }
+
+    DataFactory getConfig();
+    default <T> T getConfig(DataKey<T> key) {
+        return getConfig().getData(key);
     }
 
 }
