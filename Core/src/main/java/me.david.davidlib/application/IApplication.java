@@ -27,4 +27,8 @@ public interface IApplication {
         return getConfig().getData(key);
     }
 
+    default <T> void putConfig(DataKey<T> key, T value) {
+        getConfig().putData(key, value);
+    }
+
 }
