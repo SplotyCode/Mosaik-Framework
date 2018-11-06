@@ -16,9 +16,16 @@ public class StringResponseContent implements ManipulateableContent {
     private Charset charset;
     private String str;
 
+    private StringManipulator manipulator;
+
     public StringResponseContent(String str) {
         charset = UTF_8;
+        setStr(str);
+    }
+
+    public void setStr(String str) {
         this.str = str;
+        manipulator = new StringManipulator(str);
     }
 
     public StringResponseContent(String str, String charset) {
@@ -33,6 +40,6 @@ public class StringResponseContent implements ManipulateableContent {
 
     @Override
     public ResponseManipulator manipulate() {
-        return new StringManipulator(str);
+        return manipulator;
     }
 }

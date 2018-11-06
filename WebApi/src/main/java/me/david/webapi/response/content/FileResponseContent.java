@@ -3,6 +3,7 @@ package me.david.webapi.response.content;
 import lombok.AllArgsConstructor;
 import me.david.webapi.response.content.manipulate.ManipulateableContent;
 import me.david.webapi.response.content.manipulate.ResponseManipulator;
+import me.david.webapi.response.content.manipulate.StringManipulator;
 
 import java.io.*;
 

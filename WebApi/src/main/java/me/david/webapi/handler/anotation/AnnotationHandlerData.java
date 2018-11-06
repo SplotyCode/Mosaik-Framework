@@ -3,6 +3,7 @@ package me.david.webapi.handler.anotation;
 import lombok.*;
 import me.david.davidlib.helper.Pair;
 import me.david.webapi.handler.HandlerManager;
+import me.david.webapi.handler.UrlPattern;
 import me.david.webapi.handler.anotation.check.*;
 import me.david.webapi.handler.anotation.handle.UseTransformer;
 import me.david.webapi.handler.anotation.transform.Transformer;
@@ -20,7 +21,7 @@ import java.util.*;
 @Setter
 public class AnnotationHandlerData {
 
-    private String mapping = null;
+    private UrlPattern mapping = null;
     private int priority;
     private String method = null;
     private boolean costomMethod = false;
@@ -33,7 +34,7 @@ public class AnnotationHandlerData {
     public AnnotationHandlerData(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             if (annotation instanceof Mapping) {
-                mapping = ((Mapping) annotation).path();
+                mapping = new UrlPattern(((Mapping) annotation).value());
             } else if (annotation instanceof Priority) {
                 priority = ((Priority) annotation).priority();
             } else if (annotation instanceof Last) {
@@ -70,9 +71,8 @@ public class AnnotationHandlerData {
     }
 
     public boolean valid(Request request) {
-        if (mapping != null && request.getPath().matches(mapping)) return false;
+        if (mapping != null && !mapping.match(request.getPath()).isMatch()) return false;
         if (method != null && (costomMethod ? request.getMethod().getMethod().matches(method) : request.getMethod().getMethod().equals(method))) return false;
-
         for (String get : neededGet)
             if (!request.getGet().containsKey(get))
                 return false;
@@ -90,7 +90,6 @@ public class AnnotationHandlerData {
             if (!request.getPost().containsKey(pair.getKey()) || !request.getPost().get(pair.getKey()).matches(pair.getValue()))
                 return false;
         }
-
         return true;
     }
 

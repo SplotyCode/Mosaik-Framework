@@ -1,5 +1,6 @@
 package me.david.webapi.handler.anotation.transform.defaulttransformer;
 
+import me.david.webapi.handler.anotation.AnnotationHandlerData;
 import me.david.webapi.handler.anotation.transform.Transformer;
 import me.david.webapi.server.Request;
 
@@ -13,7 +14,7 @@ public class RequestTransformer implements Transformer<Request> {
     }
 
     @Override
-    public Request transform(Parameter parameter, Request request) {
+    public Request transform(Parameter parameter, Request request, AnnotationHandlerData handler, AnnotationHandlerData.SupAnnotationHandlerData method) {
         return request;
     }
 }

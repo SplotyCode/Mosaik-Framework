@@ -1,5 +1,6 @@
 package me.david.webapi.handler.anotation.transform;
 
+import me.david.webapi.handler.anotation.AnnotationHandlerData;
 import me.david.webapi.server.Request;
 
 import java.lang.annotation.Annotation;
@@ -19,10 +20,10 @@ public abstract class AnnotatedTransformer<A extends Annotation, R> implements T
     }
 
     @Override
-    public final R transform(Parameter parameter, Request request) {
-        return transformAnnotation(parameter.getAnnotation(annotation), parameter, request);
+    public final R transform(Parameter parameter, Request request, AnnotationHandlerData handler, AnnotationHandlerData.SupAnnotationHandlerData method) {
+        return transformAnnotation(parameter.getAnnotation(annotation), parameter, request, handler, method);
     }
 
-    protected abstract R transformAnnotation(A annotation, Parameter parameter, Request request);
+    protected abstract R transformAnnotation(A annotation, Parameter parameter, Request request, AnnotationHandlerData handler, AnnotationHandlerData.SupAnnotationHandlerData method);
 
 }

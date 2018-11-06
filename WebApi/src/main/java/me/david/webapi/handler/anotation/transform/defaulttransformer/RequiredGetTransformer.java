@@ -1,5 +1,6 @@
 package me.david.webapi.handler.anotation.transform.defaulttransformer;
 
+import me.david.webapi.handler.anotation.AnnotationHandlerData;
 import me.david.webapi.handler.anotation.handle.Get;
 import me.david.webapi.handler.anotation.handle.RequiredGet;
 import me.david.webapi.handler.anotation.transform.AnnotatedTransformer;
@@ -15,7 +16,7 @@ public class RequiredGetTransformer extends AnnotatedTransformer<RequiredGet, St
     }
 
     @Override
-    protected String transformAnnotation(RequiredGet annotation, Parameter parameter, Request request) {
+    protected String transformAnnotation(RequiredGet annotation, Parameter parameter, Request request, AnnotationHandlerData handler, AnnotationHandlerData.SupAnnotationHandlerData method) {
         String result = request.getGet().get(annotation.value());
         if (result == null) throw new TransformerException("Could not find " + annotation.value());
         return result;
