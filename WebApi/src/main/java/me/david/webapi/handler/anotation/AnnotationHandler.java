@@ -69,7 +69,7 @@ public class AnnotationHandler implements HttpHandler {
                 Object result = sup.getTargetMethod().invoke(handlerObj, objects);
                 if (sup.isReturnContext()) {
                     request.getResponse().setContent((ResponseContent) result);
-                } else {
+                } else if (result != null){
                     boolean cancel = (boolean) result;
                     if (cancel) return true;
                 }

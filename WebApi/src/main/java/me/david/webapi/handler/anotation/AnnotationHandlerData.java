@@ -136,8 +136,11 @@ public class AnnotationHandlerData {
                     }
                     if (!found) throw new IllegalHandlerException("Could not find transformer for " + parameter.getName() + " in " + displayName);
                 }
-                returnContext = ResponseContent.class.isAssignableFrom(method.getReturnType());
-                if (!returnContext && method.getReturnType() != boolean.class && method.getReturnType() != Boolean.class) {
+                Class<?> returnType = method.getReturnType();
+                returnContext = ResponseContent.class.isAssignableFrom(returnType);
+                if (!returnContext && returnType != boolean.class &&
+                        returnType != Boolean.class &&
+                        returnType != void.class) {
                     throw new IllegalHandlerException("Invalid method type of handler " + displayName);
                 }
             } catch (IllegalHandlerException ex) {
