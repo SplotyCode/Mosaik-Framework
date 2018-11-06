@@ -25,6 +25,8 @@ public class StringManipulator implements ResponseManipulator {
     public ResponseManipulator variable(String str, Object obj) {
         ManipulateData.ManipulateVariable variable = manipulateData.getVariable(str);
         if (variable == null) throw new VariableNotFoundException("Could not find " + str);
+        System.out.println(variable.getStart() + " " + variable.getEnd());
+
         replacements.add(new Replacement(variable.getStart(), variable.getEnd(), obj.toString()));
         return this;
     }
@@ -71,6 +73,16 @@ public class StringManipulator implements ResponseManipulator {
     public ResponseManipulator pattern(Object object) {
         pattern(object.getClass().getName(), object);
         return this;
+    }
+
+    public String getResult() {
+        StringBuilder buffer = new StringBuilder(input);
+        int delta = 0;
+        for (Replacement replacement : replacements) {
+            buffer.replace(replacement.start + delta, replacement.end + delta, replacement.content);
+            delta += replacement.lenghtDiff();
+        }
+        return buffer.toString();
     }
 
     @AllArgsConstructor

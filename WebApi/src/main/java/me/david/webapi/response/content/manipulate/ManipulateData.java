@@ -39,9 +39,9 @@ public class ManipulateData {
                         start = current;
                     } else if (ch == '$') {
                         if (currentPattern == null) {
-                            variables.put(stack, new ManipulateVariable(start, current));
+                            variables.put(stack, new ManipulateVariable(start, current + 1));
                         } else {
-                            currentPattern.variables.put(stack, new ManipulateVariable(start, current));
+                            currentPattern.variables.put(stack, new ManipulateVariable(start, current + 1));
                         }
                         stack = "";
                         state = 0;
