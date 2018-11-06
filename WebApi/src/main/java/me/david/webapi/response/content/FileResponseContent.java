@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import me.david.webapi.response.content.manipulate.ManipulateableContent;
 import me.david.webapi.response.content.manipulate.ResponseManipulator;
 import me.david.webapi.response.content.manipulate.StringManipulator;
+import me.david.webapi.server.HandleRequestException;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -33,7 +34,7 @@ public class FileResponseContent implements ManipulateableContent {
         try {
             manipulator = new StringManipulator(IOUtils.toString(new FileInputStream(this.file), encoding));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new HandleRequestException("Could not find file: " + file.getAbsolutePath(), e);
         }
     }
 
