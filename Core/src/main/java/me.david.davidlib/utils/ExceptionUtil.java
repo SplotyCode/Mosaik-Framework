@@ -12,4 +12,14 @@ public final class ExceptionUtil {
         return sw.toString();
     }
 
+    public static boolean instanceOfCause(Throwable throwable, Class<? extends Throwable> clazz) {
+        while (throwable != null) {
+            if (clazz.isAssignableFrom(throwable.getClass())) {
+                return true;
+            }
+            throwable = throwable.getCause();
+        }
+        return false;
+    }
+
 }
