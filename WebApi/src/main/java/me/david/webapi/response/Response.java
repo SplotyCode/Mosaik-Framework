@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.config.WebConfig;
+import me.david.webapi.response.content.ContentException;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.response.content.StringResponseContent;
 import me.david.webapi.server.HandleRequestException;
@@ -56,8 +57,8 @@ public class Response {
         try {
             rawContent = content.getInputStream();
             setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(rawContent.available()));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+           throw new ContentException("Could not load content", ex);
         }
         if (request != null && request.isKeepAlive()) {
             setHeader(HttpHeaders.CONNECTION, "keep-alive");
