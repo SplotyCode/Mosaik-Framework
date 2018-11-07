@@ -8,6 +8,7 @@ import me.david.webapi.server.HandleRequestException;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.nio.file.Files;
 
 @AllArgsConstructor
 public class FileResponseContent implements ManipulateableContent {
@@ -41,6 +42,11 @@ public class FileResponseContent implements ManipulateableContent {
     @Override
     public InputStream getInputStream() throws IOException {
         return IOUtils.toInputStream(manipulator.getResult(), encoding);
+    }
+
+    @Override
+    public String getContentType() throws IOException {
+        return Files.probeContentType(file.toPath());
     }
 
     @Override

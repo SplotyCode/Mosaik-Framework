@@ -7,4 +7,8 @@ public interface ResponseContent {
 
     InputStream getInputStream() throws IOException;
 
+    default String getContentType() throws IOException {
+        return null;
+    }
+
 }

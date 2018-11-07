@@ -3,6 +3,8 @@ package me.david.webapi.response.content;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CachedStaticFileContent implements ResponseContent {
@@ -27,5 +29,10 @@ public class CachedStaticFileContent implements ResponseContent {
             fileCache.put(file, bytes);
         }
         return new ByteArrayInputStream(bytes);
+    }
+
+    @Override
+    public String getContentType() throws IOException {
+        return Files.probeContentType(Paths.get(file));
     }
 }

@@ -60,6 +60,15 @@ public class Response {
         } catch (IOException ex) {
            throw new ContentException("Could not load content", ex);
         }
+        try {
+
+            String contentType = content.getContentType();
+            if (contentType != null) {
+                setHeader(HttpHeaders.CONTENT_TYPE, contentType);
+            }
+        } catch (IOException ex) {
+            throw new ContentException("Could not set content type", ex);
+        }
         if (request != null && request.isKeepAlive()) {
             setHeader(HttpHeaders.CONNECTION, "keep-alive");
         }
