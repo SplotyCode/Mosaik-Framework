@@ -9,6 +9,6 @@ public enum HttpHeaders {
     CONTENT_TYPE,
     CONTENT_LENGTH,
     CONNECTION,
-    LOCATION
+    LOCATION,
 
 }

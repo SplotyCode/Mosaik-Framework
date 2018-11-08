@@ -13,12 +13,21 @@ import me.david.webapi.server.Request;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Getter
 @EqualsAndHashCode
 public class Response {
+
+    private static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
+    private static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
+
+    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
+
+    static {
+        dateFormatter.setTimeZone(TimeZone.getTimeZone(HTTP_DATE_GMT_TIMEZONE));
+    }
 
     @Getter private HttpVersion httpVersion = HttpVersion.VERSION_1_1;
     private Map<String, String> headers = new HashMap<>();
@@ -48,6 +57,8 @@ public class Response {
     }
 
     public void finish(Request request, WebApplicationType application) {
+        Calendar time = new GregorianCalendar();
+        setHeader(HttpHeaders.DATE, dateFormatter.format(time.getTime()));
         if (content == null) {
             content = application.getConfig(WebConfig.NO_CONTENT_RESPONSE);
             if (content == null) {
