@@ -4,14 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ManipulateData {
 
-    private HashMap<String, ManipulateVariable> variables = new HashMap<>();
+    private HashMap<String, List<ManipulateVariable>> variables = new HashMap<>();
     private HashMap<String, ManipulatePattern> patterns = new HashMap<>();
 
-    public ManipulateVariable getVariable(String name) {
+    public List<ManipulateVariable> getVariables(String name) {
         return variables.get(name);
     }
 
@@ -39,9 +42,9 @@ public class ManipulateData {
                         start = current;
                     } else if (ch == '$') {
                         if (currentPattern == null) {
-                            variables.put(stack, new ManipulateVariable(start, current + 1));
+                            addVariable(variables, stack, new ManipulateVariable(start, current + 1));
                         } else {
-                            currentPattern.variables.put(stack, new ManipulateVariable(start, current + 1));
+                            addVariable(currentPattern.variables, stack, new ManipulateVariable(start, current + 1));
                         }
                         stack = "";
                         state = 0;
@@ -73,6 +76,11 @@ public class ManipulateData {
         }
     }
 
+    private void addVariable(Map<String, List<ManipulateVariable>> map, String name, ManipulateVariable variable) {
+        List<ManipulateVariable> list = map.computeIfAbsent(name, k -> new ArrayList<>());
+        list.add(variable);
+    }
+
     @Getter
     @EqualsAndHashCode
     @AllArgsConstructor
@@ -90,7 +98,7 @@ public class ManipulateData {
     @Getter
     public static class ManipulatePattern {
 
-        private HashMap<String, ManipulateVariable> variables = new HashMap<>();
+        private HashMap<String, List<ManipulateVariable>> variables = new HashMap<>();
 
     }
 }

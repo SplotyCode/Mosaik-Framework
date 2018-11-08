@@ -1,11 +1,13 @@
 package me.david.webapi.response.content.manipulate;
 
+import com.sun.org.apache.xpath.internal.operations.Variable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,11 +25,12 @@ public class StringManipulator implements ResponseManipulator {
 
     @Override
     public ResponseManipulator variable(String str, Object obj) {
-        ManipulateData.ManipulateVariable variable = manipulateData.getVariable(str);
-        if (variable == null) throw new VariableNotFoundException("Could not find " + str);
-        System.out.println(variable.getStart() + " " + variable.getEnd());
+        List<ManipulateData.ManipulateVariable> variables = manipulateData.getVariables(str);
+        if (variables == null) throw new VariableNotFoundException("Could not find " + str);
 
-        replacements.add(new Replacement(variable.getStart(), variable.getEnd(), obj.toString()));
+        for (ManipulateData.ManipulateVariable variable : variables) {
+            replacements.add(new Replacement(variable.getStart(), variable.getEnd(), obj.toString()));
+        }
         return this;
     }
 
@@ -35,12 +38,15 @@ public class StringManipulator implements ResponseManipulator {
     public ResponseManipulator object(Object object) {
         MainpulateObjectAnalyser.AnalysedObject data = MainpulateObjectAnalyser.getObject(object);
         for (Map.Entry<String, String> entry : data.getFields().entrySet()) {
-            ManipulateData.ManipulateVariable variable = manipulateData.getVariable(entry.getValue());
-            if (variable != null) {
+            List<ManipulateData.ManipulateVariable> variables = manipulateData.getVariables(entry.getValue());
+            if (variables != null) {
                 try {
                     Field field = object.getClass().getField(entry.getKey());
                     field.setAccessible(true);
-                    replacements.add(new Replacement(variable.getStart(), variable.getEnd(), field.get(object).toString()));
+                    String value = field.get(object).toString();
+                    for (ManipulateData.ManipulateVariable variable : variables) {
+                        replacements.add(new Replacement(variable.getStart(), variable.getEnd(), value));
+                    }
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -55,12 +61,15 @@ public class StringManipulator implements ResponseManipulator {
         if (pattern == null) throw new PatternNotFoundException("Could not find " + name);
 
         for (Map.Entry<String, String> entry : MainpulateObjectAnalyser.getObject(object).getFields().entrySet()) {
-            ManipulateData.ManipulateVariable variable = pattern.getVariables().get(entry.getValue());
-            if (variable != null) {
+            List<ManipulateData.ManipulateVariable> variables = pattern.getVariables().get(entry.getValue());
+            if (variables != null) {
                 try {
                     Field field = object.getClass().getField(entry.getKey());
                     field.setAccessible(true);
-                    replacements.add(new Replacement(variable.getStart(), variable.getEnd(), field.get(object).toString()));
+                    String value = field.get(object).toString();
+                    for (ManipulateData.ManipulateVariable variable : variables) {
+                        replacements.add(new Replacement(variable.getStart(), variable.getEnd(), value));
+                    }
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
