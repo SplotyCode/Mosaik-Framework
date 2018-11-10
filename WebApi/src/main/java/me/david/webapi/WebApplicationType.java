@@ -48,6 +48,7 @@ public interface WebApplicationType extends ApplicationType {
         WebServer server = getWebServer();
         if (server.isRunning())
             server.shutdown();
+        System.out.println("Starting WebServer under " + port + "(" + server.getClass().getSimpleName() + ")");
         server.listen(port);
     }
 
@@ -61,6 +62,7 @@ public interface WebApplicationType extends ApplicationType {
 
     default void setWebServer(WebServer server) {
         WebServer currentServer = getWebServer();
+        System.out.println(server.getClass().getSimpleName() + " " + currentServer);
         if (currentServer != null) currentServer.shutdown();
 
         getDataFactory().putData(webServer, server);

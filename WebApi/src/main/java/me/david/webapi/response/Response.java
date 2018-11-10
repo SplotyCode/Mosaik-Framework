@@ -72,7 +72,6 @@ public class Response {
            throw new ContentException("Could not load content", ex);
         }
         try {
-
             String contentType = content.getContentType();
             if (contentType != null) {
                 setHeader(HttpHeaders.CONTENT_TYPE, contentType);

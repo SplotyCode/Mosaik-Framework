@@ -12,6 +12,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.*;
+import lombok.Getter;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.response.Response;
@@ -33,6 +34,9 @@ public class NettyWebServer implements WebServer {
     private HandlerManager handlerManager;
     private WebApplicationType application;
 
+    @Getter private int request = 0;
+    @Getter private long totalTime = 0;
+
     public NettyWebServer(WebApplicationType webApplication) {
         application = webApplication;
         handlerManager = webApplication.getWebHandler();
@@ -40,7 +44,6 @@ public class NettyWebServer implements WebServer {
 
     @Override
     public void listen(int port) {
-        System.out.println("Starting WebServer under " + port);
         loopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         try {
             final InetSocketAddress address = new InetSocketAddress(port);
@@ -102,6 +105,7 @@ public class NettyWebServer implements WebServer {
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
             if (msg instanceof FullHttpRequest) {
+                request++;
                 FullHttpRequest nettyRequest = (FullHttpRequest) msg;
                 QueryStringDecoder uri = new QueryStringDecoder(nettyRequest.uri());
                 Request request = new Request(
@@ -114,8 +118,10 @@ public class NettyWebServer implements WebServer {
                     request.getGet().put(get.getKey(), get.getValue().get(0));
                 }
 
+                long start = System.currentTimeMillis();
                 Response response = handlerManager.handleRequest(request);
                 response.finish(request, application);
+                totalTime += System.currentTimeMillis() - start;
 
                 ByteBuf content = Unpooled.buffer(128);
                 content.writeBytes(response.getRawContent(), response.getRawContent().available());

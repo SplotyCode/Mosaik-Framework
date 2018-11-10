@@ -1,0 +1,17 @@
+------------------------
+------Static File:------
+------------------------
+->FrameWork:
+Packets: 140676.0
+Time:    302825.0
+Average: 0.4645455295963015
+
+->Server:
+Running 20s test @ http://localhost:2002/
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     8.44ms    9.24ms  81.99ms   84.61%
+    Req/Sec     4.17k   395.11     5.39k    70.75%
+  332224 requests in 20.02s, 348.83MB read
+Requests/sec:  16593.59
+Transfer/sec:     17.42MB

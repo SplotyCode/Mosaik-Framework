@@ -16,13 +16,14 @@ import java.util.List;
 @Getter
 public class Main {
 
-    @Getter private static Main instance = new Main();
+    @Getter private static Main instance;
 
     private List<Application> applications = new ArrayList<>();
     private static BootContext bootData;
 
     public static void main(String[] args) {
         bootData = new BootContext(args, System.currentTimeMillis());
+        instance = new Main();
     }
 
     private Main() {
@@ -51,6 +52,7 @@ public class Main {
                     throw new BootException("Could not init Application Type " + type.getSimpleName() + " in " + application.getName(), ex);
                 }
             });
+            System.out.println(application.getName());
             application.start(bootData);
         });
     }

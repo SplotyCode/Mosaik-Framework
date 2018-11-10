@@ -14,6 +14,7 @@ public final class ClassFinderHelper {
 
     private static String[] nonUserPrefixes = new String[] {
             "org.eclipse",
+            "io.undertow",
             "javax",
             "javafx",
             "sun",
@@ -34,6 +35,7 @@ public final class ClassFinderHelper {
             "com.intellij",
             "org.jcp",
             "org.classpath",
+            "org.xnio",
             "org.GNOME",
             "org.codehaus",
             "netscape.javascript"
