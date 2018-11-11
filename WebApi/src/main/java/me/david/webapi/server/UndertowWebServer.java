@@ -49,9 +49,7 @@ public class UndertowWebServer implements WebServer {
                                 new Method(exchange.getRequestMethod().toString()),
                                 isKeepAlive(exchange)
                         );
-                        for (Map.Entry<String, Deque<String>> get : exchange.getPathParameters().entrySet()) {
-                            request.getGet().put(get.getKey(), get.getValue().getFirst());
-                        }
+                        request.setGet(exchange.getPathParameters());
 
                         long start = System.currentTimeMillis();
                         Response response = handlerManager.handleRequest(request);

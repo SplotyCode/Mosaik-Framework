@@ -20,6 +20,8 @@ import me.david.webapi.response.error.ErrorFactory;
 import me.david.webapi.response.error.ErrorHandler;
 
 import java.net.InetSocketAddress;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -120,9 +122,7 @@ public class NettyWebServer extends Thread implements WebServer {
                         new Method(nettyRequest.method().name()),
                         HttpUtil.isKeepAlive(nettyRequest)
                 );
-                for (Map.Entry<String, List<String>> get : uri.parameters().entrySet()) {
-                    request.getGet().put(get.getKey(), get.getValue().get(0));
-                }
+                request.setGet(uri.parameters());
 
                 long start = System.currentTimeMillis();
                 Response response = handlerManager.handleRequest(request);

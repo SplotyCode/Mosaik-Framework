@@ -15,6 +15,6 @@ public class GetTransformer extends AnnotatedTransformer<Get, String> {
 
     @Override
     protected String transformAnnotation(Get annotation, Parameter parameter, Request request, AnnotationHandlerData handler, AnnotationHandlerData.SupAnnotationHandlerData method) {
-        return request.getGet().get(annotation.value());
+        return request.getFirstGetParameter(annotation.value());
     }
 }

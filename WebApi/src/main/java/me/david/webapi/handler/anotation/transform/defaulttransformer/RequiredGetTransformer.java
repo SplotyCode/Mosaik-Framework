@@ -17,7 +17,7 @@ public class RequiredGetTransformer extends AnnotatedTransformer<RequiredGet, St
 
     @Override
     protected String transformAnnotation(RequiredGet annotation, Parameter parameter, Request request, AnnotationHandlerData handler, AnnotationHandlerData.SupAnnotationHandlerData method) {
-        String result = request.getGet().get(annotation.value());
+        String result = request.getFirstGetParameter(annotation.value());
         if (result == null) throw new TransformerException("Could not find " + annotation.value());
         return result;
     }

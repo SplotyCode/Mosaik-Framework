@@ -82,12 +82,12 @@ public class AnnotationHandlerData {
                 return false;
 
         for (Map.Entry<String, String> pair : getMustBe.entrySet()) {
-            if (!request.getGet().containsKey(pair.getKey()) || !request.getGet().get(pair.getKey()).matches(pair.getValue()))
+            if (!request.getGet().containsKey(pair.getKey()) || !request.getFirstGetParameter(pair.getKey()).equals(pair.getValue()))
                 return false;
         }
 
         for (Map.Entry<String, String> pair : postMustBe.entrySet()) {
-            if (!request.getPost().containsKey(pair.getKey()) || !request.getPost().get(pair.getKey()).matches(pair.getValue()))
+            if (!request.getPost().containsKey(pair.getKey()) || !request.getPost().get(pair.getKey()).equals(pair.getValue()))
                 return false;
         }
         return true;

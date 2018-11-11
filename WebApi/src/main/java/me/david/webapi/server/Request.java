@@ -2,9 +2,10 @@ package me.david.webapi.server;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import me.david.webapi.response.Response;
 
-import java.util.HashMap;
+import java.util.*;
 
 @Getter
 @EqualsAndHashCode
@@ -14,10 +15,9 @@ public class Request {
     private String ipAddress;
     private Method method;
     private HashMap<String, String> headers = new HashMap<>();
-    private HashMap<String, String> get = new HashMap<>();
+    @Setter private Map<String, ?> get;
     private HashMap<String, String> post = new HashMap<>();
     private boolean keepAlive;
-
 
     private Response response = new Response(null);
 
@@ -26,6 +26,14 @@ public class Request {
         this.ipAddress = ipAddress;
         this.method = method;
         this.keepAlive = keepAlive;
+    }
+
+    public Collection<String> getGetParameter(String name) {
+        return (Collection<String>) get.get(name);
+    }
+
+    public String getFirstGetParameter(String name) {
+        return getGetParameter(name).iterator().next();
     }
 
     public boolean isGet() {
