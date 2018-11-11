@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ApplicationManager implements IApplicationManager {
 
-    @Getter List<ApplicationHandleImpl> handles = new ArrayList<>();
+    List<ApplicationHandleImpl> handles = new ArrayList<>();
     private ApplicationFinder applicationFinder = new ApplicationFinder(this);
 
     public void startUp() {
@@ -88,5 +88,10 @@ public class ApplicationManager implements IApplicationManager {
         List<Application> applications = new ArrayList<>();
         handles.forEach(handle -> applications.add(handle.getApplication()));
         return applications;
+    }
+
+    @Override
+    public Collection<ApplicationHandle> getHandles() {
+        return new ArrayList<>(handles);
     }
 }

@@ -23,7 +23,7 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
 
-public class NettyWebServer implements WebServer {
+public class NettyWebServer extends Thread implements WebServer {
 
     private ChannelFuture channel;
     private EventLoopGroup loopGroup;
@@ -42,32 +42,38 @@ public class NettyWebServer implements WebServer {
         handlerManager = webApplication.getWebHandler();
     }
 
+    private InetSocketAddress address;
+
     @Override
     public void listen(int port) {
+        address = new InetSocketAddress(port);
+        start();
+    }
+
+    @Override
+    public void run() {
         loopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
         try {
-            final InetSocketAddress address = new InetSocketAddress(port);
-
             channel = new ServerBootstrap()
-                .option(ChannelOption.SO_BACKLOG, 1024)
-                .option(ChannelOption.SO_REUSEADDR, true)
-                .group(loopGroup)
-                .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel channel) throws Exception {
-                        final ChannelPipeline p = channel.pipeline();
-                        p.addLast(new HttpRequestDecoder());
-                        p.addLast("aggregator", new HttpObjectAggregator(512*1024));
-                        p.addLast(new HttpResponseEncoder());
-                        p.addLast(new HttpContentCompressor());
-                        p.addLast("handler", handler);
-                    }
-                })
-                .childOption(ChannelOption.ALLOCATOR, new PooledByteBufAllocator(true))
-                .childOption(ChannelOption.SO_REUSEADDR, true)
-                .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .bind(address).sync();
+                    .option(ChannelOption.SO_BACKLOG, 1024)
+                    .option(ChannelOption.SO_REUSEADDR, true)
+                    .group(loopGroup)
+                    .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel channel) throws Exception {
+                            final ChannelPipeline p = channel.pipeline();
+                            p.addLast(new HttpRequestDecoder());
+                            p.addLast("aggregator", new HttpObjectAggregator(512*1024));
+                            p.addLast(new HttpResponseEncoder());
+                            p.addLast(new HttpContentCompressor());
+                            p.addLast("handler", handler);
+                        }
+                    })
+                    .childOption(ChannelOption.ALLOCATOR, new PooledByteBufAllocator(true))
+                    .childOption(ChannelOption.SO_REUSEADDR, true)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    .bind(address).sync();
             channel.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
