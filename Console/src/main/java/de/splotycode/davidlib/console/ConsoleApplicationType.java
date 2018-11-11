@@ -1,0 +1,26 @@
+package de.splotycode.davidlib.console;
+
+import me.david.davidlib.application.ApplicationType;
+import me.david.davidlib.startup.BootContext;
+
+import java.io.InputStream;
+import java.io.PrintStream;
+
+public interface ConsoleApplicationType extends ApplicationType {
+
+    default void initType(BootContext context, ConsoleApplicationType dummy) {
+
+    }
+
+    default ProcessBar generateProcessBar(String name, int max, int initial) {
+        return new ProcessBar(max, getPrintStream(), name, initial);
+    }
+
+    default ProcessBar generateProcessBar(String name, int max) {
+        return generateProcessBar(name, max, 0);
+    }
+
+    default PrintStream getPrintStream() {return System.out;}
+    default InputStream getInputStream() {return System.in;}
+
+}
