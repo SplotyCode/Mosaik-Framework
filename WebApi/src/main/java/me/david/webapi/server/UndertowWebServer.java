@@ -1,11 +1,12 @@
 package me.david.webapi.server;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
 import io.undertow.Undertow;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HeaderValues;
 import io.undertow.util.HttpString;
 import lombok.Getter;
+import me.david.davidlib.prettyprint.PrettyPrint;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.response.Response;
@@ -14,6 +15,7 @@ import me.david.webapi.response.error.ErrorHandler;
 import org.apache.commons.io.IOUtils;
 
 import java.nio.ByteBuffer;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
@@ -36,22 +38,19 @@ public class UndertowWebServer implements WebServer {
 
     @Override
     public void listen(int port) {
-        System.out.println("Hey");
         server = Undertow.builder()
                 .addHttpListener(port, "localhost")
                 .setHandler(exchange -> {
                     try {
                         request++;
-                        System.out.println(exchange.getRequestURI() + " " + exchange.getDestinationAddress().getHostString());
-                        QueryStringDecoder uri = new QueryStringDecoder(exchange.getRequestURI());
-                        /*Request request = new Request(
-                                uri.path(),
-                                exchange.getDestinationAddress().getHostName(),
-                                new Method(nettyRequest.method().name()),
-                                HttpUtil.isKeepAlive(nettyRequest)
+                        Request request = new Request(
+                                exchange.getRequestPath(),
+                                exchange.getDestinationAddress().getHostString(),
+                                new Method(exchange.getRequestMethod().toString()),
+                                isKeepAlive(exchange)
                         );
-                        for (Map.Entry<String, List<String>> get : uri.parameters().entrySet()) {
-                            request.getGet().put(get.getKey(), get.getValue().get(0));
+                        for (Map.Entry<String, Deque<String>> get : exchange.getPathParameters().entrySet()) {
+                            request.getGet().put(get.getKey(), get.getValue().getFirst());
                         }
 
                         long start = System.currentTimeMillis();
@@ -59,22 +58,15 @@ public class UndertowWebServer implements WebServer {
                         response.finish(request, application);
                         totalTime += System.currentTimeMillis() - start;
 
-                        ByteBuf content = Unpooled.buffer(128);
-                        content.writeBytes(response.getRawContent(), response.getRawContent().available());
-
-                        DefaultFullHttpResponse nettyResponse = new DefaultFullHttpResponse(
-                                convertHttpVersion(response.getHttpVersion()),
-                                HttpResponseStatus.valueOf(response.getResponseCode()),
-                                content
-                        );
+                        exchange.setStatusCode(response.getResponseCode());
                         for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
-                            nettyResponse.headers().set(pair.getKey(), pair.getValue());
+                            exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey()), pair.getValue());
                         }
-                        ctx.writeAndFlush(nettyResponse);*/
+                        exchange.getResponseSender().send(ByteBuffer.wrap(IOUtils.toByteArray(response.getRawContent())));
                     } catch (Throwable ex) {
                         Response response = errorHandler.handleError(ex);
                         response.finish(null, application);
-                        exchange.setResponseCode(response.getResponseCode());
+                        exchange.setStatusCode(response.getResponseCode());
                         for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
                             exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey()), pair.getValue());
                         }
@@ -84,6 +76,24 @@ public class UndertowWebServer implements WebServer {
         server.start();
     }
 
+    private static boolean isKeepAlive(HttpServerExchange exchange) {
+        String connection = exchange.getRequestHeaders().get("connection").getFirst();
+        if (connection != null && HttpHeaderValues.CLOSE.contentEqualsIgnoreCase(connection)) {
+            return false;
+        } else if (toNettyVersion(exchange).isKeepAliveDefault()) {
+            return !HttpHeaderValues.CLOSE.contentEqualsIgnoreCase(connection);
+        } else {
+            return HttpHeaderValues.KEEP_ALIVE.contentEqualsIgnoreCase(connection);
+        }
+    }
+
+    private static HttpVersion toNettyVersion(HttpServerExchange exchange) {
+        if (exchange.isHttp10()) {
+            return HttpVersion.HTTP_1_0;
+        }
+        return HttpVersion.HTTP_1_1;
+    }
+
     @Override
     public void shutdown() {
         server.stop();
@@ -91,7 +101,7 @@ public class UndertowWebServer implements WebServer {
 
     @Override
     public boolean isRunning() {
-        return !server.getWorker().isShutdown();
+        return server != null && server.getWorker() != null && !server.getWorker().isTerminated() && !server.getWorker().isShutdown();
     }
 
     @Override
