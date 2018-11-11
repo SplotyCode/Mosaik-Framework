@@ -1,4 +1,4 @@
-package me.david.davidlib.application;
+package me.david.davidlib.startup;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

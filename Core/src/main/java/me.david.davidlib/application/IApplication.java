@@ -9,8 +9,10 @@ public interface IApplication {
 
     String getName();
 
-    Application getApplication();
+    ApplicationState getState();
+    void setState(ApplicationState state);
 
+    Application getApplication();
 
     IShutdownManager getLocalShutdownManager();
     IShutdownManager getGlobalShutdownManager();

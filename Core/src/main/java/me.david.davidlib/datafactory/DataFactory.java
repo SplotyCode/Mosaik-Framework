@@ -29,4 +29,11 @@ public class DataFactory {
         data.putIfAbsent(name, obj);
     }
 
+    public HashMap<String, Object> getMap() {
+        return data;
+    }
+
+    public int getDataSize() {
+        return data.size();
+    }
 }
