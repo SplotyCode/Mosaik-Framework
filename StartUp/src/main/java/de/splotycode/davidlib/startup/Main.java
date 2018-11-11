@@ -1,24 +1,16 @@
 package de.splotycode.davidlib.startup;
 
-import de.splotycode.davidlib.console.ProcessBar;
 import de.splotycode.davidlib.startup.application.ApplicationManager;
 import de.splotycode.davidlib.startup.envirementchanger.StartUpInvirementChangerImpl;
+import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
+import de.splotycode.davidlib.startup.starttask.StartTaskExecutor;
 import lombok.Getter;
-import me.david.davidlib.annotation.Disabled;
 import me.david.davidlib.application.*;
 import me.david.davidlib.link.LinkBase;
 import me.david.davidlib.link.Links;
-import me.david.davidlib.startup.ApplicationStartUpException;
 import me.david.davidlib.startup.BootContext;
-import me.david.davidlib.utils.ClassFinderHelper;
 import me.david.davidlib.utils.ReflectionUtil;
 import me.david.davidlib.utils.StringUtil;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Getter
 public class Main {

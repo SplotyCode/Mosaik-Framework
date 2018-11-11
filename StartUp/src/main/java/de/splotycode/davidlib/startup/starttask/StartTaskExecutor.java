@@ -1,4 +1,4 @@
-package de.splotycode.davidlib.startup;
+package de.splotycode.davidlib.startup.starttask;
 
 import de.splotycode.davidlib.startup.exception.FrameworkStartException;
 import lombok.AccessLevel;

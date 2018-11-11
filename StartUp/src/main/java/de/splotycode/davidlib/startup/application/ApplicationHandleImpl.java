@@ -1,5 +1,6 @@
 package de.splotycode.davidlib.startup.application;
 
+import de.splotycode.davidlib.startup.envirementchanger.ConfigureEnvironmentChangerImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.david.davidlib.application.Application;
@@ -17,11 +18,13 @@ public class ApplicationHandleImpl implements ApplicationHandle {
 
     @Getter private Application application;
 
+    private static ConfigureEnvironmentChangerImpl environmentChanger = new ConfigureEnvironmentChangerImpl();
+
     @Override
     public void configurise() {
         application.setState(ApplicationState.CONFIGURISED);
         try {
-            application.configurise(application.getConfig());
+            application.configurise(environmentChanger, application.getConfig());
         } catch (Exception e) {
             throw new ApplicationStartUpException("Exception in " + application.getName() + "#configurise() method");
         }

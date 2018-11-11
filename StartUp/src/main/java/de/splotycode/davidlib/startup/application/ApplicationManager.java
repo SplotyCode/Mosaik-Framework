@@ -1,6 +1,6 @@
 package de.splotycode.davidlib.startup.application;
 
-import de.splotycode.davidlib.startup.StartUpProcessHandler;
+import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
 import lombok.Getter;
 import me.david.davidlib.application.Application;
 import me.david.davidlib.application.ApplicationHandle;
@@ -71,6 +71,16 @@ public class ApplicationManager implements IApplicationManager {
     @Override
     public Application getApplicationByName(String name) {
         return getHandleByName(name).getApplication();
+    }
+
+    @Override
+    public ApplicationHandle getHandleByClass(Class<? extends Application> application) {
+        return handles.stream().filter(handle -> handle.getApplication().getClass() == application).findFirst().orElse(null);
+    }
+
+    @Override
+    public Application getApplicationByClass(Class<? extends Application> application) {
+        return getHandleByClass(application).getApplication();
     }
 
     @Override

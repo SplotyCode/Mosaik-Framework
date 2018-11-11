@@ -3,6 +3,7 @@ package me.david.davidlib.application;
 import lombok.Getter;
 import me.david.davidlib.datafactory.DataFactory;
 import me.david.davidlib.startup.BootContext;
+import me.david.davidlib.startup.envirement.ConfiguriseEnvironmentChanger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public abstract class Application implements IApplication {
     @Getter private List<Class<ApplicationType>> applicationTypes = new ArrayList<>();
 
     public abstract void start(BootContext context) throws Exception;
-    public void configurise(DataFactory config) throws Exception {}
+    public void configurise(ConfiguriseEnvironmentChanger environmentChanger, DataFactory config) throws Exception {}
 
     @Override
     public synchronized void setState(ApplicationState state) {

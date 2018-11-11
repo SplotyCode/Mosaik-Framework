@@ -1,8 +1,7 @@
 package de.splotycode.davidlib.startup.application;
 
-import de.splotycode.davidlib.startup.StartUpProcessHandler;
+import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
 import lombok.AllArgsConstructor;
-import me.david.davidlib.annotation.Disabled;
 import me.david.davidlib.application.Application;
 import me.david.davidlib.application.ApplicationState;
 import me.david.davidlib.application.ApplicationType;
@@ -10,7 +9,6 @@ import me.david.davidlib.application.BootException;
 import me.david.davidlib.utils.ClassFinderHelper;
 import me.david.davidlib.utils.ReflectionUtil;
 
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 
 @AllArgsConstructor

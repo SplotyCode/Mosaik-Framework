@@ -10,8 +10,10 @@ public interface IApplicationManager {
     Collection<ApplicationHandle> getHandles();
     Collection<Application> getApplications();
 
-    Application getApplicationByName(String name);
     ApplicationHandle getHandleByName(String name);
+    Application getApplicationByName(String name);
+    ApplicationHandle getHandleByClass(Class<? extends Application> application);
+    Application getApplicationByClass(Class<? extends Application> application);
 
     int getLoadedApplicationsCount();
     Collection<ApplicationHandle> getLoadedHandles();

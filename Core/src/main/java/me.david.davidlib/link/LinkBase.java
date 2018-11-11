@@ -26,4 +26,8 @@ public class LinkBase {
         return instance.getLink(Links.BOOT_DATA);
     }
 
+    public static IApplicationManager getApplicationManager() {
+        return instance.getLink(Links.APPLICATION_MANAGER);
+    }
+
 }

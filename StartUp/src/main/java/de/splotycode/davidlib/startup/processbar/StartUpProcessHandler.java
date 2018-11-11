@@ -1,4 +1,4 @@
-package de.splotycode.davidlib.startup;
+package de.splotycode.davidlib.startup.processbar;
 
 import de.splotycode.davidlib.console.ProcessBar;
 import lombok.AccessLevel;
