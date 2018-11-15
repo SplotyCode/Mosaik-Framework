@@ -38,6 +38,12 @@ public class Response {
     public Response(ResponseContent content) {
         this.content = content;
         setContentType(ContentType.TEXT_HTML);
+
+        /* Default Headers */
+        setHeader(HttpHeaders.DATE, dateFormatter.format(new GregorianCalendar().getTime()));
+        setHeader("x-xss-protection", "1; mode=block");
+        setHeader("X-Content-Type-Options", "nosniff");
+        setHeader("X-Powered-By", "DavidLib WebApi");
     }
 
     public Response setHeader(HttpHeaders httpHeader, String value) {
@@ -57,8 +63,6 @@ public class Response {
     }
 
     public void finish(Request request, WebApplicationType application) {
-        Calendar time = new GregorianCalendar();
-        setHeader(HttpHeaders.DATE, dateFormatter.format(time.getTime()));
         if (content == null) {
             content = application.getConfig(WebConfig.NO_CONTENT_RESPONSE);
             if (content == null) {
