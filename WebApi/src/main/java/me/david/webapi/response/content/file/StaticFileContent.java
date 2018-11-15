@@ -1,6 +1,7 @@
-package me.david.webapi.response.content;
+package me.david.webapi.response.content.file;
 
 import lombok.AllArgsConstructor;
+import me.david.webapi.response.content.ResponseContent;
 
 import java.io.File;
 import java.io.FileInputStream;

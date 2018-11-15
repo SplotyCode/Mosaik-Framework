@@ -1,13 +1,17 @@
-package me.david.webapi.response.content;
+package me.david.webapi.response.content.file;
 
 import lombok.AllArgsConstructor;
+import me.david.davidlib.io.ByteArrayInputStream;
 import me.david.webapi.response.content.manipulate.ManipulateableContent;
 import me.david.webapi.response.content.manipulate.ResponseManipulator;
 import me.david.webapi.response.content.manipulate.StringManipulator;
 import me.david.webapi.server.HandleRequestException;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 
 @AllArgsConstructor
@@ -41,7 +45,7 @@ public class FileResponseContent implements ManipulateableContent {
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return IOUtils.toInputStream(manipulator.getResult(), encoding);
+        return new ByteArrayInputStream(manipulator.getResult().getBytes(encoding));
     }
 
     @Override

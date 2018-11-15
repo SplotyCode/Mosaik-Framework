@@ -7,7 +7,7 @@ import me.david.webapi.WebApplicationType;
 import me.david.webapi.config.WebConfig;
 import me.david.webapi.response.content.ContentException;
 import me.david.webapi.response.content.ResponseContent;
-import me.david.webapi.response.content.StringResponseContent;
+import me.david.webapi.response.content.string.StringResponseContent;
 import me.david.webapi.server.HandleRequestException;
 import me.david.webapi.server.Request;
 

@@ -1,5 +1,6 @@
-package me.david.webapi.response.content;
+package me.david.webapi.response.content.file;
 
+import me.david.webapi.response.content.ResponseContent;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;

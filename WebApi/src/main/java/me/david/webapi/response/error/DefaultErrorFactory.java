@@ -1,9 +1,8 @@
 package me.david.webapi.response.error;
 
 import me.david.davidlib.utils.ExceptionUtil;
-import me.david.webapi.response.ContentType;
 import me.david.webapi.response.Response;
-import me.david.webapi.response.content.StringResponseContent;
+import me.david.webapi.response.content.string.StringResponseContent;
 
 public class DefaultErrorFactory implements ErrorFactory {
 
