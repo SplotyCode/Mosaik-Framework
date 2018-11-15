@@ -7,7 +7,7 @@ import me.david.webapi.WebApplicationType;
 import me.david.webapi.config.WebConfig;
 import me.david.webapi.response.content.ContentException;
 import me.david.webapi.response.content.ResponseContent;
-import me.david.webapi.response.content.string.StringResponseContent;
+import me.david.webapi.response.content.string.StaticStringContent;
 import me.david.webapi.server.HandleRequestException;
 import me.david.webapi.server.Request;
 
@@ -66,7 +66,7 @@ public class Response {
         if (content == null) {
             content = application.getConfig(WebConfig.NO_CONTENT_RESPONSE);
             if (content == null) {
-                content = new StringResponseContent("No Content Provided");
+                content = new StaticStringContent("No Content Provided");
             }
         }
         try {
