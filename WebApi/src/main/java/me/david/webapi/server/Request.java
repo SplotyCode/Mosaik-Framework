@@ -15,7 +15,7 @@ public class Request {
     private String ipAddress;
     private Method method;
     private HashMap<String, String> headers = new HashMap<>();
-    @Setter private Map<String, ?> get;
+    @Setter private Map<String, ? extends Collection<String>> get;
     private HashMap<String, String> post = new HashMap<>();
     private boolean keepAlive;
 
@@ -29,7 +29,7 @@ public class Request {
     }
 
     public Collection<String> getGetParameter(String name) {
-        return (Collection<String>) get.get(name);
+        return get.get(name);
     }
 
     public String getFirstGetParameter(String name) {
