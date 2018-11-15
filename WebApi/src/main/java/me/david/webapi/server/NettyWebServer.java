@@ -129,7 +129,7 @@ public class NettyWebServer extends Thread implements WebServer {
                 response.finish(request, application);
                 totalTime += System.currentTimeMillis() - start;
 
-                ByteBuf content = Unpooled.buffer(128);
+                ByteBuf content = Unpooled.buffer(response.getRawContent().available());
                 content.writeBytes(response.getRawContent(), response.getRawContent().available());
 
                 DefaultFullHttpResponse nettyResponse = new DefaultFullHttpResponse(

@@ -1,12 +1,12 @@
 package me.david.webapi.server;
 
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpVersion;
 import io.undertow.Undertow;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HeaderValues;
 import io.undertow.util.HttpString;
 import lombok.Getter;
-import me.david.davidlib.prettyprint.PrettyPrint;
+import me.david.davidlib.io.ByteArrayInputStream;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.response.Response;
@@ -14,9 +14,9 @@ import me.david.webapi.response.error.ErrorFactory;
 import me.david.webapi.response.error.ErrorHandler;
 import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.Deque;
-import java.util.List;
 import java.util.Map;
 
 public class UndertowWebServer implements WebServer {
@@ -60,7 +60,7 @@ public class UndertowWebServer implements WebServer {
                         for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
                             exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey()), pair.getValue());
                         }
-                        exchange.getResponseSender().send(ByteBuffer.wrap(IOUtils.toByteArray(response.getRawContent())));
+                        send(exchange, response.getRawContent());
                     } catch (Throwable ex) {
                         Response response = errorHandler.handleError(ex);
                         response.finish(null, application);
@@ -68,10 +68,20 @@ public class UndertowWebServer implements WebServer {
                         for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
                             exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey()), pair.getValue());
                         }
-                        exchange.getResponseSender().send(ByteBuffer.wrap(IOUtils.toByteArray(response.getRawContent())));
+                        send(exchange, response.getRawContent());
                     }
                 }).build();
         server.start();
+    }
+
+    private static void send(HttpServerExchange exchange, InputStream stream) throws IOException {
+        byte[] bytes;
+        if (stream instanceof ByteArrayInputStream && ((ByteArrayInputStream) stream).isOriginal()) {
+            bytes = ((ByteArrayInputStream) stream).getBuf();
+        } else {
+            bytes = IOUtils.toByteArray(stream);
+        }
+        exchange.getResponseSender().send(ByteBuffer.wrap(bytes));
     }
 
     private static boolean isKeepAlive(HttpServerExchange exchange) {
