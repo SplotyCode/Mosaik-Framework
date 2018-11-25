@@ -1,6 +1,6 @@
 package me.david.webapi.handler.anotation.handle;
 
-import me.david.davidlib.link.transformer.ValueTransformer;
+import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface UseTransformer {
+public @interface UseResolver {
 
-    Class<? extends ValueTransformer> value();
+    Class<? extends ParameterResolver> value();
 
 }

@@ -1,7 +1,6 @@
 package de.splotycode.davidlib.startup.application;
 
 import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
-import lombok.Getter;
 import me.david.davidlib.application.Application;
 import me.david.davidlib.application.ApplicationHandle;
 import me.david.davidlib.application.ApplicationState;

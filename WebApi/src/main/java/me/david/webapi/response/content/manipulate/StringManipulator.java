@@ -1,6 +1,5 @@
 package me.david.webapi.response.content.manipulate;
 
-import com.sun.org.apache.xpath.internal.operations.Variable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

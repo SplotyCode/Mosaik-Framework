@@ -9,6 +9,6 @@ public interface ParameterResolver<R> {
 
     boolean transformable(Parameter parameter);
 
-    R transform(Parameter parameter, Request request, AnnotationHandlerData handler, AnnotationHandlerData.SupAnnotationHandlerData method) throws TransformerException;
+    R transform(Parameter parameter, Request request, AnnotationHandlerData handler, AnnotationHandlerData.SupAnnotationHandlerData method) throws ParameterResolveException;
 
 }
