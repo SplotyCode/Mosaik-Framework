@@ -18,8 +18,12 @@ public class UrlParamParameterResolver extends AnnotatedParameterResolver<UrlPar
     @Override
     protected Object transformAnnotation(UrlParam annotation, Parameter parameter, Request request, AnnotationHandlerData handler, AnnotationHandlerData.SupAnnotationHandlerData method) {
         if (handler.getMapping() == null && method.getMapping() == null) throw new TransformerException("Could not find mapping");
+
         String methodResult = method.getMapping().match(request.getPath()).getVariables().get(annotation.value());
-        if (methodResult == null) return null;
+        if (methodResult == null) {
+            if (annotation.needed()) throw new TransformerException("Needed Parameter not present");
+            return null;
+        }
 
         Object value = LinkBase.getTransformerManager().transform(methodResult, parameter.getType());
 

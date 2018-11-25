@@ -6,7 +6,7 @@ import me.david.davidlib.helper.Pair;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.UrlPattern;
 import me.david.webapi.handler.anotation.check.*;
-import me.david.webapi.handler.anotation.handle.UseTransformer;
+import me.david.webapi.handler.anotation.handle.UseResolver;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.request.Request;
@@ -116,9 +116,9 @@ public class AnnotationHandlerData {
                     throw new IllegalHandlerException("Handler might not be abstract" + method.getDeclaringClass().getSimpleName() + "#" + method.getName());
                 boolean found;
                 for (Parameter parameter : method.getParameters()) {
-                    if (parameter.isAnnotationPresent(UseTransformer.class)) {
+                    if (parameter.isAnnotationPresent(UseResolver.class)) {
                         try {
-                            parameters.add(new Pair<>(parameter.getAnnotation(UseTransformer.class).value().newInstance(), parameter));
+                            parameters.add(new Pair<>(parameter.getAnnotation(UseResolver.class).value().newInstance(), parameter));
                         } catch (InstantiationException | IllegalAccessException e) {
                             e.printStackTrace();
                         }

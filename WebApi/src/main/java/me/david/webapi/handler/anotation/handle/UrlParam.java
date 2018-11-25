@@ -10,5 +10,6 @@ import java.lang.annotation.Target;
 public @interface UrlParam {
 
     String value();
+    boolean needed() default true;
 
 }
