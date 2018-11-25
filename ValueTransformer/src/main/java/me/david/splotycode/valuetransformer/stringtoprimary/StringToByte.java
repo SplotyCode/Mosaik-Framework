@@ -1,9 +1,9 @@
 package me.david.splotycode.valuetransformer.stringtoprimary;
 
-import me.david.davidlib.link.transformer.IValueTransformer;
+import me.david.davidlib.link.transformer.ValueTransformer;
 import me.david.davidlib.link.transformer.TransformException;
 
-public class StringToByte implements IValueTransformer<String, Byte> {
+public class StringToByte extends ValueTransformer<String, Byte> {
 
     @Override
     public Byte transform(String input) throws TransformException {

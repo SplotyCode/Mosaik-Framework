@@ -1,9 +1,9 @@
 package me.david.splotycode.valuetransformer.stringtoprimary;
 
-import me.david.davidlib.link.transformer.IValueTransformer;
+import me.david.davidlib.link.transformer.ValueTransformer;
 import me.david.davidlib.link.transformer.TransformException;
 
-public class StringToShort implements IValueTransformer<String, Short> {
+public class StringToShort extends ValueTransformer<String, Short> {
 
     @Override
     public Short transform(String input) throws TransformException {

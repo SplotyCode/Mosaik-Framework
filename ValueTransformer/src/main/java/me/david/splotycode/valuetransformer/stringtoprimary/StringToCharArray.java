@@ -1,9 +1,9 @@
 package me.david.splotycode.valuetransformer.stringtoprimary;
 
-import me.david.davidlib.link.transformer.IValueTransformer;
+import me.david.davidlib.link.transformer.ValueTransformer;
 import me.david.davidlib.link.transformer.TransformException;
 
-public class StringToCharArray implements IValueTransformer<String, char[]> {
+public class StringToCharArray extends ValueTransformer<String, char[]> {
 
     @Override
     public char[] transform(String input) throws TransformException {
