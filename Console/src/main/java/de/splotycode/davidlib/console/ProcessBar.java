@@ -1,10 +1,12 @@
 package de.splotycode.davidlib.console;
 
+import me.david.davidlib.iui.INamedTaskBar;
+
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
-public class ProcessBar {
+public class ProcessBar implements INamedTaskBar {
 
     private int max;
     private PrintStream stream;
@@ -67,6 +69,21 @@ public class ProcessBar {
 
     public void stop() {
         stream.println();
+    }
+
+    @Override
+    public String name() {
+        return prefix;
+    }
+
+    @Override
+    public int max() {
+        return max;
+    }
+
+    @Override
+    public int value() {
+        return value;
     }
 
 }

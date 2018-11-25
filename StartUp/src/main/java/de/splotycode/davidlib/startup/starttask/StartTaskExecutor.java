@@ -19,7 +19,8 @@ public class StartTaskExecutor {
 
     private TreeMap<Integer, StartupTask> tasks = new TreeMap<>();
 
-    public void findAll() {
+    public void findAll(boolean externalCall) {
+        if (externalCall) tasks.clear();
         for (Class<?> clazz : ClassFinderHelper.getUserClasses()) {
             if (ReflectionUtil.validClass(clazz, StartupTask.class, true, true)) {
                 try {

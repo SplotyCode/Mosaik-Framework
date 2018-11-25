@@ -12,6 +12,10 @@ public class StartUpProcessHandler {
 
     private ProcessBar processBar;
 
+    public ProcessBar current() {
+        return processBar;
+    }
+
     public void next() {
         processBar.step();
     }
