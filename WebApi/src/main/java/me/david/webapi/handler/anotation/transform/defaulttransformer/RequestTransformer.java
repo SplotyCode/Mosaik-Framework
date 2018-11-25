@@ -2,7 +2,7 @@ package me.david.webapi.handler.anotation.transform.defaulttransformer;
 
 import me.david.webapi.handler.anotation.AnnotationHandlerData;
 import me.david.webapi.handler.anotation.transform.Transformer;
-import me.david.webapi.server.Request;
+import me.david.webapi.request.Request;
 
 import java.lang.reflect.Parameter;
 

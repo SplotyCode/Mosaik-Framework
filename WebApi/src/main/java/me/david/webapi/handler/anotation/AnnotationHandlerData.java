@@ -1,6 +1,7 @@
 package me.david.webapi.handler.anotation;
 
 import lombok.*;
+import me.david.davidlib.annotation.AnnotationHelper;
 import me.david.davidlib.helper.Pair;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.UrlPattern;
@@ -8,7 +9,7 @@ import me.david.webapi.handler.anotation.check.*;
 import me.david.webapi.handler.anotation.handle.UseTransformer;
 import me.david.webapi.handler.anotation.transform.Transformer;
 import me.david.webapi.response.content.ResponseContent;
-import me.david.webapi.server.Request;
+import me.david.webapi.request.Request;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -32,30 +33,29 @@ public class AnnotationHandlerData {
     protected List<Transformer> costomTransformers = new ArrayList<>();
 
     public AnnotationHandlerData(Annotation[] annotations) {
+        priority = AnnotationHelper.getPriority(annotations);
         for (Annotation annotation : annotations) {
             if (annotation instanceof Mapping) {
                 mapping = new UrlPattern(((Mapping) annotation).value());
-            } else if (annotation instanceof Priority) {
-                priority = ((Priority) annotation).priority();
-            } else if (annotation instanceof Last) {
-                priority = Integer.MIN_VALUE;
-            } else if (annotation instanceof First) {
-                priority = Integer.MAX_VALUE;
             } else if (annotation instanceof NeedGetMethod) {
-                method = "GET";
+                setMethod("GET");
             } else if (annotation instanceof NeedPostMethod) {
-                method = "POST";
+                setMethod("POST");
             } else if (annotation instanceof NeedMethod) {
-                method = ((NeedMethod) annotation).method().toUpperCase();
+                setMethod(((NeedMethod) annotation).method().toUpperCase());
                 costomMethod = true;
             } else if (annotation instanceof NeedGetParameter) {
+                setMethod("GET");
                 Collections.addAll(neededGet, ((NeedGetParameter) annotation).prameters());
             } else if (annotation instanceof NeedPostParameter) {
+                setMethod("POST");
                 Collections.addAll(neededPost, ((NeedPostParameter) annotation).prameters());
             } else if (annotation instanceof GetMustBe) {
+                setMethod("GET");
                 GetMustBe mustBeAnnotation = (GetMustBe) annotation;
                 getMustBe.put(mustBeAnnotation.paramer(), mustBeAnnotation.value());
             } else if (annotation instanceof PostMustBe) {
+                setMethod("POST");
                 PostMustBe mustBeAnnotation = (PostMustBe) annotation;
                 postMustBe.put(mustBeAnnotation.paramer(), mustBeAnnotation.value());
             } else if (annotation instanceof AddTransforwer) {
@@ -68,6 +68,12 @@ public class AnnotationHandlerData {
                 }
             }
         }
+    }
+
+    private void setMethod(String method) {
+        if (this.method != null && !method.equals(this.method))
+            throw new IllegalStateException("Can not force two different methods (" + priority + " and " + this.priority);
+        this.method = method;
     }
 
     public boolean valid(Request request) {

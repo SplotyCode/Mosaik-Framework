@@ -6,7 +6,7 @@ import me.david.webapi.handler.anotation.AnnotationHandlerFinder;
 import me.david.webapi.handler.anotation.transform.Transformer;
 import me.david.webapi.response.Response;
 import me.david.webapi.server.HandleRequestException;
-import me.david.webapi.server.Request;
+import me.david.webapi.request.Request;
 
 import java.util.ArrayList;
 import java.util.Comparator;

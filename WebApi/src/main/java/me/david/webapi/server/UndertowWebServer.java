@@ -9,6 +9,7 @@ import lombok.Getter;
 import me.david.davidlib.io.ByteArrayInputStream;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.handler.HandlerManager;
+import me.david.webapi.request.Request;
 import me.david.webapi.response.Response;
 import me.david.webapi.response.error.ErrorFactory;
 import me.david.webapi.response.error.ErrorHandler;
@@ -43,13 +44,16 @@ public class UndertowWebServer implements WebServer {
                 .setHandler(exchange -> {
                     try {
                         request++;
+                        exchange.startBlocking();
                         Request request = new Request(
                                 exchange.getRequestPath(),
                                 exchange.getDestinationAddress().getHostString(),
                                 new Method(exchange.getRequestMethod().toString()),
-                                isKeepAlive(exchange)
+                                isKeepAlive(exchange),
+                                IOUtils.toByteArray(exchange.getInputStream())
                         );
                         request.setGet(exchange.getPathParameters());
+
 
                         long start = System.currentTimeMillis();
                         Response response = handlerManager.handleRequest(request);

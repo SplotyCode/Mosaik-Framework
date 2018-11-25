@@ -1,7 +1,8 @@
 package me.david.webapi.response;
 
-public enum HttpHeaders {
+public enum ResponseHeaders {
 
+    ALLOW,
     CACHE_CONTROL,
     CONTENT_ENCODING,
     SERVER,
@@ -10,5 +11,7 @@ public enum HttpHeaders {
     CONTENT_LENGTH,
     CONNECTION,
     LOCATION,
+    ETAG,
+    LAST_MODIFIED
 
 }

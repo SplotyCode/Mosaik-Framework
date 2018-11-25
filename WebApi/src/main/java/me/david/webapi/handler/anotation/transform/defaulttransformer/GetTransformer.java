@@ -3,7 +3,7 @@ package me.david.webapi.handler.anotation.transform.defaulttransformer;
 import me.david.webapi.handler.anotation.AnnotationHandlerData;
 import me.david.webapi.handler.anotation.handle.Get;
 import me.david.webapi.handler.anotation.transform.AnnotatedTransformer;
-import me.david.webapi.server.Request;
+import me.david.webapi.request.Request;
 
 import java.lang.reflect.Parameter;
 

@@ -11,18 +11,17 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.*;
 import lombok.Getter;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.handler.HandlerManager;
+import me.david.webapi.request.Request;
 import me.david.webapi.response.Response;
 import me.david.webapi.response.error.ErrorFactory;
 import me.david.webapi.response.error.ErrorHandler;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class NettyWebServer extends Thread implements WebServer {
@@ -115,12 +114,17 @@ public class NettyWebServer extends Thread implements WebServer {
             if (msg instanceof FullHttpRequest) {
                 request++;
                 FullHttpRequest nettyRequest = (FullHttpRequest) msg;
+                if (nettyRequest.decoderResult() != DecoderResult.SUCCESS) {
+                    ctx.close();
+                    return;
+                }
                 QueryStringDecoder uri = new QueryStringDecoder(nettyRequest.uri());
                 Request request = new Request(
                         uri.path(),
                         transformIpAddress(ctx.channel().remoteAddress().toString()),
                         new Method(nettyRequest.method().name()),
-                        HttpUtil.isKeepAlive(nettyRequest)
+                        HttpUtil.isKeepAlive(nettyRequest),
+                        nettyRequest.content().array()
                 );
                 request.setGet(uri.parameters());
 

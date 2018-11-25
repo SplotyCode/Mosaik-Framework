@@ -3,13 +3,14 @@ package me.david.webapi.response;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import me.david.davidlib.utils.EnumUtil;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.config.WebConfig;
 import me.david.webapi.response.content.ContentException;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.response.content.string.StaticStringContent;
 import me.david.webapi.server.HandleRequestException;
-import me.david.webapi.server.Request;
+import me.david.webapi.request.Request;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,14 +41,14 @@ public class Response {
         setContentType(ContentType.TEXT_HTML);
 
         /* Default Headers */
-        setHeader(HttpHeaders.DATE, dateFormatter.format(new GregorianCalendar().getTime()));
+        setHeader(ResponseHeaders.DATE, dateFormatter.format(new GregorianCalendar().getTime()));
         setHeader("x-xss-protection", "1; mode=block");
         setHeader("X-Content-Type-Options", "nosniff");
         setHeader("X-Powered-By", "DavidLib WebApi");
     }
 
-    public Response setHeader(HttpHeaders httpHeader, String value) {
-        headers.put(httpHeader.name().toLowerCase().replace('_', '-'), value);
+    public Response setHeader(ResponseHeaders httpHeader, String value) {
+        headers.put(EnumUtil.toDisplayName(httpHeader), value);
         return this;
     }
 
@@ -58,7 +59,7 @@ public class Response {
     }
 
     public Response setContentType(ContentType contentType) {
-        setHeader(HttpHeaders.CONTENT_TYPE, contentType.value());
+        setHeader(ResponseHeaders.CONTENT_TYPE, contentType.value());
         return this;
     }
 
@@ -71,26 +72,26 @@ public class Response {
         }
         try {
             rawContent = content.getInputStream();
-            setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(rawContent.available()));
+            setHeader(ResponseHeaders.CONTENT_LENGTH, String.valueOf(rawContent.available()));
         } catch (IOException ex) {
            throw new ContentException("Could not load content", ex);
         }
         try {
             String contentType = content.getContentType();
             if (contentType != null) {
-                setHeader(HttpHeaders.CONTENT_TYPE, contentType);
+                setHeader(ResponseHeaders.CONTENT_TYPE, contentType);
             }
         } catch (IOException ex) {
             throw new ContentException("Could not set content type", ex);
         }
         if (request != null && request.isKeepAlive()) {
-            setHeader(HttpHeaders.CONNECTION, "keep-alive");
+            setHeader(ResponseHeaders.CONNECTION, "keep-alive");
         }
     }
 
     public void redirect(String url, int errorCode) {
         responseCode = errorCode;
-        setHeader(HttpHeaders.LOCATION, url);
+        setHeader(ResponseHeaders.LOCATION, url);
     }
 
     public void redirect(String url, boolean permanent) {

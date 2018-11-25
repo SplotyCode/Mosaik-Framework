@@ -1,7 +1,7 @@
 package me.david.webapi.handler;
 
 import me.david.webapi.server.HandleRequestException;
-import me.david.webapi.server.Request;
+import me.david.webapi.request.Request;
 
 public interface HttpHandler {
 
