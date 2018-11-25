@@ -38,6 +38,7 @@ public class Main {
         LinkBase.getInstance().registerLink(Links.APPLICATION_MANAGER, new ApplicationManager());
 
         /* Running Startup Tasks*/
+        StartTaskExecutor.getInstance().findAll();
         StartTaskExecutor.getInstance().runAll(new StartUpInvirementChangerImpl());
 
         applicationManager.startUp();

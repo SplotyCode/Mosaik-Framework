@@ -17,6 +17,7 @@
         <module>GameEngine</module>
         <module>WebApi</module>
         <module>StartUp</module>
+        <module>ValueTransformer</module>
     </modules>
 
     <build>
