@@ -8,6 +8,7 @@ import me.david.webapi.handler.UrlPattern;
 import me.david.webapi.handler.anotation.check.*;
 import me.david.webapi.handler.anotation.handle.UseResolver;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
+import me.david.webapi.request.RequestHeaders;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.request.Request;
 
@@ -26,6 +27,7 @@ public class AnnotationHandlerData {
     private int priority;
     private String method = null;
     private boolean costomMethod = false;
+    private String host;
     private List<String> neededGet = new ArrayList<>(), neededPost = new ArrayList<>();
     private HashMap<String, String> getMustBe = new HashMap<>(), postMustBe = new HashMap<>();
     private Throwable loadingError = null;
@@ -66,6 +68,8 @@ public class AnnotationHandlerData {
                         loadingError = e;
                     }
                 }
+            } else if (annotation instanceof Host) {
+                host = (((Host) annotation).value()).trim().toLowerCase(Locale.ENGLISH);
             }
         }
     }
@@ -77,6 +81,7 @@ public class AnnotationHandlerData {
     }
 
     public boolean valid(Request request) {
+        if (!request.getHeader(RequestHeaders.HOST).trim().toLowerCase(Locale.ENGLISH).equals(host)) return false;
         if (mapping != null && !mapping.match(request.getPath()).isMatch()) return false;
         if (method != null && (costomMethod ? request.getMethod().getMethod().matches(method) : request.getMethod().getMethod().equals(method))) return false;
         for (String get : neededGet)
