@@ -1,4 +1,4 @@
-package handler;
+package firstapp.handler;
 
 public class Message {
 

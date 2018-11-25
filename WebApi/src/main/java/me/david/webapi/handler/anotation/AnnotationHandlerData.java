@@ -7,7 +7,7 @@ import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.UrlPattern;
 import me.david.webapi.handler.anotation.check.*;
 import me.david.webapi.handler.anotation.handle.UseTransformer;
-import me.david.webapi.handler.anotation.transform.Transformer;
+import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.request.Request;
 
@@ -30,7 +30,7 @@ public class AnnotationHandlerData {
     private HashMap<String, String> getMustBe = new HashMap<>(), postMustBe = new HashMap<>();
     private Throwable loadingError = null;
 
-    protected List<Transformer> costomTransformers = new ArrayList<>();
+    protected List<ParameterResolver> costomParameterResolvers = new ArrayList<>();
 
     public AnnotationHandlerData(Annotation[] annotations) {
         priority = AnnotationHelper.getPriority(annotations);
@@ -59,9 +59,9 @@ public class AnnotationHandlerData {
                 PostMustBe mustBeAnnotation = (PostMustBe) annotation;
                 postMustBe.put(mustBeAnnotation.paramer(), mustBeAnnotation.value());
             } else if (annotation instanceof AddTransforwer) {
-                for (Class<? extends Transformer> transformer : ((AddTransforwer) annotation).value()) {
+                for (Class<? extends ParameterResolver> transformer : ((AddTransforwer) annotation).value()) {
                     try {
-                        costomTransformers.add(transformer.newInstance());
+                        costomParameterResolvers.add(transformer.newInstance());
                     } catch (InstantiationException | IllegalAccessException e) {
                         loadingError = e;
                     }
@@ -103,7 +103,7 @@ public class AnnotationHandlerData {
     public static class SupAnnotationHandlerData extends AnnotationHandlerData {
 
         private Method targetMethod;
-        private List<Pair<Transformer, Parameter>> parameters = new ArrayList<>();
+        private List<Pair<ParameterResolver, Parameter>> parameters = new ArrayList<>();
         private boolean returnContext;
         private String displayName;
 
@@ -125,17 +125,17 @@ public class AnnotationHandlerData {
                         break;
                     }
                     found = false;
-                    for (Transformer transformer : costomTransformers) {
-                        if (transformer.transformable(parameter)) {
-                            parameters.add(new Pair<>(transformer, parameter));
+                    for (ParameterResolver parameterResolver : costomParameterResolvers) {
+                        if (parameterResolver.transformable(parameter)) {
+                            parameters.add(new Pair<>(parameterResolver, parameter));
                             found = true;
                             break;
                         }
                     }
                     if (found) continue;
-                    for (Transformer transformer : handler.getGlobalTransformer()) {
-                        if (transformer.transformable(parameter)) {
-                            parameters.add(new Pair<>(transformer, parameter));
+                    for (ParameterResolver parameterResolver : handler.getGlobalParameterResolver()) {
+                        if (parameterResolver.transformable(parameter)) {
+                            parameters.add(new Pair<>(parameterResolver, parameter));
                             found = true;
                             break;
                         }

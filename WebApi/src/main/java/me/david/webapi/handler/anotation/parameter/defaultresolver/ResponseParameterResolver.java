@@ -1,13 +1,13 @@
-package me.david.webapi.handler.anotation.transform.defaulttransformer;
+package me.david.webapi.handler.anotation.parameter.defaultresolver;
 
 import me.david.webapi.handler.anotation.AnnotationHandlerData;
-import me.david.webapi.handler.anotation.transform.Transformer;
+import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.response.Response;
 import me.david.webapi.request.Request;
 
 import java.lang.reflect.Parameter;
 
-public class ResponseTransformer implements Transformer<Response> {
+public class ResponseParameterResolver implements ParameterResolver<Response> {
 
     @Override
     public boolean transformable(Parameter parameter) {

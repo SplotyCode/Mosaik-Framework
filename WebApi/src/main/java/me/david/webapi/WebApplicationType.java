@@ -7,7 +7,7 @@ import me.david.davidlib.datafactory.DataKey;
 import me.david.davidlib.startup.BootContext;
 import me.david.webapi.handler.HandlerFinder;
 import me.david.webapi.handler.HandlerManager;
-import me.david.webapi.handler.anotation.transform.Transformer;
+import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.response.error.ErrorFactory;
 import me.david.webapi.server.WebServer;
 
@@ -25,7 +25,7 @@ public interface WebApplicationType extends ApplicationType {
             if (server != null && server.isRunning())
                 server.shutdown();
         });
-        registerGlobalTransformers("me.david.webapi.handler.anotation.transform.defaulttransformer");
+        registerGlobalTransformers("me.david.webapi.handler.anotation.parameter.defaultresolver");
     }
 
     default void registerFinder(HandlerFinder finder) {
@@ -67,7 +67,7 @@ public interface WebApplicationType extends ApplicationType {
         getDataFactory().putData(webServer, server);
     }
 
-    default void registerGlobalTransformer(Class<? extends Transformer> transformer) {
+    default void registerGlobalTransformer(Class<? extends ParameterResolver> transformer) {
         try {
             registerGlobalTransformer(transformer.newInstance());
         } catch (InstantiationException | IllegalAccessException e) {
@@ -75,17 +75,17 @@ public interface WebApplicationType extends ApplicationType {
         }
     }
 
-    default void registerGlobalTransformer(Transformer transformer) {
+    default void registerGlobalTransformer(ParameterResolver parameterResolver) {
         HandlerManager handler = getWebHandler();
-        if (!handler.getGlobalTransformer().contains(transformer) && !transformer.getClass().isAnnotationPresent(Disabled.class)) {
-            handler.getGlobalTransformer().add(transformer);
-            System.out.println("Registered global Tranformer: " + transformer.getClass().getSimpleName());
+        if (!handler.getGlobalParameterResolver().contains(parameterResolver) && !parameterResolver.getClass().isAnnotationPresent(Disabled.class)) {
+            handler.getGlobalParameterResolver().add(parameterResolver);
+            System.out.println("Registered global Tranformer: " + parameterResolver.getClass().getSimpleName());
         }
     }
 
     default void registerGlobalTransformer(String clazz) {
         try {
-            registerGlobalTransformer((Class<? extends Transformer>) Class.forName(clazz));
+            registerGlobalTransformer((Class<? extends ParameterResolver>) Class.forName(clazz));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -95,8 +95,8 @@ public interface WebApplicationType extends ApplicationType {
         try {
             for (ClassPath.ClassInfo classInfo : ClassPath.from(getClass().getClassLoader()).getTopLevelClassesRecursive(packagePath)) {
                 Class<?> clazz = classInfo.load();
-                if (Transformer.class.isAssignableFrom(clazz)) {
-                    registerGlobalTransformer((Class<? extends Transformer>) clazz);
+                if (ParameterResolver.class.isAssignableFrom(clazz)) {
+                    registerGlobalTransformer((Class<? extends ParameterResolver>) clazz);
                 }
             }
         } catch (IOException e) {

@@ -38,7 +38,11 @@ public final class ClassFinderHelper {
             "org.xnio",
             "org.GNOME",
             "org.codehaus",
-            "netscape.javascript"
+            "netscape.javascript",
+            "org.junit",
+            "org.opentest4j",
+            "META-INF",
+            "org.apiguardian.api"
     };
 
     private static ComplexCache<Collection<Class<?>>> userClassesCache = new CacheBuilder<Collection<Class<?>>>().normal().setValidator(new TimeValidator<>(2 * 60 * 1000)).setResolver((CacheValueResolver<Collection<Class<?>>>) cache -> {

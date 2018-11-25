@@ -3,8 +3,8 @@ package me.david.webapi.handler.anotation;
 import me.david.davidlib.helper.Pair;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.HttpHandler;
-import me.david.webapi.handler.anotation.transform.Transformer;
-import me.david.webapi.handler.anotation.transform.TransformerException;
+import me.david.webapi.handler.anotation.parameter.ParameterResolver;
+import me.david.webapi.handler.anotation.parameter.TransformerException;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.server.HandleRequestException;
 import me.david.webapi.request.Request;
@@ -55,7 +55,7 @@ public class AnnotationHandler implements HttpHandler {
             }
             Object[] objects = new Object[sup.getParameters().size()];
             int i = 0;
-            for (Pair<Transformer, Parameter> pair : sup.getParameters()) {
+            for (Pair<ParameterResolver, Parameter> pair : sup.getParameters()) {
                 try {
                     objects[i] = pair.getOne().transform(pair.getTwo(), request, global, sup);
                 } catch (TransformerException ex) {

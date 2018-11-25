@@ -1,4 +1,4 @@
-package me.david.webapi.handler.anotation.transform;
+package me.david.webapi.handler.anotation.parameter;
 
 import me.david.webapi.handler.anotation.AnnotationHandlerData;
 import me.david.webapi.request.Request;
@@ -6,11 +6,11 @@ import me.david.webapi.request.Request;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
 
-public abstract class AnnotatedTransformer<A extends Annotation, R> implements Transformer<R> {
+public abstract class AnnotatedParameterResolver<A extends Annotation, R> implements ParameterResolver<R> {
 
     protected Class<? extends A> annotation;
 
-    public AnnotatedTransformer(Class<? extends A> annotation) {
+    public AnnotatedParameterResolver(Class<? extends A> annotation) {
         this.annotation = annotation;
     }
 

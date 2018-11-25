@@ -3,7 +3,7 @@ package me.david.webapi;
 import com.google.common.reflect.ClassPath;
 import lombok.Getter;
 import me.david.webapi.handler.HandlerManager;
-import me.david.webapi.handler.anotation.transform.Transformer;
+import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.server.WebServer;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class WebApplication {
         instance.webServer = webServer;
     }
 
-    public void registerTransformer(Class<? extends Transformer> transformer) {
+    public void registerTransformer(Class<? extends ParameterResolver> transformer) {
         try {
             registerTransformer(transformer.newInstance());
         } catch (InstantiationException | IllegalAccessException e) {
@@ -46,16 +46,16 @@ public class WebApplication {
         }
     }
 
-    public void registerTransformer(Transformer transformer) {
-        if (!manager.getGlobalTransformer().contains(transformer)) {
-            manager.getGlobalTransformer().add(transformer);
-            System.out.println("Registered tranformer: " + transformer.getClass().getSimpleName());
+    public void registerTransformer(ParameterResolver parameterResolver) {
+        if (!manager.getGlobalParameterResolver().contains(parameterResolver)) {
+            manager.getGlobalParameterResolver().add(parameterResolver);
+            System.out.println("Registered tranformer: " + parameterResolver.getClass().getSimpleName());
         }
     }
 
     public void registerTransformer(String clazz) {
         try {
-            registerTransformer((Class<? extends Transformer>) Class.forName(clazz));
+            registerTransformer((Class<? extends ParameterResolver>) Class.forName(clazz));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -65,8 +65,8 @@ public class WebApplication {
         try {
             for (ClassPath.ClassInfo classInfo : ClassPath.from(getClass().getClassLoader()).getTopLevelClassesRecursive(packagePath)) {
                 Class<?> clazz = classInfo.load();
-                if (Transformer.class.isAssignableFrom(clazz)) {
-                    registerTransformer((Class<? extends Transformer>) clazz);
+                if (ParameterResolver.class.isAssignableFrom(clazz)) {
+                    registerTransformer((Class<? extends ParameterResolver>) clazz);
                 }
             }
         } catch (IOException e) {

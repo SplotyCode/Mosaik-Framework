@@ -3,7 +3,7 @@ package me.david.webapi.handler;
 import lombok.Getter;
 import me.david.davidlib.utils.init.InitialisedOnce;
 import me.david.webapi.handler.anotation.AnnotationHandlerFinder;
-import me.david.webapi.handler.anotation.transform.Transformer;
+import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.response.Response;
 import me.david.webapi.server.HandleRequestException;
 import me.david.webapi.request.Request;
@@ -17,7 +17,7 @@ public class HandlerManager extends InitialisedOnce {
 
     private List<HttpHandler> allHandlers = new ArrayList<>();
 
-    @Getter private List<Transformer> globalTransformer = new ArrayList<>();
+    @Getter private List<ParameterResolver> globalParameterResolver = new ArrayList<>();
 
     public void addFinder(HandlerFinder finder) {
         if (initialised) throw new IllegalStateException("Can not add finder if Manager is already initialised");

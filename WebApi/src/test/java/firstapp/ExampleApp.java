@@ -1,9 +1,10 @@
-import me.david.davidlib.Main;
+package firstapp;
+
+import de.splotycode.davidlib.startup.Main;
 import me.david.davidlib.application.Application;
-import me.david.davidlib.application.BootContext;
-import me.david.davidlib.datafactory.DataFactory;
+import me.david.davidlib.startup.BootContext;
 import me.david.webapi.WebApplicationType;
-import me.david.webapi.server.NettyWebServer;
+import me.david.webapi.server.UndertowWebServer;
 
 public class ExampleApp extends Application implements WebApplicationType {
 
@@ -14,13 +15,8 @@ public class ExampleApp extends Application implements WebApplicationType {
     @Override
     public void start(BootContext context) {
         System.out.println("Starte Example App");
-        setWebServer(new NettyWebServer(this));
+        setWebServer(new UndertowWebServer(this));
         listen(60006);
-    }
-
-    @Override
-    public void configurise(DataFactory config) {
-
     }
 
     @Override

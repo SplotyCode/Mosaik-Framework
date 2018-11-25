@@ -4,6 +4,7 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpVersion;
 import io.undertow.Undertow;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.util.HttpString;
 import lombok.Getter;
 import me.david.davidlib.io.ByteArrayInputStream;
@@ -41,7 +42,7 @@ public class UndertowWebServer implements WebServer {
     public void listen(int port) {
         server = Undertow.builder()
                 .addHttpListener(port, "localhost")
-                .setHandler(exchange -> {
+                .setHandler(new BlockingHandler(exchange -> {
                     try {
                         request++;
                         exchange.startBlocking();
@@ -74,7 +75,7 @@ public class UndertowWebServer implements WebServer {
                         }
                         send(exchange, response.getRawContent());
                     }
-                }).build();
+                })).build();
         server.start();
     }
 
