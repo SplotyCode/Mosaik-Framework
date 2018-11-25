@@ -13,7 +13,7 @@ public abstract class Application implements IApplication {
     @Getter private ShutdownManager localShutdownManager = new ShutdownManager();
     private static ShutdownManager globalShutdownManager = new ShutdownManager();
 
-    @Getter private ApplicationState state = ApplicationState.UNFOUND;
+    @Getter private ApplicationState state = ApplicationState.NOT_FOUND;
 
     @Getter private DataFactory dataFactory = new DataFactory();
     @Getter private DataFactory config = new DataFactory();

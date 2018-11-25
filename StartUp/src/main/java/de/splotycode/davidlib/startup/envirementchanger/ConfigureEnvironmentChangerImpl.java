@@ -22,6 +22,6 @@ public class ConfigureEnvironmentChangerImpl implements ConfiguriseEnvironmentCh
         if (application.getState() != ApplicationState.FOUND && application.getState() != ApplicationState.CONFIGURISED) {
             throw new EnvironmentChangeExcpetion("Can not stop application in this state");
         }
-        application.setState(ApplicationState.SKIPED);
+        application.setState(ApplicationState.SKIPPED);
     }
 }
