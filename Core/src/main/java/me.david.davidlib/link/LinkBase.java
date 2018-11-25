@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.david.davidlib.datafactory.DataFactory;
 import me.david.davidlib.datafactory.DataKey;
+import me.david.davidlib.link.transformer.ITransformerManager;
 import me.david.davidlib.startup.BootContext;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -30,4 +31,7 @@ public class LinkBase {
         return instance.getLink(Links.APPLICATION_MANAGER);
     }
 
+    public static ITransformerManager getTransformerManager() {
+        return instance.getLink(Links.TRANSFORMER_MANAGER);
+    }
 }

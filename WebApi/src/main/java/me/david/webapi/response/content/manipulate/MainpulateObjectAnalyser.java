@@ -1,7 +1,7 @@
 package me.david.webapi.response.content.manipulate;
 
 import lombok.Getter;
-import me.david.davidlib.utils.ReflectionUtil;
+import me.david.davidlib.utils.reflection.ReflectionUtil;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

@@ -2,7 +2,7 @@ package me.david.webapi.handler.anotation;
 
 import lombok.Getter;
 import me.david.davidlib.annotation.Disabled;
-import me.david.davidlib.utils.ClassFinderHelper;
+import me.david.davidlib.utils.reflection.ClassFinderHelper;
 import me.david.webapi.handler.HandlerFinder;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.HttpHandler;

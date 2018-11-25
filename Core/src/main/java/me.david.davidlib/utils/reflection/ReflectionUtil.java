@@ -1,4 +1,4 @@
-package me.david.davidlib.utils;
+package me.david.davidlib.utils.reflection;
 
 import me.david.davidlib.annotation.Disabled;
 
@@ -46,6 +46,7 @@ public final class ReflectionUtil {
         public Class[] getClassContext() {
             return super.getClassContext();
         }
+
     }
 
 }

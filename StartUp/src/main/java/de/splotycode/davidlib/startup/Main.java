@@ -11,7 +11,7 @@ import me.david.davidlib.link.LinkBase;
 import me.david.davidlib.link.Links;
 import me.david.davidlib.startup.BootContext;
 import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
-import me.david.davidlib.utils.ReflectionUtil;
+import me.david.davidlib.utils.reflection.ReflectionUtil;
 import me.david.davidlib.utils.StringUtil;
 
 @Getter

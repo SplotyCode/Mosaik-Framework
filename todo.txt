@@ -1,0 +1,1 @@
+-add ClassCollector with goals (No Abstract goal etc) to collect classes easier
