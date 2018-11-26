@@ -5,7 +5,7 @@ import de.splotycode.davidlib.startup.starttask.StartTaskExecutor;
 import me.david.davidlib.iui.INamedTaskBar;
 import me.david.davidlib.link.LinkBase;
 import me.david.davidlib.link.Links;
-import me.david.davidlib.link.transformer.IStartUpManager;
+import me.david.davidlib.link.IStartUpManager;
 
 public class StartUpManager implements IStartUpManager {
 

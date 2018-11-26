@@ -4,6 +4,8 @@ import me.david.davidlib.annotation.Disabled;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +49,31 @@ public final class ReflectionUtil {
             return super.getClassContext();
         }
 
+    }
+
+    public static Type[] getGenerretics(Class clazz) {
+        return ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments();
+    }
+
+    public static boolean isAssignable(Class<?> parent, Class<?> child) {
+        return parent.isAssignableFrom(child) || samePrimitive(parent, child);
+    }
+
+    public static boolean samePrimitive(Class<?> one, Class<?> two) {
+        return samePrimitive(one, two, "int", "Integer") ||
+               samePrimitive(one, two, "float", "Float") ||
+               samePrimitive(one, two, "double", "Double") ||
+               samePrimitive(one, two, "char", "Character") ||
+               samePrimitive(one, two, "long", "Long") ||
+               samePrimitive(one, two, "short", "Short");
+    }
+
+    private static boolean samePrimitive(Class one, Class two, String primiClass, String clazz) {
+        String oneName = one.getSimpleName(),
+               twoName = two.getSimpleName();
+        if (one.isPrimitive() && oneName.equalsIgnoreCase(primiClass) && twoName.equalsIgnoreCase(clazz)) return two.isArray() == one.isArray();
+        if (two.isPrimitive() && twoName.equalsIgnoreCase(primiClass) && oneName.equalsIgnoreCase(clazz)) return two.isArray() == one.isArray();
+        return false;
     }
 
 }

@@ -1,4 +1,4 @@
-package me.david.davidlib.link.transformer;
+package me.david.davidlib.link;
 
 import me.david.davidlib.iui.INamedTaskBar;
 
