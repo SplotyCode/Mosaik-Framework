@@ -18,6 +18,7 @@
         <module>WebApi</module>
         <module>StartUp</module>
         <module>ValueTransformer</module>
+        <module>SpigotLib</module>
     </modules>
 
     <build>
