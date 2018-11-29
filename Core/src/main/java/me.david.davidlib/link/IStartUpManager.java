@@ -8,7 +8,7 @@ public interface IStartUpManager {
     void executeTasks();
 
     boolean running();
-    default boolean initlised() {
+    default boolean initialised() {
         return true;
     }
 

@@ -29,12 +29,12 @@ public class Main {
         main(ArrayUtils.EMPTY_STRING_ARRAY);
     }
 
-    public static void mainIfNotInitliased() {
+    public static void mainIfNotInitialised() {
         if (!initialised)
             main();
     }
 
-    public static void mainIfNotInitliased(String[] args) {
+    public static void mainIfNotInitialised(String[] args) {
         if (!initialised)
             main(args);
     }
