@@ -1,0 +1,30 @@
+package me.david.davidlib.spigotlib;
+
+import lombok.Getter;
+import me.david.davidlib.application.ApplicationType;
+import me.david.davidlib.datafactory.DataKey;
+import me.david.davidlib.spigotlib.gui.GuiManager;
+import me.david.davidlib.startup.BootContext;
+import org.bukkit.event.Listener;
+
+public interface SpigotApplicationType extends ApplicationType {
+
+    DataKey<SpigotPlugin> PLUGIN = new DataKey<>("spigot.plugin");
+    GuiManager guiManager = new GuiManager();
+
+    default void initType(BootContext context, ApplicationType dummy) {
+
+    }
+
+    default SpigotPlugin getPlugin() {
+        return getData(PLUGIN);
+    }
+
+    default void registerListeners(Listener... listeners) {
+        getPlugin().registerListeners(listeners);
+    }
+
+    static GuiManager getGuiManager() {
+        return guiManager;
+    }
+}
