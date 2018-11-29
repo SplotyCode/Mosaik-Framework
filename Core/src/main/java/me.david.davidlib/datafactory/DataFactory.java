@@ -33,6 +33,10 @@ public class DataFactory {
         return data;
     }
 
+    public boolean containsData(String name) {
+        return data.containsKey(name);
+    }
+
     public int getDataSize() {
         return data.size();
     }
