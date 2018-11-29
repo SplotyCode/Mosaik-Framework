@@ -11,8 +11,10 @@ import me.david.davidlib.link.LinkBase;
 import me.david.davidlib.link.Links;
 import me.david.davidlib.startup.BootContext;
 import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
+import me.david.davidlib.utils.init.AlreadyInitailizedException;
 import me.david.davidlib.utils.reflection.ReflectionUtil;
 import me.david.davidlib.utils.StringUtil;
+import org.apache.commons.lang.ArrayUtils;
 
 @Getter
 public class Main {
@@ -21,9 +23,29 @@ public class Main {
 
     private static BootContext bootData;
 
+    @Getter private static boolean initialised = false;
+
+    public static void main() {
+        main(ArrayUtils.EMPTY_STRING_ARRAY);
+    }
+
+    public static void mainIfNotInitliased() {
+        if (!initialised)
+            main();
+    }
+
+    public static void mainIfNotInitliased(String[] args) {
+        if (!initialised)
+            main(args);
+    }
+
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
         System.out.println("Starting FrameWork!");
+
+        if (initialised) throw new AlreadyInitailizedException("Main.main() already called");
+        initialised = true;
+
         if (ReflectionUtil.getCallerClasses().length >= 4) {
             System.out.println("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass().getName());
         }
