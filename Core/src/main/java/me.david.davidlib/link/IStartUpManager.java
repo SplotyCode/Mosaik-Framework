@@ -7,6 +7,11 @@ public interface IStartUpManager {
     void researchTasks();
     void executeTasks();
 
+    boolean running();
+    default boolean initlised() {
+        return true;
+    }
+
     INamedTaskBar currentProcess();
 
 }
