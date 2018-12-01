@@ -4,10 +4,7 @@ import lombok.Getter;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class GuiManager {
 
@@ -22,6 +19,16 @@ public class GuiManager {
         InventoryData inventory = new InventoryData(player, gui);
         player.playSound(player.getLocation(), Sound.LEVEL_UP, 3, 2);
         player.openInventory(inventory.getInventory());
+    }
+
+    public void endSession(InventoryData session) {
+        UUID uuid = session.getPlayer().getUniqueId();
+        openInventorys.remove(uuid);
+        if (inventoryHistory.containsKey(uuid)) {
+            inventoryHistory.get(uuid).add(session);
+        } else {
+            inventoryHistory.put(uuid, Collections.singletonList(session));
+        }
     }
 
 }

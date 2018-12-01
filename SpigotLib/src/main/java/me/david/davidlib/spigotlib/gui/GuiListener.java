@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
@@ -24,6 +25,21 @@ public class GuiListener implements Listener {
     }
 
     @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        GuiManager manager = SpigotApplicationType.getGuiManager();
+        UUID uuid = event.getPlayer().getUniqueId();
+
+        InventoryData inventory = manager.getOpenInventorys().get(uuid);
+
+        if (inventory != null) {
+            Closeable closeable = inventory.getCloseable();
+            if (closeable.isQuit()) {
+                manager.endSession(inventory);
+            }
+        }
+    }
+
+    @EventHandler
     public void onClick(InventoryClickEvent event) {
         GuiManager manager = SpigotApplicationType.getGuiManager();
         UUID uuid = event.getWhoClicked().getUniqueId();
@@ -38,7 +54,17 @@ public class GuiListener implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
+        GuiManager manager = SpigotApplicationType.getGuiManager();
+        UUID uuid = event.getPlayer().getUniqueId();
 
+        InventoryData inventory = manager.getOpenInventorys().get(uuid);
+
+        if (inventory != null) {
+            Closeable closeable = inventory.getCloseable();
+            if (closeable.isClose()) {
+                manager.endSession(inventory);
+            }
+        }
     }
 
 }

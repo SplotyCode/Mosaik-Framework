@@ -1,4 +1,4 @@
-package me.david.davidlib.spigotlib.gui.close;
+package me.david.davidlib.spigotlib.gui;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
