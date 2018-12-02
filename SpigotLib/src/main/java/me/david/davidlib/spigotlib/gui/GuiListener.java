@@ -14,7 +14,7 @@ public class GuiListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        GuiManager manager = SpigotApplicationType.getGuiManager();
+        GuiManager manager = SpigotApplicationType.GUI_MANAGER;
         UUID uuid = event.getPlayer().getUniqueId();
 
         InventoryData inventory = manager.getOpenInventorys().get(uuid);
@@ -26,7 +26,7 @@ public class GuiListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        GuiManager manager = SpigotApplicationType.getGuiManager();
+        GuiManager manager = SpigotApplicationType.GUI_MANAGER;
         UUID uuid = event.getPlayer().getUniqueId();
 
         InventoryData inventory = manager.getOpenInventorys().get(uuid);
@@ -41,7 +41,7 @@ public class GuiListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        GuiManager manager = SpigotApplicationType.getGuiManager();
+        GuiManager manager = SpigotApplicationType.GUI_MANAGER;
         UUID uuid = event.getWhoClicked().getUniqueId();
 
         InventoryData inventory = manager.getOpenInventorys().get(uuid);
@@ -54,7 +54,7 @@ public class GuiListener implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        GuiManager manager = SpigotApplicationType.getGuiManager();
+        GuiManager manager = SpigotApplicationType.GUI_MANAGER;
         UUID uuid = event.getPlayer().getUniqueId();
 
         InventoryData inventory = manager.getOpenInventorys().get(uuid);

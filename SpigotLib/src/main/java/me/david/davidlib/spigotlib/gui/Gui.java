@@ -11,6 +11,10 @@ public interface Gui {
 
     default void onClose(Player player, InventoryData data) {}
 
+    default String getPermission() {
+        return "";
+    }
+
     boolean onItemClick(Player player, InventoryData inventory, InventoryClickEvent event);
 
 }

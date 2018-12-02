@@ -41,8 +41,15 @@ public class InventoryData {
             return false;
         }
         if (closeable.isCloseButton() && event.getRawSlot() == event.getClickedInventory().getSize() - 1) {
+            GuiManager manager = SpigotApplicationType.GUI_MANAGER;
+
             player.closeInventory();
-            SpigotApplicationType.getGuiManager().endSession(this);
+            InventoryData inv = manager.getLastInventory(player);
+            manager.endSession(this);
+
+            if (inv != null) {
+                manager.openInventory(inv);
+            }
             return true;
         }
         return gui.onItemClick(player, this, event);

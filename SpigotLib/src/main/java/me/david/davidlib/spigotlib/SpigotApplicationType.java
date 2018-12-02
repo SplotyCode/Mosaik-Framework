@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 public interface SpigotApplicationType extends ApplicationType {
 
     DataKey<SpigotPlugin> PLUGIN = new DataKey<>("spigot.plugin");
-    GuiManager guiManager = new GuiManager();
+    GuiManager GUI_MANAGER = new GuiManager();
 
     default void initType(BootContext context, ApplicationType dummy) {
 
@@ -24,7 +24,4 @@ public interface SpigotApplicationType extends ApplicationType {
         getPlugin().registerListeners(listeners);
     }
 
-    static GuiManager getGuiManager() {
-        return guiManager;
-    }
 }
