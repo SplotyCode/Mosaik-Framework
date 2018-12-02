@@ -44,7 +44,7 @@ public class InventoryData {
             GuiManager manager = SpigotApplicationType.GUI_MANAGER;
 
             player.closeInventory();
-            InventoryData inv = manager.getLastInventory(player);
+            InventoryData inv = manager.removeLastInventory(player);
             manager.endSession(this);
 
             if (inv != null) {
@@ -80,7 +80,8 @@ public class InventoryData {
         Closeable closeable = getCloseable();
 
         if (closeable.isCloseButton()) {
-            inv[size - 1] = ItemStackUtil.createColoredWoolLohre("Exit", 1, ColorCodes.RED.getId());
+            InventoryData last = SpigotApplicationType.GUI_MANAGER.getLastInventory(player);
+            inv[size - 1] = ItemStackUtil.createColoredWoolLohre(last == null ? "Exit" : "Zurück", 1, ColorCodes.RED.getId(), last == null ? "Schliessen" : "Zurück zu '" + last.getDisplayName() + "'");
         }
 
         return inv;

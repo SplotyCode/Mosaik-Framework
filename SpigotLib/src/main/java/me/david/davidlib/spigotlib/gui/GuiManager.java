@@ -47,9 +47,14 @@ public class GuiManager {
         List<InventoryData> list = inventoryHistory.get(player.getUniqueId());
         if (list == null || list.isEmpty()) return null;
 
-        InventoryData result = list.get(list.size() - 1);
-        list.remove(list.size() - 1);
-        return result;
+        return list.get(list.size() - 1);
+    }
+
+    public InventoryData removeLastInventory(Player player) {
+        List<InventoryData> list = inventoryHistory.get(player.getUniqueId());
+        if (list == null || list.isEmpty()) return null;
+
+        return list.remove(list.size() - 1);
     }
 
 }
