@@ -20,10 +20,12 @@ import java.util.*;
 public class InventoryData {
 
     public static final DataKey<Integer> PAGE = new DataKey<>("lib.page");
+    public static final DataKey<Integer> HOT_BAR_SLOT = new DataKey<>("lib.hotbar.slot");
 
     @Getter private Player player;
     @Getter private Gui gui;
     private List<ItemStack> content;
+    private List<ItemStack> hotBar;
     private String displayName = null;
     private int size = -1;
     private DataFactory factory;
@@ -40,6 +42,10 @@ public class InventoryData {
         if (event.getClickedInventory() != event.getView().getTopInventory()) {
             return false;
         }
+        DataFactory factory = new DataFactory();
+        if (isPage() && event.getRawSlot() > 46 && event.getRawSlot() < event.getClickedInventory().getSize() - 2) {
+            factory.putData(HOT_BAR_SLOT, event.getRawSlot() - 46);
+        }
         if (closeable.isCloseButton() && event.getRawSlot() == event.getClickedInventory().getSize() - 1) {
             GuiManager manager = SpigotApplicationType.GUI_MANAGER;
 
@@ -52,7 +58,16 @@ public class InventoryData {
             }
             return true;
         }
-        return gui.onItemClick(player, this, event);
+        if (isPage()) {
+            if (event.getRawSlot() == 46) {
+                factory.putData(PAGE, factory.getData(PAGE) - 1);
+            } else if (event.getRawSlot() == event.getClickedInventory().getSize() - 2) {
+                factory.putData(PAGE, factory.getData(PAGE) + 1);
+            }
+            event.getClickedInventory().setContents(getContent());
+            return true;
+        }
+        return gui.onItemClick(player, this, factory, event);
     }
 
     public ItemStack[] getContent() {
@@ -75,6 +90,12 @@ public class InventoryData {
         if (page) {
             if (currentPage != 0) inv[46] = ItemStackUtil.createbasic("§6Letzte Seite", currentPage-1, Material.ARROW);
             if (content.size() > startCount + size) inv[size - 2] = ItemStackUtil.createbasic("§6Nägste Seite", currentPage+1, Material.ARROW);
+            int place = 47;
+            for (ItemStack item : hotBar) {
+                inv[place] = item;
+                place++;
+                if (place == size - 2) break;
+            }
         }
 
         Closeable closeable = getCloseable();
@@ -150,6 +171,21 @@ public class InventoryData {
             return this;
         }
         Collections.addAll(content, items);
+        return this;
+    }
+
+    public InventoryData setHotBar(int index, ItemStack itemStack) {
+        if (hotBar == null) hotBar = new ArrayList<>();
+        hotBar.set(index, itemStack);
+        return this;
+    }
+
+    public InventoryData addHotBar(ItemStack... items) {
+        if (hotBar == null) {
+            hotBar = Arrays.asList(items);
+            return this;
+        }
+        Collections.addAll(hotBar, items);
         return this;
     }
 

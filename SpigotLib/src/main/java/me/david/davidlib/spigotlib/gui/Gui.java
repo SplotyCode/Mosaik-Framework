@@ -1,5 +1,6 @@
 package me.david.davidlib.spigotlib.gui;
 
+import me.david.davidlib.datafactory.DataFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -15,6 +16,6 @@ public interface Gui {
         return "";
     }
 
-    boolean onItemClick(Player player, InventoryData inventory, InventoryClickEvent event);
+    boolean onItemClick(Player player, InventoryData inventory, DataFactory data, InventoryClickEvent event);
 
 }
