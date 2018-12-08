@@ -142,7 +142,7 @@
     <orderEntry type="module-library">
       <library name="Maven: javax.jnlp:jnlp-api:5.0">
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/javax/jnlp/jnlp-api/5.0/jnlp-api-5.0.jar!/" />
+          <root url="jar:///usr/lib/jvm/java-8-openjdk-amd64/jre/lib/javaws.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -68,6 +68,7 @@ public class Main {
         LinkBase.getInstance().registerLink(Links.STARTUP_ENVIRONMENT_CHANGER, environmentChanger);
 
         /* Running Startup Tasks*/
+        StartTaskExecutor.getInstance().collectSkippedPaths();
         StartTaskExecutor.getInstance().findAll(false);
         StartTaskExecutor.getInstance().runAll(environmentChanger);
 

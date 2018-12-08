@@ -7,43 +7,11 @@ import me.david.davidlib.cache.complex.resolver.CacheValueResolver;
 import me.david.davidlib.cache.complex.validator.TimeValidator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 public final class ClassFinderHelper {
 
-    private static String[] nonUserPrefixes = new String[] {
-            "org.eclipse",
-            "io.undertow",
-            "javax",
-            "javafx",
-            "sun",
-            "org.jboss",
-            "java",
-            "com.google",
-            "io.netty",
-            "lombok",
-            "org.apache",
-            "com.sun",
-            "com.oracle",
-            "org.checkerframework",
-            "jdk",
-            "org.ietf",
-            "org.omg",
-            "org.w3c",
-            "org.xml",
-            "com.intellij",
-            "org.jcp",
-            "org.classpath",
-            "org.xnio",
-            "org.GNOME",
-            "org.codehaus",
-            "netscape.javascript",
-            "org.junit",
-            "org.opentest4j",
-            "META-INF",
-            "org.apiguardian.api"
-    };
+    private static Set<String> nonUserPrefixes = new HashSet<>();
 
     private static ComplexCache<Collection<Class<?>>> userClassesCache = new CacheBuilder<Collection<Class<?>>>().normal().setValidator(new TimeValidator<>(2 * 60 * 1000)).setResolver((CacheValueResolver<Collection<Class<?>>>) cache -> {
         Collection<Class<?>> list = new ArrayList<>();
@@ -58,13 +26,43 @@ public final class ClassFinderHelper {
                     }
                 }
                 if (skip) continue;
-                list.add(classInfo.load());
+                try {
+                    list.add(classInfo.load());
+                } catch (Throwable ex) {
+                    new FailedToLoadClassException("Failed to load class '" + classInfo.getName() + "'if you want to skip it use @SkipPath", ex).printStackTrace();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return list;
     }).build();
+
+    public static class FailedToLoadClassException extends RuntimeException {
+
+        public FailedToLoadClassException() {
+        }
+
+        public FailedToLoadClassException(String s) {
+            super(s);
+        }
+
+        public FailedToLoadClassException(String s, Throwable throwable) {
+            super(s, throwable);
+        }
+
+        public FailedToLoadClassException(Throwable throwable) {
+            super(throwable);
+        }
+
+        public FailedToLoadClassException(String s, Throwable throwable, boolean b, boolean b1) {
+            super(s, throwable, b, b1);
+        }
+    }
+
+    public static void registerSkippedPath(String path) {
+        nonUserPrefixes.add(path);
+    }
 
     public static Collection<Class<?>> getUserClasses() {
         return userClassesCache.getValue();

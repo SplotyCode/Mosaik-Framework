@@ -10,7 +10,46 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>StartUp</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <compilerArgument>-proc:none</compilerArgument>
+                            <includes>
+                                <include>de/splotycode/davidlib/startup/processor/DefaultSkippedPaths.java</include>
+                                <include>de/splotycode/davidlib/startup/processor/SkipPathProcessor.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>compile-project</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
+        </dependency>
         <dependency>
             <groupId>me.david.davidlib</groupId>
             <artifactId>Core</artifactId>
@@ -24,6 +63,11 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
     </dependencies>
