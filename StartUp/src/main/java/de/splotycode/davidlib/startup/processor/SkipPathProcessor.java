@@ -16,6 +16,7 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @SupportedAnnotationTypes("me.david.davidlib.startup.SkipPath")
@@ -23,6 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class SkipPathProcessor extends AbstractProcessor {
 
     private static AtomicLong id = new AtomicLong(1);
+    private static Set<String> paths = ConcurrentHashMap.newKeySet();
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment environment) {
@@ -37,15 +39,21 @@ public class SkipPathProcessor extends AbstractProcessor {
             SkipPath annotation = mainTypeElement.getAnnotation(SkipPath.class);
             skippedPaths.addAll(Arrays.asList(annotation.value()));
         }
-        try {
-            long id = this.id.incrementAndGet();
-            FileObject descriptionFile = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "disabled_paths_" + id + ".txt");
-            try (Writer writer = descriptionFile.openWriter()) {
-                writer.append("# disabled_paths.txt generated with DavidLib\n");
-                writer.append(StringUtil.join(skippedPaths, obj -> obj, "\n"));
+        for (String path : new ArrayList<>(skippedPaths)) {
+            if (paths.contains(path)) skippedPaths.remove(path);
+            else paths.add(path);
+        }
+        if (!skippedPaths.isEmpty()) {
+            try {
+                long id = this.id.incrementAndGet();
+                FileObject descriptionFile = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "disabled_paths_" + id + ".txt");
+                try (Writer writer = descriptionFile.openWriter()) {
+                    writer.append("# disabled_paths.txt generated with DavidLib\n");
+                    writer.append(StringUtil.join(skippedPaths, obj -> obj, "\n"));
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException("Failed to create disabled_paths.txt", ex);
             }
-        } catch (IOException ex) {
-            throw new RuntimeException("Failed to create disabled_paths.txt", ex);
         }
         return true;
     }
