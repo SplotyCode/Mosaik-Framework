@@ -1,6 +1,6 @@
 package me.david.davidlib.link.transformer;
 
-import me.david.davidlib.utils.reflection.ClassRegister;
+import me.david.davidlib.utils.reflection.classregister.ClassRegister;
 
 public interface ITransformerManager extends ClassRegister<ValueTransformer> {
 
