@@ -5,7 +5,7 @@ import me.david.davidlib.io.ByteArrayInputStream;
 import me.david.webapi.response.content.manipulate.ManipulateableContent;
 import me.david.webapi.response.content.manipulate.ResponseManipulator;
 import me.david.webapi.response.content.manipulate.StringManipulator;
-import me.david.webapi.server.HandleRequestException;
+import me.david.webapi.request.HandleRequestException;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;

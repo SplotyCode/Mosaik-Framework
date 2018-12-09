@@ -9,7 +9,7 @@ import me.david.webapi.config.WebConfig;
 import me.david.webapi.response.content.ContentException;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.response.content.string.StaticStringContent;
-import me.david.webapi.server.HandleRequestException;
+import me.david.webapi.request.HandleRequestException;
 import me.david.webapi.request.Request;
 
 import java.io.IOException;

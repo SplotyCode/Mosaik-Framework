@@ -16,6 +16,7 @@ import io.netty.handler.codec.http.*;
 import lombok.Getter;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.handler.HandlerManager;
+import me.david.webapi.request.Method;
 import me.david.webapi.request.Request;
 import me.david.webapi.response.Response;
 import me.david.webapi.response.error.ErrorFactory;

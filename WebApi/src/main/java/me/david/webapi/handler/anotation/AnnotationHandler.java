@@ -6,7 +6,7 @@ import me.david.webapi.handler.HttpHandler;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.handler.anotation.parameter.ParameterResolveException;
 import me.david.webapi.response.content.ResponseContent;
-import me.david.webapi.server.HandleRequestException;
+import me.david.webapi.request.HandleRequestException;
 import me.david.webapi.request.Request;
 
 import java.lang.annotation.Annotation;

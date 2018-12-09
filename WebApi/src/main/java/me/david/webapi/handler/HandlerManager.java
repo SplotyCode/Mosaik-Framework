@@ -5,7 +5,7 @@ import me.david.davidlib.utils.init.InitialisedOnce;
 import me.david.webapi.handler.anotation.AnnotationHandlerFinder;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.response.Response;
-import me.david.webapi.server.HandleRequestException;
+import me.david.webapi.request.HandleRequestException;
 import me.david.webapi.request.Request;
 
 import java.util.ArrayList;

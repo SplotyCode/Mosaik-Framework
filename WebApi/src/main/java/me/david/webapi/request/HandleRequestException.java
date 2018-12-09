@@ -1,4 +1,4 @@
-package me.david.webapi.server;
+package me.david.webapi.request;
 
 public class HandleRequestException extends RuntimeException {
 

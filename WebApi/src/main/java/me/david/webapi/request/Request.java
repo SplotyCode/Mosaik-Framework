@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import me.david.davidlib.utils.EnumUtil;
 import me.david.webapi.response.Response;
-import me.david.webapi.server.Method;
 
 import java.util.*;
 
