@@ -2,6 +2,7 @@ package me.david.webapi.handler;
 
 import lombok.Getter;
 import me.david.davidlib.utils.init.InitialisedOnce;
+import me.david.webapi.WebApplication;
 import me.david.webapi.handler.anotation.AnnotationHandlerFinder;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.response.Response;
@@ -13,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class HandlerManager extends InitialisedOnce {
 
     private List<HttpHandler> allHandlers = new ArrayList<>();
@@ -35,7 +37,7 @@ public class HandlerManager extends InitialisedOnce {
 
     @Override
     protected void init() {
-        addFinder(StaticHandlerFinder.getInstance());
-        addFinder(new AnnotationHandlerFinder(this));
+        addFinder(new StaticHandlerFinder());
+        addFinder(new AnnotationHandlerFinder(null));
     }
 }

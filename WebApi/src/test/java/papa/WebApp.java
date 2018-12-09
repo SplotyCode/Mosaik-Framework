@@ -5,7 +5,7 @@ import me.david.davidlib.annotation.Disabled;
 import me.david.davidlib.application.Application;
 import me.david.davidlib.startup.BootContext;
 import me.david.webapi.WebApplicationType;
-import me.david.webapi.server.NettyWebServer;
+import me.david.webapi.server.netty.NettyWebServer;
 
 @Disabled
 public class WebApp extends Application implements WebApplicationType {

@@ -11,6 +11,7 @@ import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.request.RequestHeaders;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.request.Request;
+import me.david.webapi.server.AbstractWebServer;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -112,7 +113,7 @@ public class AnnotationHandlerData {
         private boolean returnContext;
         private String displayName;
 
-        public SupAnnotationHandlerData(Annotation[] annotations, Method method, HandlerManager handler) {
+        public SupAnnotationHandlerData(Annotation[] annotations, Method method, AbstractWebServer server) {
             super(annotations);
             try {
                 displayName = method.getDeclaringClass().getSimpleName() + "#" + method.getName();
@@ -138,7 +139,7 @@ public class AnnotationHandlerData {
                         }
                     }
                     if (found) continue;
-                    for (ParameterResolver parameterResolver : handler.getGlobalParameterResolver()) {
+                    for (ParameterResolver parameterResolver : server.getParameterResolvers()) {
                         if (parameterResolver.transformable(parameter)) {
                             parameters.add(new Pair<>(parameterResolver, parameter));
                             found = true;

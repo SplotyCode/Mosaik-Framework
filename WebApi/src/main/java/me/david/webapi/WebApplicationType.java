@@ -1,48 +1,43 @@
 package me.david.webapi;
 
-import me.david.davidlib.annotation.Disabled;
 import me.david.davidlib.application.ApplicationType;
 import me.david.davidlib.datafactory.DataKey;
 import me.david.davidlib.startup.BootContext;
-import me.david.davidlib.utils.reflection.ClassRegister;
-import me.david.webapi.handler.HandlerFinder;
-import me.david.webapi.handler.HandlerManager;
+import me.david.davidlib.utils.reflection.classregister.IListClassRegister;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
-import me.david.webapi.response.error.ErrorFactory;
+import me.david.webapi.response.error.ErrorHandler;
 import me.david.webapi.server.WebServer;
 
-public interface WebApplicationType extends ApplicationType, ClassRegister<ParameterResolver> {
+public interface WebApplicationType extends ApplicationType {
 
-    DataKey<WebServer> webServer = new DataKey<>("web.webserver");
-    DataKey<HandlerManager> handlerManager = new DataKey<>("web.handlermanager");
+    DataKey<WebServer> WEB_SERVER = new DataKey<>("web.webserver");
+    DataKey<IListClassRegister<ParameterResolver>> PARAMETER_RESOLVER_REGISTER = new DataKey<>("web.param_resolve_register");
+    DataKey<ErrorHandler> ERROR_HANDLER = new DataKey<>("web.error_handler");
+
 
     default void initType(BootContext context, WebApplicationType dummy) {
-        getDataFactory().putData(handlerManager, new HandlerManager());
         getLocalShutdownManager().addShutdownTask(() -> {
-            WebServer server = getData(webServer);
+            WebServer server = getData(WEB_SERVER);
             if (server != null && server.isRunning())
                 server.shutdown();
         });
-        registerPackage("me.david.webapi.handler.anotation.parameter.defaultresolver");
-    }
-
-    default void registerFinder(HandlerFinder finder) {
-        getData(handlerManager).addFinder(finder);
+        getParameterResolvRegister().registerPackage("me.david.webapi.handler.anotation.parameter.defaultresolver");
     }
 
     default WebServer getWebServer() {
-        return getData(webServer);
+        return getData(WEB_SERVER);
     }
 
-    default HandlerManager getWebHandler() {
-        return getData(handlerManager);
+    default ErrorHandler getErrorHandler() {
+        return getData(ERROR_HANDLER);
+    }
+
+
+    default IListClassRegister<ParameterResolver> getParameterResolvRegister() {
+        return getData(PARAMETER_RESOLVER_REGISTER);
     }
 
     default void listen(int port) {
-        HandlerManager handler = getWebHandler();
-        if (!handler.isInitialised())
-            handler.initalize();
-
         WebServer server = getWebServer();
         if (server.isRunning())
             server.shutdown();
@@ -50,32 +45,11 @@ public interface WebApplicationType extends ApplicationType, ClassRegister<Param
         server.listen(port);
     }
 
-    default void installErrorFactory(ErrorFactory factory) {
-        getWebServer().installErrorFactory(factory);
-    }
-
-    default void uninstallErrorFactory(ErrorFactory factory) {
-        getWebServer().uninstallErrorFactory(factory);
-    }
-
     default void setWebServer(WebServer server) {
         WebServer currentServer = getWebServer();
         if (currentServer != null) currentServer.shutdown();
 
-        getDataFactory().putData(webServer, server);
+        getDataFactory().putData(WEB_SERVER, server);
     }
 
-    @Override
-    default void register(ParameterResolver parameterResolver) {
-        HandlerManager handler = getWebHandler();
-        if (!handler.getGlobalParameterResolver().contains(parameterResolver) && !parameterResolver.getClass().isAnnotationPresent(Disabled.class)) {
-            handler.getGlobalParameterResolver().add(parameterResolver);
-            System.out.println("Registered global Tranformer: " + parameterResolver.getClass().getSimpleName());
-        }
-    }
-
-    @Override
-    default Class<ParameterResolver> getObjectClass() {
-        return ParameterResolver.class;
-    }
 }

@@ -7,6 +7,7 @@ import me.david.webapi.handler.HandlerFinder;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.HttpHandler;
 import me.david.webapi.handler.anotation.check.*;
+import me.david.webapi.server.AbstractWebServer;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -25,10 +26,10 @@ public class AnnotationHandlerFinder implements HandlerFinder {
             NeedPostParameter.class, PostMustBe.class,
             Priority.class
     };
-    private HandlerManager handlerManager;
+    private AbstractWebServer server;
 
-    public AnnotationHandlerFinder(HandlerManager handlerManager) {
-        this.handlerManager = handlerManager;
+    public AnnotationHandlerFinder(AbstractWebServer server) {
+        this.server = server;
     }
 
     @Override
@@ -65,7 +66,7 @@ public class AnnotationHandlerFinder implements HandlerFinder {
     private void add(Class<?> clazz, List<HttpHandler> handlers) throws IllegalAccessException, InstantiationException {
         System.out.println("Added " + clazz.getSimpleName());
         Object obj = clazz.newInstance();
-        AnnotationHandler handler = new AnnotationHandler(obj, handlerManager);
+        AnnotationHandler handler = new AnnotationHandler(obj, server);
         handlers.add(handler);
     }
 

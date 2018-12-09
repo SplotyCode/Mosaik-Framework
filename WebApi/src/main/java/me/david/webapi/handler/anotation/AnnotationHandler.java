@@ -8,6 +8,7 @@ import me.david.webapi.handler.anotation.parameter.ParameterResolveException;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.request.HandleRequestException;
 import me.david.webapi.request.Request;
+import me.david.webapi.server.AbstractWebServer;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -24,14 +25,14 @@ public class AnnotationHandler implements HttpHandler {
     private AnnotationHandlerData global;
     private List<AnnotationHandlerData.SupAnnotationHandlerData> subs = new ArrayList<>();
 
-    public AnnotationHandler(Object handlerObj, HandlerManager manager) {
+    public AnnotationHandler(Object handlerObj, AbstractWebServer server) {
         this.handlerObj = handlerObj;
         global = new AnnotationHandlerData(handlerObj.getClass().getAnnotations());
 
         for (Method method : handlerObj.getClass().getMethods()) {
             for (Class<Annotation> annotation : AnnotationHandlerFinder.getHandlerAnotation()) {
                 if (method.isAnnotationPresent(annotation)) {
-                    AnnotationHandlerData.SupAnnotationHandlerData data = new AnnotationHandlerData.SupAnnotationHandlerData(method.getDeclaredAnnotations(), method, manager);
+                    AnnotationHandlerData.SupAnnotationHandlerData data = new AnnotationHandlerData.SupAnnotationHandlerData(method.getDeclaredAnnotations(), method, server);
                     subs.add(data);
                     break;
                 }

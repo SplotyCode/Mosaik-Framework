@@ -1,31 +1,22 @@
 package me.david.webapi.handler;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import me.david.davidlib.utils.reflection.classregister.ListClassRegister;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class StaticHandlerFinder implements HandlerFinder {
+public class StaticHandlerFinder extends ListClassRegister<HttpHandler> implements HandlerFinder {
 
-    @Getter private static StaticHandlerFinder instance = new StaticHandlerFinder();
+    private Set<HttpHandler> handlers = new HashSet<>();
 
-    private List<HttpHandler> handlers = new ArrayList<>();
+    public StaticHandlerFinder() {
+        setCollection(handlers);
+    }
 
     @Override
     public Collection<HttpHandler> search() {
         return handlers;
-    }
-
-    public void register(HttpHandler handler) {
-        if (!handlers.contains(handler))
-            handlers.add(handler);
-    }
-
-    public void unregister(HttpHandler handler) {
-        if (handlers.contains(handler))
-            handlers.remove(handler);
     }
 
 }
