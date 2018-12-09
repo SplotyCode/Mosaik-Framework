@@ -1,5 +1,6 @@
 package me.david.webapi;
 
+import me.david.davidlib.annotation.Disabled;
 import me.david.davidlib.application.ApplicationType;
 import me.david.davidlib.datafactory.DataKey;
 import me.david.davidlib.startup.BootContext;
@@ -64,4 +65,17 @@ public interface WebApplicationType extends ApplicationType, ClassRegister<Param
         getDataFactory().putData(webServer, server);
     }
 
+    @Override
+    default void register(ParameterResolver parameterResolver) {
+        HandlerManager handler = getWebHandler();
+        if (!handler.getGlobalParameterResolver().contains(parameterResolver) && !parameterResolver.getClass().isAnnotationPresent(Disabled.class)) {
+            handler.getGlobalParameterResolver().add(parameterResolver);
+            System.out.println("Registered global Tranformer: " + parameterResolver.getClass().getSimpleName());
+        }
+    }
+
+    @Override
+    default Class<ParameterResolver> getObjectClass() {
+        return ParameterResolver.class;
+    }
 }
