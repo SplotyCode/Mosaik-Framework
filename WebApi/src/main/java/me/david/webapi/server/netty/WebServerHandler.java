@@ -2,15 +2,14 @@ package me.david.webapi.server.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.*;
 import lombok.AllArgsConstructor;
 import me.david.webapi.request.Method;
 import me.david.webapi.request.Request;
 import me.david.webapi.response.Response;
+import me.david.webapi.server.AbstractWebServer;
 
 import java.util.Map;
 
@@ -26,9 +25,8 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest nettyRequest = (FullHttpRequest) msg;
-            if (nettyRequest.decoderResult() != DecoderResult.SUCCESS) {
-                ctx.close();
-                return;
+            if (!nettyRequest.decoderResult().isSuccess()) {
+                throw new AbstractWebServer.BadRequestException("Netty Decoder Failed");
             }
             QueryStringDecoder uri = new QueryStringDecoder(nettyRequest.uri());
             Request request = new Request(
@@ -56,7 +54,10 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
             for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
                 nettyResponse.headers().set(pair.getKey(), pair.getValue());
             }
-            ctx.writeAndFlush(nettyResponse);
+            ChannelFuture future = ctx.writeAndFlush(nettyResponse);
+            if (!request.isKeepAlive()) {
+                future.addListener(ChannelFutureListener.CLOSE);
+            }
         } else {
             super.channelRead(ctx, msg);
         }
@@ -81,6 +82,6 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
         for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
             nettyResponse.headers().set(pair.getKey(), pair.getValue());
         }
-        ctx.writeAndFlush(nettyResponse);
+        ctx.writeAndFlush(nettyResponse).addListener(ChannelFutureListener.CLOSE);
     }
 }
