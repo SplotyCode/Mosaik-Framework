@@ -23,6 +23,7 @@ public class Response {
 
     private static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
     private static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
+    private static final Calendar CALENDAR = new GregorianCalendar();
 
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
 
@@ -41,7 +42,7 @@ public class Response {
         setContentType(ContentType.TEXT_HTML);
 
         /* Default Headers */
-        setHeader(ResponseHeaders.DATE, dateFormatter.format(new GregorianCalendar().getTime()));
+        setHeader(ResponseHeaders.DATE, dateFormatter.format(CALENDAR.getTime()));
         setHeader("x-xss-protection", "1; mode=block");
         setHeader("X-Content-Type-Options", "nosniff");
         setHeader("X-Powered-By", "DavidLib WebApi");
