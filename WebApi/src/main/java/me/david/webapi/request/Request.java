@@ -18,6 +18,7 @@ public class Request {
     private HashMap<String, String> headers = new HashMap<>();
     @Setter private Map<String, ? extends Collection<String>> get;
     @Setter private Map<String, ? extends Collection<String>> post;
+    @Getter private Map<String, String> cookies;
     private boolean keepAlive;
     private RequestContent content;
     private byte[] body;
