@@ -5,6 +5,8 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import lombok.AllArgsConstructor;
 import me.david.webapi.request.Method;
 import me.david.webapi.request.Request;
@@ -12,6 +14,7 @@ import me.david.webapi.response.Response;
 import me.david.webapi.server.AbstractWebServer;
 
 import java.util.Map;
+import java.util.Set;
 
 import static me.david.webapi.server.netty.NettyUtils.*;
 
@@ -36,6 +39,10 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
                     HttpUtil.isKeepAlive(nettyRequest),
                     nettyRequest.content().array()
             );
+
+            Set<Cookie> cookies = ServerCookieDecoder.LAX.decode(nettyRequest.headers().get("Cookie"));
+            cookies.forEach(cookie -> request.getCookies().put(cookie.name(), cookie.value()));
+
             request.setGet(uri.parameters());
 
             long start = System.currentTimeMillis();
