@@ -8,6 +8,7 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import lombok.AllArgsConstructor;
+import me.david.webapi.request.AbstractRequest;
 import me.david.webapi.request.Method;
 import me.david.webapi.request.Request;
 import me.david.webapi.response.Response;
@@ -32,7 +33,7 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
                 throw new AbstractWebServer.BadRequestException("Netty Decoder Failed");
             }
             QueryStringDecoder uri = new QueryStringDecoder(nettyRequest.uri());
-            Request request = new Request(
+            Request request = new AbstractRequest(
                     uri.path(),
                     transformIpAddress(ctx.channel().remoteAddress().toString()),
                     Method.create(nettyRequest.method().name()),

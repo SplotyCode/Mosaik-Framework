@@ -1,7 +1,9 @@
-package me.david.webapi.request;
+package me.david.webapi.request.body;
 
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import me.david.webapi.request.Request;
+import me.david.webapi.request.RequestHeaders;
 
 public class PostRequestContent implements RequestContent {
 

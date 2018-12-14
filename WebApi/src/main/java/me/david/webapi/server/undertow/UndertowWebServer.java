@@ -4,6 +4,7 @@ import io.undertow.Undertow;
 import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.util.HttpString;
 import me.david.webapi.WebApplicationType;
+import me.david.webapi.request.AbstractRequest;
 import me.david.webapi.request.Method;
 import me.david.webapi.request.Request;
 import me.david.webapi.response.Response;
@@ -31,7 +32,7 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
                 .setHandler(new BlockingHandler(exchange -> {
                     try {
                         exchange.startBlocking();
-                        Request request = new Request(
+                        Request request = new AbstractRequest(
                                 exchange.getRequestPath(),
                                 exchange.getDestinationAddress().getHostString(),
                                 Method.create(exchange.getRequestMethod().toString()),

@@ -1,4 +1,4 @@
-package me.david.webapi.request;
+package me.david.webapi.request.body;
 
 public interface RequestContent {
 

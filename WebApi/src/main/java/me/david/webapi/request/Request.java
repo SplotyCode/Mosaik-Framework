@@ -1,68 +1,38 @@
 package me.david.webapi.request;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import me.david.davidlib.utils.EnumUtil;
 import me.david.webapi.response.Response;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
-@Getter
-@EqualsAndHashCode
-public class Request {
+public interface Request {
 
-    private String path;
-    private String ipAddress;
-    private Method method;
-    private HashMap<String, String> headers = new HashMap<>();
-    @Setter private Map<String, ? extends Collection<String>> get;
-    @Setter private Map<String, ? extends Collection<String>> post;
-    @Getter private Map<String, String> cookies = new HashMap<>();
-    private boolean keepAlive;
-    private RequestContent content;
-    private byte[] body;
+    String getPath();
+    Method getMethod();
 
-    private Response response = new Response(null);
+    Response getResponse();
 
-    public Request(String path, String ipAddress, Method method, boolean keepAlive, byte[] body) {
-        this.path = path;
-        this.ipAddress = ipAddress;
-        this.method = method;
-        this.keepAlive = keepAlive;
-        this.body = body;
-    }
+    byte[] getBody();
 
-    public String getHeader(String name) {
-        return headers.get(name);
-    }
+    boolean isKeepAlive();
 
-    public String getHeader(RequestHeaders header) {
-        return headers.get(EnumUtil.toDisplayName(header));
-    }
+    String getHeader(String name);
+    String getHeader(RequestHeaders header);
 
-    public Collection<String> getGetParameter(String name) {
-        return get.get(name);
-    }
+    Collection<String> getGetParameter(String name);
+    Collection<String> getPostParameter(String name);
 
-    public Collection<String> getPostParameter(String name) {
-        return post.get(name);
-    }
+    String getFirstGetParameter(String name);
+    String getFirstPostParameter(String name);
 
-    public String getFirstGetParameter(String name) {
-        return getGetParameter(name).iterator().next();
-    }
+    boolean isGet();
+    boolean isPost();
 
-    public String getFirstPostParameter(String name) {
-        return getPostParameter(name).iterator().next();
-    }
+    Map<String, ? extends Collection<String>> getGet();
+    Map<String, ? extends Collection<String>> getPost();
+    void setGet(Map<String, ? extends Collection<String>> get);
+    void setPost(Map<String, ? extends Collection<String>> post);
 
-    public boolean isGet() {
-        return method.isStandard() && method.getStandardMethod() == Method.StandardMethod.GET;
-    }
-
-    public boolean isPost() {
-        return method.isStandard() && method.getStandardMethod() == Method.StandardMethod.POST;
-    }
+    Map<String, String> getCookies();
 
 }

@@ -1,4 +1,6 @@
-package me.david.webapi.request;
+package me.david.webapi.request.body;
+
+import me.david.webapi.request.Request;
 
 public interface RequestContentHandler {
 
