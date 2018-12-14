@@ -93,6 +93,29 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     public void listen(int port) {
         if (!isInitialised()) initalize();
         address = new InetSocketAddress(port);
+        if (isRunning()) throw new ServerAlreadyRunningException();
+    }
+
+    public static class ServerAlreadyRunningException extends RuntimeException {
+
+        public ServerAlreadyRunningException() {
+        }
+
+        public ServerAlreadyRunningException(String s) {
+            super(s);
+        }
+
+        public ServerAlreadyRunningException(String s, Throwable throwable) {
+            super(s, throwable);
+        }
+
+        public ServerAlreadyRunningException(Throwable throwable) {
+            super(throwable);
+        }
+
+        public ServerAlreadyRunningException(String s, Throwable throwable, boolean b, boolean b1) {
+            super(s, throwable, b, b1);
+        }
     }
 
     public static class BadRequestException extends RuntimeException {
