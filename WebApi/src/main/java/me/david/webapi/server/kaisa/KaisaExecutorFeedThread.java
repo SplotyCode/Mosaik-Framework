@@ -30,6 +30,6 @@ public class KaisaExecutorFeedThread extends Thread {
     }
 
     public void updateQueune() {
-        notify();
+        notifyAll();
     }
 }
