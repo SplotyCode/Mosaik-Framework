@@ -35,7 +35,7 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
             Request request = new Request(
                     uri.path(),
                     transformIpAddress(ctx.channel().remoteAddress().toString()),
-                    new Method(nettyRequest.method().name()),
+                    Method.create(nettyRequest.method().name()),
                     HttpUtil.isKeepAlive(nettyRequest),
                     nettyRequest.content().array()
             );

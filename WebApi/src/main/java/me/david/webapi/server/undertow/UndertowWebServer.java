@@ -34,7 +34,7 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
                         Request request = new Request(
                                 exchange.getRequestPath(),
                                 exchange.getDestinationAddress().getHostString(),
-                                new Method(exchange.getRequestMethod().toString()),
+                                Method.create(exchange.getRequestMethod().toString()),
                                 isKeepAlive(exchange),
                                 IOUtils.toByteArray(exchange.getInputStream())
                         );
