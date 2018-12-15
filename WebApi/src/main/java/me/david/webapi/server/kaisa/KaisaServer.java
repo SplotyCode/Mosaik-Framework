@@ -36,6 +36,7 @@ public class KaisaServer extends AbstractWebServer {
 
         try {
             socket = ServerSocketChannel.open();
+            socket.configureBlocking(false);
             socket.bind(address);
             acceptThread.start();
         } catch (IOException e) {

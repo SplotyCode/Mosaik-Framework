@@ -15,4 +15,7 @@ public final class KaisaConfig {
     public static final DataKey<Supplier<ExecutorService>> CONNECTION_EXECUTOR = new DataKey<>("connection_executor.executor");
     public static final DataKey<Integer> CONNECTION_EXECUTOR_PARALLEL = new DataKey<>("connection_executor.parallel");
 
+    public static final DataKey<Supplier<ExecutorService>> DOWNLOAD_EXECUTOR = new DataKey<>("download.executor");
+    public static final DataKey<Integer> DOWNLOAD_EXECUTOR_PARALLEL = new DataKey<>("download.parallel");
+
 }
