@@ -4,28 +4,42 @@ import me.david.davidlib.application.ApplicationType;
 import me.david.davidlib.datafactory.DataKey;
 import me.david.davidlib.startup.BootContext;
 import me.david.davidlib.utils.reflection.classregister.IListClassRegister;
+import me.david.davidlib.utils.reflection.classregister.ListClassRegister;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
+import me.david.webapi.request.body.RequestContentHandler;
 import me.david.webapi.response.error.ErrorHandler;
 import me.david.webapi.server.WebServer;
+
+import java.util.ArrayList;
 
 public interface WebApplicationType extends ApplicationType {
 
     DataKey<WebServer> WEB_SERVER = new DataKey<>("web.webserver");
     DataKey<IListClassRegister<ParameterResolver>> PARAMETER_RESOLVER_REGISTER = new DataKey<>("web.param_resolve_register");
     DataKey<ErrorHandler> ERROR_HANDLER = new DataKey<>("web.error_handler");
+    DataKey<IListClassRegister<RequestContentHandler>> CONTENT_HADLER_REGISTER = new DataKey<>("web.content_handler_register");
 
 
     default void initType(BootContext context, WebApplicationType dummy) {
         getLocalShutdownManager().addShutdownTask(() -> {
-            WebServer server = getData(WEB_SERVER);
+            WebServer server = getWebServer();
             if (server != null && server.isRunning())
                 server.shutdown();
         });
+        getDataFactory().putData(PARAMETER_RESOLVER_REGISTER, new ListClassRegister<>(new ArrayList<>()));
+        getDataFactory().putData(CONTENT_HADLER_REGISTER, new ListClassRegister<>(new ArrayList<>()));
+        getDataFactory().putData(ERROR_HANDLER, new ErrorHandler());
+
+        getContentHandlerRegister().registerPackage("me.david.webapi.request.body");
         getParameterResolvRegister().registerPackage("me.david.webapi.handler.anotation.parameter.defaultresolver");
     }
 
     default WebServer getWebServer() {
         return getData(WEB_SERVER);
+    }
+
+    default IListClassRegister<RequestContentHandler> getContentHandlerRegister() {
+        return getData(CONTENT_HADLER_REGISTER);
     }
 
     default ErrorHandler getErrorHandler() {

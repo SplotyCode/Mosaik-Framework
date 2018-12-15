@@ -1,8 +1,11 @@
 package me.david.webapi.server;
 
+import me.david.webapi.WebApplicationType;
 import me.david.webapi.response.error.ErrorFactory;
 
 public interface WebServer {
+
+    WebApplicationType getApplication();
 
     void listen(int port);
 

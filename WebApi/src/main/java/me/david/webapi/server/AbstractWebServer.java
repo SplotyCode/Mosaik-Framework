@@ -12,6 +12,7 @@ import me.david.webapi.handler.StaticHandlerFinder;
 import me.david.webapi.handler.anotation.AnnotationHandlerFinder;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.request.Request;
+import me.david.webapi.request.body.RequestContentHandler;
 import me.david.webapi.response.Response;
 import me.david.webapi.response.error.ErrorFactory;
 import me.david.webapi.response.error.ErrorHandler;
@@ -38,8 +39,16 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
 
     @Getter private List<HttpHandler> allHandlers = new ArrayList<>();
     @Getter private StaticHandlerFinder staticHandlerFinder;
+
     private List<ParameterResolver> parameterResolvers = new ArrayList<>();
     @Getter private ListClassRegister<ParameterResolver> parameterResolverRegister = new ListClassRegister<>(parameterResolvers);
+
+    private List<RequestContentHandler> contentHandlers = new ArrayList<>();
+    @Getter private ListClassRegister<RequestContentHandler> contentHandlerRegister = new ListClassRegister<>(contentHandlers);
+
+    public List<RequestContentHandler> getContentHandlers() {
+        return contentHandlerRegister.combind(application.getContentHandlerRegister());
+    }
 
     public List<ParameterResolver> getParameterResolvers() {
         return parameterResolverRegister.combind(application.getParameterResolvRegister());

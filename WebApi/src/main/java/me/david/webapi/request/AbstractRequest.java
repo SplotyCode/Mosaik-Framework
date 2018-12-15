@@ -3,15 +3,43 @@ package me.david.webapi.request;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.david.davidlib.utils.EnumUtil;
+import me.david.webapi.request.body.EmptyRequestContent;
+import me.david.webapi.request.body.RequestContent;
+import me.david.webapi.request.body.RequestContentHandler;
 import me.david.webapi.response.Response;
+import me.david.webapi.server.AbstractWebServer;
+import me.david.webapi.server.WebServer;
 
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @EqualsAndHashCode
 public abstract class AbstractRequest implements Request {
 
     protected Response response = new Response(null);
+    protected RequestContent content = null;
+    private WebServer webServer;
+
+    public AbstractRequest(WebServer webServer) {
+        this.webServer = webServer;
+    }
+
+    @Override
+    public RequestContent getContent() {
+        if (content == null) {
+            Collection<RequestContentHandler> handlers = webServer instanceof AbstractWebServer ?
+                    ((AbstractWebServer) webServer).getContentHandlers() :
+                    webServer.getApplication().getContentHandlerRegister().getList();
+
+            RequestContentHandler contentHandler = handlers.stream().
+                    filter(handler -> handler.valid(this)).findFirst().
+                    orElse(null);
+
+            content = contentHandler == null ? new EmptyRequestContent() : contentHandler.create(this);
+        }
+        return content;
+    }
 
     public String getHeader(String name) {
         return getHeaders().get(name);
