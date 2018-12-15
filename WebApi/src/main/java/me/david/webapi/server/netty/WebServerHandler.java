@@ -32,19 +32,7 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
             if (!nettyRequest.decoderResult().isSuccess()) {
                 throw new AbstractWebServer.BadRequestException("Netty Decoder Failed");
             }
-            QueryStringDecoder uri = new QueryStringDecoder(nettyRequest.uri());
-            Request request = new AbstractRequest(
-                    uri.path(),
-                    transformIpAddress(ctx.channel().remoteAddress().toString()),
-                    Method.create(nettyRequest.method().name()),
-                    HttpUtil.isKeepAlive(nettyRequest),
-                    nettyRequest.content().array()
-            );
-
-            Set<Cookie> cookies = ServerCookieDecoder.LAX.decode(nettyRequest.headers().get("Cookie"));
-            cookies.forEach(cookie -> request.getCookies().put(cookie.name(), cookie.value()));
-
-            request.setGet(uri.parameters());
+            Request request = new NettyRequest(nettyRequest, ctx);
 
             long start = System.currentTimeMillis();
             Response response = server.handleRequest(request);

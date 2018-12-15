@@ -3,6 +3,8 @@ package me.david.webapi.request;
 import me.david.webapi.response.Response;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface Request {
@@ -12,12 +14,15 @@ public interface Request {
 
     Response getResponse();
 
+    String getIpAddress();
+
     byte[] getBody();
 
     boolean isKeepAlive();
 
     String getHeader(String name);
     String getHeader(RequestHeaders header);
+    HashMap<String, String> getHeaders();
 
     Collection<String> getGetParameter(String name);
     Collection<String> getPostParameter(String name);
@@ -30,9 +35,8 @@ public interface Request {
 
     Map<String, ? extends Collection<String>> getGet();
     Map<String, ? extends Collection<String>> getPost();
-    void setGet(Map<String, ? extends Collection<String>> get);
-    void setPost(Map<String, ? extends Collection<String>> post);
 
     Map<String, String> getCookies();
 
+    void setPost(Map<String, ? extends Collection<String>> parameters);
 }
