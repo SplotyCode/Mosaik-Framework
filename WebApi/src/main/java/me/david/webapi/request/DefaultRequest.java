@@ -4,8 +4,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import me.david.davidlib.utils.EnumUtil;
+import me.david.webapi.request.body.RequestBodyHelper;
 import me.david.webapi.request.body.RequestContent;
 import me.david.webapi.response.Response;
+import me.david.webapi.server.WebServer;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,15 +27,24 @@ public class DefaultRequest implements Request {
     private boolean keepAlive;
     private RequestContent content;
     private byte[] body;
+    private WebServer webServer;
 
     private Response response = new Response(null);
 
-    public DefaultRequest(String path, String ipAddress, Method method, boolean keepAlive, byte[] body) {
+    public DefaultRequest(WebServer webServer, String path, String ipAddress, Method method, boolean keepAlive, byte[] body) {
         this.path = path;
+        this.webServer = webServer;
         this.ipAddress = ipAddress;
         this.method = method;
         this.keepAlive = keepAlive;
         this.body = body;
+    }
+
+    public RequestContent getContent() {
+        if (content == null) {
+            content = RequestBodyHelper.getRequestContent(this, webServer);
+        }
+        return content;
     }
 
     public String getHeader(String name) {

@@ -35,6 +35,7 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
                     ex.getRequestReceiver().receiveFullBytes((exchange, bytes) -> {
                         try {
                             DefaultRequest request = new DefaultRequest(
+                                    this,
                                     exchange.getRequestPath(),
                                     exchange.getDestinationAddress().getHostString(),
                                     Method.create(exchange.getRequestMethod().toString()),

@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.david.davidlib.utils.EnumUtil;
 import me.david.webapi.request.body.EmptyRequestContent;
+import me.david.webapi.request.body.RequestBodyHelper;
 import me.david.webapi.request.body.RequestContent;
 import me.david.webapi.request.body.RequestContentHandler;
 import me.david.webapi.response.Response;
@@ -28,15 +29,7 @@ public abstract class AbstractRequest implements Request {
     @Override
     public RequestContent getContent() {
         if (content == null) {
-            Collection<RequestContentHandler> handlers = webServer instanceof AbstractWebServer ?
-                    ((AbstractWebServer) webServer).getContentHandlers() :
-                    webServer.getApplication().getContentHandlerRegister().getList();
-
-            RequestContentHandler contentHandler = handlers.stream().
-                    filter(handler -> handler.valid(this)).findFirst().
-                    orElse(null);
-
-            content = contentHandler == null ? new EmptyRequestContent() : contentHandler.create(this);
+            content = RequestBodyHelper.getRequestContent(this, webServer);
         }
         return content;
     }

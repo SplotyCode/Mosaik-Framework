@@ -9,6 +9,7 @@ import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import me.david.davidlib.helper.AlmostBoolean;
 import me.david.webapi.request.AbstractRequest;
 import me.david.webapi.request.Method;
+import me.david.webapi.server.WebServer;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,7 +32,8 @@ public class NettyRequest extends AbstractRequest {
     private HashMap<String, String> headers = null;
     private Map<String, ? extends Collection<String>> post = null;
 
-    public NettyRequest(FullHttpRequest request, ChannelHandlerContext ctx) {
+    public NettyRequest(WebServer server, FullHttpRequest request, ChannelHandlerContext ctx) {
+        super(server);
         this.request = request;
         this.ctx = ctx;
     }

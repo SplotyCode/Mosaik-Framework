@@ -8,7 +8,9 @@ import me.david.davidlib.utils.EnumUtil;
 import me.david.webapi.request.Method;
 import me.david.webapi.request.Request;
 import me.david.webapi.request.RequestHeaders;
+import me.david.webapi.request.body.RequestContent;
 import me.david.webapi.response.Response;
+import me.david.webapi.server.WebServer;
 import me.david.webapi.server.netty.NettyUtils;
 
 import java.io.IOException;
@@ -18,8 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class KaisaRequest implements Request {
-
-    private KaisaRequestProvider provider;
 
     private String path = null, ip = null;
     private Method method = null;
@@ -32,10 +32,15 @@ public class KaisaRequest implements Request {
     @Getter @Setter private Map<String, ? extends Collection<String>> post;
     private Map<String, String> cookies;
 
+    private KaisaRequestProvider provider = new KaisaRequestProvider(connection);
+
+    @Getter private WebServer webServer;
+
     private byte[] body = null;
 
-    public KaisaRequest(SocketChannel connection) {
+    public KaisaRequest(WebServer webServer, SocketChannel connection) {
         this.connection = connection;
+        this.webServer = webServer;
     }
 
     @Override
@@ -77,6 +82,11 @@ public class KaisaRequest implements Request {
             body = provider.resolveBody();
         }
         return body;
+    }
+
+    @Override
+    public RequestContent getContent() {
+        return null;
     }
 
     //TODO

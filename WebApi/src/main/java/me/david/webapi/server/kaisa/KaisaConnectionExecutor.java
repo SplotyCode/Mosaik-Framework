@@ -51,7 +51,7 @@ public class KaisaConnectionExecutor {
         executor.execute(() -> {
             try {
                 connection.configureBlocking(false);
-                KaisaRequest request = new KaisaRequest(connection);
+                KaisaRequest request = new KaisaRequest(server, connection);
                 Response response = server.handleRequest(request);
                 response.finish(request, server.getApplication());
                 //TODO write headers and response

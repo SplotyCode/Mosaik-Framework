@@ -32,7 +32,7 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
             if (!nettyRequest.decoderResult().isSuccess()) {
                 throw new AbstractWebServer.BadRequestException("Netty Decoder Failed");
             }
-            Request request = new NettyRequest(nettyRequest, ctx);
+            Request request = new NettyRequest(server, nettyRequest, ctx);
 
             long start = System.currentTimeMillis();
             Response response = server.handleRequest(request);
