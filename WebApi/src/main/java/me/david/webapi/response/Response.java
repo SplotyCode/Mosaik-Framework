@@ -27,10 +27,10 @@ public class Response {
     private static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
     private static final Calendar CALENDAR = new GregorianCalendar();
 
-    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
 
     static {
-        dateFormatter.setTimeZone(TimeZone.getTimeZone(HTTP_DATE_GMT_TIMEZONE));
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(HTTP_DATE_GMT_TIMEZONE));
     }
 
     @Getter private HttpVersion httpVersion = HttpVersion.VERSION_1_1;
@@ -45,7 +45,7 @@ public class Response {
         setContentType(ContentType.TEXT_HTML);
 
         /* Default Headers */
-        setHeader(ResponseHeaders.DATE, dateFormatter.format(CALENDAR.getTime()));
+        setHeader(ResponseHeaders.DATE, DATE_FORMAT.format(CALENDAR.getTime()));
         setHeader("x-xss-protection", "1; mode=block");
         setHeader("X-Content-Type-Options", "nosniff");
         setHeader("X-Powered-By", "DavidLib WebApi");

@@ -1,13 +1,16 @@
 package me.david.webapi.server.undertow;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.BlockingHandler;
+import io.undertow.server.handlers.Cookie;
 import io.undertow.util.HttpString;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.request.AbstractRequest;
 import me.david.webapi.request.DefaultRequest;
 import me.david.webapi.request.Method;
 import me.david.webapi.request.Request;
+import me.david.webapi.response.CookieKey;
 import me.david.webapi.response.Response;
 import me.david.webapi.server.AbstractWebServer;
 import me.david.webapi.server.WebServer;
@@ -43,7 +46,9 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
                                     bytes
                             );
                             request.setGet(exchange.getPathParameters());
-
+                            for (Map.Entry<String, Cookie> cookie : exchange.getRequestCookies().entrySet()) {
+                                request.getCookies().put(cookie.getKey(), cookie.getValue().getValue());
+                            }
 
                             long start = System.currentTimeMillis();
                             Response response = handleRequest(request);
@@ -54,6 +59,9 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
                             for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
                                 exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey()), pair.getValue());
                             }
+                            for (Map.Entry<CookieKey, String> cookie : response.getSetCookies().entrySet()) {
+                                exchange.getResponseHeaders().add(HttpString.tryFromString("set-cookie"), cookie.getKey().toHeaderString(cookie.getValue()));
+                            }
                             send(exchange, response.getRawContent());
                         } catch (Throwable cause) {
                             Response response = handleError(cause);
@@ -61,6 +69,9 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
                             exchange.setStatusCode(response.getResponseCode());
                             for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
                                 exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey()), pair.getValue());
+                            }
+                            for (Map.Entry<CookieKey, String> cookie : response.getSetCookies().entrySet()) {
+                                exchange.getResponseHeaders().add(HttpString.tryFromString("set-cookie"), cookie.getKey().toHeaderString(cookie.getValue()));
                             }
                             try {
                                 send(exchange, response.getRawContent());

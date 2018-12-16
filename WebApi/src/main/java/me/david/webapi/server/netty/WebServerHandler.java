@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import me.david.webapi.request.AbstractRequest;
 import me.david.webapi.request.Method;
 import me.david.webapi.request.Request;
+import me.david.webapi.response.CookieKey;
 import me.david.webapi.response.Response;
 import me.david.webapi.server.AbstractWebServer;
 
@@ -50,6 +51,9 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
             for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
                 nettyResponse.headers().set(pair.getKey(), pair.getValue());
             }
+            for (Map.Entry<CookieKey, String> cookie : response.getSetCookies().entrySet()) {
+                nettyResponse.headers().add(HttpHeaderNames.SET_COOKIE, cookie.getKey().toHeaderString(cookie.getValue()));
+            }
             ChannelFuture future = ctx.writeAndFlush(nettyResponse);
             if (!request.isKeepAlive()) {
                 future.addListener(ChannelFutureListener.CLOSE);
@@ -77,6 +81,9 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
         );
         for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
             nettyResponse.headers().set(pair.getKey(), pair.getValue());
+        }
+        for (Map.Entry<CookieKey, String> cookie : response.getSetCookies().entrySet()) {
+            nettyResponse.headers().add(HttpHeaderNames.SET_COOKIE, cookie.getKey().toHeaderString(cookie.getValue()));
         }
         ctx.writeAndFlush(nettyResponse).addListener(ChannelFutureListener.CLOSE);
     }
