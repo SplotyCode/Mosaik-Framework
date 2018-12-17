@@ -20,14 +20,23 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.16.20</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
+
                 <executions>
                     <execution>
                         <id>default-compile</id>
                         <configuration>
                             <compilerArgument>-proc:none</compilerArgument>
                             <includes>
-                                <include>me.david.davidlib.spigotlib.pluginyml.GenerateYaml.java</include>
+                                <include>me/david/davidlib/spigotlib/pluginyml/YamlProcesscor.java</include>
+                                <include>me/david/davidlib/spigotlib/pluginyml/GenerateYaml.java</include>
                             </includes>
                         </configuration>
                     </execution>
