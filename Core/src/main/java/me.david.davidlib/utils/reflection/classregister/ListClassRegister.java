@@ -35,4 +35,5 @@ public class ListClassRegister<T> implements IListClassRegister<T> {
     public Class<T> getObjectClass() {
         return clazz;
     }
+
 }

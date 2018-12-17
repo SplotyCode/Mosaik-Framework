@@ -3,19 +3,11 @@ package me.david.splotycode.valuetransformer;
 import me.david.davidlib.link.transformer.ITransformerManager;
 import me.david.davidlib.link.transformer.ValueTransformer;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TransformerManager implements ITransformerManager {
 
     private Set<ValueTransformer> transformers = new HashSet<>();
-
-    @Override
-    public void register(ValueTransformer transformer) {
-        transformers.add(transformer);
-    }
 
     @Override
     public Class<ValueTransformer> getObjectClass() {
@@ -46,4 +38,8 @@ public class TransformerManager implements ITransformerManager {
         return list;
     }
 
+    @Override
+    public Collection<ValueTransformer> getList() {
+        return transformers;
+    }
 }

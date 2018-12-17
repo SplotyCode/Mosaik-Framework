@@ -3,11 +3,16 @@ package me.david.davidlib.utils.reflection.classregister;
 import com.google.common.reflect.ClassPath;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public interface ClassRegister<T> {
 
     void register(T obj);
     void unRegister(T obj);
+
+    Collection<T> getAll();
 
     default void register(Class<? extends T> clazz) {
         try {
@@ -18,10 +23,10 @@ public interface ClassRegister<T> {
     }
 
     default void unRegister(Class<? extends T> clazz) {
-        try {
-            unRegister(clazz.newInstance());
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+        for (T obj : new ArrayList<>(getAll())) {
+            if (obj.getClass().equals(clazz)) {
+                unRegister(obj);
+            }
         }
     }
 
@@ -34,10 +39,10 @@ public interface ClassRegister<T> {
     }
 
     default void unRegister(String clazz) {
-        try {
-            unRegister((T) Class.forName(clazz));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        for (T obj : new ArrayList<>(getAll())) {
+            if (obj.getClass().getSimpleName().equals(clazz)) {
+                unRegister(obj);
+            }
         }
     }
 
@@ -57,15 +62,10 @@ public interface ClassRegister<T> {
     }
 
     default void unRegisterPackage(String path) {
-        try {
-            for (ClassPath.ClassInfo classInfo : ClassPath.from(getClass().getClassLoader()).getTopLevelClassesRecursive(path)) {
-                Class<?> clazz = classInfo.load();
-                if (getObjectClass().isAssignableFrom(clazz)) {
-                    unRegister((Class<? extends T>) clazz);
-                }
+        for (T obj : new ArrayList<>(getAll())) {
+            if (obj.getClass().getSimpleName().startsWith(path)) {
+                unRegister(obj);
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 
