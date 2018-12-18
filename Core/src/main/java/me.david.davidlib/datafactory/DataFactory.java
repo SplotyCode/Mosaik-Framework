@@ -3,11 +3,18 @@ package me.david.davidlib.datafactory;
 import lombok.EqualsAndHashCode;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @EqualsAndHashCode
 public class DataFactory {
 
-    private HashMap<String, Object> data = new HashMap<>();
+    private Map<String, Object> data = new HashMap<>();
+
+    public DataFactory() {}
+
+    public DataFactory(Map<String, Object> data) {
+        this.data = data;
+    }
 
     public <T> T getData(DataKey<T> key) {
         return (T) data.get(key.name);
@@ -29,8 +36,12 @@ public class DataFactory {
         data.putIfAbsent(name, obj);
     }
 
-    public HashMap<String, Object> getMap() {
+    public Map<String, Object> getMap() {
         return data;
+    }
+
+    public void setMap(Map<String, Object> map) {
+        data = map;
     }
 
     public boolean containsData(String name) {
