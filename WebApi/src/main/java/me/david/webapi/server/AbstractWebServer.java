@@ -16,9 +16,11 @@ import me.david.webapi.request.body.RequestContentHandler;
 import me.david.webapi.response.Response;
 import me.david.webapi.response.error.ErrorFactory;
 import me.david.webapi.response.error.ErrorHandler;
+import me.david.webapi.session.SessionSystem;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +47,18 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
 
     private List<RequestContentHandler> contentHandlers = new ArrayList<>();
     @Getter private ListClassRegister<RequestContentHandler> contentHandlerRegister = new ListClassRegister<>(contentHandlers);
+
+    private ListClassRegister<SessionSystem> sessionSystems = new ListClassRegister<>(new ArrayList<>());
+
+    @Override
+    public IListClassRegister<SessionSystem> getSessionLoader() {
+        return sessionSystems;
+    }
+
+    @Override
+    public Collection<SessionSystem> getSessionSystems() {
+        return sessionSystems.getList();
+    }
 
     public List<RequestContentHandler> getContentHandlers() {
         return contentHandlerRegister.combind(application.getContentHandlerRegister());

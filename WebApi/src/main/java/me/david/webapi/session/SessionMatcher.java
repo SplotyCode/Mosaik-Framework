@@ -6,6 +6,7 @@ public interface SessionMatcher {
 
     Session getSession(Request request);
 
+    void register(Session session, Request request);
     void unregister(Session session, Request request);
 
 }

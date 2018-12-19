@@ -1,7 +1,11 @@
 package me.david.webapi.server;
 
+import me.david.davidlib.utils.reflection.classregister.IListClassRegister;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.response.error.ErrorFactory;
+import me.david.webapi.session.SessionSystem;
+
+import java.util.Collection;
 
 public interface WebServer {
 
@@ -15,5 +19,9 @@ public interface WebServer {
 
     void installErrorFactory(ErrorFactory factory);
     void uninstallErrorFactory(ErrorFactory factory);
+
+    IListClassRegister<SessionSystem> getSessionLoader();
+
+    Collection<SessionSystem> getSessionSystems();
 
 }

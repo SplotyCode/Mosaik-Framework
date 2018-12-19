@@ -10,6 +10,7 @@ import me.david.webapi.request.body.RequestContentHandler;
 import me.david.webapi.response.Response;
 import me.david.webapi.server.AbstractWebServer;
 import me.david.webapi.server.WebServer;
+import me.david.webapi.session.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +22,9 @@ public abstract class AbstractRequest implements Request {
     protected Response response = new Response(null);
     protected RequestContent content = null;
     private WebServer webServer;
+
+    private boolean checkedSession;
+    private Session session = null;
 
     public AbstractRequest(WebServer webServer) {
         this.webServer = webServer;
@@ -65,4 +69,31 @@ public abstract class AbstractRequest implements Request {
     public boolean isPost() {
         return getMethod().isStandard() && getMethod().getStandardMethod() == Method.StandardMethod.POST;
     }
+
+    @Override
+    public Session getSession() {
+        if (!checkedSession) {
+            checkedSession = true;
+            for (SessionSystem sessionSystem : webServer.getSessionSystems()) {
+                Session matcher = sessionSystem.getSessionMatcher().getSession(this);
+                if (matcher == null) {
+                    Session newSession = sessionSystem.getSessionCreator().createSession(this);
+                    if (newSession != null) {
+                        session = newSession;
+                        session.onInit(this);
+                        sessionSystem.getSessionMatcher().register(session, this);
+                    }
+                } else if (sessionSystem.getSessionEvaluator().valid(matcher, this)) {
+                    session = matcher;
+                    session.onRefresh(this);
+                } else {
+                    matcher.onDestruction();
+                    sessionSystem.getSessionMatcher().unregister(matcher, this);
+                }
+            }
+            return null;
+        }
+        return session;
+    }
+
 }

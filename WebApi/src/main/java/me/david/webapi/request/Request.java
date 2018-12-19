@@ -3,6 +3,7 @@ package me.david.webapi.request;
 import me.david.webapi.request.body.RequestContent;
 import me.david.webapi.response.Response;
 import me.david.webapi.server.WebServer;
+import me.david.webapi.session.Session;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,5 +45,7 @@ public interface Request {
     Map<String, String> getCookies();
 
     void setPost(Map<String, ? extends Collection<String>> parameters);
+
+    Session getSession();
 
 }
