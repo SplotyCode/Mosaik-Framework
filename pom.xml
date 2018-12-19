@@ -19,6 +19,7 @@
         <module>StartUp</module>
         <module>ValueTransformer</module>
         <module>SpigotLib</module>
+        <module>Build</module>
     </modules>
 
     <properties>
