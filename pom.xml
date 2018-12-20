@@ -20,6 +20,7 @@
         <module>ValueTransformer</module>
         <module>SpigotLib</module>
         <module>Build</module>
+        <module>ArgParser</module>
     </modules>
 
     <properties>

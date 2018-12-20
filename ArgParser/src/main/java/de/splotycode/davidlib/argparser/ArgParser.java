@@ -5,7 +5,7 @@ import me.david.davidlib.link.IArgParser;
 public class ArgParser implements IArgParser {
     @Override
     public void parseArgs(Object obj) {
-        
+
     }
 
     @Override
