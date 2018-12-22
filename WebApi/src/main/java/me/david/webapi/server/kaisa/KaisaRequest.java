@@ -12,6 +12,7 @@ import me.david.webapi.request.body.RequestContent;
 import me.david.webapi.response.Response;
 import me.david.webapi.server.WebServer;
 import me.david.webapi.server.netty.NettyUtils;
+import me.david.webapi.session.Session;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
@@ -173,6 +174,11 @@ public class KaisaRequest implements Request {
             cookies = provider.resolveCookies();
         }
         return cookies;
+    }
+
+    @Override
+    public Session getSession() {
+        return null;
     }
 
 }

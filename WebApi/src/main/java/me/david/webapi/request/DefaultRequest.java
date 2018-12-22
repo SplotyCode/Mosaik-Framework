@@ -8,6 +8,7 @@ import me.david.webapi.request.body.RequestBodyHelper;
 import me.david.webapi.request.body.RequestContent;
 import me.david.webapi.response.Response;
 import me.david.webapi.server.WebServer;
+import me.david.webapi.session.Session;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -77,6 +78,11 @@ public class DefaultRequest implements Request {
 
     public boolean isPost() {
         return method.isStandard() && method.getStandardMethod() == Method.StandardMethod.POST;
+    }
+
+    @Override
+    public Session getSession() {
+        return null;
     }
 
 }
