@@ -1,2 +1,2 @@
 - add ClassCollector with goals (No Abstract goal etc) to collect classes easier
-- Add Blacklist to ClassFinder
+- [ADDED] Add Blacklist to ClassFinder
