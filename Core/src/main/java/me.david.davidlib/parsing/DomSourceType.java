@@ -1,4 +1,4 @@
-package me.david.davidlib.parsing.input;
+package me.david.davidlib.parsing;
 
 public enum DomSourceType {
 
