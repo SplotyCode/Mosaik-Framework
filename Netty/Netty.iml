@@ -15,6 +15,7 @@
     <orderEntry type="module" module-name="Core" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" name="Maven: net.jodah:typetools:0.5.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.20" level="project" />
   </component>
 </module>
