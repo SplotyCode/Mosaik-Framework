@@ -21,6 +21,7 @@
         <module>SpigotLib</module>
         <module>Build</module>
         <module>ArgParser</module>
+        <module>DomParsing</module>
     </modules>
 
     <properties>
