@@ -7,14 +7,22 @@ import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
 import de.splotycode.davidlib.startup.starttask.StartTaskExecutor;
 import lombok.Getter;
 import me.david.davidlib.application.*;
+import me.david.davidlib.info.ApplicationInfo;
+import me.david.davidlib.info.EnvironmentInformation;
+import me.david.davidlib.info.SystemInfo;
 import me.david.davidlib.link.LinkBase;
 import me.david.davidlib.link.Links;
+import me.david.davidlib.logger.DavidLibLoggerFactory;
+import me.david.davidlib.logger.Logger;
 import me.david.davidlib.startup.BootContext;
 import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
 import me.david.davidlib.utils.init.AlreadyInitailizedException;
 import me.david.davidlib.utils.reflection.ReflectionUtil;
 import me.david.davidlib.utils.StringUtil;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.PatternLayout;
 
 @Getter
 public class Main {
@@ -39,17 +47,20 @@ public class Main {
             main(args);
     }
 
+    private static Logger logger;
+
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        System.out.println("Starting FrameWork!");
-
         if (initialised) throw new AlreadyInitailizedException("Main.main() already called");
         initialised = true;
 
+        setUpLogging();
+        logger.info("Starting FrameWork!");
+
         if (ReflectionUtil.getCallerClasses().length >= 4) {
-            System.out.println("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass().getName());
+            logger.warn("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass().getName());
         }
-        System.out.println();
+        logger.info("");
 
         bootData = new BootContext(args, start);
         instance = new Main();
@@ -72,12 +83,43 @@ public class Main {
         StartTaskExecutor.getInstance().findAll(false);
         StartTaskExecutor.getInstance().runAll(environmentChanger);
 
+        printInfo();
+
         /* Starting Applications */
         applicationManager.startUp();
 
         StartUpProcessHandler.getInstance().end();
 
-        System.out.println("Started " + applicationManager.getLoadedApplicationsCount() + " Applications: " + StringUtil.join(applicationManager.getLoadedApplications(), IApplication::getName, ", "));
+        logger.info("Started " + applicationManager.getLoadedApplicationsCount() + " Applications: " + StringUtil.join(applicationManager.getLoadedApplications(), IApplication::getName, ", "));
+    }
+
+    private static void setUpLogging() {
+        Logger.setFactory(DavidLibLoggerFactory.class);
+        System.setProperty("log4j.defaultInitOverride", "true");
+        try {
+            org.apache.log4j.Logger root = org.apache.log4j.Logger.getRootLogger();
+            if (!root.getAllAppenders().hasMoreElements()) {
+                root.setLevel(Level.WARN);
+                root.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.DEFAULT_CONVERSION_PATTERN)));
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        logger = Logger.getInstance(Main.class);
+    }
+
+    private static void printInfo() {
+        Application.getGlobalShutdownManager().addShutdownTask(() -> {
+            logger.info("-----[Api Shutdown]-----");
+        });
+        logger.info("-----[Api Start]-----");
+        logger.info(ApplicationInfo.getApplicationInfo());
+
+        logger.info("Java (JDK): " + EnvironmentInformation.getJDKInfo());
+        logger.info("Java (JRE): " + EnvironmentInformation.getJREInfo());
+        logger.info("Jvm: " + EnvironmentInformation.getJVMInfo());
+        logger.info("JVM-Args: " + EnvironmentInformation.getJVMArgs());
+        logger.info("OS: " + SystemInfo.getOsNameVersionAndArch());
     }
 
 }
