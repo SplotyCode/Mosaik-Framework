@@ -13,9 +13,9 @@ public abstract class ValueTransformer<I, O> {
     public abstract O transform(I input) throws TransformException;
 
     public ValueTransformer() {
-        Type[] generetics = ReflectionUtil.getGenerretics(getClass());
-        inputClass = (Class<I>) generetics[0];
-        outputClass = (Class<O>) generetics[1];
+        Type[] generics = ReflectionUtil.getGenerics(getClass());
+        inputClass = (Class<I>) generics[0];
+        outputClass = (Class<O>) generics[1];
     }
 
     public boolean valid(I input, Class<? extends O> output) {
