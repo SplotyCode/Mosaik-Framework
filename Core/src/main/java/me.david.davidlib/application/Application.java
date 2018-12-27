@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class Application implements IApplication {
 
     @Getter private ShutdownManager localShutdownManager = new ShutdownManager();
-    private static ShutdownManager globalShutdownManager = new ShutdownManager();
+    @Getter private static ShutdownManager globalShutdownManager = new ShutdownManager();
 
     @Getter private ApplicationState state = ApplicationState.NOT_FOUND;
 
@@ -39,8 +39,4 @@ public abstract class Application implements IApplication {
         return this;
     }
 
-    @Override
-    public ShutdownManager getGlobalShutdownManager() {
-        return globalShutdownManager;
-    }
 }

@@ -15,7 +15,6 @@ public interface IApplication {
     Application getApplication();
 
     IShutdownManager getLocalShutdownManager();
-    IShutdownManager getGlobalShutdownManager();
 
     Collection<Class<ApplicationType>> getApplicationTypes();
 
