@@ -8,17 +8,22 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
-@AllArgsConstructor
-@Getter
 public class DomUrlInput implements DomInput {
 
-    protected URL url;
+    @Getter protected URL url;
+
+    public DomUrlInput(URL url) {
+        this.url = url;
+    }
+
+    protected URLConnection connection;
 
     @Override
     public byte[] getBytes() {
         try {
-            return IOUtils.toByteArray(url);
+            return IOUtils.toByteArray(getStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -28,7 +33,7 @@ public class DomUrlInput implements DomInput {
     @Override
     public String getString() {
         try {
-            return IOUtils.toString(url, "UTF-8");
+            return IOUtils.toString(getStream(), "UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,12 +42,16 @@ public class DomUrlInput implements DomInput {
 
     @Override
     public InputStream getStream() {
-        try (InputStream inputStream = url.openConnection().getInputStream()) {
+        try (InputStream inputStream = getConnection().getInputStream()) {
             return inputStream;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public URLConnection getConnection() throws IOException {
+        return connection == null ? (connection = url.openConnection()) : connection;
     }
 
     @Override
