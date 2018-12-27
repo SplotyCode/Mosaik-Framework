@@ -38,7 +38,7 @@ public class SystemInfo {
 
     public static final boolean isOracleJvm = StringUtils.containsIgnoreCase(VM_VENDOR, "Oracle");
 
-    public static final boolean IS_AT_LEAST_JAVA9 = ReflectionUtil.methodExsits(Class.class, "getModule");
+    public static final boolean IS_AT_LEAST_JAVA9 = ReflectionUtil.methodExists(Class.class, "getModule");
     public static final boolean IS_AT_LEAST_JAVA8 = isJavaVersionAtLeast(1, 8, 0);
     public static final boolean IS_AT_LEAST_JAVA7 = isJavaVersionAtLeast(1, 7, 0);
 
