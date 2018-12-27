@@ -13,13 +13,9 @@ import org.apache.commons.io.IOUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.TreeMap;
-import java.util.stream.Stream;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StartTaskExecutor {
@@ -56,7 +52,7 @@ public class StartTaskExecutor {
 
     public void collectSkippedPaths() {
         System.out.println("Collecting Skipped Paths");
-        Reflections reflections = new Reflections(null, new ResourcesScanner());
+        Reflections reflections = new Reflections(".*", new ResourcesScanner());
         for (String file : reflections.getResources(x -> x != null && x.startsWith("disabled_paths"))) {
             try (InputStream is = StartTaskExecutor.class.getResourceAsStream("/" + file)) {
                 String[] array = IOUtils.toString(is, "UTF-8").split("\n");
