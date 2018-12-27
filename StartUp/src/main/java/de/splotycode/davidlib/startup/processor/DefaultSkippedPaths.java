@@ -32,6 +32,7 @@ import me.david.davidlib.startup.SkipPath;
         "org.opentest4j",
         "META-INF",
         "org.apiguardian.api",
-        "org.reflections"})
+        "org.reflections",
+        "com.avaje"})
 public class DefaultSkippedPaths {
 }
