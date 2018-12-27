@@ -1,6 +1,5 @@
 package me.david.davidlib.spigotlib;
 
-import de.splotycode.davidlib.startup.Main;
 import me.david.davidlib.application.Application;
 import me.david.davidlib.link.LinkBase;
 import me.david.davidlib.spigotlib.exception.PluginLoadException;
@@ -10,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 public class SpigotPlugin extends JavaPlugin {
@@ -18,7 +18,11 @@ public class SpigotPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Main.mainIfNotInitialised();
+        try {
+            Class.forName("de.splotycode.davidlib.startup.Main").getMethod("mainIfNotInitialised").invoke(null);
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
         if (firstPlugin) {
             firstPlugin = false;
             firstPluginLoad();

@@ -15,28 +15,32 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>de.splotycode.davidlib.startup.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.16.20</version>
-                        </path>
-                    </annotationProcessorPaths>
                 </configuration>
-
                 <executions>
                     <execution>
                         <id>default-compile</id>
                         <configuration>
                             <compilerArgument>-proc:none</compilerArgument>
                             <includes>
-                                <include>me/david/davidlib/spigotlib/pluginyml/YamlProcesscor.java</include>
                                 <include>me/david/davidlib/spigotlib/pluginyml/GenerateYaml.java</include>
+                                <include>me/david/davidlib/spigotlib/pluginyml/YamlProcesscor.java</include>
                             </includes>
                         </configuration>
                     </execution>
@@ -61,6 +65,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.8</version>
+        </dependency>
+        <dependency>
             <groupId>me.david.davidlib</groupId>
             <artifactId>Core</artifactId>
             <version>1.9.9</version>
@@ -71,18 +80,6 @@
             <artifactId>spigot-api</artifactId>
             <version>1.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-        <!--Bukkit API-->
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.david.davidlib</groupId>
-            <artifactId>StartUp</artifactId>
-            <version>1.9.9</version>
         </dependency>
     </dependencies>
 
