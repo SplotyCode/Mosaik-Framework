@@ -87,6 +87,16 @@ public final class StringUtil {
         String join(T obj);
     }
 
+    public static final Joiner<String> STRING_JOINER = str -> str;
+
+    public static String join(Iterable<String> iterable, String seperator){
+        return join(iterable, STRING_JOINER, seperator);
+    }
+
+    public static String join(String[] array, String seperator){
+        return join(array, STRING_JOINER, seperator);
+    }
+
     public static <T> String join(Iterable<T> iterable, Joiner<T> joiner, String seperator){
         StringBuilder builder = new StringBuilder();
         for (T element : iterable)
