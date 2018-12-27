@@ -2,6 +2,7 @@ package me.david.davidlib.database.repo;
 
 import me.david.davidlib.database.Database;
 import me.david.davidlib.database.connection.Connection;
+import me.david.davidlib.database.table.ColumnNameResolver;
 
 public interface TableExecutor<T, C extends Connection> {
 
@@ -11,10 +12,10 @@ public interface TableExecutor<T, C extends Connection> {
 
     void save(C connection, T entry);
     void save(C connection, T entry, String... fields);
-    void save(C connection, T entry, Enum... fields);
+    void save(C connection, T entry, ColumnNameResolver... fields);
 
-    void delete(C connection, T entity);
-    void deletePrimary(C connection, Object primary);
+    /*void delete(C connection, T entity);
+    void deletePrimary(C connection, Object primary);*/
     void deleteFirst(C connection, Filters.Filter filter);
     void deleteAll(C connection, Filters.Filter filter);
 
@@ -58,17 +59,17 @@ public interface TableExecutor<T, C extends Connection> {
         save((C) Database.getInstance().getDefaultConnection(), entry, fields);
     }
 
-    default void save(T entry, Enum... fields) {
+    default void save(T entry, ColumnNameResolver... fields) {
         save((C) Database.getInstance().getDefaultConnection(), entry, fields);
     }
 
-    default void delete(T entity) {
+    /*default void delete(T entity) {
         delete((C) Database.getInstance().getDefaultConnection(), entity);
     }
 
     default void deletePrimary(Object primary) {
         deletePrimary((C) Database.getInstance().getDefaultConnection(), primary);
-    }
+    }*/
 
     default void deleteFirst(Filters.Filter filter) {
         deleteFirst((C) Database.getInstance().getDefaultConnection(), filter);

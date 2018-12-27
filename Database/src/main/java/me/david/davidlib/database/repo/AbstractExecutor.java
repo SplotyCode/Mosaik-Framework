@@ -1,6 +1,5 @@
 package me.david.davidlib.database.repo;
 
-import com.google.common.reflect.TypeToken;
 import me.david.davidlib.database.connection.Connection;
 import me.david.davidlib.database.table.Column;
 import me.david.davidlib.database.table.FieldObject;
@@ -13,7 +12,7 @@ import java.util.HashMap;
 
 public abstract class AbstractExecutor<T, C extends Connection> implements TableExecutor<T, C> {
 
-    protected Class<?> clazz = new TypeToken<T>(getClass()){}.getRawType();
+    protected Class<?> clazz = (Class<?>) ReflectionUtil.getGenerretics(getClass())[0];
     protected Table table;
     protected String name;
 

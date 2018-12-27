@@ -3,7 +3,7 @@ import lombok.Data;
 import me.david.davidlib.database.connection.impl.MySQLConnection;
 import me.david.davidlib.database.connection.sql.SQLDriverConnection;
 import me.david.davidlib.database.repo.Filters;
-import me.david.davidlib.database.repo.SQLExcecutor;
+import me.david.davidlib.database.repo.SQLExececutor;
 import me.david.davidlib.database.repo.TableExecutor;
 import me.david.davidlib.database.table.*;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ public class Example {
     public void exaple() {
         new MySQLConnection().connect("localhost", "database").makeDefault();
 
-        TableExecutor<User, SQLDriverConnection> executor = new SQLExcecutor<>();
+        TableExecutor<User, SQLDriverConnection> executor = new SQLExececutor<>();
 
         User user = executor.selectFirst(Filters.and(Filters.eq("a", "ads"), Filters.eq("a", "a")));
         executor.save(user);
