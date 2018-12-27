@@ -1,6 +1,5 @@
 package me.david.davidlib.spigotlib;
 
-import lombok.Getter;
 import me.david.davidlib.application.ApplicationType;
 import me.david.davidlib.datafactory.DataKey;
 import me.david.davidlib.spigotlib.gui.GuiManager;
@@ -12,7 +11,7 @@ public interface SpigotApplicationType extends ApplicationType {
     DataKey<SpigotPlugin> PLUGIN = new DataKey<>("spigot.plugin");
     GuiManager GUI_MANAGER = new GuiManager();
 
-    default void initType(BootContext context, ApplicationType dummy) {
+    default void initType(BootContext context, SpigotApplicationType dummy) {
 
     }
 
