@@ -51,7 +51,7 @@ public final class ReflectionUtil {
 
     }
 
-    public static Type[] getGenerretics(Class clazz) {
+    public static Type[] getGenerics(Class clazz) {
         return ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments();
     }
 
@@ -76,4 +76,21 @@ public final class ReflectionUtil {
         return false;
     }
 
+    public static boolean methodExists(Class<?> clazz, String method) {
+        try {
+            clazz.getMethod(method);
+            return true;
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
+    }
+
+    public static boolean clazzExists(String clazz) {
+        try {
+            Class.forName(clazz);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }
