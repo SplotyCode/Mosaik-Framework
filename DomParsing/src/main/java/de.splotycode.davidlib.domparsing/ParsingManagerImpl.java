@@ -1,6 +1,7 @@
 package de.splotycode.davidlib.domparsing;
 
 import lombok.Getter;
+import me.david.davidlib.link.ParsingManager;
 import me.david.davidlib.parsing.ParsingHandle;
 import me.david.davidlib.parsing.input.DomFileInput;
 import me.david.davidlib.parsing.input.DomInput;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ParsingManager implements me.david.davidlib.link.ParsingManager {
+public class ParsingManagerImpl implements ParsingManager {
 
     @Getter private List<ParsingHandle> handles = new ArrayList<>();
 
@@ -49,7 +50,7 @@ public class ParsingManager implements me.david.davidlib.link.ParsingManager {
 
     @Override
     public Document parseResourceFile(String file) {
-        DomInput input = new DomStreamInput(ParsingManager.class.getResourceAsStream(file));
+        DomInput input = new DomStreamInput(ParsingManagerImpl.class.getResourceAsStream(file));
         ParsingHandle handle = handles.stream().filter(cHandle -> FilenameUtils.isExtension(file, cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
         return parseDocument(input, handle);
     }

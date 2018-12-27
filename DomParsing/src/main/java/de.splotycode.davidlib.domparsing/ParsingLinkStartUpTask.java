@@ -10,7 +10,7 @@ public class ParsingLinkStartUpTask implements StartupTask {
 
     @Override
     public void execute(StartUpEnvironmentChanger environmentChanger) throws Exception {
-        ParsingManager manager =  new ParsingManager();
+        ParsingManagerImpl manager =  new ParsingManagerImpl();
         manager.register(KeyValueHandle.class);
         LinkBase.getInstance().registerLink(Links.PARSING_MANAGER, manager);
     }
