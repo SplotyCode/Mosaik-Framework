@@ -1,6 +1,5 @@
 package me.david.davidlib.spigotlib.gui;
 
-import lombok.Getter;
 import me.david.davidlib.utils.StringUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -10,8 +9,8 @@ import java.util.*;
 
 public class GuiManager {
 
-    @Getter private HashMap<UUID, InventoryData> openInventorys = new HashMap<>();
-    @Getter private HashMap<UUID, List<InventoryData>> inventoryHistory = new HashMap<>();
+    private HashMap<UUID, InventoryData> openInventorys = new HashMap<>();
+    private HashMap<UUID, List<InventoryData>> inventoryHistory = new HashMap<>();
 
     public InventoryData getInvenctory(UUID uuid) {
         return openInventorys.get(uuid);
@@ -57,4 +56,11 @@ public class GuiManager {
         return list.remove(list.size() - 1);
     }
 
+    public HashMap<UUID, InventoryData> getOpenInventorys() {
+        return openInventorys;
+    }
+
+    public HashMap<UUID, List<InventoryData>> getInventoryHistory() {
+        return inventoryHistory;
+    }
 }

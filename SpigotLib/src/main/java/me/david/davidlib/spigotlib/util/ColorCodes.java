@@ -1,7 +1,5 @@
 package me.david.davidlib.spigotlib.util;
 
-import lombok.Getter;
-
 public enum  ColorCodes {
 
     WHITE(0, "white"),
@@ -21,12 +19,19 @@ public enum  ColorCodes {
     RED(14, "red"),
     BLACK(15, "black");
 
-    @Getter private final int id;
-    @Getter private final String color;
+    private final int id;
+    private final String color;
 
     ColorCodes(int id, String color) {
         this.id = id;
         this.color = color;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getColor() {
+        return color;
+    }
 }

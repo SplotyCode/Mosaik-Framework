@@ -39,7 +39,6 @@
                         <configuration>
                             <compilerArgument>-proc:none</compilerArgument>
                             <includes>
-                                <include>me/david/davidlib/spigotlib/pluginyml/GenerateYaml.java</include>
                                 <include>me/david/davidlib/spigotlib/pluginyml/YamlProcesscor.java</include>
                             </includes>
                         </configuration>

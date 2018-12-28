@@ -1,7 +1,5 @@
 package me.david.davidlib.spigotlib.gui;
 
-import lombok.Getter;
-import lombok.Setter;
 import me.david.davidlib.datafactory.DataFactory;
 import me.david.davidlib.datafactory.DataKey;
 import me.david.davidlib.helper.AlmostBoolean;
@@ -22,14 +20,14 @@ public class InventoryData {
     public static final DataKey<Integer> PAGE = new DataKey<>("lib.page");
     public static final DataKey<Integer> HOT_BAR_SLOT = new DataKey<>("lib.hotbar.slot");
 
-    @Getter private Player player;
-    @Getter private Gui gui;
+    private Player player;
+    private Gui gui;
     private List<ItemStack> content;
     private List<ItemStack> hotBar;
     private String displayName = null;
     private int size = -1;
     private DataFactory factory;
-    @Setter private Inventory inventory;
+    private Inventory inventory;
     private Closeable closeable;
     private AlmostBoolean page = AlmostBoolean.MAYBE;
 
@@ -198,4 +196,13 @@ public class InventoryData {
         if (factory == null) factory = new DataFactory();
         return factory;
     }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Gui getGui() {
+        return gui;
+    }
+
 }
