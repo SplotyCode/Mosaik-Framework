@@ -1,5 +1,6 @@
 package de.splotycode.davidlib.startup.starttask;
 
+import com.google.common.collect.Lists;
 import de.splotycode.davidlib.startup.exception.FrameworkStartException;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,6 +17,8 @@ import org.reflections.scanners.ResourcesScanner;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.TreeMap;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -32,8 +35,10 @@ public class StartTaskExecutor {
         for (Class<?> clazz : ClassFinderHelper.getUserClasses()) {
             if (ReflectionUtil.validClass(clazz, StartupTask.class, true, true)) {
                 try {
+                    int priority = AnnotationHelper.getPriority(clazz.getAnnotations());
+                    logger.info("Found StartUp Task: " + clazz.getSimpleName() + " with priority " + priority);
                     StartupTask task = (StartupTask) clazz.newInstance();
-                    tasks.put(AnnotationHelper.getPriority(clazz.getAnnotations()), task);
+                    tasks.put(priority, task);
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new FrameworkStartException("Could not create task instance (" + clazz.getSimpleName() + ")", e);
                 } catch (ClassCastException e) {
@@ -44,7 +49,7 @@ public class StartTaskExecutor {
     }
 
     public void runAll(StartUpEnvironmentChanger environmentChanger) {
-        for (StartupTask task : tasks.values()) {
+        for (StartupTask task : Lists.reverse(new ArrayList<>(tasks.values()))) {
             try {
                 task.execute(environmentChanger);
             } catch (Exception ex) {
