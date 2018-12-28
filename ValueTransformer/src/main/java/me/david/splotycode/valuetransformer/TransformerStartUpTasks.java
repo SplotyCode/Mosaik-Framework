@@ -7,7 +7,7 @@ import me.david.davidlib.startup.StartUpPrioritys;
 import me.david.davidlib.startup.StartupTask;
 import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
 
-@Priority(priority = StartUpPrioritys.LINKBASE)
+@Priority(priority = StartUpPrioritys.PRE_LINKBASE)
 public class TransformerStartUpTasks implements StartupTask {
 
     @Override
