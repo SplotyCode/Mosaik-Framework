@@ -13,7 +13,7 @@ public class DefaultPathManager implements PathManager {
     private File logDirectory;
 
     public DefaultPathManager() {
-        LinkBase.getBootContext().applyArgs("paths", mainDirectory);
+        LinkBase.getBootContext().applyArgs("paths", this);
     }
 
     @Override
