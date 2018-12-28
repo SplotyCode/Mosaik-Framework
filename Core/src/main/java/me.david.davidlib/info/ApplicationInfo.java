@@ -1,6 +1,7 @@
 package me.david.davidlib.info;
 
 import lombok.Getter;
+import me.david.davidlib.application.Application;
 import me.david.davidlib.link.LinkBase;
 import me.david.davidlib.link.Links;
 import me.david.davidlib.storage.Document;
@@ -11,6 +12,21 @@ public class ApplicationInfo {
 
    public static String getApplicationInfo() {
        return "DavidLib " + version + " Built on " + buildDate + " (Git: #" + buildNumber + ")";
+   }
+
+   private static String implementingName = null;
+
+   public static String getImplementingName() {
+       if (implementingName != null) return implementingName;
+
+       implementingName = System.getProperty("davidlib.appname");
+       if (implementingName == null) {
+           Application app = LinkBase.getApplicationManager().getApplications().iterator().next();
+           if (app == null) return null;
+           implementingName = app.getName();
+           return implementingName;
+       }
+       return implementingName;
    }
 
    static {
