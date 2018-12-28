@@ -2,12 +2,15 @@ package me.david.davidlib.application;
 
 import me.david.davidlib.datafactory.DataFactory;
 import me.david.davidlib.datafactory.DataKey;
+import me.david.davidlib.logger.Logger;
 
 import java.util.Collection;
 
 public interface IApplication {
 
     String getName();
+
+    Logger getLogger();
 
     ApplicationState getState();
     void setState(ApplicationState state);

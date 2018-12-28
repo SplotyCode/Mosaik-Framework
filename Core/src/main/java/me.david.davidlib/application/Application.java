@@ -2,6 +2,7 @@ package me.david.davidlib.application;
 
 import lombok.Getter;
 import me.david.davidlib.datafactory.DataFactory;
+import me.david.davidlib.logger.Logger;
 import me.david.davidlib.startup.BootContext;
 import me.david.davidlib.startup.envirement.ConfiguriseEnvironmentChanger;
 
@@ -19,11 +20,14 @@ public abstract class Application implements IApplication {
     @Getter private DataFactory config = new DataFactory();
     @Getter private List<Class<ApplicationType>> applicationTypes = new ArrayList<>();
 
+    @Getter private Logger logger = Logger.getInstance("Application: " + getName());
+
     public abstract void start(BootContext context) throws Exception;
     public void configurise(ConfiguriseEnvironmentChanger environmentChanger, DataFactory config) throws Exception {}
 
     @Override
     public synchronized void setState(ApplicationState state) {
+        logger.trace("Switched from State " + this.state + " to " + state);
         this.state = state;
         notify();
     }
