@@ -1,4 +1,4 @@
-package me.david.davidlib.link;
+package me.david.davidlib.link.argparser;
 
 public interface IArgParser {
 

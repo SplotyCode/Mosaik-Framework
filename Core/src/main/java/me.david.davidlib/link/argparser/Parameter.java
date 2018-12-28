@@ -1,4 +1,4 @@
-package de.splotycode.davidlib.argparser.parameter;
+package me.david.davidlib.link.argparser;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
