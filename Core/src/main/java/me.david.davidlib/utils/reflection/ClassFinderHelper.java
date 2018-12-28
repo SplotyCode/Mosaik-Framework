@@ -38,6 +38,10 @@ public final class ClassFinderHelper {
         return list;
     }).build();
 
+    public static Set<String> getSkippedPaths() {
+        return nonUserPrefixes;
+    }
+
     public static class FailedToLoadClassException extends RuntimeException {
 
         public FailedToLoadClassException() {

@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public abstract class AbstractExecutor<T, C extends Connection> implements TableExecutor<T, C> {
 
-    protected Class<?> clazz = (Class<?>) ReflectionUtil.getGenerretics(getClass())[0];
+    protected Class<?> clazz = (Class<?>) ReflectionUtil.getGenerics(getClass())[0];
     protected Table table;
     protected String name;
 

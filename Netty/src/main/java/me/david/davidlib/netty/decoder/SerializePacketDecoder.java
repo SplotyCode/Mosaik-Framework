@@ -22,7 +22,9 @@ public class SerializePacketDecoder extends ByteToMessageDecoder {
         SerializePacket packet = packetRegistry.createPacket(id);
         if (packet == null) {
             throw new NullPointerException("Cloud not find that Packet");
-        } else System.out.println("Docoder: Id: " + id + " " + packet.getClass().getSimpleName());
+        }/* else {
+            System.out.println("Docoder: Id: " + id + " " + packet.getClass().getSimpleName());
+        }*/
         packet.read(ps);
         output.add(packet);
     }

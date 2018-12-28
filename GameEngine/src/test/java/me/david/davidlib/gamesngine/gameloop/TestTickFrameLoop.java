@@ -1,11 +1,18 @@
 package me.david.davidlib.gamesngine.gameloop;
 
 import me.david.davidlib.gamesngine.tick.TickExecutor;
+import me.david.davidlib.logger.Logger;
 import me.david.davidlib.utils.ThreadUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class TestTickFrameLoop {
+
+    static {
+
+    }
+
+    private Logger logger = Logger.getInstance(getClass());
 
     @Test
     @DisplayName("Accuracy")
@@ -16,7 +23,7 @@ public class TestTickFrameLoop {
             @Override
             public void runTick() {
                 ThreadUtil.sleep(5);
-                System.out.println("FPS: " + loop.getCurrentFps() + " TPS: " + loop.getCurrentTps());
+                logger.info("FPS: " + loop.getCurrentFps() + " TPS: " + loop.getCurrentTps());
                 if (loop.getCurrentFps() > 5) {
                     System.exit(0);
                 }

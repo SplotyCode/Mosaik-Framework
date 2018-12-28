@@ -9,6 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.Getter;
 import lombok.Setter;
+import me.david.davidlib.logger.Logger;
 import me.david.davidlib.netty.PacketRegistry;
 import me.david.davidlib.netty.packets.SerializePacket;
 import me.david.davidlib.netty.server.GenerelChannelIntilializer;
@@ -17,6 +18,8 @@ import java.net.SocketAddress;
 import java.util.function.Consumer;
 
 public class NetClient extends Thread implements INetClient {
+
+    private Logger logger = Logger.getInstance(getClass());
 
     @Setter private SocketAddress address;
     @Setter Consumer<ChannelPipeline> constructPipeline;
@@ -44,9 +47,9 @@ public class NetClient extends Thread implements INetClient {
                 .connect(address).sync().channel().closeFuture().sync();
             ClientReconnectEvent event = new ClientReconnectEvent(this);
             event.callGlobal();
-            System.out.println("Der Client wurde gestoppt");
+            logger.info("Der Client wurde gestoppt");
             if (!event.isCanceled()) {
-                System.out.println("Reconnecting in " + event.getSleepTime()/1000 + " seconds");
+                logger.info("Reconnecting in " + event.getSleepTime()/1000 + " seconds");
                 Thread.sleep(event.getSleepTime());
                 run();
             }

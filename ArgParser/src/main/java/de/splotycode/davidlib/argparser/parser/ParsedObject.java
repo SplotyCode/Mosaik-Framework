@@ -1,8 +1,8 @@
 package de.splotycode.davidlib.argparser.parser;
 
-import de.splotycode.davidlib.argparser.parameter.Parameter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import me.david.davidlib.link.argparser.Parameter;
 import me.david.davidlib.utils.reflection.ReflectionUtil;
 
 import java.lang.reflect.Field;

@@ -7,7 +7,7 @@ import org.apache.log4j.Level;
 
 public abstract class Logger {
 
-    @Getter private static LoggerFactory factory;
+    @Getter private static LoggerFactory factory = new DefaultFactory();
 
     public abstract void setLevel(Level level);
 

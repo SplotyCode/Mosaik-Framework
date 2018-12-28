@@ -16,12 +16,12 @@
         <module>Automatisation</module>
         <module>GameEngine</module>
         <module>WebApi</module>
-        <module>StartUp</module>
         <module>ValueTransformer</module>
         <module>SpigotLib</module>
         <module>Build</module>
         <module>ArgParser</module>
         <module>DomParsing</module>
+        <module>StartUp</module>
     </modules>
 
     <properties>

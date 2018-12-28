@@ -1,6 +1,7 @@
 package de.splotycode.davidlib.console;
 
 import me.david.davidlib.iui.INamedTaskBar;
+import me.david.davidlib.logger.Logger;
 
 import java.io.PrintStream;
 import java.util.Collections;
@@ -9,15 +10,15 @@ import java.util.concurrent.TimeUnit;
 public class ProcessBar implements INamedTaskBar {
 
     private int max;
-    private PrintStream stream;
+    private Logger logger;
     private String prefix;
     private int value;
 
     private long startTime;
 
-    public ProcessBar(int max, PrintStream stream, String prefix, int value) {
+    public ProcessBar(int max, Logger logger, String prefix, int value) {
         this.max = max;
-        this.stream = stream;
+        this.logger = logger;
         this.prefix = prefix;
         this.value = value;
         reset();
@@ -26,9 +27,9 @@ public class ProcessBar implements INamedTaskBar {
     private void draw() {
         String eta = getETaAsString();
         StringBuilder string = new StringBuilder();
-        int percent = (int) (value * 100 / max);
+        int percent = value * 100 / max;
         string
-                .append('\r')
+                //.append('\r')
                 .append(prefix)
                 .append(String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")))
                 .append(String.format(" %d%% [", percent))
@@ -39,7 +40,7 @@ public class ProcessBar implements INamedTaskBar {
                 .append(String.join("", Collections.nCopies((int) (Math.log10(max)) - (int) (Math.log10(value)), " ")))
                 .append(String.format(" %d/%d, %s", value, max, eta));
 
-        System.out.print(string);
+        logger.info(string.toString());
     }
 
     public void reset() {
@@ -68,7 +69,7 @@ public class ProcessBar implements INamedTaskBar {
     }
 
     public void stop() {
-        stream.println();
+        logger.info("");
     }
 
     @Override

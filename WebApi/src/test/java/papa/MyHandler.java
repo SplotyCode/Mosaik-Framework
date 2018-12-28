@@ -1,5 +1,6 @@
 package papa;
 
+import me.david.davidlib.logger.Logger;
 import me.david.webapi.handler.anotation.check.Handler;
 import me.david.webapi.handler.anotation.check.Mapping;
 import me.david.webapi.handler.anotation.handle.UrlParam;
@@ -11,6 +12,8 @@ import me.david.webapi.request.Request;
 @Handler
 public class MyHandler {
 
+    private Logger logger = Logger.getInstance(getClass());
+
    // @Handler
     public ResponseContent abs(Request request) {
         FileResponseContent content = new FileResponseContent("/home/david/Desktop/Programieren/java/davidlib/WebApi/src/test/java/papa/test.html");
@@ -20,7 +23,7 @@ public class MyHandler {
 
     @Mapping("l/$id$")
     public ResponseContent redirect(@UrlParam("id") String linkId, Response response) {
-        System.out.println("hey");
+        logger.info("hey");
         return null;
     }
 

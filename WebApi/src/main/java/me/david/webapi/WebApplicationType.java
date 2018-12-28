@@ -55,7 +55,7 @@ public interface WebApplicationType extends ApplicationType {
         WebServer server = getWebServer();
         if (server.isRunning())
             server.shutdown();
-        System.out.println("Starting WebServer under " + port + " (" + server.getClass().getSimpleName() + ")");
+        getLogger().info("Starting WebServer under " + port + " (" + server.getClass().getSimpleName() + ")");
         server.listen(port);
     }
 

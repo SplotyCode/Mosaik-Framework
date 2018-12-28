@@ -22,7 +22,9 @@ public class BufPacketDecoder extends ByteToMessageDecoder {
             BufPacket packet = packetRegistry.createPacket(id);
             if(packet == null) {
                 throw new NullPointerException("Cloud not find that Packet");
-            } else System.out.println("Decoder: " + id + " " + packet.getClass().getSimpleName());
+            }/* else {
+                System.out.println("Decoder: " + id + " " + packet.getClass().getSimpleName());
+            }*/
             packet.read(is);
             output.add(packet);
         }

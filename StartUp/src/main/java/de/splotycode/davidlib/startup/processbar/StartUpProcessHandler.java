@@ -4,9 +4,12 @@ import de.splotycode.davidlib.console.ProcessBar;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.david.davidlib.logger.Logger;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StartUpProcessHandler {
+
+    private Logger logger = Logger.getInstance(getClass());
 
     @Getter private static StartUpProcessHandler instance = new StartUpProcessHandler();
 
@@ -22,7 +25,7 @@ public class StartUpProcessHandler {
 
     public void newProcess(String name, int subSize) {
         if (processBar != null) processBar.stop();
-        processBar = new ProcessBar(subSize, System.out, name, 1);
+        processBar = new ProcessBar(subSize, logger, name, 1);
     }
 
     public void end() {

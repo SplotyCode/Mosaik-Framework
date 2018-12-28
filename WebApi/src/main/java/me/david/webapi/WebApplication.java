@@ -2,6 +2,7 @@ package me.david.webapi;
 
 import com.google.common.reflect.ClassPath;
 import lombok.Getter;
+import me.david.davidlib.logger.Logger;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.server.WebServer;
@@ -10,6 +11,8 @@ import java.io.IOException;
 
 @Deprecated
 public class WebApplication {
+
+    private static Logger logger = Logger.getInstance(WebApplication.class);
 
     @Getter private static WebApplication instance;
 
@@ -49,7 +52,7 @@ public class WebApplication {
     public void registerTransformer(ParameterResolver parameterResolver) {
         if (!manager.getGlobalParameterResolver().contains(parameterResolver)) {
             manager.getGlobalParameterResolver().add(parameterResolver);
-            System.out.println("Registered tranformer: " + parameterResolver.getClass().getSimpleName());
+            logger.info("Registered tranformer: " + parameterResolver.getClass().getSimpleName());
         }
     }
 

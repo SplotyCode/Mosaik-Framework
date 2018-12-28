@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.david.davidlib.annotation.AnnotationHelper;
+import me.david.davidlib.logger.Logger;
 import me.david.davidlib.startup.StartupTask;
 import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
 import me.david.davidlib.utils.reflection.ClassFinderHelper;
@@ -19,6 +20,8 @@ import java.util.TreeMap;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StartTaskExecutor {
+
+    private static Logger logger = Logger.getInstance(StartTaskExecutor.class);
 
     @Getter private static StartTaskExecutor instance = new StartTaskExecutor();
 
@@ -51,18 +54,22 @@ public class StartTaskExecutor {
     }
 
     public void collectSkippedPaths() {
-        System.out.println("Collecting Skipped Paths");
         Reflections reflections = new Reflections(".*", new ResourcesScanner());
         for (String file : reflections.getResources(x -> x != null && x.startsWith("disabled_paths"))) {
             try (InputStream is = StartTaskExecutor.class.getResourceAsStream("/" + file)) {
                 String[] array = IOUtils.toString(is, "UTF-8").split("\n");
-                System.out.println("Registered " + array.length + " disabled paths from '" + file + "'.txt");
+                logger.info("Registered " + array.length + " disabled paths from '" + file + "'.txt");
                 for (String skippedPath : array) {
                     ClassFinderHelper.registerSkippedPath(skippedPath);
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        }
+        if (ClassFinderHelper.getSkippedPaths().isEmpty()) {
+            logger.info("Could not found any disabled paths");
+        } else {
+            logger.info("Found " + ClassFinderHelper.getSkippedPaths().size() + " disabled paths");
         }
     }
 

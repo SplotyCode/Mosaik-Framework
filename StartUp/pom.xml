@@ -39,7 +39,6 @@
                         <configuration>
                             <compilerArgument>-proc:none</compilerArgument>
                             <includes>
-                                <include>de/splotycode/davidlib/startup/processor/DefaultSkippedPaths.java</include>
                                 <include>de/splotycode/davidlib/startup/processor/SkipPathProcessor.java</include>
                             </includes>
                         </configuration>
