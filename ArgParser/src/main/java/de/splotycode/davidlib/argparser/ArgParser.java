@@ -33,7 +33,12 @@ public class ArgParser implements IArgParser {
         for (Argument argument : object.getAll()) {
             String name = label == null ? "" : label + ":" + argument.getName();
             String rawValue = arguments.getByKey(name);
-            if (rawValue == null) throw new ArgParseException("Could not fill argument " + name + " because it foes not exsits in arg");
+            if (rawValue == null) {
+                if (argument.getParameter().needed()) {
+                    throw new ArgParseException("Could not fill argument " + name + " because it foes not exsits in arg");
+                }
+                continue;
+            }
             Object result = LinkBase.getTransformerManager().transform(rawValue, argument.getField().getType());
             try {
                 argument.getField().set(obj, result);
