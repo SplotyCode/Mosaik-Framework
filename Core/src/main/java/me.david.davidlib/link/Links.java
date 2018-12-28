@@ -1,6 +1,7 @@
 package me.david.davidlib.link;
 
 import me.david.davidlib.datafactory.DataKey;
+import me.david.davidlib.info.PathManager;
 import me.david.davidlib.link.transformer.ITransformerManager;
 import me.david.davidlib.startup.BootContext;
 import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
@@ -14,5 +15,6 @@ public final class Links {
     public static final DataKey<IStartUpManager> STARTUP_MANAGER = new DataKey<>("startup.manager");
     public static final DataKey<IArgParser> ARG_PARSER = new DataKey<>("argparser.argparser");
     public static final DataKey<ParsingManager> PARSING_MANAGER = new DataKey<>("parsing.manager");
+    public static final DataKey<PathManager> PATH_MANAGER = new DataKey<>("path_manager");
 
 }
