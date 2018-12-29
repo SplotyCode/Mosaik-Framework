@@ -15,5 +15,5 @@ public class RegisterSpigotPathManager implements StartupTask {
     public void execute(StartUpEnvironmentChanger environmentChanger) throws Exception {
         LinkBase.getInstance().registerLink(Links.PATH_MANAGER, new SpigotPathManager());
     }
-    
+
 }
