@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 public final class Filters {
 
-    private enum FilterType {
+    public enum FilterType {
 
         EQUAL,
         NOTEQUAL,
@@ -25,7 +25,7 @@ public final class Filters {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Filter {
+    public static abstract class Filter {
 
         protected FilterType type;
 

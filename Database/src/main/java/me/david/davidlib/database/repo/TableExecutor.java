@@ -19,23 +19,23 @@ public interface TableExecutor<T, C extends Connection> {
     void deleteFirst(C connection, Filters.Filter filter);
     void deleteAll(C connection, Filters.Filter filter);
 
-    boolean exists(C connection, Object primary);
+    //boolean exists(C connection, Object primary);
     boolean exists(C connection, Filters.Filter filter);
 
     Iterable<T> selectAll(C connection);
-    Iterable<T> select(C connection, Object value);
+    //Iterable<T> select(C connection, Object value);
     Iterable<T> select(C connection, Filters.Filter filter);
-    T selectFirst(C connection, Object value);
+    //T selectFirst(C connection, Object value);
     T selectFirst(C connection, Filters.Filter filter);
 
     long count(C connection);
     long count(C connection, Filters.Filter filter);
 
     void update(C connection, T entity);
-    void update(C connection, T entity, Object object);
+    //void update(C connection, T entity, Object object);
     void update(C connection, T entity, Filters.Filter filter);
     void update(C connection, T entity, String... fields);
-    void update(C connection, T entity, Object object, String... fields);
+    //void update(C connection, T entity, Object object, String... fields);
     void update(C connection, T entity, Filters.Filter filter, String... fields);
 
 
@@ -79,9 +79,9 @@ public interface TableExecutor<T, C extends Connection> {
         deleteAll((C) Database.getInstance().getDefaultConnection(), filter);
     }
 
-    default boolean exists(Object primary) {
+    /*default boolean exists(Object primary) {
         return exists((C) Database.getInstance().getDefaultConnection(), primary);
-    }
+    }*/
 
     default boolean exists(Filters.Filter filter) {
         return exists((C) Database.getInstance().getDefaultConnection(), filter);
@@ -91,17 +91,17 @@ public interface TableExecutor<T, C extends Connection> {
         return selectAll((C) Database.getInstance().getDefaultConnection());
     }
 
-    default Iterable<T> select(Object value) {
+    /*default Iterable<T> select(Object value) {
         return select((C) Database.getInstance().getDefaultConnection(), value);
-    }
+    }*/
 
     default Iterable<T> select(Filters.Filter filter) {
         return select((C) Database.getInstance().getDefaultConnection(), filter);
     }
 
-    default T selectFirst(Object value) {
+    /*default T selectFirst(Object value) {
         return selectFirst((C) Database.getInstance().getDefaultConnection(), value);
-    }
+    }*/
 
     default T selectFirst(Filters.Filter filter) {
         return selectFirst((C) Database.getInstance().getDefaultConnection(), filter);
@@ -119,9 +119,9 @@ public interface TableExecutor<T, C extends Connection> {
         update((C) Database.getInstance().getDefaultConnection(), entity);
     }
 
-    default void update(T entity, Object object) {
+    /*default void update(T entity, Object object) {
         update((C) Database.getInstance().getDefaultConnection(), entity, object);
-    }
+    }*/
 
     default void update(T entity, Filters.Filter filter) {
         update((C) Database.getInstance().getDefaultConnection(), entity, filter);
@@ -131,9 +131,9 @@ public interface TableExecutor<T, C extends Connection> {
         update((C) Database.getInstance().getDefaultConnection(), entity, fields);
     }
 
-    default void update(T entity, Object object, String... fields) {
+    /*default void update(T entity, Object object, String... fields) {
         update((C) Database.getInstance().getDefaultConnection(), entity, object, fields);
-    }
+    }*/
 
     default void update(T entity, Filters.Filter filter, String... fields) {
         update((C) Database.getInstance().getDefaultConnection(), entity, filter, fields);

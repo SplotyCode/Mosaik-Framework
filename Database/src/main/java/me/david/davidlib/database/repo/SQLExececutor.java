@@ -4,14 +4,28 @@ import me.david.davidlib.database.connection.sql.SQLDriverConnection;
 import me.david.davidlib.database.table.ColumnNameResolver;
 import me.david.davidlib.database.table.ColumnType;
 import me.david.davidlib.database.table.FieldObject;
+import me.david.davidlib.utils.StringUtil;
 import me.david.davidlib.utils.reflection.ReflectionUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
+
+    private static Map<Filters.FilterType, String> filterTypes = new HashMap<>();
+
+    static {
+        filterTypes.put(Filters.FilterType.EQUAL, "=");
+        filterTypes.put(Filters.FilterType.NOTEQUAL, "!=");
+        filterTypes.put(Filters.FilterType.GREATER, ">");
+        filterTypes.put(Filters.FilterType.LESS, "<");
+        filterTypes.put(Filters.FilterType.LESS_OR_EQUAL, "<=");
+        filterTypes.put(Filters.FilterType.GREATER_OR_EQUAL, ">=");
+    }
 
     @Override
     public void drop(SQLDriverConnection connection) {
@@ -53,13 +67,7 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
         }
         if (fields.values().size() != 0) builder.setLength(builder.length() - 2);
         builder.append(")");
-        try {
-            Statement statement = connection.getConnection().createStatement();
-            statement.execute(builder.toString());
-            statement.close();
-        } catch (SQLException ex) {
-            throw new RepoException("Error on creating Table: " + ex.getMessage(), ex);
-        }
+        exec(connection, builder, "Creating table");
     }
 
     private ColumnType getColumnType(FieldObject field) {
@@ -94,13 +102,7 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
         }
         if (fields.size() != 0) builder.setLength(builder.length() - 2);
         builder.append(")");
-        try {
-            Statement statement = connection.getConnection().createStatement();
-            statement.execute(builder.toString());
-            statement.close();
-        } catch (SQLException ex) {
-            throw new RepoException("Error on saving Table: " + ex.getMessage(), ex);
-        }
+        exec(connection, builder, "Saving table");
     }
 
     @Override
@@ -116,13 +118,7 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
         }
         if (fields.length != 0) builder.setLength(builder.length() - 2);
         builder.append(")");
-        try {
-            Statement statement = connection.getConnection().createStatement();
-            statement.execute(builder.toString());
-            statement.close();
-        } catch (SQLException ex) {
-            throw new RepoException("Error on saving Table: " + ex.getMessage(), ex);
-        }
+        exec(connection, builder, "Saving table");
     }
 
     @Override
@@ -153,22 +149,43 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
 
     @Override
     public void deleteFirst(SQLDriverConnection connection, Filters.Filter filter) {
+        StringBuilder builder = new StringBuilder("DELETE FROM ");
+        builder.append(name).append(" ");
+        builder.append(generateWhere(filter));
+        builder.append(" LIMIT 1;");
+        exec(connection, builder, "Deleting rows");
+    }
 
+    private void exec(SQLDriverConnection connection, StringBuilder builder, String action) {
+        try {
+            Statement statement = connection.getConnection().createStatement();
+            statement.execute(builder.toString());
+            statement.close();
+        } catch (SQLException ex) {
+            throw new RepoException("Error on " + action + ": " + ex.getMessage(), ex);
+        }
     }
 
     @Override
     public void deleteAll(SQLDriverConnection connection, Filters.Filter filter) {
-
-    }
-
-    @Override
-    public boolean exists(SQLDriverConnection connection, Object primary) {
-        return false;
+        StringBuilder builder = new StringBuilder("DELETE FROM ");
+        builder.append(name).append(" ");
+        builder.append(generateWhere(filter));
+        exec(connection, builder, "Deleting rows");
     }
 
     @Override
     public boolean exists(SQLDriverConnection connection, Filters.Filter filter) {
-        return false;
+        StringBuilder builder = new StringBuilder("SELECT null from ");
+        builder.append(name).append(generateWhere(filter));
+        try {
+            Statement statement = connection.getConnection().createStatement();
+            boolean result = statement.executeQuery(builder.toString()).next();
+            statement.close();
+            return result;
+        } catch (SQLException ex) {
+            throw new RepoException("Error on exsits ceck: " + ex.getMessage(), ex);
+        }
     }
 
     @Override
@@ -177,17 +194,7 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     @Override
-    public Iterable<T> select(SQLDriverConnection connection, Object value) {
-        return null;
-    }
-
-    @Override
     public Iterable<T> select(SQLDriverConnection connection, Filters.Filter filter) {
-        return null;
-    }
-
-    @Override
-    public T selectFirst(SQLDriverConnection connection, Object value) {
         return null;
     }
 
@@ -239,12 +246,17 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     private String generateWhere(Filters.Filter filter) {
-        return "";
+        return "where " + buildFilter(filter);
     }
 
-    @Override
-    public void update(SQLDriverConnection connection, T entity, Object object) {
-
+    private String buildFilter(Filters.Filter filter) {
+        Filters.FilterType type = filter.type;
+        if (filter instanceof Filters.ComplexFilter) {
+            return StringUtil.join(((Filters.ComplexFilter) filter).getFilters(), this::buildFilter, type.name());
+        }
+        String operator = filterTypes.get(type);
+        Filters.ValueFilter valueFilter = (Filters.ValueFilter) filter;
+        return valueFilter.field + operator + valueFilter.getObject().toString();
     }
 
     @Override
@@ -254,11 +266,6 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
 
     @Override
     public void update(SQLDriverConnection connection, T entity, String... fields) {
-
-    }
-
-    @Override
-    public void update(SQLDriverConnection connection, T entity, Object object, String... fields) {
 
     }
 
