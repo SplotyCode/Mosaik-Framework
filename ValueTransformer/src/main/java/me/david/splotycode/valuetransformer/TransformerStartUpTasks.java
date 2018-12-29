@@ -3,11 +3,11 @@ package me.david.splotycode.valuetransformer;
 import me.david.davidlib.annotation.priority.Priority;
 import me.david.davidlib.link.LinkBase;
 import me.david.davidlib.link.Links;
-import me.david.davidlib.startup.StartUpPrioritys;
+import me.david.davidlib.startup.StartUpPriorities;
 import me.david.davidlib.startup.StartupTask;
 import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
 
-@Priority(priority = StartUpPrioritys.PRE_LINKBASE)
+@Priority(priority = StartUpPriorities.PRE_LINKBASE)
 public class TransformerStartUpTasks implements StartupTask {
 
     @Override

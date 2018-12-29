@@ -6,7 +6,7 @@ import me.david.davidlib.link.LinkBase;
 import me.david.davidlib.link.Links;
 import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
 
-@Priority(priority = StartUpPrioritys.PRE_LINKBASE)
+@Priority(priority = StartUpPriorities.PRE_LINKBASE)
 public class PreLinkBaseStartUp implements StartupTask {
 
     @Override

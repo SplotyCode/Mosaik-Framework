@@ -1,6 +1,6 @@
 package me.david.davidlib.startup;
 
-public final class StartUpPrioritys {
+public final class StartUpPriorities {
 
     public static final int INDEPENDENT_SETUP = Integer.MAX_VALUE - 100;
 
