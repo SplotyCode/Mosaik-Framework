@@ -1,6 +1,7 @@
 package de.splotycode.davidlib.startup.starttask;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.TreeMultimap;
 import de.splotycode.davidlib.startup.exception.FrameworkStartException;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,9 +18,6 @@ import org.reflections.scanners.ResourcesScanner;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.TreeMap;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StartTaskExecutor {
@@ -28,7 +26,7 @@ public class StartTaskExecutor {
 
     @Getter private static StartTaskExecutor instance = new StartTaskExecutor();
 
-    private TreeMap<Integer, StartupTask> tasks = new TreeMap<>();
+    private TreeMultimap<Integer, StartupTask> tasks = TreeMultimap.create(Ordering.natural().reverse(), Ordering.natural());
 
     public void findAll(boolean externalCall) {
         if (externalCall) tasks.clear();
@@ -49,7 +47,8 @@ public class StartTaskExecutor {
     }
 
     public void runAll(StartUpEnvironmentChanger environmentChanger) {
-        for (StartupTask task : Lists.reverse(new ArrayList<>(tasks.values()))) {
+        for (StartupTask task : tasks.values()) {
+            logger.info("Executing: " + task.getClass().getSimpleName());
             try {
                 task.execute(environmentChanger);
             } catch (Exception ex) {
