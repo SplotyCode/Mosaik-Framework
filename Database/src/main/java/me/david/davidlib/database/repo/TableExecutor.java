@@ -22,16 +22,13 @@ public interface TableExecutor<T, C extends Connection> {
     //boolean exists(C connection, Object primary);
     boolean exists(C connection, Filters.Filter filter);
 
-    Iterable<T> selectAll(C connection);
-    //Iterable<T> select(C connection, Object value);
-    Iterable<T> select(C connection, Filters.Filter filter);
-    //T selectFirst(C connection, Object value);
-    T selectFirst(C connection, Filters.Filter filter);
+    Iterable<T> selectAll(C connection, String... fields);
+    Iterable<T> select(C connection, Filters.Filter filter, String... fields);
+    T selectFirst(C connection, Filters.Filter filter, String... fields);
 
     long count(C connection);
     long count(C connection, Filters.Filter filter);
 
-    void update(C connection, T entity);
     //void update(C connection, T entity, Object object);
     void update(C connection, T entity, Filters.Filter filter);
     void update(C connection, T entity, String... fields);
@@ -87,24 +84,24 @@ public interface TableExecutor<T, C extends Connection> {
         return exists((C) Database.getInstance().getDefaultConnection(), filter);
     }
 
-    default Iterable<T> selectAll() {
-        return selectAll((C) Database.getInstance().getDefaultConnection());
+    default Iterable<T> selectAll(String... fields) {
+        return selectAll((C) Database.getInstance().getDefaultConnection(), fields);
     }
 
     /*default Iterable<T> select(Object value) {
         return select((C) Database.getInstance().getDefaultConnection(), value);
     }*/
 
-    default Iterable<T> select(Filters.Filter filter) {
-        return select((C) Database.getInstance().getDefaultConnection(), filter);
+    default Iterable<T> select(Filters.Filter filter, String... fields) {
+        return select((C) Database.getInstance().getDefaultConnection(), filter, fields);
     }
 
     /*default T selectFirst(Object value) {
         return selectFirst((C) Database.getInstance().getDefaultConnection(), value);
     }*/
 
-    default T selectFirst(Filters.Filter filter) {
-        return selectFirst((C) Database.getInstance().getDefaultConnection(), filter);
+    default T selectFirst(Filters.Filter filter, String... fields) {
+        return selectFirst((C) Database.getInstance().getDefaultConnection(), filter, fields);
     }
 
     default long count() {

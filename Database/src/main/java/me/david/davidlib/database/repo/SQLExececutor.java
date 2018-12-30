@@ -189,21 +189,6 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     @Override
-    public Iterable<T> selectAll(SQLDriverConnection connection) {
-        return null;
-    }
-
-    @Override
-    public Iterable<T> select(SQLDriverConnection connection, Filters.Filter filter) {
-        return null;
-    }
-
-    @Override
-    public T selectFirst(SQLDriverConnection connection, Filters.Filter filter) {
-        return null;
-    }
-
-    @Override
     public long count(SQLDriverConnection connection) {
         try {
             PreparedStatement statement = connection.getConnection().prepareStatement("select count(*) from ?");
@@ -240,11 +225,6 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
         }
     }
 
-    @Override
-    public void update(SQLDriverConnection connection, T entity) {
-
-    }
-
     private String generateWhere(Filters.Filter filter) {
         return "where " + buildFilter(filter);
     }
@@ -272,6 +252,21 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     @Override
     public void update(SQLDriverConnection connection, T entity, Filters.Filter filter, String... fields) {
 
+    }
+
+    @Override
+    public Iterable<T> selectAll(SQLDriverConnection connection, String... fields) {
+        return null;
+    }
+
+    @Override
+    public Iterable<T> select(SQLDriverConnection connection, Filters.Filter filter, String... fields) {
+        return null;
+    }
+
+    @Override
+    public T selectFirst(SQLDriverConnection connection, Filters.Filter filter, String... fields) {
+        return null;
     }
 
 }
