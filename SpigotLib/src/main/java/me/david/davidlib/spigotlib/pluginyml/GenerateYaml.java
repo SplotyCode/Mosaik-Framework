@@ -15,7 +15,7 @@ public @interface GenerateYaml {
 
     String author();
 
-    String[] dependencys() default {};
-    String[] softDependencys() default {};
+    String[] dependencies() default {};
+    String[] softDependencies() default {};
 
 }

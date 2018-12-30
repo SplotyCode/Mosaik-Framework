@@ -30,8 +30,8 @@ public class JavaVersion implements Comparable<JavaVersion> {
             if (p > 0) str = str.substring(p);
         }
 
-        List<String> separators = new ArrayList<String>();
-        List<String> numbers = new ArrayList<String>();
+        List<String> separators = new ArrayList<>();
+        List<String> numbers = new ArrayList<>();
         int length = str.length(), p = 0;
         boolean number = false;
         while (p < length) {

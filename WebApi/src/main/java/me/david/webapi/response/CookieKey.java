@@ -1,6 +1,5 @@
 package me.david.webapi.response;
 
-import io.netty.handler.codec.DateFormatter;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -1,7 +1,6 @@
 package me.david.webapi.handler.anotation;
 
 import me.david.davidlib.helper.Pair;
-import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.HttpHandler;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.handler.anotation.parameter.ParameterResolveException;
@@ -60,7 +59,7 @@ public class AnnotationHandler implements HttpHandler {
                 try {
                     objects[i] = pair.getOne().transform(pair.getTwo(), request, global, sup);
                 } catch (ParameterResolveException ex) {
-                    throw new HandleRequestException("Failed to transform parameters", ex);
+                    throw new HandleRequestException("Failed to transform parameter", ex);
                 }
                 i++;
             }

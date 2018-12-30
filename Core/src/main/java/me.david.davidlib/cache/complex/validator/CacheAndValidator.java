@@ -11,6 +11,7 @@ public class CacheAndValidator<T> implements CacheValidator<T> {
 
     private List<CacheValidator<T>> validators;
 
+    @SafeVarargs
     public CacheAndValidator(CacheValidator<T>... validators) {
         this.validators = Arrays.asList(validators);
     }

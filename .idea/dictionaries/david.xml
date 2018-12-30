@@ -5,6 +5,7 @@
       <w>kaisa</w>
       <w>linkbase</w>
       <w>mongo</w>
+      <w>nosniff</w>
     </words>
   </dictionary>
 </component>

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface PostMustBe {
 
-    String paramer();
+    String parameter();
     String value();
 
 }

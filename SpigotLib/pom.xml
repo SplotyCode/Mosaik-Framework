@@ -39,7 +39,7 @@
                         <configuration>
                             <compilerArgument>-proc:none</compilerArgument>
                             <includes>
-                                <include>me/david/davidlib/spigotlib/pluginyml/YamlProcesscor.java</include>
+                                <include>me/david/davidlib/spigotlib/pluginyml/YamlProcessor.java</include>
                             </includes>
                         </configuration>
                     </execution>

@@ -37,8 +37,6 @@ public class ConsoleLogger extends Logger {
             }
         }
 
-        AssertionError error = new AssertionError(message);
-        error.initCause(t);
-        throw error;
+        throw new AssertionError(message, t);
     }
 }

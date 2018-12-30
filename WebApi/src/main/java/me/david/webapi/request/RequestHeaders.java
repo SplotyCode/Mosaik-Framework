@@ -8,7 +8,7 @@ public enum RequestHeaders {
     ACCEPT_LANGUAGE,
     AUTHORIZATION,
     CONNECTION,
-    CONTENT_LENGHT,
+    CONTENT_LENGTH,
     CONTENT_MD5,
     CONTENT_TYPE,
     COOKIE,
@@ -19,10 +19,10 @@ public enum RequestHeaders {
     IF_MODIFIED_SINCE,
     IF_NONE_MATCH,
     IF_RANGE,
-    PROXY_AUTHORIZATIOn,
+    PROXY_AUTHORIZATION,
     RANGE,
-    REFERER,
-    USER_AGEND,
+    REFERRER,
+    USER_AGENT,
     UPGRADE
 
 }

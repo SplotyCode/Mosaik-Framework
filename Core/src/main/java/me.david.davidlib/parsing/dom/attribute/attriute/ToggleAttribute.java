@@ -11,9 +11,16 @@ public class ToggleAttribute extends ValueAttribute<Boolean> {
         super(name);
         this.rawValue = rawValue;
         rawValue = rawValue.toLowerCase();
-        if(rawValue.equals("on")) value = true;
-        else if(rawValue.equals("off")) value = false;
-        else throw new DomParseException("Invalid Toggle value: '" + rawValue + "'");
+        switch (rawValue) {
+            case "on":
+                value = true;
+                break;
+            case "off":
+                value = false;
+                break;
+            default:
+                throw new DomParseException("Invalid Toggle value: '" + rawValue + "'");
+        }
     }
 
     public ToggleAttribute(String name, Boolean value){

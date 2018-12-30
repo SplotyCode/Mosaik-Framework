@@ -1,7 +1,6 @@
 package me.david.davidlib.utils.reflection.classregister;
 
 import lombok.Setter;
-import me.david.davidlib.utils.reflection.ReflectionUtil;
 import net.jodah.typetools.TypeResolver;
 
 import java.util.ArrayList;

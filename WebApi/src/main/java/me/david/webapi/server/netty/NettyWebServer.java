@@ -1,9 +1,7 @@
 package me.david.webapi.server.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -11,22 +9,10 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import me.david.webapi.WebApplicationType;
-import me.david.webapi.handler.HandlerManager;
-import me.david.webapi.request.Method;
-import me.david.webapi.request.Request;
-import me.david.webapi.response.Response;
-import me.david.webapi.response.error.ErrorFactory;
-import me.david.webapi.response.error.ErrorHandler;
 import me.david.webapi.server.AbstractWebServer;
 import me.david.webapi.server.WebServer;
-
-import java.net.InetSocketAddress;
-import java.util.Map;
 
 public class NettyWebServer extends AbstractWebServer implements WebServer {
 

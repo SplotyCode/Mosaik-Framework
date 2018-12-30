@@ -7,20 +7,15 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainpulateObjectAnalyser {
+public class ManipulateObjectAnalyser {
 
     private static HashMap<String, AnalysedObject> objects = new HashMap<>();
 
     public static AnalysedObject getObject(Object object) {
         String className = object.getClass().getSimpleName();
-        AnalysedObject data = objects.get(className);
-        if (data == null) {
-            data = new AnalysedObject(object);
-            objects.put(className, data);
-            //if (object.getClass().isAnnotationPresent(Pattern.class))
-            //    objects.put(object.getClass().getAnnotation(Pattern.class).value(), data);
-        }
-        return data;
+        //if (object.getClass().isAnnotationPresent(Pattern.class))
+        //    objects.put(object.getClass().getAnnotation(Pattern.class).value(), data);
+        return objects.computeIfAbsent(className, k -> new AnalysedObject(object));
     }
 
     public static Object getValue(String name, Object object) {

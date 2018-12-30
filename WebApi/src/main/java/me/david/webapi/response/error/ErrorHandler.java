@@ -3,7 +3,6 @@ package me.david.webapi.response.error;
 import me.david.davidlib.utils.reflection.classregister.ListClassRegister;
 import me.david.webapi.response.Response;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

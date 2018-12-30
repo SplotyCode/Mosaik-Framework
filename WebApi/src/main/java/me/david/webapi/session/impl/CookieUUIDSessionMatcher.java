@@ -1,6 +1,5 @@
 package me.david.webapi.session.impl;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.david.webapi.request.Request;
 import me.david.webapi.response.CookieKey;

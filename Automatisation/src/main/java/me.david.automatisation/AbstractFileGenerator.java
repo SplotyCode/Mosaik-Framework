@@ -30,7 +30,7 @@ public abstract class AbstractFileGenerator implements Generator<String> {
                 if (count == -1) {
                     count = lines.count();
                 }
-                return lines.skip(ThreadLocalRandom.current().nextLong(0, count)).findFirst().get();
+                return lines.skip(ThreadLocalRandom.current().nextLong(0, count)).findFirst().orElse(null);
             }
         } catch (IOException e) {
             e.printStackTrace();

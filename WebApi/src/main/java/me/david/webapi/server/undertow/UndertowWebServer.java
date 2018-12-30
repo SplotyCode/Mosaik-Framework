@@ -1,20 +1,15 @@
 package me.david.webapi.server.undertow;
 
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.undertow.Undertow;
-import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.server.handlers.Cookie;
 import io.undertow.util.HttpString;
 import me.david.webapi.WebApplicationType;
-import me.david.webapi.request.AbstractRequest;
 import me.david.webapi.request.DefaultRequest;
 import me.david.webapi.request.Method;
-import me.david.webapi.request.Request;
 import me.david.webapi.response.CookieKey;
 import me.david.webapi.response.Response;
 import me.david.webapi.server.AbstractWebServer;
 import me.david.webapi.server.WebServer;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.util.Map;

@@ -14,13 +14,17 @@ public class InstanceManager<T extends INetServer> extends ListenerHandler<Insta
     /* @Getter @Setter private Supplier<INetServer> create; */
     @Getter @Setter private ServerStarter<T> serverStarter;
     private int currentPort;
-    private List<Integer> freePorts = new ArrayList<>();
+    private List<Integer> preferredPorts = new ArrayList<>();
     @Getter @Setter private List<Integer> portBlockList = new ArrayList<>();
 
     public interface ServerStarter<T extends INetServer> {
 
         T startServer(int port);
 
+    }
+
+    public void addPreferredPort(int port) {
+        preferredPorts.add(port);
     }
 
     public InstanceManager(int minPort, int maxPort, int maxInstances, int startInstances, ServerStarter<T> serverStarter) {
@@ -48,7 +52,7 @@ public class InstanceManager<T extends INetServer> extends ListenerHandler<Insta
     }
 
     private int getBestPort() {
-        Optional<Integer> optional = freePorts.stream().findFirst();
+        Optional<Integer> optional = preferredPorts.stream().findFirst();
         if (optional.isPresent()) return optional.get();
 
         while (true) {

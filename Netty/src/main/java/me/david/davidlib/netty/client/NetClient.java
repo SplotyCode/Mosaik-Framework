@@ -12,7 +12,7 @@ import lombok.Setter;
 import me.david.davidlib.logger.Logger;
 import me.david.davidlib.netty.PacketRegistry;
 import me.david.davidlib.netty.packets.SerializePacket;
-import me.david.davidlib.netty.server.GenerelChannelIntilializer;
+import me.david.davidlib.netty.server.GeneralChannelInitializer;
 
 import java.net.SocketAddress;
 import java.util.function.Consumer;
@@ -41,13 +41,13 @@ public class NetClient extends Thread implements INetClient {
                 .group(workerGroup)
                 .channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class)
                 .option(ChannelOption.SO_KEEPALIVE, true)
-                .handler(new GenerelChannelIntilializer(packetRegistry,  (ch) -> {
+                .handler(new GeneralChannelInitializer(packetRegistry,  (ch) -> {
                     constructPipeline.accept(ch.pipeline());
                 }))
                 .connect(address).sync().channel().closeFuture().sync();
             ClientReconnectEvent event = new ClientReconnectEvent(this);
             event.callGlobal();
-            logger.info("Der Client wurde gestoppt");
+            logger.info("The Client is stopped");
             if (!event.isCanceled()) {
                 logger.info("Reconnecting in " + event.getSleepTime()/1000 + " seconds");
                 Thread.sleep(event.getSleepTime());

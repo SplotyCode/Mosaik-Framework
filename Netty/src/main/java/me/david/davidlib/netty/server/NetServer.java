@@ -55,7 +55,7 @@ public class NetServer<P extends Packet> extends Thread implements INetServer {
             ServerBootstrap bootstrap = new ServerBootstrap()
                     .group(bossGroup, workerGroup)
                     .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                    .childHandler(new GenerelChannelIntilializer(packetRegistry,  (ch) -> {
+                    .childHandler(new GeneralChannelInitializer(packetRegistry,  (ch) -> {
                         ch.pipeline().addLast(connectionCounter);
                         constructPipeline.accept(ch.pipeline());
                     }))

@@ -1,4 +1,4 @@
-package me.david.davidlib.parsing.write;
+package me.david.davidlib.parsing.output;
 
 import me.david.davidlib.parsing.DomSourceType;
 

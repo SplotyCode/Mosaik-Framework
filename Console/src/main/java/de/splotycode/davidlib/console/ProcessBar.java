@@ -3,7 +3,6 @@ package de.splotycode.davidlib.console;
 import me.david.davidlib.iui.INamedTaskBar;
 import me.david.davidlib.logger.Logger;
 
-import java.io.PrintStream;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -26,21 +25,18 @@ public class ProcessBar implements INamedTaskBar {
 
     private void draw() {
         String eta = getETaAsString();
-        StringBuilder string = new StringBuilder();
         int percent = value * 100 / max;
-        string
-                //.append('\r')
-                .append(prefix)
-                .append(String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")))
-                .append(String.format(" %d%% [", percent))
-                .append(String.join("", Collections.nCopies(percent, "=")))
-                .append('>')
-                .append(String.join("", Collections.nCopies(100 - percent, " ")))
-                .append(']')
-                .append(String.join("", Collections.nCopies((int) (Math.log10(max)) - (int) (Math.log10(value)), " ")))
-                .append(String.format(" %d/%d, %s", value, max, eta));
-
-        logger.info(string.toString());
+        String string =//.append('\r')
+                prefix +
+                        String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")) +
+                        String.format(" %d%% [", percent) +
+                        String.join("", Collections.nCopies(percent, "=")) +
+                        '>' +
+                        String.join("", Collections.nCopies(100 - percent, " ")) +
+                        ']' +
+                        String.join("", Collections.nCopies((int) (Math.log10(max)) - (int) (Math.log10(value)), " ")) +
+                        String.format(" %d/%d, %s", value, max, eta);
+        logger.info(string);
     }
 
     public void reset() {

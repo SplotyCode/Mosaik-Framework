@@ -171,9 +171,7 @@ public class Matrix {
     public double[][] copyAll() {
         double[][] C = new double[rows][cols];
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                C[i][j] = values[i][j];
-            }
+            System.arraycopy(values[i], 0, C[i], 0, cols);
         }
         return C;
     }

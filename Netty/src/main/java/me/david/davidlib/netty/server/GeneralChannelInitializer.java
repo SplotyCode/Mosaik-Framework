@@ -12,10 +12,9 @@ import me.david.davidlib.netty.packets.SerializePacket;
 
 import java.util.function.Consumer;
 
-public class GenerelChannelIntilializer extends ChannelInitializer<SocketChannel> {
+public class GeneralChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-
-    public GenerelChannelIntilializer(PacketRegistry<SerializePacket> registry, Consumer<SocketChannel> nextBootstrap) {
+    public GeneralChannelInitializer(PacketRegistry<SerializePacket> registry, Consumer<SocketChannel> nextBootstrap) {
         this.nextBootstrap = nextBootstrap;
         this.registry = registry;
     }

@@ -3,20 +3,14 @@ package me.david.webapi.server.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
-import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http.cookie.Cookie;
-import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import lombok.AllArgsConstructor;
-import me.david.webapi.request.AbstractRequest;
-import me.david.webapi.request.Method;
 import me.david.webapi.request.Request;
 import me.david.webapi.response.CookieKey;
 import me.david.webapi.response.Response;
 import me.david.webapi.server.AbstractWebServer;
 
 import java.util.Map;
-import java.util.Set;
 
 import static me.david.webapi.server.netty.NettyUtils.*;
 

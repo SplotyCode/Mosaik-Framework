@@ -35,7 +35,7 @@ public class StringManipulator implements ResponseManipulator {
 
     @Override
     public ResponseManipulator object(Object object) {
-        MainpulateObjectAnalyser.AnalysedObject data = MainpulateObjectAnalyser.getObject(object);
+        ManipulateObjectAnalyser.AnalysedObject data = ManipulateObjectAnalyser.getObject(object);
         for (Map.Entry<String, String> entry : data.getFields().entrySet()) {
             List<ManipulateData.ManipulateVariable> variables = manipulateData.getVariables(entry.getValue());
             if (variables != null) {
@@ -59,7 +59,7 @@ public class StringManipulator implements ResponseManipulator {
         ManipulateData.ManipulatePattern pattern = manipulateData.getPattern(name);
         if (pattern == null) throw new PatternNotFoundException("Could not find " + name);
 
-        for (Map.Entry<String, String> entry : MainpulateObjectAnalyser.getObject(object).getFields().entrySet()) {
+        for (Map.Entry<String, String> entry : ManipulateObjectAnalyser.getObject(object).getFields().entrySet()) {
             List<ManipulateData.ManipulateVariable> variables = pattern.getVariables().get(entry.getValue());
             if (variables != null) {
                 try {
@@ -88,7 +88,7 @@ public class StringManipulator implements ResponseManipulator {
         int delta = 0;
         for (Replacement replacement : replacements) {
             buffer.replace(replacement.start + delta, replacement.end + delta, replacement.content);
-            delta += replacement.lenghtDiff();
+            delta += replacement.lengthDiff();
         }
         return buffer.toString();
     }
@@ -108,7 +108,7 @@ public class StringManipulator implements ResponseManipulator {
             return content.length();
         }
 
-        public int lenghtDiff() {
+        public int lengthDiff() {
             return endLength() - beforeLength();
         }
 

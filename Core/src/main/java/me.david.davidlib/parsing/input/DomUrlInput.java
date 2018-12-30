@@ -1,6 +1,5 @@
 package me.david.davidlib.parsing.input;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.david.davidlib.parsing.DomSourceType;
 import org.apache.commons.io.IOUtils;

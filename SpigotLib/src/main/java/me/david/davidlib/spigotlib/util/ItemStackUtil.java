@@ -66,7 +66,7 @@ public class ItemStackUtil {
      * Displayname, Amount, material, lohre
      */
     public static ItemStack createLohresimple(String name, int amount, Material material, String lohre1) {
-        List<String> lohre = new ArrayList<String>();
+        List<String> lohre = new ArrayList<>();
         lohre.add(lohre1);
         ItemStack is = new ItemStack(material, amount);
         ItemMeta im = is.getItemMeta();

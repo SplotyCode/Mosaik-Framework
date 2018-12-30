@@ -14,7 +14,7 @@ public class ExampleApp extends Application implements WebApplicationType {
 
     @Override
     public void start(BootContext context) {
-        getLogger().info("Starte Example App");
+        getLogger().info("Starting Example App");
         setWebServer(new UndertowWebServer(this));
         listen(60006);
     }

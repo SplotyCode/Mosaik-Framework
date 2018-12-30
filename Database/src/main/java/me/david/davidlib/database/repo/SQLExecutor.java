@@ -14,7 +14,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
+public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
 
     private static Map<Filters.FilterType, String> filterTypes = new HashMap<>();
 
@@ -184,7 +184,7 @@ public class SQLExececutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
             statement.close();
             return result;
         } catch (SQLException ex) {
-            throw new RepoException("Error on exsits ceck: " + ex.getMessage(), ex);
+            throw new RepoException("Error on exists check: " + ex.getMessage(), ex);
         }
     }
 

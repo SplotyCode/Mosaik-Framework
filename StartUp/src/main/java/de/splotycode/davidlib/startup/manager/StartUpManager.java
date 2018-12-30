@@ -2,7 +2,6 @@ package de.splotycode.davidlib.startup.manager;
 
 import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
 import de.splotycode.davidlib.startup.starttask.StartTaskExecutor;
-import lombok.Getter;
 import lombok.Setter;
 import me.david.davidlib.iui.INamedTaskBar;
 import me.david.davidlib.link.LinkBase;

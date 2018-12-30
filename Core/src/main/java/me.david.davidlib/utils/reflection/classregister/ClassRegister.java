@@ -5,7 +5,6 @@ import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 public interface ClassRegister<T> {
 

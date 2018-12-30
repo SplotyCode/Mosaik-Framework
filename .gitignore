@@ -11,8 +11,6 @@ nbdist/
 .buildlog
 ### Java template
 # Compiled class file
-*.class
-
 # Log file
 *.log
 
@@ -23,7 +21,6 @@ nbdist/
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 *.zip

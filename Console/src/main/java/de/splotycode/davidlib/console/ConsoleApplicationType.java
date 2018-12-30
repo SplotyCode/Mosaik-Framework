@@ -3,9 +3,6 @@ package de.splotycode.davidlib.console;
 import me.david.davidlib.application.ApplicationType;
 import me.david.davidlib.startup.BootContext;
 
-import java.io.InputStream;
-import java.io.PrintStream;
-
 public interface ConsoleApplicationType extends ApplicationType {
 
     default void initType(BootContext context, ConsoleApplicationType dummy) {

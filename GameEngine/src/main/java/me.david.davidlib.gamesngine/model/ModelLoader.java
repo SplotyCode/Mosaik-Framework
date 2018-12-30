@@ -45,8 +45,9 @@ public class ModelLoader {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        textures.add(modelTexture.getTextureID());
-        return modelTexture.getTextureID();
+        int id = modelTexture.getTextureID();
+        textures.add(id);
+        return id;
     }
 
     public void deleteAll() {

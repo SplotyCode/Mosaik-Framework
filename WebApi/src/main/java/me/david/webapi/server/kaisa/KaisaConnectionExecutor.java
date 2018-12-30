@@ -1,20 +1,12 @@
 package me.david.webapi.server.kaisa;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import me.david.webapi.response.Response;
 
 import java.nio.channels.SocketChannel;
-import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static me.david.webapi.server.kaisa.KaisaConfig.*;
-import static me.david.webapi.server.netty.NettyUtils.convertHttpVersion;
 
 public class KaisaConnectionExecutor {
 

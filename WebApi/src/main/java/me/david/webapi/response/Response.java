@@ -57,11 +57,7 @@ public class Response {
     }
 
     public Response setCookie(String name, String value) {
-        CookieKey key = CACHED_COOKIE_KEYS.get(name);
-        if (key == null) {
-            key = new CookieKey(name);
-            CACHED_COOKIE_KEYS.put(name, key);
-        }
+        CookieKey key = CACHED_COOKIE_KEYS.computeIfAbsent(name, CookieKey::new);
         setCookies.put(key, value);
         return this;
     }

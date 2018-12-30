@@ -3,7 +3,6 @@ package me.david.webapi.handler.anotation;
 import lombok.*;
 import me.david.davidlib.annotation.AnnotationHelper;
 import me.david.davidlib.helper.Pair;
-import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.UrlPattern;
 import me.david.webapi.handler.anotation.check.*;
 import me.david.webapi.handler.anotation.handle.UseResolver;
@@ -49,20 +48,20 @@ public class AnnotationHandlerData {
                 costomMethod = true;
             } else if (annotation instanceof NeedGetParameter) {
                 setMethod("GET");
-                Collections.addAll(neededGet, ((NeedGetParameter) annotation).prameters());
+                Collections.addAll(neededGet, ((NeedGetParameter) annotation).parameters());
             } else if (annotation instanceof NeedPostParameter) {
                 setMethod("POST");
-                Collections.addAll(neededPost, ((NeedPostParameter) annotation).prameters());
+                Collections.addAll(neededPost, ((NeedPostParameter) annotation).parameters());
             } else if (annotation instanceof GetMustBe) {
                 setMethod("GET");
                 GetMustBe mustBeAnnotation = (GetMustBe) annotation;
-                getMustBe.put(mustBeAnnotation.paramer(), mustBeAnnotation.value());
+                getMustBe.put(mustBeAnnotation.parameter(), mustBeAnnotation.value());
             } else if (annotation instanceof PostMustBe) {
                 setMethod("POST");
                 PostMustBe mustBeAnnotation = (PostMustBe) annotation;
-                postMustBe.put(mustBeAnnotation.paramer(), mustBeAnnotation.value());
-            } else if (annotation instanceof AddTransforwer) {
-                for (Class<? extends ParameterResolver> transformer : ((AddTransforwer) annotation).value()) {
+                postMustBe.put(mustBeAnnotation.parameter(), mustBeAnnotation.value());
+            } else if (annotation instanceof AddTransformer) {
+                for (Class<? extends ParameterResolver> transformer : ((AddTransformer) annotation).value()) {
                     try {
                         costomParameterResolvers.add(transformer.newInstance());
                     } catch (InstantiationException | IllegalAccessException e) {
@@ -99,7 +98,7 @@ public class AnnotationHandlerData {
         }
 
         for (Map.Entry<String, String> pair : postMustBe.entrySet()) {
-            if (!request.getPost().containsKey(pair.getKey()) || !request.getPost().get(pair.getKey()).equals(pair.getValue()))
+            if (!request.getPost().containsKey(pair.getKey()) || !request.getFirstPostParameter(pair.getKey()).equals(pair.getValue()))
                 return false;
         }
         return true;

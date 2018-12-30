@@ -8,7 +8,6 @@ import de.splotycode.davidlib.startup.starttask.StartTaskExecutor;
 import lombok.Getter;
 import me.david.davidlib.application.*;
 import me.david.davidlib.info.ApplicationInfo;
-import me.david.davidlib.info.DefaultPathManager;
 import me.david.davidlib.info.EnvironmentInformation;
 import me.david.davidlib.info.SystemInfo;
 import me.david.davidlib.link.LinkBase;

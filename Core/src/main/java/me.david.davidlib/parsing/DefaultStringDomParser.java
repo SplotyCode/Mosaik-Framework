@@ -18,11 +18,6 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
     @Getter @Setter protected List<DomReader<R>> disabledReaders = new ArrayList<>();
 
     @Override
-    public int getIndex() {
-        return index;
-    }
-
-    @Override
     public char getChar() {
         return content.charAt(index);
     }

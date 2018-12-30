@@ -5,7 +5,6 @@ import me.david.davidlib.annotation.Disabled;
 import me.david.davidlib.logger.Logger;
 import me.david.davidlib.utils.reflection.ClassFinderHelper;
 import me.david.webapi.handler.HandlerFinder;
-import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.HttpHandler;
 import me.david.webapi.handler.anotation.check.*;
 import me.david.webapi.server.AbstractWebServer;
@@ -21,7 +20,7 @@ public class AnnotationHandlerFinder implements HandlerFinder {
     private static Logger logger = Logger.getInstance(AnnotationHandlerFinder.class);
 
     @Getter private static Class<Annotation>[] handlerAnotation = new Class[]{
-            Handler.class, AddTransforwer.class,
+            Handler.class, AddTransformer.class,
             First.class, GetMustBe.class,
             Last.class, Mapping.class,
             NeedGetMethod.class, NeedGetParameter.class,
