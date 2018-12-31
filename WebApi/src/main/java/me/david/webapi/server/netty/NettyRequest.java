@@ -6,7 +6,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
-import me.david.davidlib.helper.AlmostBoolean;
+import me.david.davidlib.utils.AlmostBoolean;
 import me.david.webapi.request.AbstractRequest;
 import me.david.webapi.request.Method;
 import me.david.webapi.server.WebServer;

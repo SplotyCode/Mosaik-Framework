@@ -1,6 +1,6 @@
 package me.david.webapi.handler.anotation;
 
-import me.david.davidlib.helper.Pair;
+import me.david.davidlib.utils.Pair;
 import me.david.webapi.handler.HttpHandler;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.handler.anotation.parameter.ParameterResolveException;

@@ -1,6 +1,6 @@
 package me.david.webapi.response.content.string;
 
-import me.david.davidlib.io.ByteArrayInputStream;
+import me.david.davidlib.utils.io.ByteArrayInputStream;
 import me.david.webapi.response.content.ResponseContent;
 
 import java.io.IOException;

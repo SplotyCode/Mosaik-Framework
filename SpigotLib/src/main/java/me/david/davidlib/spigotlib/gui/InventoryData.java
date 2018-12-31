@@ -2,7 +2,7 @@ package me.david.davidlib.spigotlib.gui;
 
 import me.david.davidlib.datafactory.DataFactory;
 import me.david.davidlib.datafactory.DataKey;
-import me.david.davidlib.helper.AlmostBoolean;
+import me.david.davidlib.utils.AlmostBoolean;
 import me.david.davidlib.spigotlib.SpigotApplicationType;
 import me.david.davidlib.spigotlib.util.ColorCodes;
 import me.david.davidlib.spigotlib.util.ItemStackUtil;
