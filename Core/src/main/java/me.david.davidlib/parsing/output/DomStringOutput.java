@@ -1,8 +1,7 @@
 package me.david.davidlib.parsing.output;
 
-import me.david.davidlib.io.ByteArrayInputStream;
+import me.david.davidlib.utils.io.ByteArrayInputStream;
 import me.david.davidlib.parsing.DomSourceType;
-import me.david.davidlib.parsing.output.DomOutput;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;

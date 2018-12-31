@@ -1,4 +1,4 @@
-package me.david.davidlib.helper;
+package me.david.davidlib.utils;
 
 /**
  * This interface Represents an Object that can be destroyed

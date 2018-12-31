@@ -1,4 +1,4 @@
-package me.david.davidlib.helper;
+package me.david.davidlib.utils;
 
 public class Timer implements Cloneable {
 

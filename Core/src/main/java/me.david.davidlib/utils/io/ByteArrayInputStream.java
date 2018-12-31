@@ -1,4 +1,4 @@
-package me.david.davidlib.io;
+package me.david.davidlib.utils.io;
 
 import lombok.Getter;
 

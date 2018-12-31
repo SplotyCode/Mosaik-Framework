@@ -1,6 +1,6 @@
 package me.david.davidlib.parsing.dom.attribute.attriute;
 
-import me.david.davidlib.helper.AlmostBoolean;
+import me.david.davidlib.utils.AlmostBoolean;
 import me.david.davidlib.utils.StringUtil;
 
 public class StandardAttribute extends ValueAttribute<String> {
