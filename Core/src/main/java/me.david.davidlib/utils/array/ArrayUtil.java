@@ -1,5 +1,6 @@
 package me.david.davidlib.utils.array;
 
+//TODO: Add resize, remove, contains, merge, indexof, copy
 public final class ArrayUtil {
 
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
