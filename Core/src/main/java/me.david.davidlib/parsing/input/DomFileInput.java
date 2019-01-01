@@ -2,10 +2,10 @@ package me.david.davidlib.parsing.input;
 
 import lombok.Getter;
 import me.david.davidlib.parsing.DomSourceType;
+import me.david.davidlib.utils.io.Charsets;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.nio.charset.Charset;
 
 @Getter
 public class DomFileInput implements DomInput {
@@ -29,7 +29,7 @@ public class DomFileInput implements DomInput {
     @Override
     public String getString() {
         try {
-            return IOUtils.toString(getStream(), Charset.forName("UTF-8"));
+            return IOUtils.toString(getStream(), Charsets.UTF8);
         } catch (IOException e) {
             e.printStackTrace();
         }

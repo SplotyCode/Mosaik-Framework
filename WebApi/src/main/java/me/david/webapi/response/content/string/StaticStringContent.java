@@ -1,6 +1,7 @@
 package me.david.webapi.response.content.string;
 
 import me.david.davidlib.utils.io.ByteArrayInputStream;
+import me.david.davidlib.utils.io.Charsets;
 import me.david.webapi.response.content.ResponseContent;
 
 import java.io.IOException;
@@ -9,13 +10,11 @@ import java.nio.charset.Charset;
 
 public class StaticStringContent implements ResponseContent {
 
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
-
     private Charset charset;
     private String str;
 
     public StaticStringContent(String str) {
-        charset = UTF_8;
+        charset = Charsets.UTF8;
         this.str = str;
     }
 

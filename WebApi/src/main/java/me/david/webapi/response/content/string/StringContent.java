@@ -1,6 +1,7 @@
 package me.david.webapi.response.content.string;
 
 import me.david.davidlib.utils.io.ByteArrayInputStream;
+import me.david.davidlib.utils.io.Charsets;
 import me.david.webapi.response.content.manipulate.ManipulateableContent;
 import me.david.webapi.response.content.manipulate.ResponseManipulator;
 import me.david.webapi.response.content.manipulate.StringManipulator;
@@ -11,14 +12,12 @@ import java.nio.charset.Charset;
 
 public class StringContent implements ManipulateableContent {
 
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
-
     private Charset charset;
 
     private StringManipulator manipulator;
 
     public StringContent(String str) {
-        charset = UTF_8;
+        charset = Charsets.UTF8;
         manipulator = new StringManipulator(str);
     }
 

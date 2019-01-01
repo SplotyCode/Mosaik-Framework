@@ -48,7 +48,7 @@ public final class PathUtil {
             return false;
         }
 
-        Charset cs = Charset.forName("UTF-16");
+        Charset cs = Charsets.UTF16;
         return cs.canEncode() && cs.newEncoder().canEncode(name);
     }
 
