@@ -2,6 +2,12 @@ package me.david.davidlib.utils;
 
 public class Pair <A, B> {
 
+    public static final Pair<?, ?> EMPTY = new Pair<>(null, null);
+
+    public static <A, B> Pair<A, B> getEmpty() {
+        return (Pair<A, B>) EMPTY;
+    }
+
     private A one;
     private B two;
 
