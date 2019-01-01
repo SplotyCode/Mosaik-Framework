@@ -115,4 +115,40 @@ public final class StringUtil {
         return result;
     }
 
+    public static boolean charsEqualIgnoreCase(char a, char b) {
+        return a == b || Character.toLowerCase(a) == Character.toLowerCase(b);
+    }
+
+    public static boolean endsWithChar(String str, char suffix) {
+        return str != null && str.length() != 0 && str.charAt(str.length() - 1) == suffix;
+    }
+
+    public static boolean startsWithIgnoreCase(String str, String prefix) {
+        int stringLength = str.length();
+        int prefixLength = prefix.length();
+        return stringLength >= prefixLength && str.regionMatches(true, 0, prefix, 0, prefixLength);
+    }
+
+    public static boolean endsWithIgnoreCase(String text, String suffix) {
+        int l1 = text.length();
+        int l2 = suffix.length();
+        if (l1 < l2) return false;
+
+        for (int i = l1 - 1; i >= l1 - l2; i--) {
+            if (!charsEqualIgnoreCase(text.charAt(i), suffix.charAt(i + l2 - l1))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static int lastIndexOf(String str, char c, int start, int end) {
+        start = Math.max(start, 0);
+        for (int i = Math.min(end, str.length()) - 1; i >= start; i--) {
+            if (str.charAt(i) == c) return i;
+        }
+        return -1;
+    }
+
 }
