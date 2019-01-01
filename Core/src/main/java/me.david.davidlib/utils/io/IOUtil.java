@@ -4,9 +4,10 @@ import me.david.davidlib.logger.Logger;
 import me.david.davidlib.utils.array.ArrayUtil;
 
 import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.net.URL;
 import java.nio.channels.FileChannel;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,6 +91,16 @@ public final class IOUtil {
         }
     }
 
+    public static String loadText(final InputStream input, final Charset encoding) throws IOException {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = input.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
+        }
+        return result.toString(encoding.name());
+    }
+
     public static byte[] loadFirstAndClose(InputStream stream, int maxLength) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         try {
@@ -110,6 +121,38 @@ public final class IOUtil {
             toRead -= read;
             outputStream.write(buffer, 0, read);
         }
+    }
+
+    public static String resourceToText(final String name) throws IOException {
+        return resourceToText(name, Charsets.UTF8);
+    }
+
+    public static String resourceToText(final String name, final Charset encoding) throws IOException {
+        return resourceToText(name, encoding, null);
+    }
+
+    public static String resourceToText(final String name, final Charset encoding, final ClassLoader classLoader) throws IOException {
+        return loadText(resourceToURL(name, classLoader), encoding);
+    }
+
+    public static URL resourceToURL(final String name, final ClassLoader classLoader) throws IOException {
+        final URL resource = classLoader == null ? IOUtil.class.getResource(name) : classLoader.getResource(name);
+        if (resource == null) throw new IOException("Resource not found: " + name);
+        return resource;
+    }
+
+    public static String loadText(final URL url, final Charset encoding) throws IOException {
+        try (InputStream inputStream = url.openStream()) {
+            return loadText(inputStream, encoding);
+        }
+    }
+
+    public static InputStream toInputStream(final String input) {
+        return toInputStream(input, Charset.defaultCharset());
+    }
+
+    public static InputStream toInputStream(final String input, final Charset encoding) {
+        return new ByteArrayInputStream(input.getBytes(encoding));
     }
 
 }
