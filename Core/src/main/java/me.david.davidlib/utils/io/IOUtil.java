@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class IOUtil {
@@ -37,6 +38,19 @@ public final class IOUtil {
         char[] newChars = new char[count];
         System.arraycopy(chars, 0, newChars, 0, count);
         return new String(newChars);
+    }
+
+    public static List<String> loadLines(InputStream stream) {
+        return loadLines(stream, Charsets.UTF8);
+    }
+
+    public static List<String> loadLines(InputStream stream, Charset charset) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(stream, charset))) {
+            return loadLines(br);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 
     public static List<String> loadLines(BufferedReader reader) throws IOException {
@@ -89,6 +103,10 @@ public final class IOUtil {
                 outputStream.write(buffer, 0, read);
             }
         }
+    }
+
+    public static String loadText(final InputStream input) throws IOException {
+        return loadText(input, Charsets.UTF8);
     }
 
     public static String loadText(final InputStream input, final Charset encoding) throws IOException {
@@ -153,6 +171,13 @@ public final class IOUtil {
 
     public static InputStream toInputStream(final String input, final Charset encoding) {
         return new ByteArrayInputStream(input.getBytes(encoding));
+    }
+
+    public static byte[] toByteArray(final InputStream input) throws IOException {
+        try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            copy(input, output);
+            return output.toByteArray();
+        }
     }
 
 }
