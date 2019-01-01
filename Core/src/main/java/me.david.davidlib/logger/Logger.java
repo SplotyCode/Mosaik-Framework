@@ -2,7 +2,7 @@ package me.david.davidlib.logger;
 
 import lombok.Getter;
 import me.david.davidlib.utils.ExceptionUtil;
-import org.apache.commons.lang3.ArrayUtils;
+import me.david.davidlib.utils.array.ArrayUtil;
 import org.apache.log4j.Level;
 
 public abstract class Logger {
@@ -55,7 +55,7 @@ public abstract class Logger {
     public abstract void warn(String message, Throwable t);
 
     public void error(String message) {
-        error(message, new Throwable(message), ArrayUtils.EMPTY_STRING_ARRAY);
+        error(message, new Throwable(message), ArrayUtil.EMPTY_STRING_ARRAY);
     }
     public void error(Object message) {
         error(String.valueOf(message));
@@ -66,11 +66,11 @@ public abstract class Logger {
     }
 
     public void error(String message, Throwable t) {
-        error(message, t, ArrayUtils.EMPTY_STRING_ARRAY);
+        error(message, t, ArrayUtil.EMPTY_STRING_ARRAY);
     }
 
     public void error(Throwable t) {
-        error(t.getMessage(), t, ArrayUtils.EMPTY_STRING_ARRAY);
+        error(t.getMessage(), t, ArrayUtil.EMPTY_STRING_ARRAY);
     }
 
     public abstract void error(String message, Throwable t, String... details);

@@ -16,10 +16,10 @@ import me.david.davidlib.logger.DavidLibLoggerFactory;
 import me.david.davidlib.logger.Logger;
 import me.david.davidlib.startup.BootContext;
 import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
+import me.david.davidlib.utils.array.ArrayUtil;
 import me.david.davidlib.utils.init.AlreadyInitailizedException;
 import me.david.davidlib.utils.reflection.ReflectionUtil;
 import me.david.davidlib.utils.StringUtil;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
@@ -34,7 +34,7 @@ public class Main {
     @Getter private static boolean initialised = false;
 
     public static void main() {
-        main(ArrayUtils.EMPTY_STRING_ARRAY);
+        main(ArrayUtil.EMPTY_STRING_ARRAY);
     }
 
     public static void mainIfNotInitialised() {

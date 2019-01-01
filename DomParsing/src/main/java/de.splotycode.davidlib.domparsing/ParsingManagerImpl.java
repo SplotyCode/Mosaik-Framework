@@ -8,7 +8,7 @@ import me.david.davidlib.parsing.input.DomInput;
 import me.david.davidlib.parsing.input.DomStreamInput;
 import me.david.davidlib.parsing.input.DomUrlInput;
 import me.david.davidlib.storage.Document;
-import org.apache.commons.io.FilenameUtils;
+import me.david.davidlib.utils.io.PathUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
@@ -30,7 +30,7 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public Document parseDocument(File file) {
         DomInput input = new DomFileInput(file);
-        ParsingHandle handle = handles.stream().filter(cHandle -> FilenameUtils.isExtension(file.getName(), cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
+        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file.getName(), cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
         return parseDocument(input, handle);
     }
 
@@ -51,7 +51,7 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public Document parseResourceFile(String file) {
         DomInput input = new DomStreamInput(ParsingManagerImpl.class.getResourceAsStream(file));
-        ParsingHandle handle = handles.stream().filter(cHandle -> FilenameUtils.isExtension(file, cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
+        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file, cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
         return parseDocument(input, handle);
     }
 
