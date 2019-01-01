@@ -3,7 +3,7 @@ package me.david.davidlib.parsing.input;
 import lombok.Getter;
 import me.david.davidlib.parsing.DomSourceType;
 import me.david.davidlib.utils.io.Charsets;
-import org.apache.commons.io.IOUtils;
+import me.david.davidlib.utils.io.IOUtil;
 
 import java.io.*;
 
@@ -19,7 +19,7 @@ public class DomFileInput implements DomInput {
     @Override
     public byte[] getBytes() {
         try {
-            return IOUtils.toByteArray(getStream());
+            return IOUtil.toByteArray(getStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -29,7 +29,7 @@ public class DomFileInput implements DomInput {
     @Override
     public String getString() {
         try {
-            return IOUtils.toString(getStream(), Charsets.UTF8);
+            return IOUtil.loadText(getStream());
         } catch (IOException e) {
             e.printStackTrace();
         }

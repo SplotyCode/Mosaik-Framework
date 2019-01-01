@@ -1,7 +1,8 @@
 package me.david.davidlib.logger;
 
 import me.david.davidlib.utils.init.InitialisedOnce;
-import org.apache.commons.io.IOUtils;
+import me.david.davidlib.utils.io.Charsets;
+import me.david.davidlib.utils.io.IOUtil;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -19,9 +20,9 @@ public class DavidLibLoggerFactory extends InitialisedOnce implements LoggerFact
     protected void init() {
         System.setProperty("log4j.defaultInitOverride", "true");
         try {
-            String config = IOUtils.resourceToString("/log-config.xml", Charset.forName("UTF-8"));
+            String config = IOUtil.resourceToText("/log-config.xml");
             config = config.replaceAll("_\\$log\\$_", "log/");
-            new DOMConfigurator().doConfigure(IOUtils.toInputStream(config, Charset.forName("UTF-8")), LogManager.getLoggerRepository());
+            new DOMConfigurator().doConfigure(IOUtil.toInputStream(config, Charsets.UTF8), LogManager.getLoggerRepository());
         } catch (IOException e) {
             e.printStackTrace();
         }

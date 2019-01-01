@@ -10,14 +10,15 @@ import me.david.davidlib.annotation.AnnotationHelper;
 import me.david.davidlib.logger.Logger;
 import me.david.davidlib.startup.StartupTask;
 import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
+import me.david.davidlib.utils.io.IOUtil;
 import me.david.davidlib.utils.reflection.ClassFinderHelper;
 import me.david.davidlib.utils.reflection.ReflectionUtil;
-import org.apache.commons.io.IOUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StartTaskExecutor {
@@ -61,9 +62,9 @@ public class StartTaskExecutor {
         Reflections reflections = new Reflections(".*", new ResourcesScanner());
         for (String file : reflections.getResources(x -> x != null && x.startsWith("disabled_paths"))) {
             try (InputStream is = StartTaskExecutor.class.getResourceAsStream("/" + file)) {
-                String[] array = IOUtils.toString(is, "UTF-8").split("\n");
-                logger.info("Registered " + array.length + " disabled paths from '" + file + "'.txt");
-                for (String skippedPath : array) {
+                List<String> lines = IOUtil.loadLines(is);
+                logger.info("Registered " + lines.size() + " disabled paths from '" + file + "'.txt");
+                for (String skippedPath : lines) {
                     ClassFinderHelper.registerSkippedPath(skippedPath);
                 }
             } catch (IOException ex) {

@@ -4,7 +4,7 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpVersion;
 import io.undertow.server.HttpServerExchange;
 import me.david.davidlib.utils.io.ByteArrayInputStream;
-import org.apache.commons.io.IOUtils;
+import me.david.davidlib.utils.io.IOUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ public final class UndertowUtils {
         if (stream instanceof ByteArrayInputStream && ((ByteArrayInputStream) stream).isOriginal()) {
             bytes = ((ByteArrayInputStream) stream).getBuf();
         } else {
-            bytes = IOUtils.toByteArray(stream);
+            bytes = IOUtil.toByteArray(stream);
         }
         exchange.getResponseSender().send(ByteBuffer.wrap(bytes));
     }

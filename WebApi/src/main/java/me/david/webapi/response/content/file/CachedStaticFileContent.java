@@ -1,7 +1,7 @@
 package me.david.webapi.response.content.file;
 
+import me.david.davidlib.utils.io.FileUtil;
 import me.david.webapi.response.content.ResponseContent;
-import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -10,23 +10,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CachedStaticFileContent implements ResponseContent {
 
-    private static ConcurrentHashMap<String, byte[]> fileCache = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<File, byte[]> fileCache = new ConcurrentHashMap<>();
 
-    private String file;
+    private File file;
 
     public CachedStaticFileContent(String file) {
-        this.file = file;
+        this.file = new File(file);
     }
 
     public CachedStaticFileContent(File file) {
-        this.file = file.getAbsolutePath();
+        this.file = file;
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
         byte[] bytes = fileCache.get(file);
         if (bytes == null) {
-            bytes = IOUtils.toByteArray(new FileInputStream(file));
+            bytes = FileUtil.loadFileBytes(file);
             fileCache.put(file, bytes);
         }
         return new ByteArrayInputStream(bytes);
@@ -34,6 +34,6 @@ public class CachedStaticFileContent implements ResponseContent {
 
     @Override
     public String getContentType() throws IOException {
-        return Files.probeContentType(Paths.get(file));
+        return Files.probeContentType(file.toPath());
     }
 }

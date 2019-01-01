@@ -2,11 +2,12 @@ package me.david.webapi.response.content.file;
 
 import lombok.AllArgsConstructor;
 import me.david.davidlib.utils.io.ByteArrayInputStream;
+import me.david.davidlib.utils.io.FileUtil;
+import me.david.davidlib.utils.io.IOUtil;
 import me.david.webapi.response.content.manipulate.ManipulateableContent;
 import me.david.webapi.response.content.manipulate.ResponseManipulator;
 import me.david.webapi.response.content.manipulate.StringManipulator;
 import me.david.webapi.request.HandleRequestException;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,7 +38,7 @@ public class FileResponseContent implements ManipulateableContent {
         this.encoding = encoding;
         this.file = file;
         try {
-            manipulator = new StringManipulator(IOUtils.toString(new FileInputStream(this.file), encoding));
+            manipulator = new StringManipulator(FileUtil.loadFile(file, encoding));
         } catch (IOException e) {
             throw new HandleRequestException("Could not find file: " + file.getAbsolutePath(), e);
         }

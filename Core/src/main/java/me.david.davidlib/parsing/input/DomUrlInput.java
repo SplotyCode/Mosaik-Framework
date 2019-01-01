@@ -2,7 +2,7 @@ package me.david.davidlib.parsing.input;
 
 import lombok.Getter;
 import me.david.davidlib.parsing.DomSourceType;
-import org.apache.commons.io.IOUtils;
+import me.david.davidlib.utils.io.IOUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ public class DomUrlInput implements DomInput {
     @Override
     public byte[] getBytes() {
         try {
-            return IOUtils.toByteArray(getStream());
+            return IOUtil.toByteArray(getStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,7 +32,7 @@ public class DomUrlInput implements DomInput {
     @Override
     public String getString() {
         try {
-            return IOUtils.toString(getStream(), "UTF-8");
+            return IOUtil.loadText(getStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
