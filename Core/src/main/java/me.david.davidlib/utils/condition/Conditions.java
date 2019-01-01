@@ -2,7 +2,7 @@ package me.david.davidlib.utils.condition;
 
 import java.util.Objects;
 
-public final class Contitions {
+public final class Conditions {
 
     public static final Condition TRUE = item -> true;
     public static final Condition FALSE = item -> false;
