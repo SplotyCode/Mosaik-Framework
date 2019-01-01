@@ -3,7 +3,6 @@ package me.david.davidlib.info;
 import me.david.davidlib.utils.StringUtil;
 import me.david.davidlib.utils.VersionComparingUtil;
 import me.david.davidlib.utils.reflection.ReflectionUtil;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +35,7 @@ public class SystemInfo {
     public static final boolean IS_32_BIT = ARCH_DATA_MODEL == null || ARCH_DATA_MODEL.equals("32");
     public static final boolean IS_64_BIT = !IS_32_BIT;
 
-    public static final boolean isOracleJvm = StringUtils.containsIgnoreCase(VM_VENDOR, "Oracle");
+    public static final boolean isOracleJvm = StringUtil.containsIgnoreCase(VM_VENDOR, "Oracle");
 
     public static final boolean IS_AT_LEAST_JAVA9 = ReflectionUtil.methodExists(Class.class, "getModule");
     public static final boolean IS_AT_LEAST_JAVA8 = isJavaVersionAtLeast(1, 8, 0);
