@@ -151,4 +151,45 @@ public final class StringUtil {
         return -1;
     }
 
+    public static boolean containsIgnoreCase(String where, String what) {
+        return indexOfIgnoreCase(where, what, 0) >= 0;
+    }
+
+    public static int indexOfIgnoreCase(String where, String what, int fromIndex) {
+        int targetCount = what.length();
+        int sourceCount = where.length();
+
+        if (fromIndex >= sourceCount) {
+            return targetCount == 0 ? sourceCount : -1;
+        }
+
+        if (fromIndex < 0) {
+            fromIndex = 0;
+        }
+
+        if (targetCount == 0) {
+            return fromIndex;
+        }
+
+        char first = what.charAt(0);
+        int max = sourceCount - targetCount;
+
+        for (int i = fromIndex; i <= max; i++) {
+            if (!charsEqualIgnoreCase(where.charAt(i), first)) {
+                while (++i <= max && !charsEqualIgnoreCase(where.charAt(i), first)) ;
+            }
+            if (i <= max) {
+                int j = i + 1;
+                int end = j + targetCount - 1;
+                for (int k = 1; j < end && charsEqualIgnoreCase(where.charAt(j), what.charAt(k)); j++, k++) ;
+
+                if (j == end) {
+                    return i;
+                }
+            }
+        }
+
+        return -1;
+    }
+
 }
