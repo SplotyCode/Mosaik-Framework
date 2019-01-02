@@ -895,41 +895,39 @@ public final class ArrayUtil {
      * --------------------------------
      */
 
-
-    @SafeVarargs
-    public static <T> boolean contains(final T o, T... objects) {
+    public static <T> boolean contains(T[] objects, final T o) {
         return indexOf(objects, o) >= 0;
     }
 
-    public static boolean contains(final boolean entry, boolean... entries) {
+    public static boolean contains(boolean[] entries, final boolean entry) {
         return indexOf(entries, entry) >= 0;
     }
 
-    public static boolean contains(final char entry, char... entries) {
+    public static boolean contains(char[] entries, final char entry) {
         return indexOf(entries, entry) >= 0;
     }
 
-    public static boolean contains(final byte entry, byte... entries) {
+    public static boolean contains(byte[] entries, final byte entry) {
         return indexOf(entries, entry) >= 0;
     }
 
-    public static boolean contains(final int entry, int... entries) {
+    public static boolean contains(int[] entries, final int entry) {
         return indexOf(entries, entry) >= 0;
     }
 
-    public static boolean contains(final short entry, short... entries) {
+    public static boolean contains(short[] entries, final short entry) {
         return indexOf(entries, entry) >= 0;
     }
 
-    public static boolean contains(final long entry, long... entries) {
+    public static boolean contains(long[] entries, final long entry) {
         return indexOf(entries, entry) >= 0;
     }
 
-    public static boolean contains(final float entry, float... entries) {
+    public static boolean contains(float[] entries, final float entry) {
         return indexOf(entries, entry) >= 0;
     }
 
-    public static boolean contains(final double entry, double... entries) {
+    public static boolean contains(double[] entries, final double entry) {
         return indexOf(entries, entry) >= 0;
     }
 
