@@ -4,6 +4,8 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 
+//TODO add mergeArrayAndCollection for primarys and indexOfNot
+
 @SuppressWarnings({"unused", "WeakerAccess"})
 public final class ArrayUtil {
 
