@@ -8,8 +8,8 @@ import me.david.davidlib.parsing.input.DomInput;
 import me.david.davidlib.parsing.input.DomStreamInput;
 import me.david.davidlib.parsing.input.DomUrlInput;
 import me.david.davidlib.storage.Document;
+import me.david.davidlib.utils.array.ArrayUtil;
 import me.david.davidlib.utils.io.PathUtil;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class ParsingManagerImpl implements ParsingManager {
         DomUrlInput input = new DomUrlInput(url);
         ParsingHandle handle = handles.stream().filter(cHandle -> {
             try {
-                return ArrayUtils.contains(cHandle.getMimeTypes(), input.getConnection().getContentType());
+                return ArrayUtil.contains(cHandle.getMimeTypes(), input.getConnection().getContentType());
             } catch (IOException e) {
                 e.printStackTrace();
             }
