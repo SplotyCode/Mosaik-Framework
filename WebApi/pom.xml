@@ -17,11 +17,6 @@
             <version>27.0-jre</version>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
-            <artifactId>Core</artifactId>
-            <version>1.9.9</version>
-        </dependency>
-        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.19.Final</version>

@@ -9,7 +9,6 @@
     <packaging>pom</packaging>
     <version>1.9.9</version>
     <modules>
-        <module>Core</module>
         <module>Console</module>
         <module>Netty</module>
         <module>Database</module>
@@ -23,9 +22,8 @@
         <module>DomParsing</module>
         <module>StartUp</module>
         <module>Util</module>
-        <module>Runtime-Api</module>
+        <module>Runtime</module>
         <module>Annotations</module>
-        <module>Runtime-Impl</module>
         <module>IUI</module>
     </modules>
 

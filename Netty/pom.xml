@@ -31,11 +31,6 @@
             <artifactId>netty-all</artifactId>
             <version>4.1.24.Final</version>
         </dependency>
-        <dependency>
-            <groupId>me.david.davidlib</groupId>
-            <artifactId>Core</artifactId>
-            <version>1.9.9</version>
-        </dependency>
     </dependencies>
 
 </project>

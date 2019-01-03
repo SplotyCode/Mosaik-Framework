@@ -11,11 +11,6 @@
 
     <artifactId>DomParsing</artifactId>
     <dependencies>
-        <dependency>
-            <groupId>me.david.davidlib</groupId>
-            <artifactId>Core</artifactId>
-            <version>1.9.9</version>
-        </dependency>
     </dependencies>
 
 
