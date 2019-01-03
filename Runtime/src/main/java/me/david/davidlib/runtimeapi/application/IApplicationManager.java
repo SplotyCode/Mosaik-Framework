@@ -1,8 +1,5 @@
 package me.david.davidlib.runtimeapi.application;
 
-import me.david.davidlib.util.core.application.Application;
-import me.david.davidlib.util.core.application.ApplicationHandle;
-
 import java.util.Collection;
 
 public interface IApplicationManager {

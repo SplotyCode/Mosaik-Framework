@@ -1,4 +1,4 @@
-package me.david.davidlib.util.core.annotation;
+package me.david.davidlib.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

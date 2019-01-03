@@ -3,8 +3,8 @@ package me.david.davidlib.runtimeapi.startup;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import me.david.davidlib.util.core.link.LinkBase;
-import me.david.davidlib.util.core.link.Links;
+import me.david.davidlib.runtimeapi.LinkBase;
+import me.david.davidlib.runtimeapi.Links;
 
 @EqualsAndHashCode
 @AllArgsConstructor

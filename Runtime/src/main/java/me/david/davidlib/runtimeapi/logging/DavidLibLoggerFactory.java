@@ -1,8 +1,10 @@
-package me.david.davidlib.util.logger;
+package me.david.davidlib.runtimeapi.logging;
 
 import me.david.davidlib.util.init.InitialisedOnce;
 import me.david.davidlib.util.io.Charsets;
 import me.david.davidlib.util.io.IOUtil;
+import me.david.davidlib.util.logger.Logger;
+import me.david.davidlib.util.logger.LoggerFactory;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.xml.DOMConfigurator;
 

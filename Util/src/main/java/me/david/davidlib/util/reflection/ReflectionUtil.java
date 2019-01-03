@@ -1,6 +1,6 @@
 package me.david.davidlib.util.reflection;
 
-import me.david.davidlib.annotation.Disabled;
+import me.david.davidlib.annotations.Disabled;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

@@ -1,4 +1,4 @@
-package me.david.davidlib.util.core.gamesngine.gameloop;
+package me.david.davidlib.gamesngine.gameloop;
 
 import me.david.davidlib.util.logger.Logger;
 import me.david.davidlib.gamesngine.gameloop.TickFrameLoop;

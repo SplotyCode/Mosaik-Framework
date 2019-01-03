@@ -1,6 +1,6 @@
 package me.david.davidlib.runtimeapi.startup.envirement;
 
-import me.david.davidlib.util.core.application.Application;
+import me.david.davidlib.runtimeapi.application.Application;
 
 public interface ConfiguriseEnvironmentChanger {
 

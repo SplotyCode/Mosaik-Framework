@@ -1,9 +1,10 @@
-package me.david.davidlib.util.logger;
+package me.david.davidlib.runtimeapi.logging;
 
+import me.david.davidlib.runtimeapi.application.ApplicationInfo;
 import me.david.davidlib.util.StringUtil;
-import me.david.davidlib.util.info.ApplicationInfo;
 import me.david.davidlib.util.info.EnvironmentInformation;
 import me.david.davidlib.util.info.SystemInfo;
+import me.david.davidlib.util.logger.Log4JLogger;
 import org.apache.log4j.Logger;
 
 public class DavidLibLogger extends Log4JLogger {

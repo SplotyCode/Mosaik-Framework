@@ -1,8 +1,8 @@
 package me.david.davidlib.util.io;
 
 import lombok.Getter;
-import me.david.davidlib.cache.Cache;
-import me.david.davidlib.cache.DefaultCaches;
+import me.david.davidlib.util.cache.Cache;
+import me.david.davidlib.util.cache.DefaultCaches;
 import me.david.davidlib.util.info.SystemInfo;
 
 import java.io.File;

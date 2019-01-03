@@ -1,7 +1,7 @@
 package me.david.davidlib.util.logger;
 
 import lombok.AllArgsConstructor;
-import me.david.davidlib.utils.StringUtil;
+import me.david.davidlib.util.StringUtil;
 import org.apache.log4j.Level;
 
 @AllArgsConstructor

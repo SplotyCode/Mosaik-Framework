@@ -10,5 +10,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>Util</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>21.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.jodah</groupId>
+            <artifactId>typetools</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>me.david.davidlib</groupId>
+            <artifactId>Annotations</artifactId>
+            <version>1.9.9</version>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -1,4 +1,7 @@
-package me.david.davidlib.runtimeapi;
+package me.david.davidlib.runtimeapi.pathmanager;
+
+import me.david.davidlib.runtimeapi.LinkBase;
+import me.david.davidlib.runtimeapi.Links;
 
 import java.io.File;
 

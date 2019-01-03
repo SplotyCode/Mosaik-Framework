@@ -1,10 +1,10 @@
 package me.david.davidlib.util.reflection;
 
 import com.google.common.reflect.ClassPath;
-import me.david.davidlib.cache.CacheBuilder;
-import me.david.davidlib.cache.complex.ComplexCache;
-import me.david.davidlib.cache.complex.resolver.CacheValueResolver;
-import me.david.davidlib.cache.complex.validator.TimeValidator;
+import me.david.davidlib.util.cache.CacheBuilder;
+import me.david.davidlib.util.cache.complex.ComplexCache;
+import me.david.davidlib.util.cache.complex.resolver.CacheValueResolver;
+import me.david.davidlib.util.cache.complex.validator.TimeValidator;
 
 import java.io.IOException;
 import java.util.*;

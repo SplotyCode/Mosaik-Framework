@@ -1,8 +1,8 @@
-package me.david.davidlib.util.core.annotation;
+package me.david.davidlib.annotations;
 
-import me.david.davidlib.util.core.annotation.priority.First;
-import me.david.davidlib.util.core.annotation.priority.Last;
-import me.david.davidlib.util.core.annotation.priority.Priority;
+import me.david.davidlib.annotations.priority.First;
+import me.david.davidlib.annotations.priority.Last;
+import me.david.davidlib.annotations.priority.Priority;
 
 import java.lang.annotation.Annotation;
 

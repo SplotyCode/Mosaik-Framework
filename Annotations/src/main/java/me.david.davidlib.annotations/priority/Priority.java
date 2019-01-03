@@ -1,4 +1,4 @@
-package me.david.davidlib.util.core.annotation.priority;
+package me.david.davidlib.annotations.priority;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

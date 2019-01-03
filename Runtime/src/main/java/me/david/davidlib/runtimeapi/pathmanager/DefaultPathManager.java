@@ -1,7 +1,10 @@
 package me.david.davidlib.runtimeapi.pathmanager;
 
-import me.david.davidlib.util.core.link.LinkBase;
-import me.david.davidlib.util.core.link.argparser.Parameter;
+import me.david.davidlib.runtimeapi.LinkBase;
+import me.david.davidlib.runtimeapi.application.ApplicationInfo;
+import me.david.davidlib.runtimeapi.argparser.Parameter;
+import me.david.davidlib.util.info.SystemInfo;
+import me.david.davidlib.util.info.SystemProperties;
 
 import java.io.File;
 
@@ -13,7 +16,6 @@ public class DefaultPathManager implements PathManager {
     private File logDirectory;
 
     public DefaultPathManager() {
-        throw SupportExcpetio
         LinkBase.getBootContext().applyArgs("paths", this);
     }
 

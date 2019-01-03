@@ -1,10 +1,9 @@
-package me.david.davidlib.util.info;
+package me.david.davidlib.runtimeapi.application;
 
 import lombok.Getter;
-import me.david.davidlib.util.core.application.Application;
-import me.david.davidlib.util.core.link.LinkBase;
-import me.david.davidlib.util.core.link.Links;
-import me.david.davidlib.util.core.storage.Document;
+import me.david.davidlib.runtimeapi.LinkBase;
+import me.david.davidlib.runtimeapi.Links;
+import me.david.davidlib.runtimeapi.storage.Document;
 
 public class ApplicationInfo {
 
