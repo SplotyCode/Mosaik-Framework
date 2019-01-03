@@ -13,7 +13,7 @@ public interface IApplicationManager {
     ApplicationHandle getHandleByName(String name);
     Application getApplicationByName(String name);
     ApplicationHandle getHandleByClass(Class<? extends Application> application);
-    Application getApplicationByClass(Class<? extends Application> application);
+    <A extends Application> A getApplicationByClass(Class<A> application);
 
     int getLoadedApplicationsCount();
     Collection<ApplicationHandle> getLoadedHandles();

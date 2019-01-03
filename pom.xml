@@ -22,6 +22,7 @@
         <module>ArgParser</module>
         <module>DomParsing</module>
         <module>StartUp</module>
+        <module>Util</module>
     </modules>
 
     <properties>

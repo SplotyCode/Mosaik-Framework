@@ -78,9 +78,10 @@ public class ApplicationManager implements IApplicationManager {
     }
 
     @Override
-    public Application getApplicationByClass(Class<? extends Application> application) {
-        return getHandleByClass(application).getApplication();
+    public <A extends Application> A getApplicationByClass(Class<A> application) {
+        return (A) getHandleByClass(application).getApplication();
     }
+
 
     @Override
     public Collection<Application> getApplications() {
