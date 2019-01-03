@@ -6,7 +6,7 @@ import me.david.davidlib.utils.condition.Condition;
 import java.util.*;
 import java.util.function.Function;
 
-public class CollectionUtil {
+public final class CollectionUtil {
 
     public static <K, V> Map<K, V> newHashMap(List<K> keys, List<V> values) {
         if (keys.size() != values.size()) {
