@@ -1,6 +1,6 @@
 package me.david.webapi.server;
 
-import me.david.davidlib.utils.reflection.classregister.IListClassRegister;
+import me.david.davidlib.util.reflection.classregister.IListClassRegister;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.response.error.ErrorFactory;
 import me.david.webapi.session.SessionSystem;

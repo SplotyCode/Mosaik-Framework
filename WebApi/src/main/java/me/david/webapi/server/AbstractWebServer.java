@@ -2,9 +2,9 @@ package me.david.webapi.server;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.david.davidlib.utils.init.InitialisedOnce;
-import me.david.davidlib.utils.reflection.classregister.IListClassRegister;
-import me.david.davidlib.utils.reflection.classregister.ListClassRegister;
+import me.david.davidlib.util.init.InitialisedOnce;
+import me.david.davidlib.util.reflection.classregister.IListClassRegister;
+import me.david.davidlib.util.reflection.classregister.ListClassRegister;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.handler.HandlerFinder;
 import me.david.webapi.handler.HttpHandler;

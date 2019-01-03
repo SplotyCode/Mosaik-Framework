@@ -2,7 +2,7 @@ package me.david.webapi;
 
 import com.google.common.reflect.ClassPath;
 import lombok.Getter;
-import me.david.davidlib.logger.Logger;
+import me.david.davidlib.util.logger.Logger;
 import me.david.webapi.handler.HandlerManager;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.server.WebServer;

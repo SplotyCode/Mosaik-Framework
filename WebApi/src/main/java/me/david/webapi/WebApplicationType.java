@@ -1,10 +1,10 @@
 package me.david.webapi;
 
-import me.david.davidlib.application.ApplicationType;
-import me.david.davidlib.datafactory.DataKey;
-import me.david.davidlib.startup.BootContext;
-import me.david.davidlib.utils.reflection.classregister.IListClassRegister;
-import me.david.davidlib.utils.reflection.classregister.ListClassRegister;
+import me.david.davidlib.util.core.application.ApplicationType;
+import me.david.davidlib.util.datafactory.DataKey;
+import me.david.davidlib.util.core.startup.BootContext;
+import me.david.davidlib.util.reflection.classregister.IListClassRegister;
+import me.david.davidlib.util.reflection.classregister.ListClassRegister;
 import me.david.webapi.handler.anotation.parameter.ParameterResolver;
 import me.david.webapi.request.body.RequestContentHandler;
 import me.david.webapi.response.error.ErrorHandler;

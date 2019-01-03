@@ -1,7 +1,7 @@
 package me.david.splotycode.valuetransformer;
 
-import me.david.davidlib.link.transformer.ITransformerManager;
-import me.david.davidlib.link.transformer.ValueTransformer;
+import me.david.davidlib.util.core.link.transformer.ITransformerManager;
+import me.david.davidlib.util.core.link.transformer.ValueTransformer;
 
 import java.util.*;
 

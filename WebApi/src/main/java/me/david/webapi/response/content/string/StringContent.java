@@ -1,7 +1,7 @@
 package me.david.webapi.response.content.string;
 
-import me.david.davidlib.utils.io.ByteArrayInputStream;
-import me.david.davidlib.utils.io.Charsets;
+import me.david.davidlib.util.io.ByteArrayInputStream;
+import me.david.davidlib.util.io.Charsets;
 import me.david.webapi.response.content.manipulate.ManipulateableContent;
 import me.david.webapi.response.content.manipulate.ResponseManipulator;
 import me.david.webapi.response.content.manipulate.StringManipulator;

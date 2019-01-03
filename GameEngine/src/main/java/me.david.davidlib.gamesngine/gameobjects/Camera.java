@@ -3,8 +3,8 @@ package me.david.davidlib.gamesngine.gameobjects;
 import lombok.Getter;
 import lombok.Setter;
 import me.david.davidlib.gamesngine.input.Keyboard;
-import me.david.davidlib.math.Vector2D;
-import me.david.davidlib.math.Vector3D;
+import me.david.davidlib.util.math.Vector2D;
+import me.david.davidlib.util.math.Vector3D;
 
 import static org.lwjgl.glfw.GLFW.*;
 

@@ -23,6 +23,10 @@
         <module>DomParsing</module>
         <module>StartUp</module>
         <module>Util</module>
+        <module>Runtime-Api</module>
+        <module>Annotations</module>
+        <module>Runtime-Impl</module>
+        <module>IUI</module>
     </modules>
 
     <properties>

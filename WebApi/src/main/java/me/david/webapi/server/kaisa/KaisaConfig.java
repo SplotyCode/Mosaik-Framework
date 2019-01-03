@@ -1,6 +1,6 @@
 package me.david.webapi.server.kaisa;
 
-import me.david.davidlib.datafactory.DataKey;
+import me.david.davidlib.util.datafactory.DataKey;
 
 import java.nio.channels.SocketChannel;
 import java.util.Queue;

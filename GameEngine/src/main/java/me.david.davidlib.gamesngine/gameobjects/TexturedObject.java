@@ -3,7 +3,7 @@ package me.david.davidlib.gamesngine.gameobjects;
 import lombok.Getter;
 import lombok.Setter;
 import me.david.davidlib.gamesngine.model.Model;
-import me.david.davidlib.math.Vector3D;
+import me.david.davidlib.util.math.Vector3D;
 
 public abstract class TexturedObject implements CollidatebleGameObject {
 

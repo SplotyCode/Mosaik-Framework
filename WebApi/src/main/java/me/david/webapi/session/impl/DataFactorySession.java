@@ -1,6 +1,6 @@
 package me.david.webapi.session.impl;
 
-import me.david.davidlib.datafactory.DataFactory;
+import me.david.davidlib.util.datafactory.DataFactory;
 import me.david.webapi.request.Request;
 
 public class DataFactorySession extends AbstractSession {

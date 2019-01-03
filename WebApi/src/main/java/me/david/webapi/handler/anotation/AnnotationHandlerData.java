@@ -1,7 +1,7 @@
 package me.david.webapi.handler.anotation;
 
 import lombok.*;
-import me.david.davidlib.annotation.AnnotationHelper;
+import me.david.davidlib.util.core.annotation.AnnotationHelper;
 import me.david.davidlib.utils.Pair;
 import me.david.webapi.handler.UrlPattern;
 import me.david.webapi.handler.anotation.check.*;

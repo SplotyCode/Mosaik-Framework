@@ -1,7 +1,7 @@
 package de.splotycode.davidlib.console;
 
-import me.david.davidlib.iui.INamedTaskBar;
-import me.david.davidlib.logger.Logger;
+import me.david.davidlib.util.core.iui.INamedTaskBar;
+import me.david.davidlib.util.logger.Logger;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;

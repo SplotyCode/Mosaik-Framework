@@ -1,7 +1,7 @@
 package de.splotycode.davidlib.domparsing.keyvalue.dom;
 
-import me.david.davidlib.parsing.dom.attribute.attriute.Attribute;
-import me.david.davidlib.storage.Node;
+import me.david.davidlib.util.core.parsing.dom.attribute.attriute.Attribute;
+import me.david.davidlib.util.core.storage.Node;
 
 import java.util.*;
 

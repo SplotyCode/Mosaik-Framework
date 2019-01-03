@@ -4,7 +4,7 @@ import de.splotycode.davidlib.console.ProcessBar;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.david.davidlib.logger.Logger;
+import me.david.davidlib.util.logger.Logger;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StartUpProcessHandler {

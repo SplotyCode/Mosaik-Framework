@@ -1,12 +1,12 @@
 package de.splotycode.davidlib.domparsing;
 
 import de.splotycode.davidlib.domparsing.keyvalue.KeyValueHandle;
-import me.david.davidlib.annotation.priority.Priority;
-import me.david.davidlib.link.LinkBase;
-import me.david.davidlib.link.Links;
-import me.david.davidlib.startup.StartUpPriorities;
-import me.david.davidlib.startup.StartupTask;
-import me.david.davidlib.startup.envirement.StartUpEnvironmentChanger;
+import me.david.davidlib.util.core.annotation.priority.Priority;
+import me.david.davidlib.util.core.link.LinkBase;
+import me.david.davidlib.util.core.link.Links;
+import me.david.davidlib.util.core.startup.StartUpPriorities;
+import me.david.davidlib.util.core.startup.StartupTask;
+import me.david.davidlib.util.core.startup.envirement.StartUpEnvironmentChanger;
 
 @Priority(priority = StartUpPriorities.PRE_LINKBASE)
 public class ParsingLinkStartUpTask implements StartupTask {

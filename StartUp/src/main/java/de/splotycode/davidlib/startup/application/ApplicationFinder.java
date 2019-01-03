@@ -2,12 +2,12 @@ package de.splotycode.davidlib.startup.application;
 
 import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
 import lombok.AllArgsConstructor;
-import me.david.davidlib.application.Application;
-import me.david.davidlib.application.ApplicationState;
-import me.david.davidlib.application.ApplicationType;
-import me.david.davidlib.application.BootException;
-import me.david.davidlib.utils.reflection.ClassFinderHelper;
-import me.david.davidlib.utils.reflection.ReflectionUtil;
+import me.david.davidlib.util.core.application.Application;
+import me.david.davidlib.util.core.application.ApplicationState;
+import me.david.davidlib.util.core.application.ApplicationType;
+import me.david.davidlib.util.core.application.BootException;
+import me.david.davidlib.util.reflection.ClassFinderHelper;
+import me.david.davidlib.util.reflection.ReflectionUtil;
 
 import java.util.Collection;
 

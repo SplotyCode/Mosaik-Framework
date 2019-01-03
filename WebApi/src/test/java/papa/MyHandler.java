@@ -1,6 +1,6 @@
 package papa;
 
-import me.david.davidlib.logger.Logger;
+import me.david.davidlib.util.logger.Logger;
 import me.david.webapi.handler.anotation.check.Handler;
 import me.david.webapi.handler.anotation.check.Mapping;
 import me.david.webapi.handler.anotation.handle.UrlParam;

@@ -1,11 +1,11 @@
 package me.david.davidlib.database.repo;
 
 import me.david.davidlib.database.connection.sql.SQLDriverConnection;
+import me.david.davidlib.database.table.FieldObject;
 import me.david.davidlib.database.table.ColumnNameResolver;
 import me.david.davidlib.database.table.ColumnType;
-import me.david.davidlib.database.table.FieldObject;
 import me.david.davidlib.utils.StringUtil;
-import me.david.davidlib.utils.reflection.ReflectionUtil;
+import me.david.davidlib.util.reflection.ReflectionUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

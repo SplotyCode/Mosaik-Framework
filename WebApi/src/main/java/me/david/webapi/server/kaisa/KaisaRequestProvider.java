@@ -1,6 +1,6 @@
 package me.david.webapi.server.kaisa;
 
-import me.david.davidlib.exception.MethodNotSupportedExcpetion;
+import me.david.davidlib.util.core.exception.MethodNotSupportedExcpetion;
 import me.david.webapi.request.Method;
 
 import java.nio.ByteBuffer;

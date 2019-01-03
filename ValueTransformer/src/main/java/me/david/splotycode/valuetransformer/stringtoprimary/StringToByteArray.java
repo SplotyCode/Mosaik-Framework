@@ -1,7 +1,7 @@
 package me.david.splotycode.valuetransformer.stringtoprimary;
 
-import me.david.davidlib.link.transformer.ValueTransformer;
-import me.david.davidlib.link.transformer.TransformException;
+import me.david.davidlib.util.core.link.transformer.ValueTransformer;
+import me.david.davidlib.util.core.link.transformer.TransformException;
 
 public class StringToByteArray extends ValueTransformer<String, byte[]> {
 

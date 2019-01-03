@@ -1,11 +1,11 @@
 package me.david.davidlib.database.repo;
 
-import me.david.davidlib.database.connection.Connection;
 import me.david.davidlib.database.table.Column;
 import me.david.davidlib.database.table.FieldObject;
+import me.david.davidlib.database.connection.Connection;
 import me.david.davidlib.database.table.Primary;
 import me.david.davidlib.database.table.Table;
-import me.david.davidlib.utils.reflection.ReflectionUtil;
+import me.david.davidlib.util.reflection.ReflectionUtil;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 package me.david.webapi.handler;
 
-import me.david.davidlib.utils.reflection.classregister.ListClassRegister;
+import me.david.davidlib.util.reflection.classregister.ListClassRegister;
 
 import java.util.Collection;
 import java.util.HashSet;

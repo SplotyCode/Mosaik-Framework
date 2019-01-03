@@ -1,8 +1,8 @@
 package me.david.davidlib.database.repo;
 
+import me.david.davidlib.database.table.ColumnNameResolver;
 import me.david.davidlib.database.Database;
 import me.david.davidlib.database.connection.Connection;
-import me.david.davidlib.database.table.ColumnNameResolver;
 
 public interface TableExecutor<T, C extends Connection> {
 

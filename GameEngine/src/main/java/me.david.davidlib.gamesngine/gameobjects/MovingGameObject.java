@@ -1,6 +1,6 @@
 package me.david.davidlib.gamesngine.gameobjects;
 
-import me.david.davidlib.math.Vector3D;
+import me.david.davidlib.util.math.Vector3D;
 
 public interface MovingGameObject extends CollidatebleGameObject {
 

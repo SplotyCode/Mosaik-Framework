@@ -2,7 +2,7 @@ package me.david.webapi.server.kaisa;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.david.davidlib.datafactory.DataFactory;
+import me.david.davidlib.util.datafactory.DataFactory;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.server.AbstractWebServer;
 

@@ -1,7 +1,7 @@
 package me.david.davidlib.database.connection.impl;
 
-import me.david.davidlib.database.connection.AbstractConnection;
 import me.david.davidlib.database.connection.sql.SQLDriverConnection;
+import me.david.davidlib.database.connection.AbstractConnection;
 
 public class OracleConnection extends SQLDriverConnection {
 

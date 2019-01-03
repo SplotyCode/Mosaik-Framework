@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Annotations" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ArgParser" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Automatisation" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Build" charset="UTF-8" />
@@ -9,16 +10,16 @@
     <file url="file://$PROJECT_DIR$/Build/BuildWebApi" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Console" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Core" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/DOMParser" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/DOMParsing-Api" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/DataStorage" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Database" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/DomParsing" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/GameEngine" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/IUI" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Netty" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Parsers" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Runtime-Api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Runtime-Impl" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/SpigotLib" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/StartUp" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Util" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ValueTransformer" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/WebApi" charset="UTF-8" />
   </component>

@@ -3,8 +3,8 @@ package me.david.webapi.server.undertow;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpVersion;
 import io.undertow.server.HttpServerExchange;
-import me.david.davidlib.utils.io.ByteArrayInputStream;
-import me.david.davidlib.utils.io.IOUtil;
+import me.david.davidlib.util.io.ByteArrayInputStream;
+import me.david.davidlib.util.io.IOUtil;
 
 import java.io.IOException;
 import java.io.InputStream;

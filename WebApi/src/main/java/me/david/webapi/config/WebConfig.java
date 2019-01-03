@@ -1,6 +1,6 @@
 package me.david.webapi.config;
 
-import me.david.davidlib.datafactory.DataKey;
+import me.david.davidlib.util.datafactory.DataKey;
 import me.david.webapi.response.content.ResponseContent;
 
 public final class WebConfig {

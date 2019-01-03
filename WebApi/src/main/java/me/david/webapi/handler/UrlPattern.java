@@ -2,7 +2,7 @@ package me.david.webapi.handler;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import me.david.davidlib.cache.MaxSizeHashMap;
+import me.david.davidlib.util.cache.MaxSizeHashMap;
 import me.david.webapi.handler.anotation.IllegalHandlerException;
 
 import java.util.*;

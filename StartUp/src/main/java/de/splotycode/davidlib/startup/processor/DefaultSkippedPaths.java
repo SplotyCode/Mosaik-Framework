@@ -1,6 +1,6 @@
 package de.splotycode.davidlib.startup.processor;
 
-import me.david.davidlib.startup.SkipPath;
+import me.david.davidlib.util.core.startup.SkipPath;
 
 @SkipPath({"org.eclipse",
         "io.undertow",

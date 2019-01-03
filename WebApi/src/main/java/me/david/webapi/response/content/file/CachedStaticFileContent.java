@@ -1,11 +1,10 @@
 package me.david.webapi.response.content.file;
 
-import me.david.davidlib.utils.io.FileUtil;
+import me.david.davidlib.util.io.FileUtil;
 import me.david.webapi.response.content.ResponseContent;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CachedStaticFileContent implements ResponseContent {
