@@ -3,13 +3,13 @@ package de.splotycode.davidlib.startup.application;
 import de.splotycode.davidlib.startup.envirementchanger.ConfigureEnvironmentChangerImpl;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import me.david.davidlib.util.core.application.Application;
-import me.david.davidlib.util.core.application.ApplicationHandle;
-import me.david.davidlib.util.core.application.ApplicationState;
-import me.david.davidlib.util.core.application.BootException;
-import me.david.davidlib.util.core.link.LinkBase;
-import me.david.davidlib.util.core.startup.ApplicationStartUpException;
-import me.david.davidlib.util.core.startup.BootContext;
+import me.david.davidlib.runtimeapi.LinkBase;
+import me.david.davidlib.runtimeapi.application.Application;
+import me.david.davidlib.runtimeapi.application.ApplicationHandle;
+import me.david.davidlib.runtimeapi.application.ApplicationState;
+import me.david.davidlib.runtimeapi.application.BootException;
+import me.david.davidlib.runtimeapi.startup.ApplicationStartUpException;
+import me.david.davidlib.runtimeapi.startup.BootContext;
 
 import java.lang.reflect.InvocationTargetException;
 

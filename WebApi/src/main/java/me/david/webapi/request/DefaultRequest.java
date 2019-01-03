@@ -3,7 +3,7 @@ package me.david.webapi.request;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import me.david.davidlib.utils.EnumUtil;
+import me.david.davidlib.util.EnumUtil;
 import me.david.webapi.request.body.RequestBodyHelper;
 import me.david.webapi.request.body.RequestContent;
 import me.david.webapi.response.Response;

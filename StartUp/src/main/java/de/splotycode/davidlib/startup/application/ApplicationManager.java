@@ -1,10 +1,10 @@
 package de.splotycode.davidlib.startup.application;
 
 import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
-import me.david.davidlib.util.core.application.Application;
-import me.david.davidlib.util.core.application.ApplicationHandle;
-import me.david.davidlib.util.core.application.ApplicationState;
-import me.david.davidlib.util.core.link.IApplicationManager;
+import me.david.davidlib.runtimeapi.application.Application;
+import me.david.davidlib.runtimeapi.application.ApplicationHandle;
+import me.david.davidlib.runtimeapi.application.ApplicationState;
+import me.david.davidlib.runtimeapi.application.IApplicationManager;
 
 import java.util.ArrayList;
 import java.util.Collection;

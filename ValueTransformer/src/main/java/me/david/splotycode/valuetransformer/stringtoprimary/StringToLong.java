@@ -1,7 +1,7 @@
 package me.david.splotycode.valuetransformer.stringtoprimary;
 
-import me.david.davidlib.util.core.link.transformer.ValueTransformer;
-import me.david.davidlib.util.core.link.transformer.TransformException;
+import me.david.davidlib.runtimeapi.transformer.TransformException;
+import me.david.davidlib.runtimeapi.transformer.ValueTransformer;
 
 public class StringToLong extends ValueTransformer<String, Long> {
 

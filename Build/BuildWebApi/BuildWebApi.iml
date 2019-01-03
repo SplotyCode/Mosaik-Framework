@@ -34,15 +34,16 @@
     <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.11" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.21.0-GA" level="project" />
     <orderEntry type="module" module-name="Console" />
-    <orderEntry type="library" name="Maven: me.david.davidlib:Runtime:1.9.9" level="project" />
-    <orderEntry type="module" module-name="Util" />
-    <orderEntry type="library" name="Maven: net.jodah:typetools:0.6.0" level="project" />
-    <orderEntry type="module" module-name="Annotations" />
     <orderEntry type="module" module-name="ValueTransformer" />
     <orderEntry type="library" name="Maven: org.junit.jupiter:junit-jupiter-api:5.4.0-M1" level="project" />
     <orderEntry type="library" name="Maven: org.apiguardian:apiguardian-api:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.opentest4j:opentest4j:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.junit.platform:junit-platform-commons:1.4.0-M1" level="project" />
+    <orderEntry type="library" name="Maven: me.david.davidlib:Runtime:1.9.9" level="project" />
+    <orderEntry type="module" module-name="Util" />
+    <orderEntry type="library" name="Maven: net.jodah:typetools:0.6.0" level="project" />
+    <orderEntry type="module" module-name="Annotations" />
+    <orderEntry type="module" module-name="IUI" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.20" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.25" level="project" />

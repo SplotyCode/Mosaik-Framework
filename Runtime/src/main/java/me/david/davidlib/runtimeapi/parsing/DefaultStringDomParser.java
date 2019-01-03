@@ -2,7 +2,7 @@ package me.david.davidlib.runtimeapi.parsing;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.david.davidlib.util.core.storage.Document;
+import me.david.davidlib.runtimeapi.storage.Document;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -11,6 +11,11 @@
 
     <artifactId>DomParsing</artifactId>
     <dependencies>
+        <dependency>
+            <groupId>me.david.davidlib</groupId>
+            <artifactId>Runtime</artifactId>
+            <version>1.9.9</version>
+        </dependency>
     </dependencies>
 
 

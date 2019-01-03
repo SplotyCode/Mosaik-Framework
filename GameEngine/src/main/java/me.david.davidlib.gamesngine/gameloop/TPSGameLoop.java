@@ -2,7 +2,7 @@ package me.david.davidlib.gamesngine.gameloop;
 
 import lombok.Getter;
 import me.david.davidlib.gamesngine.tick.TickExecutor;
-import me.david.davidlib.utils.ThreadUtil;
+import me.david.davidlib.util.ThreadUtil;
 
 public class TPSGameLoop implements GameLoop, Overloadable {
 

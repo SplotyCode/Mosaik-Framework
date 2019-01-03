@@ -1,7 +1,7 @@
 package me.david.davidlib.spigotlib.pluginyml;
 
 import me.david.davidlib.spigotlib.SpigotApplicationType;
-import me.david.davidlib.utils.StringUtil;
+import me.david.davidlib.util.StringUtil;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;

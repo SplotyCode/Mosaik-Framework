@@ -1,10 +1,10 @@
 package de.splotycode.davidlib.startup.envirementchanger;
 
 import de.splotycode.davidlib.startup.exception.EnvironmentChangeExcpetion;
-import me.david.davidlib.util.core.application.Application;
-import me.david.davidlib.util.core.application.ApplicationState;
-import me.david.davidlib.util.core.link.LinkBase;
-import me.david.davidlib.util.core.startup.envirement.ConfiguriseEnvironmentChanger;
+import me.david.davidlib.runtimeapi.LinkBase;
+import me.david.davidlib.runtimeapi.application.Application;
+import me.david.davidlib.runtimeapi.application.ApplicationState;
+import me.david.davidlib.runtimeapi.startup.envirement.ConfiguriseEnvironmentChanger;
 
 public class ConfigureEnvironmentChangerImpl implements ConfiguriseEnvironmentChanger {
 

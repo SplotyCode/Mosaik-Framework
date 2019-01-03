@@ -1,9 +1,8 @@
 package me.david.davidlib.gamesngine.gameloop;
 
-import me.david.davidlib.util.logger.Logger;
-import me.david.davidlib.gamesngine.gameloop.TickFrameLoop;
 import me.david.davidlib.gamesngine.tick.TickExecutor;
-import me.david.davidlib.utils.ThreadUtil;
+import me.david.davidlib.util.ThreadUtil;
+import me.david.davidlib.util.logger.Logger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

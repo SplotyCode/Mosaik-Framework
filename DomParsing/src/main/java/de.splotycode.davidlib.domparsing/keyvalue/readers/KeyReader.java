@@ -3,10 +3,10 @@ package de.splotycode.davidlib.domparsing.keyvalue.readers;
 import de.splotycode.davidlib.domparsing.keyvalue.KeyValueParser;
 import de.splotycode.davidlib.domparsing.keyvalue.dom.KeyNode;
 import de.splotycode.davidlib.domparsing.keyvalue.dom.ValueNode;
-import me.david.davidlib.util.core.parsing.DomParseException;
-import me.david.davidlib.util.core.parsing.DomReader;
-import me.david.davidlib.util.core.storage.Node;
-import me.david.davidlib.utils.StringUtil;
+import me.david.davidlib.runtimeapi.parsing.DomParseException;
+import me.david.davidlib.runtimeapi.parsing.DomReader;
+import me.david.davidlib.runtimeapi.storage.Node;
+import me.david.davidlib.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;

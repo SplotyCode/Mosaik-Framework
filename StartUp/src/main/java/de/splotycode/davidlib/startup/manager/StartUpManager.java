@@ -3,10 +3,10 @@ package de.splotycode.davidlib.startup.manager;
 import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
 import de.splotycode.davidlib.startup.starttask.StartTaskExecutor;
 import lombok.Setter;
-import me.david.davidlib.util.core.iui.INamedTaskBar;
-import me.david.davidlib.util.core.link.LinkBase;
-import me.david.davidlib.util.core.link.Links;
-import me.david.davidlib.util.core.link.IStartUpManager;
+import me.david.davidlib.iui.INamedTaskBar;
+import me.david.davidlib.runtimeapi.LinkBase;
+import me.david.davidlib.runtimeapi.Links;
+import me.david.davidlib.runtimeapi.startup.IStartUpManager;
 
 public class StartUpManager implements IStartUpManager {
 

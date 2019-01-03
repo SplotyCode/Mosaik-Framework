@@ -1,7 +1,7 @@
 package me.david.davidlib.runtimeapi.parsing.dom.attribute.attriute;
 
-import me.david.davidlib.utils.AlmostBoolean;
-import me.david.davidlib.utils.StringUtil;
+import me.david.davidlib.util.AlmostBoolean;
+import me.david.davidlib.util.StringUtil;
 
 public class StandardAttribute extends ValueAttribute<String> {
 

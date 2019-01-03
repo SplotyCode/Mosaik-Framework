@@ -1,13 +1,13 @@
 package de.splotycode.davidlib.domparsing;
 
 import lombok.Getter;
-import me.david.davidlib.util.core.link.ParsingManager;
-import me.david.davidlib.util.core.parsing.ParsingHandle;
-import me.david.davidlib.util.core.parsing.input.DomFileInput;
-import me.david.davidlib.util.core.parsing.input.DomInput;
-import me.david.davidlib.util.core.parsing.input.DomStreamInput;
-import me.david.davidlib.util.core.parsing.input.DomUrlInput;
-import me.david.davidlib.util.core.storage.Document;
+import me.david.davidlib.runtimeapi.parsing.ParsingHandle;
+import me.david.davidlib.runtimeapi.parsing.ParsingManager;
+import me.david.davidlib.runtimeapi.parsing.input.DomFileInput;
+import me.david.davidlib.runtimeapi.parsing.input.DomInput;
+import me.david.davidlib.runtimeapi.parsing.input.DomStreamInput;
+import me.david.davidlib.runtimeapi.parsing.input.DomUrlInput;
+import me.david.davidlib.runtimeapi.storage.Document;
 import me.david.davidlib.util.array.ArrayUtil;
 import me.david.davidlib.util.io.PathUtil;
 

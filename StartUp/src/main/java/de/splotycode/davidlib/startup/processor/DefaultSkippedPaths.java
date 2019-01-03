@@ -1,6 +1,6 @@
 package de.splotycode.davidlib.startup.processor;
 
-import me.david.davidlib.util.core.startup.SkipPath;
+import me.david.davidlib.runtimeapi.startup.SkipPath;
 
 @SkipPath({"org.eclipse",
         "io.undertow",
@@ -35,4 +35,5 @@ import me.david.davidlib.util.core.startup.SkipPath;
         "org.reflections",
         "com.avaje"})
 public class DefaultSkippedPaths {
+
 }

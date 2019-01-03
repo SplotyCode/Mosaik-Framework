@@ -2,8 +2,8 @@ package me.david.davidlib.netty;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.david.davidlib.util.listener.ListenerHandler;
 import me.david.davidlib.netty.server.INetServer;
+import me.david.davidlib.util.listener.ListenerHandler;
 
 import java.util.*;
 

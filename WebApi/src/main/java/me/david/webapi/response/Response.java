@@ -3,14 +3,14 @@ package me.david.webapi.response;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import me.david.davidlib.utils.EnumUtil;
+import me.david.davidlib.util.EnumUtil;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.config.WebConfig;
+import me.david.webapi.request.HandleRequestException;
+import me.david.webapi.request.Request;
 import me.david.webapi.response.content.ContentException;
 import me.david.webapi.response.content.ResponseContent;
 import me.david.webapi.response.content.string.StaticStringContent;
-import me.david.webapi.request.HandleRequestException;
-import me.david.webapi.request.Request;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -2,10 +2,10 @@ package me.david.davidlib.spigotlib.gui;
 
 import me.david.davidlib.spigotlib.SpigotApplicationType;
 import me.david.davidlib.spigotlib.util.ColorCodes;
+import me.david.davidlib.spigotlib.util.ItemStackUtil;
+import me.david.davidlib.util.AlmostBoolean;
 import me.david.davidlib.util.datafactory.DataFactory;
 import me.david.davidlib.util.datafactory.DataKey;
-import me.david.davidlib.spigotlib.util.ItemStackUtil;
-import me.david.davidlib.utils.AlmostBoolean;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,7 +13,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class InventoryData {
 

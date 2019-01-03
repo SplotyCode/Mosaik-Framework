@@ -1,6 +1,9 @@
 package me.david.davidlib.runtimeapi.storage;
 
+import me.david.davidlib.runtimeapi.parsing.dom.attribute.attriute.Attribute;
+
 import java.util.Collection;
+import java.util.Map;
 
 public interface Node {
 

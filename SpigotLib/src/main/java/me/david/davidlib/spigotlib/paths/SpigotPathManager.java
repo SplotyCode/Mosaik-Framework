@@ -1,7 +1,7 @@
 package me.david.davidlib.spigotlib.paths;
 
-import me.david.davidlib.util.info.ApplicationInfo;
-import me.david.davidlib.util.info.PathManager;
+import me.david.davidlib.runtimeapi.application.ApplicationInfo;
+import me.david.davidlib.runtimeapi.pathmanager.PathManager;
 
 import java.io.File;
 

@@ -1,6 +1,6 @@
 package me.david.davidlib.runtimeapi.startup;
 
-import me.david.davidlib.util.core.iui.INamedTaskBar;
+import me.david.davidlib.iui.INamedTaskBar;
 
 public interface IStartUpManager {
 

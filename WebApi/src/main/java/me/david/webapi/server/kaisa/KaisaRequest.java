@@ -2,9 +2,8 @@ package me.david.webapi.server.kaisa;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.david.davidlib.util.core.exception.MethodNotSupportedExcpetion;
-import me.david.davidlib.utils.AlmostBoolean;
-import me.david.davidlib.utils.EnumUtil;
+import me.david.davidlib.util.AlmostBoolean;
+import me.david.davidlib.util.EnumUtil;
 import me.david.webapi.request.Method;
 import me.david.webapi.request.Request;
 import me.david.webapi.request.RequestHeaders;
@@ -93,7 +92,7 @@ public class KaisaRequest implements Request {
     //TODO
     @Override
     public boolean isKeepAlive() {
-        throw new MethodNotSupportedExcpetion();
+        throw new UnsupportedOperationException();
     }
 
     @Override

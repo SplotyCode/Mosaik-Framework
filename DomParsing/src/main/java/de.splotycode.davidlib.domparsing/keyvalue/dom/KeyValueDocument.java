@@ -1,10 +1,10 @@
 package de.splotycode.davidlib.domparsing.keyvalue.dom;
 
 import lombok.Getter;
+import me.david.davidlib.runtimeapi.storage.Document;
+import me.david.davidlib.runtimeapi.storage.Node;
 import me.david.davidlib.util.datafactory.DataFactory;
 import me.david.davidlib.util.datafactory.DataKey;
-import me.david.davidlib.util.core.storage.Document;
-import me.david.davidlib.util.core.storage.Node;
 
 import java.util.ArrayList;
 import java.util.Collection;

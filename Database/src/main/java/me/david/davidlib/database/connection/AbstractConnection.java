@@ -1,6 +1,6 @@
 package me.david.davidlib.database.connection;
 
-import me.david.davidlib.utils.StringUtil;
+import me.david.davidlib.util.StringUtil;
 
 public abstract class AbstractConnection<T extends AbstractConnection> implements Connection<T> {
 

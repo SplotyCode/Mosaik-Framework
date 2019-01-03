@@ -1,7 +1,7 @@
 package de.splotycode.davidlib.domparsing.keyvalue.readers;
 
 import de.splotycode.davidlib.domparsing.keyvalue.KeyValueParser;
-import me.david.davidlib.util.core.parsing.DomReader;
+import me.david.davidlib.runtimeapi.parsing.DomReader;
 
 public class CommentReader implements DomReader<KeyValueParser> {
 

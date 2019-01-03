@@ -1,6 +1,6 @@
 package me.david.webapi.response.error;
 
-import me.david.davidlib.utils.ExceptionUtil;
+import me.david.davidlib.util.ExceptionUtil;
 import me.david.webapi.response.Response;
 import me.david.webapi.response.content.string.StaticStringContent;
 

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.david.davidlib.gamesngine.render.Renderer;
 import me.david.davidlib.gamesngine.tick.TickExecutor;
-import me.david.davidlib.utils.ThreadUtil;
+import me.david.davidlib.util.ThreadUtil;
 
 /**
  * This Game Loop while call Ticks at a consistent rate

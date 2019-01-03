@@ -1,9 +1,11 @@
 package de.splotycode.davidlib.console;
 
+import me.david.davidlib.runtimeapi.application.ApplicationType;
+import me.david.davidlib.runtimeapi.startup.BootContext;
+
 public interface ConsoleApplicationType extends ApplicationType {
 
     default void initType(BootContext context, ConsoleApplicationType dummy) {
-
     }
 
     default ProcessBar generateProcessBar(String name, int max, int initial) {

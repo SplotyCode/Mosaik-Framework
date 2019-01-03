@@ -1,7 +1,7 @@
 package me.david.davidlib.spigotlib;
 
-import me.david.davidlib.util.core.application.Application;
-import me.david.davidlib.util.core.link.LinkBase;
+import me.david.davidlib.runtimeapi.LinkBase;
+import me.david.davidlib.runtimeapi.application.Application;
 import me.david.davidlib.spigotlib.exception.PluginLoadException;
 import me.david.davidlib.spigotlib.gui.GuiListener;
 import me.david.davidlib.spigotlib.link.SpigotLinks;

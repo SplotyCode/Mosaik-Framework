@@ -1,7 +1,7 @@
 package me.david.davidlib.runtimeapi.parsing;
 
 import me.david.davidlib.runtimeapi.parsing.input.DomInput;
-import me.david.davidlib.util.core.storage.Document;
+import me.david.davidlib.runtimeapi.storage.Document;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package me.david.splotycode.valuetransformer.primarytostring;
 
-import me.david.davidlib.util.core.link.transformer.ValueTransformer;
-import me.david.davidlib.util.core.link.transformer.TransformException;
+import me.david.davidlib.runtimeapi.transformer.TransformException;
+import me.david.davidlib.runtimeapi.transformer.ValueTransformer;
 
 public class CharArrayToString extends ValueTransformer<char[], String> {
 

@@ -1,7 +1,7 @@
 package de.splotycode.davidlib.startup.processor;
 
-import me.david.davidlib.util.core.startup.SkipPath;
-import me.david.davidlib.utils.StringUtil;
+import me.david.davidlib.runtimeapi.startup.SkipPath;
+import me.david.davidlib.util.StringUtil;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;

@@ -1,11 +1,14 @@
 package me.david.davidlib.spigotlib.gui;
 
-import me.david.davidlib.utils.StringUtil;
+import me.david.davidlib.util.StringUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class GuiManager {
 
