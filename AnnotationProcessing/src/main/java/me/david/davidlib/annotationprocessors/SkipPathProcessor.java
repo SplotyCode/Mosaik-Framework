@@ -1,6 +1,6 @@
-package de.splotycode.davidlib.startup.processor;
+package me.david.davidlib.annotationprocessors;
 
-import me.david.davidlib.runtimeapi.startup.SkipPath;
+import me.david.davidlib.annotations.skippedpath.SkipPath;
 import me.david.davidlib.util.StringUtil;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -15,11 +15,14 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@SupportedAnnotationTypes("me.david.davidlib.startup.SkipPath")
+@SupportedAnnotationTypes("me.david.davidlib.annotations.skippedpath.SkipPath")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class SkipPathProcessor extends AbstractProcessor {
 
@@ -45,7 +48,7 @@ public class SkipPathProcessor extends AbstractProcessor {
         }
         if (!skippedPaths.isEmpty()) {
             try {
-                long id = this.id.incrementAndGet();
+                long id = SkipPathProcessor.id.incrementAndGet();
                 FileObject descriptionFile = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "disabled_paths_" + id + ".txt");
                 try (Writer writer = descriptionFile.openWriter()) {
                     writer.append("# disabled_paths.txt generated with DavidLib\n");

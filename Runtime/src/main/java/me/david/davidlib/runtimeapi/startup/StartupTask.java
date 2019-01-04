@@ -8,6 +8,6 @@ public interface StartupTask extends Comparable<StartupTask> {
 
     @Override
     default int compareTo(StartupTask startupTask) {
-        return 0;
+        return getClass().getSimpleName().compareTo(startupTask.getClass().getSimpleName());
     }
 }

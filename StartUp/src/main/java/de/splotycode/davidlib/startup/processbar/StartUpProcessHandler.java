@@ -1,17 +1,15 @@
 package de.splotycode.davidlib.startup.processbar;
 
 import de.splotycode.davidlib.console.ProcessBar;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import me.david.davidlib.util.logger.Logger;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StartUpProcessHandler {
+
+    private StartUpProcessHandler() {}
 
     private Logger logger = Logger.getInstance(getClass());
 
-    @Getter private static StartUpProcessHandler instance = new StartUpProcessHandler();
+    private static StartUpProcessHandler instance = new StartUpProcessHandler();
 
     private ProcessBar processBar;
 
@@ -32,4 +30,7 @@ public class StartUpProcessHandler {
         processBar.stop();
     }
 
+    public static StartUpProcessHandler getInstance() {
+        return instance;
+    }
 }

@@ -25,6 +25,7 @@
         <module>Runtime</module>
         <module>Annotations</module>
         <module>IUI</module>
+        <module>AnnotationProcessing</module>
     </modules>
 
     <properties>

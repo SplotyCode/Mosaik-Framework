@@ -9,8 +9,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>StartUp</artifactId>
-
     <build>
         <plugins>
             <plugin>
@@ -27,8 +25,8 @@
                         <configuration>
                             <compilerArgument>-proc:none</compilerArgument>
                             <includes>
-                                <include>me/david/davidlib/runtimeapi/startup/SkipPath.java</include>
-                                <include>de/splotycode/davidlib/startup/processor/SkipPathProcessor.java</include>
+                                <include>me/david/davidlib/annotations/skippedpath/SkipPath.java</include>
+                                <include>me/david/davidlib/annotationprocessors/SkipPathProcessor.java</include>
                             </includes>
                         </configuration>
                     </execution>
@@ -44,35 +42,16 @@
         </plugins>
     </build>
 
+    <artifactId>AnnotationProcessing</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.11</version>
-        </dependency>
-        <dependency>
             <groupId>me.david.davidlib</groupId>
-            <artifactId>Console</artifactId>
+            <artifactId>Annotations</artifactId>
             <version>1.9.9</version>
         </dependency>
         <dependency>
             <groupId>me.david.davidlib</groupId>
-            <artifactId>Runtime</artifactId>
-            <version>1.9.9</version>
-        </dependency>
-        <dependency>
-            <groupId>me.david.davidlib</groupId>
-            <artifactId>AnnotationProcessing</artifactId>
-            <version>1.9.9</version>
-        </dependency>
-        <dependency>
-            <groupId>me.david.davidlib</groupId>
-            <artifactId>ArgParser</artifactId>
-            <version>1.9.9</version>
-        </dependency>
-        <dependency>
-            <groupId>me.david.davidlib</groupId>
-            <artifactId>DomParsing</artifactId>
+            <artifactId>Util</artifactId>
             <version>1.9.9</version>
         </dependency>
     </dependencies>

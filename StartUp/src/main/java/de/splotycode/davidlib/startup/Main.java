@@ -5,7 +5,6 @@ import de.splotycode.davidlib.startup.envirementchanger.StartUpInvirementChanger
 import de.splotycode.davidlib.startup.manager.StartUpManager;
 import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
 import de.splotycode.davidlib.startup.starttask.StartTaskExecutor;
-import lombok.Getter;
 import me.david.davidlib.runtimeapi.LinkBase;
 import me.david.davidlib.runtimeapi.Links;
 import me.david.davidlib.runtimeapi.application.Application;
@@ -25,14 +24,13 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 
-@Getter
 public class Main {
 
-    @Getter private static Main instance;
+    private static Main instance;
 
     private static BootContext bootData;
 
-    @Getter private static boolean initialised = false;
+    private static boolean initialised = false;
 
     public static void main() {
         main(ArrayUtil.EMPTY_STRING_ARRAY);
@@ -123,4 +121,15 @@ public class Main {
         logger.info("OS: " + SystemInfo.getOsNameVersionAndArch());
     }
 
+    public static Main getInstance() {
+        return instance;
+    }
+
+    public static BootContext getBootData() {
+        return bootData;
+    }
+
+    public static boolean isInitialised() {
+        return initialised;
+    }
 }

@@ -3,14 +3,11 @@ package de.splotycode.davidlib.startup.starttask;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
 import de.splotycode.davidlib.startup.exception.FrameworkStartException;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import me.david.davidlib.annotations.AnnotationHelper;
 import me.david.davidlib.runtimeapi.startup.StartupTask;
 import me.david.davidlib.runtimeapi.startup.envirement.StartUpEnvironmentChanger;
-import me.david.davidlib.util.logger.Logger;
 import me.david.davidlib.util.io.IOUtil;
+import me.david.davidlib.util.logger.Logger;
 import me.david.davidlib.util.reflection.ClassFinderHelper;
 import me.david.davidlib.util.reflection.ReflectionUtil;
 import org.reflections.Reflections;
@@ -20,12 +17,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StartTaskExecutor {
+
+    private StartTaskExecutor() {}
 
     private static Logger logger = Logger.getInstance(StartTaskExecutor.class);
 
-    @Getter private static StartTaskExecutor instance = new StartTaskExecutor();
+    private static StartTaskExecutor instance = new StartTaskExecutor();
 
     private TreeMultimap<Integer, StartupTask> tasks = TreeMultimap.create(Ordering.natural().reverse(), Ordering.natural());
 
@@ -78,4 +76,7 @@ public class StartTaskExecutor {
         }
     }
 
+    public static StartTaskExecutor getInstance() {
+        return instance;
+    }
 }

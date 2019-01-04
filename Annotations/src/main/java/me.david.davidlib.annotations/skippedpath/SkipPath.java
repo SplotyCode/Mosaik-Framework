@@ -1,4 +1,4 @@
-package me.david.davidlib.runtimeapi.startup;
+package me.david.davidlib.annotations.skippedpath;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,7 +1,6 @@
 package de.splotycode.davidlib.startup.application;
 
 import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
-import lombok.AllArgsConstructor;
 import me.david.davidlib.runtimeapi.application.Application;
 import me.david.davidlib.runtimeapi.application.ApplicationState;
 import me.david.davidlib.runtimeapi.application.ApplicationType;
@@ -11,10 +10,13 @@ import me.david.davidlib.util.reflection.ReflectionUtil;
 
 import java.util.Collection;
 
-@AllArgsConstructor
 public class ApplicationFinder {
 
     private ApplicationManager manager;
+
+    public ApplicationFinder(ApplicationManager manager) {
+        this.manager = manager;
+    }
 
     public void findAll() {
         Collection<Class<?>> classes = ClassFinderHelper.getUserClasses();
