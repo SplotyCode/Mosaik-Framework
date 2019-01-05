@@ -83,7 +83,12 @@ public class AnnotationHandlerData {
     }
 
     public boolean valid(Request request) {
-        if (!request.getHeader(RequestHeaders.HOST).trim().toLowerCase(Locale.ENGLISH).equals(host)) return false;
+        String host = request.getHeader(RequestHeaders.HOST);
+        if (host == null) {
+            if (this.host != null) return false;
+        } else if (!host.trim().toLowerCase(Locale.ENGLISH).equals(host)) {
+             return false;
+        }
         if (mapping != null && !mapping.match(request.getPath()).isMatch()) return false;
         if (method != null && (costomMethod ? request.getMethod().getMethod().matches(method) : request.getMethod().getMethod().equals(method))) return false;
         for (String get : neededGet)

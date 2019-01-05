@@ -51,7 +51,7 @@ public class AnnotationHandler implements HttpHandler {
         }
         for (AnnotationHandlerData.SupAnnotationHandlerData sup : subs.stream().filter(sub -> sub.valid(request)).sorted(Comparator.comparingInt(AnnotationHandlerData::getPriority)).collect(Collectors.toList())) {
             if (sup.getLoadingError() != null) {
-                throw new HandleRequestException("Count not use Handler Method: " + sup.getDisplayName() + "because it fails loading on startup", sup.getLoadingError());
+                throw new HandleRequestException("Count not use Handler Method: " + sup.getDisplayName() + " because it fails loading on startup", sup.getLoadingError());
             }
             Object[] objects = new Object[sup.getParameters().size()];
             int i = 0;
