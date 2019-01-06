@@ -48,7 +48,7 @@ public class SkipPathProcessor extends AbstractProcessor {
         }
         if (!skippedPaths.isEmpty()) {
             try {
-                long id = SkipPathProcessor.id.incrementAndGet();
+                long id = SkipPathProcessor.id.getAndIncrement();
                 FileObject descriptionFile = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "disabled_paths_" + id + ".txt");
                 try (Writer writer = descriptionFile.openWriter()) {
                     writer.append("# disabled_paths.txt generated with DavidLib\n");
