@@ -1,5 +1,6 @@
 package me.david.davidlib.util.condition;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public final class Conditions {
@@ -23,6 +24,16 @@ public final class Conditions {
 
     public static <T> Condition<T> constant(boolean value) {
         return (Condition<T>)(value ? TRUE : FALSE);
+    }
+
+    @SafeVarargs
+    public static <T> Condition<T> and(Condition<T>... conditions) {
+        return item -> Arrays.stream(conditions).allMatch(condition -> condition.check(item));
+    }
+
+    @SafeVarargs
+    public static <T> Condition<T> or(Condition<T>... conditions) {
+        return item -> Arrays.stream(conditions).anyMatch(condition -> condition.check(item));
     }
 
 }
