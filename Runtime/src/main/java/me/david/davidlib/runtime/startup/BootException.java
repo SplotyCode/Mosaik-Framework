@@ -1,4 +1,4 @@
-package me.david.davidlib.runtime.application;
+package me.david.davidlib.runtime.startup;
 
 public class BootException extends RuntimeException {
 

@@ -1,12 +1,13 @@
 package me.david.davidlib.runtime.application;
 
 import me.david.davidlib.util.datafactory.DataFactory;
+import me.david.davidlib.util.datafactory.DataFactoryComponent;
 import me.david.davidlib.util.datafactory.DataKey;
 import me.david.davidlib.util.logger.Logger;
 
 import java.util.Collection;
 
-public interface IApplication {
+public interface IApplication extends DataFactoryComponent {
 
     String getName();
 
@@ -21,7 +22,6 @@ public interface IApplication {
 
     Collection<Class<ApplicationType>> getApplicationTypes();
 
-    DataFactory getDataFactory();
     default <T> T getData(DataKey<T> key) {
         return getDataFactory().getData(key);
     }
