@@ -14,7 +14,7 @@ import me.david.davidlib.runtimeapi.logging.DavidLibLoggerFactory;
 import me.david.davidlib.runtimeapi.startup.BootContext;
 import me.david.davidlib.runtimeapi.startup.envirement.StartUpEnvironmentChanger;
 import me.david.davidlib.util.StringUtil;
-import me.david.davidlib.util.array.ArrayUtil;
+import me.david.davidlib.util.collection.ArrayUtil;
 import me.david.davidlib.util.info.EnvironmentInformation;
 import me.david.davidlib.util.info.SystemInfo;
 import me.david.davidlib.util.init.AlreadyInitailizedException;

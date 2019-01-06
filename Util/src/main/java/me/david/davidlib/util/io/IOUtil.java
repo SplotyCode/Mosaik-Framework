@@ -1,6 +1,6 @@
 package me.david.davidlib.util.io;
 
-import me.david.davidlib.util.array.ArrayUtil;
+import me.david.davidlib.util.collection.ArrayUtil;
 import me.david.davidlib.util.logger.Logger;
 
 import java.io.*;

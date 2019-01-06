@@ -1,4 +1,4 @@
-package me.david.davidlib.util.array;
+package me.david.davidlib.util.collection;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;

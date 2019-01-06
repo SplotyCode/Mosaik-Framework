@@ -1,4 +1,4 @@
-package me.david.davidlib.util.array;
+package me.david.davidlib.util.collection;
 
 import me.david.davidlib.util.Pair;
 import me.david.davidlib.util.condition.Condition;

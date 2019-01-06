@@ -2,7 +2,7 @@ package me.david.davidlib.util.logger;
 
 import lombok.Getter;
 import me.david.davidlib.util.ExceptionUtil;
-import me.david.davidlib.util.array.ArrayUtil;
+import me.david.davidlib.util.collection.ArrayUtil;
 import org.apache.log4j.Level;
 
 public abstract class Logger {

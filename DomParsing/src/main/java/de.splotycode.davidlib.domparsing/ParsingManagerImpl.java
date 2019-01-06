@@ -8,7 +8,7 @@ import me.david.davidlib.runtimeapi.parsing.input.DomInput;
 import me.david.davidlib.runtimeapi.parsing.input.DomStreamInput;
 import me.david.davidlib.runtimeapi.parsing.input.DomUrlInput;
 import me.david.davidlib.runtimeapi.storage.Document;
-import me.david.davidlib.util.array.ArrayUtil;
+import me.david.davidlib.util.collection.ArrayUtil;
 import me.david.davidlib.util.io.PathUtil;
 
 import java.io.File;
