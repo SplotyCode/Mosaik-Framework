@@ -79,11 +79,17 @@ public class StringManipulator implements ResponseManipulator {
 
     @Override
     public ResponseManipulator pattern(Object object) {
-        pattern(object.getClass().getName(), object);
+        pattern(object.getClass().getSimpleName().toLowerCase(), object);
         return this;
     }
 
     public String getResult() {
+        for (Map.Entry<String, ManipulateData.ManipulatePattern> pattern : manipulateData.getPatternMap().entrySet()) {
+            System.out.println(pattern.getValue().getStart() + " " + pattern.getKey() + " " + pattern.getValue().getEnd() + " " + (pattern.getValue().getStart() + pattern.getKey().length() + 1));
+            replacements.add(new Replacement(pattern.getValue().getStart(), pattern.getValue().getStart() + pattern.getKey().length() + 1, ""));
+            //replacements.add(new Replacement(pattern.getValue().getEnd() - 3, pattern.getValue().getEnd(), ""));
+        }
+
         StringBuilder buffer = new StringBuilder(input);
         int delta = 0;
         for (Replacement replacement : replacements) {

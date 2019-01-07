@@ -3,16 +3,22 @@ package me.david.webapi.response.content.manipulate;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ManipulateData {
 
     private HashMap<String, List<ManipulateVariable>> variables = new HashMap<>();
     private HashMap<String, ManipulatePattern> patterns = new HashMap<>();
+
+    public Collection<ManipulatePattern> getPatterns() {
+        return patterns.values();
+    }
+
+    public HashMap<String, ManipulatePattern> getPatternMap() {
+        return patterns;
+    }
 
     public List<ManipulateVariable> getVariables(String name) {
         return variables.get(name);
@@ -39,7 +45,6 @@ public class ManipulateData {
                 case 1:
                     if (stack.isEmpty() && ch == '@') {
                         state = 2;
-                        start = current;
                     } else if (ch == '$') {
                         if (currentPattern == null) {
                             addVariable(variables, stack, new ManipulateVariable(start, current + 1));
@@ -56,7 +61,7 @@ public class ManipulateData {
                     if (stack.isEmpty() && ch == '@') {
                         state = 3;
                     } else if (ch == '$') {
-                        currentPattern = new ManipulatePattern();
+                        currentPattern = new ManipulatePattern(start);
                         patterns.put(stack, currentPattern);
                         stack = "";
                         state = 0;
@@ -66,6 +71,7 @@ public class ManipulateData {
                     break;
                 case 3:
                     if (ch == '$') {
+                        currentPattern.setEnd(current);
                         currentPattern = null;
                         stack = "";
                         state = 0;
@@ -97,6 +103,13 @@ public class ManipulateData {
 
     @Getter
     public static class ManipulatePattern {
+
+        private int start;
+        @Setter private int end;
+
+        public ManipulatePattern(int start) {
+            this.start = start;
+        }
 
         private HashMap<String, List<ManipulateVariable>> variables = new HashMap<>();
 

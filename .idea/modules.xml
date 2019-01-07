@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/Build/BuildStartUp/BuildStartUp.iml" filepath="$PROJECT_DIR$/Build/BuildStartUp/BuildStartUp.iml" />
       <module fileurl="file://$PROJECT_DIR$/Build/BuildWebApi/BuildWebApi.iml" filepath="$PROJECT_DIR$/Build/BuildWebApi/BuildWebApi.iml" />
       <module fileurl="file://$PROJECT_DIR$/Console/Console.iml" filepath="$PROJECT_DIR$/Console/Console.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Crawler/Crawler.iml" filepath="$PROJECT_DIR$/Crawler/Crawler.iml" />
       <module fileurl="file://$PROJECT_DIR$/Database/Database.iml" filepath="$PROJECT_DIR$/Database/Database.iml" />
       <module fileurl="file://$PROJECT_DIR$/DavidLib.iml" filepath="$PROJECT_DIR$/DavidLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/DomParsing/DomParsing.iml" filepath="$PROJECT_DIR$/DomParsing/DomParsing.iml" />

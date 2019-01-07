@@ -26,6 +26,7 @@
         <module>Annotations</module>
         <module>IUI</module>
         <module>AnnotationProcessing</module>
+        <module>Crawler</module>
     </modules>
 
     <properties>
