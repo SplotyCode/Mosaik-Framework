@@ -51,4 +51,18 @@ public final class AnnotationHelper {
         }
     }
 
+    /**
+     * Gets the priority of Object based on its annotations
+     * Not all Annotations must be Priority(Last, First, Priority) Annotations
+     * If it founds a Priority Annotation it will not scan the other annotations
+     * @param object the object of what you want to get the priority
+     * @return the priority of the annotations
+     * @see Last
+     * @see First
+     * @see Priority
+     */
+    public static int getPriority(Object object) {
+        return getPriority(object.getClass().getAnnotations());
+    }
+
 }
