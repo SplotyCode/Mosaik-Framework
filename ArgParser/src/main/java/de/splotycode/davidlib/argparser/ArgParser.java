@@ -10,11 +10,20 @@ import me.david.davidlib.runtime.argparser.IArgParser;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Main Arg Parser
+ */
 public class ArgParser implements IArgParser {
 
     private Map<String[], ParsedArguments> cachedArguments = new HashMap<>();
     private Map<Object, ParsedObject> cachedObjects = new HashMap<>();
 
+    /**
+     * Parses arguments to an object wit a prefix
+     * @param obj the object you want to apply the arguments
+     * @param label the prefix
+     * @param args the arguments you want to parse
+     */
     @Override
     public void parseArgs(Object obj, String label, String[] args) {
         ParsedArguments arguments = cachedArguments.get(args);
@@ -48,16 +57,30 @@ public class ArgParser implements IArgParser {
         }
     }
 
+    /**
+     * Parses the Boot Parameters to an Object
+     * @param obj the object you want to apply the boot parameters
+     */
     @Override
     public void parseArgs(Object obj) {
         parseArgs(obj, LinkBase.getBootContext().getArgs());
     }
 
+    /**
+     * Parses the Boot Parameters to an Object with a prefix
+     * @param obj the object you want to apply the boot parameters
+     * @param label the prefix
+     */
     @Override
     public void parseArgs(Object obj, String label) {
         parseArgs(obj, label, LinkBase.getBootContext().getArgs());
     }
 
+    /**
+     * Parses arguments to an object
+     * @param obj the object you want to apply the arguments
+     * @param args the arguments you want to parse
+     */
     @Override
     public void parseArgs(Object obj, String[] args) {
         parseArgs(obj, null, args);

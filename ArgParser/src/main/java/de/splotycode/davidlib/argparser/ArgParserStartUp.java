@@ -7,6 +7,9 @@ import me.david.davidlib.runtime.startup.StartUpPriorities;
 import me.david.davidlib.runtime.startup.StartupTask;
 import me.david.davidlib.runtime.startup.envirement.StartUpEnvironmentChanger;
 
+/**
+ * Register's the ArgParser to the LinkBase
+ */
 @Priority(priority = StartUpPriorities.INDEPENDENT_SETUP)
 public class ArgParserStartUp implements StartupTask {
 

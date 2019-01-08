@@ -1,5 +1,10 @@
 package de.splotycode.davidlib.argparser.parser;
 
+/**
+ * Thorns when the Arg Parser fails
+ * This can have many Reasons
+ */
+@SuppressWarnings("unused")
 public class ArgParseException extends RuntimeException {
 
     public ArgParseException() {
