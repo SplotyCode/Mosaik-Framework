@@ -3,9 +3,9 @@ package de.splotycode.davidlib.startup.manager;
 import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
 import de.splotycode.davidlib.startup.starttask.StartTaskExecutor;
 import me.david.davidlib.iui.INamedTaskBar;
-import me.david.davidlib.runtimeapi.LinkBase;
-import me.david.davidlib.runtimeapi.Links;
-import me.david.davidlib.runtimeapi.startup.IStartUpManager;
+import me.david.davidlib.runtime.LinkBase;
+import me.david.davidlib.runtime.Links;
+import me.david.davidlib.runtime.startup.IStartUpManager;
 
 public class StartUpManager implements IStartUpManager {
 

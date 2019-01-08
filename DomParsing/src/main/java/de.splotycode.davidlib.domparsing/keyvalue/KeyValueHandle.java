@@ -1,8 +1,8 @@
 package de.splotycode.davidlib.domparsing.keyvalue;
 
-import me.david.davidlib.runtimeapi.parsing.DomParser;
-import me.david.davidlib.runtimeapi.parsing.ParsingHandle;
-import me.david.davidlib.runtimeapi.parsing.input.DomInput;
+import me.david.davidlib.runtime.parsing.DomParser;
+import me.david.davidlib.runtime.parsing.ParsingHandle;
+import me.david.davidlib.runtime.parsing.input.DomInput;
 
 public class KeyValueHandle implements ParsingHandle {
     @Override

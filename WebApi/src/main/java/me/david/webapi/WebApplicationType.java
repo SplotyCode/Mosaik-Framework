@@ -1,7 +1,7 @@
 package me.david.webapi;
 
-import me.david.davidlib.runtimeapi.application.ApplicationType;
-import me.david.davidlib.runtimeapi.startup.BootContext;
+import me.david.davidlib.runtime.application.ApplicationType;
+import me.david.davidlib.runtime.startup.BootContext;
 import me.david.davidlib.util.datafactory.DataKey;
 import me.david.davidlib.util.reflection.classregister.IListClassRegister;
 import me.david.davidlib.util.reflection.classregister.ListClassRegister;

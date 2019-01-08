@@ -2,8 +2,8 @@ package papa;
 
 import de.splotycode.davidlib.startup.Main;
 import me.david.davidlib.annotations.Disabled;
-import me.david.davidlib.runtimeapi.application.Application;
-import me.david.davidlib.runtimeapi.startup.BootContext;
+import me.david.davidlib.runtime.application.Application;
+import me.david.davidlib.runtime.startup.BootContext;
 import me.david.webapi.WebApplicationType;
 import me.david.webapi.server.netty.NettyWebServer;
 

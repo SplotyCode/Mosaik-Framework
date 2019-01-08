@@ -27,7 +27,7 @@
                         <configuration>
                             <compilerArgument>-proc:none</compilerArgument>
                             <includes>
-                                <include>me/david/davidlib/runtimeapi/startup/SkipPath.java</include>
+                                <include>me.david.davidlib.runtime/startup/SkipPath.java</include>
                                 <include>de/splotycode/davidlib/startup/processor/SkipPathProcessor.java</include>
                             </includes>
                         </configuration>

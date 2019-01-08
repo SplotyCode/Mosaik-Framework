@@ -3,9 +3,9 @@ package de.splotycode.davidlib.domparsing.keyvalue.readers;
 import de.splotycode.davidlib.domparsing.keyvalue.KeyValueParser;
 import de.splotycode.davidlib.domparsing.keyvalue.dom.KeyNode;
 import de.splotycode.davidlib.domparsing.keyvalue.dom.ValueNode;
-import me.david.davidlib.runtimeapi.parsing.DomParseException;
-import me.david.davidlib.runtimeapi.parsing.DomReader;
-import me.david.davidlib.runtimeapi.storage.Node;
+import me.david.davidlib.runtime.parsing.DomParseException;
+import me.david.davidlib.runtime.parsing.DomReader;
+import me.david.davidlib.runtime.storage.Node;
 import me.david.davidlib.util.StringUtil;
 
 import java.util.ArrayList;

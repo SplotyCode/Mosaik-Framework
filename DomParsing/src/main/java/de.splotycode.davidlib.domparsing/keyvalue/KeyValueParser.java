@@ -4,10 +4,10 @@ import de.splotycode.davidlib.domparsing.keyvalue.dom.KeyValueDocument;
 import de.splotycode.davidlib.domparsing.keyvalue.readers.CommentReader;
 import de.splotycode.davidlib.domparsing.keyvalue.readers.KeyReader;
 import lombok.Getter;
-import me.david.davidlib.runtimeapi.parsing.DefaultStringDomParser;
-import me.david.davidlib.runtimeapi.parsing.DomParseException;
-import me.david.davidlib.runtimeapi.parsing.DomReader;
-import me.david.davidlib.runtimeapi.parsing.input.DomInput;
+import me.david.davidlib.runtime.parsing.DefaultStringDomParser;
+import me.david.davidlib.runtime.parsing.DomParseException;
+import me.david.davidlib.runtime.parsing.DomReader;
+import me.david.davidlib.runtime.parsing.input.DomInput;
 
 public class KeyValueParser extends DefaultStringDomParser<KeyValueDocument, KeyValueParser> {
 

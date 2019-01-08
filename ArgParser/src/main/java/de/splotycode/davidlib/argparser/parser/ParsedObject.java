@@ -2,7 +2,7 @@ package de.splotycode.davidlib.argparser.parser;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import me.david.davidlib.runtimeapi.argparser.Parameter;
+import me.david.davidlib.runtime.argparser.Parameter;
 import me.david.davidlib.util.reflection.ReflectionUtil;
 
 import java.lang.reflect.Field;

@@ -1,8 +1,8 @@
 package de.splotycode.davidlib.domparsing.keyvalue.dom;
 
 import lombok.Getter;
-import me.david.davidlib.runtimeapi.storage.Document;
-import me.david.davidlib.runtimeapi.storage.Node;
+import me.david.davidlib.runtime.storage.Document;
+import me.david.davidlib.runtime.storage.Node;
 import me.david.davidlib.util.datafactory.DataFactory;
 import me.david.davidlib.util.datafactory.DataKey;
 

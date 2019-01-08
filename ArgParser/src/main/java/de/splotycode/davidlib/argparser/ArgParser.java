@@ -4,8 +4,8 @@ import de.splotycode.davidlib.argparser.parser.ArgParseException;
 import de.splotycode.davidlib.argparser.parser.Argument;
 import de.splotycode.davidlib.argparser.parser.ParsedArguments;
 import de.splotycode.davidlib.argparser.parser.ParsedObject;
-import me.david.davidlib.runtimeapi.LinkBase;
-import me.david.davidlib.runtimeapi.argparser.IArgParser;
+import me.david.davidlib.runtime.LinkBase;
+import me.david.davidlib.runtime.argparser.IArgParser;
 
 import java.util.HashMap;
 import java.util.Map;

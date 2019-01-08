@@ -1,7 +1,7 @@
 package de.splotycode.davidlib.console;
 
-import me.david.davidlib.runtimeapi.application.ApplicationType;
-import me.david.davidlib.runtimeapi.startup.BootContext;
+import me.david.davidlib.runtime.application.ApplicationType;
+import me.david.davidlib.runtime.startup.BootContext;
 
 public interface ConsoleApplicationType extends ApplicationType {
 

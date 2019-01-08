@@ -1,13 +1,13 @@
 package de.splotycode.davidlib.startup.application;
 
 import de.splotycode.davidlib.startup.envirementchanger.ConfigureEnvironmentChangerImpl;
-import me.david.davidlib.runtimeapi.LinkBase;
-import me.david.davidlib.runtimeapi.application.Application;
-import me.david.davidlib.runtimeapi.application.ApplicationHandle;
-import me.david.davidlib.runtimeapi.application.ApplicationState;
-import me.david.davidlib.runtimeapi.application.BootException;
-import me.david.davidlib.runtimeapi.startup.ApplicationStartUpException;
-import me.david.davidlib.runtimeapi.startup.BootContext;
+import me.david.davidlib.runtime.LinkBase;
+import me.david.davidlib.runtime.application.Application;
+import me.david.davidlib.runtime.application.ApplicationHandle;
+import me.david.davidlib.runtime.application.ApplicationState;
+import me.david.davidlib.runtime.startup.ApplicationStartUpException;
+import me.david.davidlib.runtime.startup.BootContext;
+import me.david.davidlib.runtime.startup.BootException;
 
 import java.lang.reflect.InvocationTargetException;
 

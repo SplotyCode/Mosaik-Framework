@@ -1,10 +1,10 @@
 package de.splotycode.davidlib.startup.application;
 
 import de.splotycode.davidlib.startup.processbar.StartUpProcessHandler;
-import me.david.davidlib.runtimeapi.application.Application;
-import me.david.davidlib.runtimeapi.application.ApplicationState;
-import me.david.davidlib.runtimeapi.application.ApplicationType;
-import me.david.davidlib.runtimeapi.application.BootException;
+import me.david.davidlib.runtime.application.Application;
+import me.david.davidlib.runtime.application.ApplicationState;
+import me.david.davidlib.runtime.application.ApplicationType;
+import me.david.davidlib.runtime.startup.BootException;
 import me.david.davidlib.util.reflection.ClassFinderHelper;
 import me.david.davidlib.util.reflection.ReflectionUtil;
 

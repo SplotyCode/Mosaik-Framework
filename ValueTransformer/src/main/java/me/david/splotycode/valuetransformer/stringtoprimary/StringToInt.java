@@ -1,7 +1,7 @@
 package me.david.splotycode.valuetransformer.stringtoprimary;
 
-import me.david.davidlib.runtimeapi.transformer.TransformException;
-import me.david.davidlib.runtimeapi.transformer.ValueTransformer;
+import me.david.davidlib.runtime.transformer.TransformException;
+import me.david.davidlib.runtime.transformer.ValueTransformer;
 
 public class StringToInt extends ValueTransformer<String, Integer> {
 

@@ -1,11 +1,11 @@
 package me.david.davidlib.spigotlib.startup;
 
 import me.david.davidlib.annotations.priority.Priority;
-import me.david.davidlib.runtimeapi.LinkBase;
-import me.david.davidlib.runtimeapi.Links;
-import me.david.davidlib.runtimeapi.startup.StartUpPriorities;
-import me.david.davidlib.runtimeapi.startup.StartupTask;
-import me.david.davidlib.runtimeapi.startup.envirement.StartUpEnvironmentChanger;
+import me.david.davidlib.runtime.LinkBase;
+import me.david.davidlib.runtime.Links;
+import me.david.davidlib.runtime.startup.StartUpPriorities;
+import me.david.davidlib.runtime.startup.StartupTask;
+import me.david.davidlib.runtime.startup.envirement.StartUpEnvironmentChanger;
 import me.david.davidlib.spigotlib.paths.SpigotPathManager;
 
 @Priority(priority = StartUpPriorities.MANIPULATE_PRE_LINKBASE)
