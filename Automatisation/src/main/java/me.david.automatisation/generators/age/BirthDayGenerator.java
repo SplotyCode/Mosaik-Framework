@@ -1,9 +1,9 @@
-package me.david.automatisation.age;
+package me.david.automatisation.generators.age;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import me.david.automatisation.Generator;
+import me.david.automatisation.generators.Generator;
 
 import java.time.Year;
 import java.util.concurrent.ThreadLocalRandom;

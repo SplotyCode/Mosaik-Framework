@@ -1,10 +1,10 @@
-package me.david.davidlib.crawler;
+package me.david.automatisation.crawler;
 
-import me.david.davidlib.crawler.provider.FallbackLinkProvider;
-import me.david.davidlib.crawler.site.DefaultSite;
-import me.david.davidlib.crawler.site.IndexingSite;
-import me.david.davidlib.crawler.provider.LinkRepository;
-import me.david.davidlib.crawler.site.Site;
+import me.david.automatisation.crawler.provider.FallbackLinkProvider;
+import me.david.automatisation.crawler.provider.LinkRepository;
+import me.david.automatisation.crawler.site.DefaultSite;
+import me.david.automatisation.crawler.site.IndexingSite;
+import me.david.automatisation.crawler.site.Site;
 import me.david.davidlib.util.collection.PushingStackQueue;
 import me.david.davidlib.util.condition.Condition;
 import me.david.davidlib.util.condition.Processor;

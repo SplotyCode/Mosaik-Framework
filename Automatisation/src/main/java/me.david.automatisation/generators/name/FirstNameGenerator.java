@@ -1,7 +1,7 @@
-package me.david.automatisation.name;
+package me.david.automatisation.generators.name;
 
 import lombok.Getter;
-import me.david.automatisation.AbstractFileGenerator;
+import me.david.automatisation.generators.AbstractFileGenerator;
 
 public class FirstNameGenerator extends AbstractFileGenerator {
 

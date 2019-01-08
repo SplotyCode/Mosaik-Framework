@@ -1,6 +1,6 @@
-package me.david.davidlib.crawler.provider;
+package me.david.automatisation.crawler.provider;
 
-import me.david.davidlib.crawler.site.Site;
+import me.david.automatisation.crawler.site.Site;
 
 public interface LinkRepository extends FallbackLinkProvider {
 

@@ -1,7 +1,7 @@
-package me.david.davidlib.crawler.site;
+package me.david.automatisation.crawler.site;
 
 import lombok.Getter;
-import me.david.davidlib.crawler.Crawler;
+import me.david.automatisation.crawler.Crawler;
 import me.david.davidlib.util.io.IOUtil;
 
 import java.io.IOException;

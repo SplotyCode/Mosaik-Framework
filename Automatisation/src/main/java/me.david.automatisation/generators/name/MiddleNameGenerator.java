@@ -1,6 +1,6 @@
-package me.david.automatisation.name;
+package me.david.automatisation.generators.name;
 
-import me.david.automatisation.AbstractFileGenerator;
+import me.david.automatisation.generators.AbstractFileGenerator;
 
 public class MiddleNameGenerator extends AbstractFileGenerator {
 

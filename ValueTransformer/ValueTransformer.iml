@@ -15,7 +15,7 @@
     <orderEntry type="library" name="Maven: org.apiguardian:apiguardian-api:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.opentest4j:opentest4j:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.junit.platform:junit-platform-commons:1.4.0-M1" level="project" />
-    <orderEntry type="library" name="Maven: me.david.davidlib:Runtime:1.9.9" level="project" />
+    <orderEntry type="module" module-name="Runtime" />
     <orderEntry type="module" module-name="Util" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" name="Maven: net.jodah:typetools:0.6.0" level="project" />

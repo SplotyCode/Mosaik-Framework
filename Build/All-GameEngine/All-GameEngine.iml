@@ -11,6 +11,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Runtime" />
+    <orderEntry type="module" module-name="Runtime" />
     <orderEntry type="module" module-name="Annotations" />
     <orderEntry type="module" module-name="Util" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
@@ -20,7 +22,7 @@
     <orderEntry type="module" module-name="ArgParser" />
     <orderEntry type="module" module-name="Automatisation" />
     <orderEntry type="module" module-name="Console" />
-    <orderEntry type="module" module-name="Crawler" />
+    <orderEntry type="library" name="Maven: me.david.davidlib:Crawler:1.9.9" level="project" />
     <orderEntry type="module" module-name="Database" />
     <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:3.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.junit.jupiter:junit-jupiter-api:5.4.0-M1" level="project" />

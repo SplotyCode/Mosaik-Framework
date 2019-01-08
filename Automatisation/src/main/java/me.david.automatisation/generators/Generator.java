@@ -1,4 +1,4 @@
-package me.david.automatisation;
+package me.david.automatisation.generators;
 
 public interface Generator<T> {
 

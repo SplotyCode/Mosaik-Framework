@@ -1,6 +1,6 @@
-package me.david.davidlib.crawler.condition;
+package me.david.automatisation.crawler.condition;
 
-import me.david.davidlib.crawler.site.Site;
+import me.david.automatisation.crawler.site.Site;
 import me.david.davidlib.util.condition.Condition;
 
 public final class SiteConditions {

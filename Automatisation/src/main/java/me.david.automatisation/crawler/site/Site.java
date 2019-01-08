@@ -1,4 +1,4 @@
-package me.david.davidlib.crawler.site;
+package me.david.automatisation.crawler.site;
 
 import java.net.URL;
 
