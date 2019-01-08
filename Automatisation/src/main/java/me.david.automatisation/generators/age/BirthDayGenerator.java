@@ -8,9 +8,18 @@ import me.david.automatisation.generators.Generator;
 import java.time.Year;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Gets a random Birth date
+ */
 @AllArgsConstructor
 public class BirthDayGenerator implements Generator<BirthDayGenerator.BirthDay> {
 
+    /**
+     * Checks is a year is a leap year
+     * @param year the year as an number (for example 2004)
+     * @return true if the year is an leap year or else false
+     * TODO: Move to Utils
+     */
     public static boolean isLeapYear(int year) {
         if (year % 4 != 0) {
             return false;
@@ -27,6 +36,10 @@ public class BirthDayGenerator implements Generator<BirthDayGenerator.BirthDay> 
 
     @Getter private static BirthDayGenerator defaultGenerator = new BirthDayGenerator(AgeGenerator.getDefaultGenerator());
 
+    /**
+     * Generates a random Birth Date
+     * @return the Birth Date
+     */
     @Override
     public BirthDay getRandom() {
         int age = ageGenerator.getRandom();

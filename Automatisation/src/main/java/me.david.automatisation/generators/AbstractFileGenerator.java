@@ -8,6 +8,9 @@ import java.nio.file.Paths;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
+/**
+ * This is an generator that gives out random lines from a text file
+ */
 public abstract class AbstractFileGenerator implements Generator<String> {
 
     public AbstractFileGenerator(String file) {
@@ -23,6 +26,10 @@ public abstract class AbstractFileGenerator implements Generator<String> {
     private final Path path;
     private long count = -1;
 
+    /**
+     * Gets an random line
+     * @return the random line
+     */
     @Override
     public String getRandom() {
         try {
