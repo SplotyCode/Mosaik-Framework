@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +42,7 @@ public final class IOUtil {
     }
 
     public static List<String> loadLines(InputStream stream) {
-        return loadLines(stream, Charsets.UTF8);
+        return loadLines(stream, StandardCharsets.UTF_8);
     }
 
     public static List<String> loadLines(InputStream stream, Charset charset) {
@@ -106,7 +107,7 @@ public final class IOUtil {
     }
 
     public static String loadText(final InputStream input) throws IOException {
-        return loadText(input, Charsets.UTF8);
+        return loadText(input, StandardCharsets.UTF_8);
     }
 
     public static String loadText(final InputStream input, final Charset encoding) throws IOException {
@@ -142,7 +143,7 @@ public final class IOUtil {
     }
 
     public static String resourceToText(final String name) throws IOException {
-        return resourceToText(name, Charsets.UTF8);
+        return resourceToText(name, StandardCharsets.UTF_8);
     }
 
     public static String resourceToText(final String name, final Charset encoding) throws IOException {

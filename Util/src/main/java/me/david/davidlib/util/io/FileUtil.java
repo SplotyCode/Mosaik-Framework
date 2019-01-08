@@ -1,13 +1,14 @@
 package me.david.davidlib.util.io;
 
-import me.david.davidlib.util.condition.Condition;
-import me.david.davidlib.util.info.SystemInfo;
 import me.david.davidlib.util.StringUtil;
+import me.david.davidlib.util.condition.Condition;
 import me.david.davidlib.util.condition.Conditions;
 import me.david.davidlib.util.condition.Processor;
+import me.david.davidlib.util.info.SystemInfo;
 import me.david.davidlib.util.logger.Logger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.DosFileAttributes;
@@ -291,7 +292,7 @@ public final class FileUtil {
     }
 
     public static void appendToFile(File file, String text) throws IOException {
-        writeToFile(file, text.getBytes(Charsets.UTF8), true);
+        writeToFile(file, text.getBytes(StandardCharsets.UTF_8), true);
     }
 
     public static void writeToFile(File file, byte[] text) throws IOException {
@@ -302,7 +303,7 @@ public final class FileUtil {
         writeToFile(file, text, false);
     }
     public static void writeToFile(File file, String text, boolean append) throws IOException {
-        writeToFile(file, text.getBytes(Charsets.UTF8), append);
+        writeToFile(file, text.getBytes(StandardCharsets.UTF_8), append);
     }
 
     private static void writeToFile(File file, byte[] text, boolean append) throws IOException {

@@ -1,7 +1,6 @@
 package me.david.davidlib.runtime.logging;
 
 import me.david.davidlib.util.init.InitialisedOnce;
-import me.david.davidlib.util.io.Charsets;
 import me.david.davidlib.util.io.IOUtil;
 import me.david.davidlib.util.logger.Logger;
 import me.david.davidlib.util.logger.LoggerFactory;
@@ -9,6 +8,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class DavidLibLoggerFactory extends InitialisedOnce implements LoggerFactory {
     @Override
@@ -23,7 +23,7 @@ public class DavidLibLoggerFactory extends InitialisedOnce implements LoggerFact
         try {
             String config = IOUtil.resourceToText("/log-config.xml");
             config = config.replaceAll("_\\$log\\$_", "log/");
-            new DOMConfigurator().doConfigure(IOUtil.toInputStream(config, Charsets.UTF8), LogManager.getLoggerRepository());
+            new DOMConfigurator().doConfigure(IOUtil.toInputStream(config, StandardCharsets.UTF_8), LogManager.getLoggerRepository());
         } catch (IOException e) {
             e.printStackTrace();
         }

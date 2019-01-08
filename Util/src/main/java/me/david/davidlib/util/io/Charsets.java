@@ -2,6 +2,10 @@ package me.david.davidlib.util.io;
 
 import java.nio.charset.Charset;
 
+/**
+ * @deprecated use {@link java.nio.charset.StandardCharsets}
+ */
+@Deprecated
 public final class Charsets {
 
     public static final Charset UTF8 = Charset.forName("UTF-8");
