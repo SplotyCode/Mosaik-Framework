@@ -11,6 +11,10 @@ public class LastNameGenerator extends AbstractFileGenerator {
         super("/lastnames.txt");
     }
 
+    public LastNameGenerator(boolean shouldCache) {
+        super("/lastnames.txt", shouldCache);
+    }
+
     /**
      * Gets an Random Last Name
      * @return a last name

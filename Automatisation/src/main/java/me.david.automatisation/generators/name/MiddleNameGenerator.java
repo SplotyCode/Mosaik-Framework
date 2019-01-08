@@ -11,6 +11,10 @@ public class MiddleNameGenerator extends AbstractFileGenerator {
         super("/middlenames.txt");
     }
 
+    public MiddleNameGenerator(boolean shouldCache) {
+        super("/middlenames.txt", shouldCache);
+    }
+
     /**
      * Gets an Random Middle Name
      * @return a middle name

@@ -54,7 +54,7 @@ public class BirthDayGenerator implements Generator<BirthDayGenerator.BirthDay> 
 
     @Data
     @AllArgsConstructor
-    public static class BirthDay {
+    static class BirthDay {
 
         private int year, day;
         private Month month;
@@ -63,6 +63,7 @@ public class BirthDayGenerator implements Generator<BirthDayGenerator.BirthDay> 
     }
 
     @AllArgsConstructor
+    @SuppressWarnings("unused")
     public enum Month {
 
         JANUARY {
@@ -113,7 +114,7 @@ public class BirthDayGenerator implements Generator<BirthDayGenerator.BirthDay> 
                 return 31;
             }
         },
-        SEPTEMPER {
+        SEPTEMBER {
             @Override
             int getMaxDays(int year) {
                 return 30;
