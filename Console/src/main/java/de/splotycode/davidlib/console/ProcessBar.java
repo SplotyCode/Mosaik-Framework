@@ -6,6 +6,10 @@ import me.david.davidlib.util.logger.Logger;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Creates a Process Bar in the console
+ * //TODO add the \r again
+ */
 public class ProcessBar implements INamedTaskBar {
 
     private int max;
@@ -15,6 +19,13 @@ public class ProcessBar implements INamedTaskBar {
 
     private long startTime;
 
+    /**
+     * Creates an new progressbar
+     * @param max the maximum value
+     * @param logger the logger in that the progressbar should be written in
+     * @param prefix the prefix for the progressbar
+     * @param value the default value
+     */
     public ProcessBar(int max, Logger logger, String prefix, int value) {
         this.max = max;
         this.logger = logger;
@@ -39,23 +50,41 @@ public class ProcessBar implements INamedTaskBar {
         logger.info(string);
     }
 
+    /**
+     * Resets the ProcessBar
+     */
     public void reset() {
         startTime = System.currentTimeMillis();
     }
 
+    /**
+     * Goes 1 step further
+     */
     public void step() {
         step(1);
     }
 
+    /**
+     * Goes n step further
+     * @param n the number of steps
+     */
     public void step(int n) {
         value = Math.min(max, value + n);
         draw();
     }
 
+    /**
+     * Get ela as long
+     * @return Get the eta as a long
+     */
     public long getEta() {
         return value == 0 ? 0 : (max - value) * (System.currentTimeMillis() - startTime) / value;
     }
 
+    /**
+     * Get ela as formatted String
+     * @return Get the eta as a formatted String
+     */
     public String getETaAsString() {
         long eta = getEta();
         return value == 0 ? "N/A" :
@@ -64,6 +93,9 @@ public class ProcessBar implements INamedTaskBar {
                         TimeUnit.MILLISECONDS.toSeconds(eta) % TimeUnit.MINUTES.toSeconds(1));
     }
 
+    /**
+     * Stops The ProcessBar
+     */
     public void stop() {
         logger.info("");
     }
