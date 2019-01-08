@@ -11,6 +11,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Runtime" />
+    <orderEntry type="module" module-name="Runtime" />
+    <orderEntry type="module" module-name="Runtime" />
     <orderEntry type="module" module-name="StartUp" />
     <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.11" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:20.0" level="project" />

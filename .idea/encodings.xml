@@ -7,6 +7,8 @@
     <file url="file://$PROJECT_DIR$/ArgParser" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Automatisation" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Build" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Build/All" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Build/All-GameEngine" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Build/BuildStartUp" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Build/BuildWebApi" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Console" charset="UTF-8" />

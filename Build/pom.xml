@@ -14,6 +14,8 @@
     <modules>
         <module>BuildStartUp</module>
         <module>BuildWebApi</module>
+        <module>All</module>
+        <module>All-GameEngine</module>
     </modules>
 
 
