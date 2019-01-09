@@ -46,6 +46,15 @@ public interface Crawler extends DataFactoryComponent {
     }
 
     /**
+     * Sets the condition for sites
+     * @param site the condition
+     * @see me.david.automatisation.crawler.condition.SiteConditions
+     */
+    default void setSiteCondition(Condition<Site> site) {
+        getDataFactory().putData(SITE_CONDITION, site);
+    }
+
+    /**
      * ExecutorService to process sites
      * @return the used ExecutorService
      */
@@ -63,6 +72,15 @@ public interface Crawler extends DataFactoryComponent {
     }
 
     /**
+     * Sets the  LinkRepository
+     * @see LinkRepository
+     * @param repository  the LinkRepository
+     */
+    default void setinkRepository(LinkRepository repository) {
+        getDataFactory().putData(LINK_REPOSITORY, repository);
+    }
+
+    /**
      * Called on site processing
      * @return the site processor
      */
@@ -71,11 +89,27 @@ public interface Crawler extends DataFactoryComponent {
     }
 
     /**
+     * Sets the processor Called on site processing
+     * @param processor the site processor
+     */
+    default void getSiteExecutor(Processor<IndexingSite> processor) {
+        getDataFactory().putData(SITE_EXECUTOR, processor);
+    }
+
+    /**
      * Used when there is no link in the LinkRepository
      * @return the used FallbackLinkProvider
      */
     default FallbackLinkProvider getFallbackProvider() {
         return getDataFactory().getData(FALLBACK_LINK_PROVIDER);
+    }
+
+    /**
+     * Sets the FallbackLinkProvider Used when there is no link in the LinkRepository
+     * @param fallbackProvider the used FallbackLinkProvider
+     */
+    default void getFallbackProvider(FallbackLinkProvider fallbackProvider) {
+        getDataFactory().putData(FALLBACK_LINK_PROVIDER, fallbackProvider);
     }
 
     /**
