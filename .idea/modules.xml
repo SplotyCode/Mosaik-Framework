@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Build/All/All.iml" filepath="$PROJECT_DIR$/Build/All/All.iml" />
       <module fileurl="file://$PROJECT_DIR$/Build/All-GameEngine/All-GameEngine.iml" filepath="$PROJECT_DIR$/Build/All-GameEngine/All-GameEngine.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Build/AllGameEngine.iml" filepath="$PROJECT_DIR$/Build/AllGameEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/AnnotationProcessing/AnnotationProcessing.iml" filepath="$PROJECT_DIR$/AnnotationProcessing/AnnotationProcessing.iml" />
       <module fileurl="file://$PROJECT_DIR$/Annotations/Annotations.iml" filepath="$PROJECT_DIR$/Annotations/Annotations.iml" />
       <module fileurl="file://$PROJECT_DIR$/ArgParser/ArgParser.iml" filepath="$PROJECT_DIR$/ArgParser/ArgParser.iml" />

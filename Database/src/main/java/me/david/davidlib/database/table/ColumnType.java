@@ -3,6 +3,10 @@ package me.david.davidlib.database.table;
 import me.david.davidlib.database.databasetypes.Casandra;
 import me.david.davidlib.database.databasetypes.SQL;
 
+/**
+ * All SQL ColumnType's
+ * @see Column
+ */
 @Casandra
 @SQL
 public enum ColumnType {

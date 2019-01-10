@@ -18,7 +18,7 @@ public @interface Column {
 
     /**
      * The name of the Field
-     * If no name is set it will use the Name of the Class
+     * If no name is set it will use the Name of the Field
      */
     String name() default "";
 
@@ -30,6 +30,12 @@ public @interface Column {
      */
     @SQL @Casandra ColumnType type() default ColumnType.NONE;
 
+    /**
+     * Used to give parameters for the the type to sql/Casandra databases
+     * For Example:
+     * VARCHAR(54) -> <code>@Column(typeParameters = 54) String email = "hallo"</code>
+     * @return the parameters
+     */
     @SQL @Casandra int[] typeParameters() default {};
 
 }

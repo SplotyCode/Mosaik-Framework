@@ -1,5 +1,8 @@
 package me.david.davidlib.database.connection;
 
+/**
+ * Throws when the Connection to a Database Fails
+ */
 public class ConnectionException extends RuntimeException {
 
     public ConnectionException() {

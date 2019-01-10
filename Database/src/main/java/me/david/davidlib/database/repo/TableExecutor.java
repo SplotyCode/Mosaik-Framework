@@ -4,22 +4,79 @@ import me.david.davidlib.database.table.ColumnNameResolver;
 import me.david.davidlib.database.Database;
 import me.david.davidlib.database.connection.Connection;
 
+/**
+ * Uses to execute commands on a repo
+ * @param <T> the repo
+ * @param <C> the connection
+ */
 public interface TableExecutor<T, C extends Connection> {
 
+    /**
+     * Deletes this repo
+     * @param connection the connection that will be used
+     */
     void drop(C connection);
+
+    /**
+     * Creates this repo
+     * @param connection the connection that will be used
+     */
     void create(C connection);
+
+    /**
+     * Deletes this repo if it does not exists
+     * @param connection the connection that will be used
+     */
     void createIfNotExists(C connection);
 
+    /**
+     * Saves all fields of a Repo entry
+     * @param entry the entry that will be saved
+     * @param connection the connection that will be used
+     */
     void save(C connection, T entry);
+
+    /**
+     * Saves some fields of a Repo entry
+     * @param entry the entry that will be saved
+     * @param connection the connection that will be used
+     * @param fields the fields you want so save
+     */
     void save(C connection, T entry, String... fields);
+
+    /**
+     * Saves some fields of a Repo entry
+     * @param entry the entry that will be saved
+     * @param connection the connection that will be used
+     * @param fields the fields you want so save
+     */
     void save(C connection, T entry, ColumnNameResolver... fields);
 
     /*void delete(C connection, T entity);
     void deletePrimary(C connection, Object primary);*/
+
+    /**
+     * Deletes the first entry that apply's to the filer
+     * @param connection the connection that will be used
+     * @param filter the filter to find the right entry
+     */
     void deleteFirst(C connection, Filters.Filter filter);
+
+    /**
+     * Deletes all entry's that apply's to the filer
+     * @param connection the connection that will be used
+     * @param filter the filter to find the right entry's
+     */
     void deleteAll(C connection, Filters.Filter filter);
 
     //boolean exists(C connection, Object primary);
+
+    /**
+     * Checks if we can find a entry for that filer
+     * @param connection the connection that will be used
+     * @param filter the filter
+     * @return true if there are at least one entry that matches with that filter
+     */
     boolean exists(C connection, Filters.Filter filter);
 
     Iterable<T> selectAll(C connection, String... fields);

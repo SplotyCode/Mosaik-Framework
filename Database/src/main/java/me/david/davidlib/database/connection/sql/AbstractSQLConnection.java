@@ -2,6 +2,9 @@ package me.david.davidlib.database.connection.sql;
 
 public abstract class AbstractSQLConnection<T extends AbstractSQLConnection> extends SQLDriverConnection<T> {
 
+    /**
+     * @return the sql prefix/protocol
+     */
     protected abstract String getSQLPrefix();
 
     @Override

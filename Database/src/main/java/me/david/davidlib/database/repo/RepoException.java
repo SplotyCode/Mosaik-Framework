@@ -1,5 +1,8 @@
 package me.david.davidlib.database.repo;
 
+/**
+ * Throws when a Exception on executing a command on a repo accrued
+ */
 public class RepoException extends RuntimeException {
 
     public RepoException() {
