@@ -45,7 +45,7 @@ public class ApplicationHandleImpl implements ApplicationHandle {
         try {
             application.start(bootContext);
         } catch (Exception e) {
-            throw new ApplicationStartUpException("Exception in " + application.getName() + "#start");
+            throw new ApplicationStartUpException("Exception in " + application.getName() + "#start", e);
         }
         application.setState(ApplicationState.STARTED);
     }
