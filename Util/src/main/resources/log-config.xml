@@ -18,7 +18,7 @@
             <param name="ConversionPattern" value="[%7r] %6p - %30.30c - %m \n"/>
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
-            <param name="LevelMin" value="WARN"/>
+            <param name="LevelMin" value="INFO"/>
         </filter>
     </appender>
 
