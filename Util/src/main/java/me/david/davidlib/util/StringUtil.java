@@ -192,4 +192,8 @@ public final class StringUtil {
         return -1;
     }
 
+    public static String removeLast(String str, int places) {
+        return str.substring(0, str.length() - places);
+    }
+
 }
