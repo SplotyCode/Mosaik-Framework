@@ -5,11 +5,14 @@ import me.david.davidlib.util.cache.CacheBuilder;
 import me.david.davidlib.util.cache.complex.ComplexCache;
 import me.david.davidlib.util.cache.complex.resolver.CacheValueResolver;
 import me.david.davidlib.util.cache.complex.validator.TimeValidator;
+import me.david.davidlib.util.logger.Logger;
 
 import java.io.IOException;
 import java.util.*;
 
 public final class ClassFinderHelper {
+
+    private static Logger logger = Logger.getInstance(ClassFinderHelper.class);
 
     private static Set<String> nonUserPrefixes = new HashSet<>();
 
@@ -28,7 +31,9 @@ public final class ClassFinderHelper {
                 if (skip) continue;
                 try {
                     list.add(classInfo.load());
-                } catch (Throwable ex) {
+                } catch (UnsupportedClassVersionError ex) {
+                    logger.warn(classInfo.getName() + " has an unsupported class version (" + ex.getMessage() + ")");
+                }catch (Throwable ex) {
                     new FailedToLoadClassException("Failed to load class '" + classInfo.getName() + "'if you want to skip it use @SkipPath", ex).printStackTrace();
                 }
             }
