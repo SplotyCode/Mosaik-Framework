@@ -14,7 +14,7 @@ public class InstanceManager<T extends INetServer> extends ListenerHandler<Insta
     /* @Getter @Setter private Supplier<INetServer> create; */
     @Getter @Setter private ServerStarter<T> serverStarter;
     private int currentPort;
-    private List<Integer> preferredPorts = new ArrayList<>();
+    private LinkedList<Integer> preferredPorts = new LinkedList<>();
     @Getter @Setter private List<Integer> portBlockList = new ArrayList<>();
 
     public interface ServerStarter<T extends INetServer> {
@@ -52,8 +52,9 @@ public class InstanceManager<T extends INetServer> extends ListenerHandler<Insta
     }
 
     private int getBestPort() {
-        Optional<Integer> optional = preferredPorts.stream().findFirst();
-        if (optional.isPresent()) return optional.get();
+        Integer prefPort = preferredPorts.poll();
+        if (prefPort != null) return prefPort;
+
 
         while (true) {
             currentPort++;
