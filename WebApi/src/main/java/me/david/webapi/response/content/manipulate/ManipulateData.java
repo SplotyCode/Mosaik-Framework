@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import me.david.davidlib.util.StringUtil;
 
 import java.util.*;
 
@@ -33,8 +34,10 @@ public class ManipulateData {
         String stack = "";
         int start = -1;
         int current = 0;
+        String patternContent = null;
         ManipulatePattern currentPattern = null;
         for (char ch : input.toCharArray()) {
+            if (patternContent != null) patternContent += ch;
             switch (state) {
                 case 0:
                     if (ch == '$') {
@@ -49,8 +52,9 @@ public class ManipulateData {
                         if (currentPattern == null) {
                             addVariable(variables, stack, new ManipulateVariable(start, current + 1));
                         } else {
-                            addVariable(currentPattern.variables, stack, new ManipulateVariable(start, current + 1));
+                            addVariable(currentPattern.variables, stack, new ManipulateVariable(start - currentPattern.start, current + 1 - currentPattern.start));
                         }
+                        patternContent = "";
                         stack = "";
                         state = 0;
                     } else {
@@ -71,7 +75,10 @@ public class ManipulateData {
                     break;
                 case 3:
                     if (ch == '$') {
+                        if (currentPattern == null) throw new SyntaxException("Can not close Pattern if there was no pattern opened");
                         currentPattern.setEnd(current);
+                        currentPattern.setContent(StringUtil.removeLast(patternContent, 4));
+                        patternContent = null;
                         currentPattern = null;
                         stack = "";
                         state = 0;
@@ -106,6 +113,7 @@ public class ManipulateData {
 
         private int start;
         @Setter private int end;
+        @Setter private String content;
 
         public ManipulatePattern(int start) {
             this.start = start;

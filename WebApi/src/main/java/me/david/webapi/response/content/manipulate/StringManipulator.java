@@ -59,6 +59,8 @@ public class StringManipulator implements ResponseManipulator {
         ManipulateData.ManipulatePattern pattern = manipulateData.getPattern(name);
         if (pattern == null) throw new PatternNotFoundException("Could not find " + name);
 
+        Set<Replacement> repVars = new HashSet<>();
+
         for (Map.Entry<String, String> entry : ManipulateObjectAnalyser.getObject(object).getFields().entrySet()) {
             List<ManipulateData.ManipulateVariable> variables = pattern.getVariables().get(entry.getValue());
             if (variables != null) {
@@ -67,13 +69,15 @@ public class StringManipulator implements ResponseManipulator {
                     field.setAccessible(true);
                     String value = field.get(object).toString();
                     for (ManipulateData.ManipulateVariable variable : variables) {
-                        replacements.add(new Replacement(variable.getStart(), variable.getEnd(), value));
+                        repVars.add(new Replacement(variable.getStart(), variable.getEnd(), value));
                     }
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
         }
+        String result = applyReplacements(repVars, pattern.getContent());
+        replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result));
         return this;
     }
 
@@ -84,12 +88,14 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     public String getResult() {
-        for (Map.Entry<String, ManipulateData.ManipulatePattern> pattern : manipulateData.getPatternMap().entrySet()) {
-            System.out.println(pattern.getValue().getStart() + " " + pattern.getKey() + " " + pattern.getValue().getEnd() + " " + (pattern.getValue().getStart() + pattern.getKey().length() + 1));
-            replacements.add(new Replacement(pattern.getValue().getStart(), pattern.getValue().getStart() + pattern.getKey().length() + 1, ""));
-            //replacements.add(new Replacement(pattern.getValue().getEnd() - 3, pattern.getValue().getEnd(), ""));
+        for (ManipulateData.ManipulatePattern pattern : manipulateData.getPatternMap().values()) {
+            replacements.add(new Replacement(pattern.getStart(), pattern.getEnd(), ""));
         }
 
+        return applyReplacements(replacements, input);
+    }
+
+    private String applyReplacements(Set<Replacement> replacements, String str) {
         StringBuilder buffer = new StringBuilder(input);
         int delta = 0;
         for (Replacement replacement : replacements) {
