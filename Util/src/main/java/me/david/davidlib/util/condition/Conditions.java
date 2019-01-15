@@ -9,6 +9,10 @@ public final class Conditions {
     public static final Condition FALSE = item -> false;
     public static final Condition NOT_NULL = Objects::nonNull;
 
+    public static <T> Condition<T> reverse(Condition<T> condition) {
+        return item -> !condition.check(item);
+    }
+
 
     public static <T> Condition<T> alwaysTrue() {
         return (Condition<T>)TRUE;
