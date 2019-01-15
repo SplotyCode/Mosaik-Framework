@@ -6,6 +6,7 @@
       <w>linkbase</w>
       <w>mongo</w>
       <w>nosniff</w>
+      <w>unallowed</w>
     </words>
   </dictionary>
 </component>
