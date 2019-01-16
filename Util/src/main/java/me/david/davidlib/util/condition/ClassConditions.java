@@ -14,11 +14,16 @@ public final class ClassConditions {
 
     public static final Condition<Class> MUST_BE_CLASS = item -> !item.isEnum() && !item.isInterface();
 
+    public static <C extends Class> Condition<C> mustBeClass() {
+        return (Condition<C>) MUST_BE_CLASS;
+    }
+
+
     public static Condition<Class> instanceOf(Class clazz) {
         return clazz::isInstance;
     }
 
-    public static <C> Condition<Class<C>> assignable(Class<C> clazz) {
+    public static Condition<Class> assignable(Class<?> clazz) {
         return clazz::isAssignableFrom;
     }
 
