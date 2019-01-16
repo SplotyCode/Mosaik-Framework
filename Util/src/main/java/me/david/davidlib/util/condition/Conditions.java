@@ -1,6 +1,7 @@
 package me.david.davidlib.util.condition;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
 public final class Conditions {
@@ -35,9 +36,17 @@ public final class Conditions {
         return item -> Arrays.stream(conditions).allMatch(condition -> condition.check(item));
     }
 
+    public static <T> Condition<T> and(Collection<Condition<T>> conditions) {
+        return item -> conditions.stream().allMatch(condition -> condition.check(item));
+    }
+
     @SafeVarargs
     public static <T> Condition<T> or(Condition<T>... conditions) {
         return item -> Arrays.stream(conditions).anyMatch(condition -> condition.check(item));
+    }
+
+    public static <T> Condition<T> or(Collection<Condition<T>> conditions) {
+        return item -> conditions.stream().anyMatch(condition -> condition.check(item));
     }
 
 }
