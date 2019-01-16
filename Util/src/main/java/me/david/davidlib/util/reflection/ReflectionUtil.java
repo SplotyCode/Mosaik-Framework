@@ -1,9 +1,8 @@
 package me.david.davidlib.util.reflection;
 
-import me.david.davidlib.annotations.Disabled;
+import me.david.davidlib.util.AlmostBoolean;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -14,11 +13,20 @@ public final class ReflectionUtil {
 
     private static CallerClass callerClazz = new CallerClass();
 
+    /**
+     * @deprecated use {@link ClassCollector} instead
+     */
+    @Deprecated
     public static boolean validClass(Class<?> clazz, Class<?> other, boolean noAbstraction, boolean disableAnnotation) {
-        return other.isAssignableFrom(clazz) &&
+        /*return other.isAssignableFrom(clazz) &&
                 !clazz.isInterface() && !clazz.isEnum() &&
                 (!noAbstraction || !Modifier.isAbstract(clazz.getModifiers())) &&
-                (!disableAnnotation || !clazz.isAnnotationPresent(Disabled.class));
+                (!disableAnnotation || !clazz.isAnnotationPresent(Disabled.class));*/
+        return ClassCollector.newInstance()
+                .setAbstracation(AlmostBoolean.fromBoolean(!noAbstraction))
+                .setOnlyClasses(true)
+                .setNoDisableds(disableAnnotation)
+                .setNeedAssignable(other).check(clazz);
     }
 
     public static Class<?> getCallerClass() {
