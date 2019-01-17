@@ -8,8 +8,8 @@ import me.david.davidlib.runtime.startup.StartupTask;
 import me.david.davidlib.runtime.startup.envirement.StartUpEnvironmentChanger;
 import me.david.davidlib.util.io.IOUtil;
 import me.david.davidlib.util.logger.Logger;
+import me.david.davidlib.util.reflection.ClassCollector;
 import me.david.davidlib.util.reflection.ClassFinderHelper;
-import me.david.davidlib.util.reflection.ReflectionUtil;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
@@ -25,22 +25,25 @@ public class StartTaskExecutor {
 
     private static StartTaskExecutor instance = new StartTaskExecutor();
 
+    private static ClassCollector classCollector = ClassCollector.newInstance()
+                                                    .setOnlyClasses(true)
+                                                    .setNoDisableds(true)
+                                                    .setNeedAssignable(StartupTask.class);
+
     private TreeMultimap<Integer, StartupTask> tasks = TreeMultimap.create(Ordering.natural().reverse(), Ordering.natural());
 
     public void findAll(boolean externalCall) {
         if (externalCall) tasks.clear();
-        for (Class<?> clazz : ClassFinderHelper.getUserClasses()) {
-            if (ReflectionUtil.validClass(clazz, StartupTask.class, true, true)) {
-                try {
-                    int priority = AnnotationHelper.getPriority(clazz.getAnnotations());
-                    logger.info("Found StartUp Task: " + clazz.getSimpleName() + " with priority " + priority);
-                    StartupTask task = (StartupTask) clazz.newInstance();
-                    tasks.put(priority, task);
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw new FrameworkStartException("Could not create task instance (" + clazz.getSimpleName() + ")", e);
-                } catch (ClassCastException e) {
-                    throw new FrameworkStartException("Could not cast to StartupTask (" + clazz.getSimpleName() + ")", e);
-                }
+        for (Class<?> clazz : classCollector.collectAll()) {
+            try {
+                int priority = AnnotationHelper.getPriority(clazz.getAnnotations());
+                logger.info("Found StartUp Task: " + clazz.getSimpleName() + " with priority " + priority);
+                StartupTask task = (StartupTask) clazz.newInstance();
+                tasks.put(priority, task);
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new FrameworkStartException("Could not create task instance (" + clazz.getSimpleName() + ")", e);
+            } catch (ClassCastException e) {
+                throw new FrameworkStartException("Could not cast to StartupTask (" + clazz.getSimpleName() + ")", e);
             }
         }
     }
