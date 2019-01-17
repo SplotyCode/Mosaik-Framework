@@ -3,7 +3,9 @@ package me.david.davidlib.util.condition;
 import me.david.davidlib.annotations.Disabled;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 
 public final class ClassConditions {
 
@@ -33,6 +35,14 @@ public final class ClassConditions {
 
     public static Condition<Class> unallowedAnnotation(Class<? extends Annotation> annotation) {
         return item -> !item.isAnnotationPresent(annotation);
+    }
+
+    public static Condition<Class> anyMethod(Condition<Method> methodCondition) {
+        return item -> Arrays.stream(item.getDeclaredMethods()).anyMatch(methodCondition::check);
+    }
+
+    public static Condition<Class> allMethods(Condition<Method> methodCondition) {
+        return item -> Arrays.stream(item.getDeclaredMethods()).anyMatch(methodCondition::check);
     }
 
 
