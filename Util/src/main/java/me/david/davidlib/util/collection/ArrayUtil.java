@@ -1438,4 +1438,11 @@ public final class ArrayUtil {
         return result;
     }
 
+    public static <T> boolean containsAny(T[] base, T[] check) {
+        for (T item : base)
+            if (contains(check, item))
+                return true;
+        return false;
+    }
+
 }
