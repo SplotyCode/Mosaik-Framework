@@ -22,6 +22,55 @@ public final class ArrayUtil {
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
 
+    @SuppressWarnings("unchecked")
+    public static <T> T[] createArray(Class<?> type, int length) {
+        return (T[])Array.newInstance(type, length);
+    }
+
+    /*
+     * --------------------------------
+     * ------- FROM COLLECTION --------
+     * --------------------------------
+     */
+
+    public static <T> T[] toArray(Collection<T> integers, Class<T> clazz) {
+        return integers.toArray(createArray(clazz, integers.size()));
+    }
+
+    public static int[] toIntArray(Collection<Integer> integers) {
+        return toPrimitive(integers.toArray(new Integer[integers.size()]));
+    }
+
+    public static short[] toShortArray(Collection<Short> shorts) {
+        return toPrimitive(shorts.toArray(new Short[shorts.size()]));
+    }
+
+    public static long[] toLongArray(Collection<Long> longs) {
+        return toPrimitive(longs.toArray(new Long[longs.size()]));
+    }
+
+    public static boolean[] toBooleanArray(Collection<Boolean> booleans) {
+        return toPrimitive(booleans.toArray(new Boolean[booleans.size()]));
+    }
+
+    public static char[] toCharArray(Collection<Character> characters) {
+        return toPrimitive(characters.toArray(new Character[characters.size()]));
+    }
+
+    public static byte[] toByteArray(Collection<Byte> bytes) {
+        return toPrimitive(bytes.toArray(new Byte[bytes.size()]));
+    }
+
+    public static float[] toFloatArray(Collection<Float> floats) {
+        return toPrimitive(floats.toArray(new Float[floats.size()]));
+    }
+
+    public static double[] toDoubleArray(Collection<Double> doubles) {
+        return toPrimitive(doubles.toArray(new Double[doubles.size()]));
+    }
+
+
+
     /*
      * --------------------------------
      * ----------- RESIZE -------------
@@ -68,7 +117,7 @@ public final class ArrayUtil {
     }
 
     public static <T> T[] resize(T[] array, final int newSize) {
-        if (newSize == 0) return (T[]) EMPTY_OBJECT_ARRAY;
+        if (newSize == 0) return createArray(array.getClass().getComponentType(), newSize);
         return array.length == newSize ? array : Arrays.copyOf(array, newSize);
     }
 
@@ -86,7 +135,7 @@ public final class ArrayUtil {
         final Class<?> class2 = a2.getClass().getComponentType();
         final Class<?> aClass = class1.isAssignableFrom(class2) ? class1 : class2;
 
-        T[] result = (T[]) Array.newInstance(aClass, a1.length + a2.length);
+        T[] result = createArray(aClass, a1.length + a2.length);
         System.arraycopy(a1, 0, result, 0, a1.length);
         System.arraycopy(a2, 0, result, a1.length, a2.length);
         return result;
@@ -166,20 +215,126 @@ public final class ArrayUtil {
 
      /*
      * --------------------------------
+     * --------- toPrimitive ----------
+     * --------------------------------
+     */
+
+    public static int[] toPrimitive(final Integer[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_INT_ARRAY;
+        }
+        final int[] result = new int[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static short[] toPrimitive(final Short[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_SHORT_ARRAY;
+        }
+        final short[] result = new short[array.length];
+        for (short i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static long[] toPrimitive(final Long[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_LONG_ARRAY;
+        }
+        final long[] result = new long[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static boolean[] toPrimitive(final Boolean[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_BOOLEAN_ARRAY;
+        }
+        final boolean[] result = new boolean[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static char[] toPrimitive(final Character[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_CHAR_ARRAY;
+        }
+        final char[] result = new char[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static byte[] toPrimitive(final Byte[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_BYTE_ARRAY;
+        }
+        final byte[] result = new byte[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static double[] toPrimitive(final Double[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_DOUBLE_ARRAY;
+        }
+        final double[] result = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static float[] toPrimitive(final Float[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_FLOAT_ARRAY;
+        }
+        final float[] result = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+     /*
+     * --------------------------------
      * ------------ APPEND ------------
      * --------------------------------
      */
 
-    public static <T> T[] append(T[] src, final T element, Class<T> componentType) {
+    public static <T> T[] append(T[] src, final T element) {
         int length = src.length;
-        T[] result = (T[]) Array.newInstance(componentType, length + 1);
+        T[] result = createArray(src.getClass().getComponentType(), length + 1);
         System.arraycopy(src, 0, result, 0, length);
         result[length] = element;
         return result;
-    }
-
-    public static <T> T[] append(final T[] src, final T element) {
-        return append(src, element, (Class<T>)src.getClass().getComponentType());
     }
 
     public static long[] append(long[] array, long value) {
@@ -236,13 +391,9 @@ public final class ArrayUtil {
      * --------------------------------
      */
 
-    public static <T> T[] prepend(final T[] array, final T element) {
-        return prepend(array, element, (Class<T>)array.getClass().getComponentType());
-    }
-
-    public static <T> T[] prepend(T[] array, T element, Class<T> type) {
+    public static <T> T[] prepend(T[] array, T element) {
         int length = array.length;
-        T[] result = (T[]) Array.newInstance(type, length + 1);
+        T[] result = createArray(array.getClass().getComponentType(), length + 1);
         System.arraycopy(array, 0, result, 1, length);
         result[0] = element;
         return result;
@@ -323,7 +474,7 @@ public final class ArrayUtil {
         if (idx < 0 || idx >= length) {
             throw new IllegalArgumentException("invalid index: " + idx);
         }
-        T[] result = (T[]) Array.newInstance(src.getClass().getComponentType(), length - 1);
+        T[] result = createArray(src.getClass().getComponentType(), length - 1);
         System.arraycopy(src, 0, result, 0, idx);
         System.arraycopy(src, idx + 1, result, idx, length - idx - 1);
         return result;
@@ -1421,22 +1572,170 @@ public final class ArrayUtil {
         return max;
     }
 
+    /*
+     * --------------------------------
+     * ----------- Merge --------------
+     * --------------------------------
+     */
+
     public static <T> T[] mergeArrayAndCollection(T[] array, Collection<T> collection) {
         if (collection.isEmpty()) {
             return array;
         }
 
-        final T[] array2 = collection.toArray((T[]) new Object[collection.size()]);
+        final T[] array2 = collection.toArray(createArray(array.getClass().getComponentType(), collection.size()));
 
         if (array.length == 0) {
             return array2;
         }
 
-        final T[] result = (T[]) new Object[collection.size() + array.length];
+        final T[] result = createArray(array.getClass().getComponentType(), collection.size() + array.length);
         System.arraycopy(array, 0, result, 0, array.length);
         System.arraycopy(array2, 0, result, array.length, array2.length);
         return result;
     }
+
+    public static int[] mergeArrayAndCollection(int[] array, Collection<Integer> collection) {
+        if (collection.isEmpty()) {
+            return array;
+        }
+
+        final int[] array2 = toIntArray(collection);
+
+        if (array.length == 0) {
+            return array2;
+        }
+
+        final int[] result = new int[collection.size() + array.length];
+        System.arraycopy(array, 0, result, 0, array.length);
+        System.arraycopy(array2, 0, result, array.length, array2.length);
+        return result;
+    }
+
+    public static short[] mergeArrayAndCollection(short[] array, Collection<Short> collection) {
+        if (collection.isEmpty()) {
+            return array;
+        }
+
+        final short[] array2 = toShortArray(collection);
+
+        if (array.length == 0) {
+            return array2;
+        }
+
+        final short[] result = new short[collection.size() + array.length];
+        System.arraycopy(array, 0, result, 0, array.length);
+        System.arraycopy(array2, 0, result, array.length, array2.length);
+        return result;
+    }
+
+    public static long[] mergeArrayAndCollection(long[] array, Collection<Long> collection) {
+        if (collection.isEmpty()) {
+            return array;
+        }
+
+        final long[] array2 = toLongArray(collection);
+
+        if (array.length == 0) {
+            return array2;
+        }
+
+        final long[] result = new long[collection.size() + array.length];
+        System.arraycopy(array, 0, result, 0, array.length);
+        System.arraycopy(array2, 0, result, array.length, array2.length);
+        return result;
+    }
+
+    public static boolean[] mergeArrayAndCollection(boolean[] array, Collection<Boolean> collection) {
+        if (collection.isEmpty()) {
+            return array;
+        }
+
+        final boolean[] array2 = toBooleanArray(collection);
+
+        if (array.length == 0) {
+            return array2;
+        }
+
+        final boolean[] result = new boolean[collection.size() + array.length];
+        System.arraycopy(array, 0, result, 0, array.length);
+        System.arraycopy(array2, 0, result, array.length, array2.length);
+        return result;
+    }
+
+    public static byte[] mergeArrayAndCollection(byte[] array, Collection<Byte> collection) {
+        if (collection.isEmpty()) {
+            return array;
+        }
+
+        final byte[] array2 = toByteArray(collection);
+
+        if (array.length == 0) {
+            return array2;
+        }
+
+        final byte[] result = new byte[collection.size() + array.length];
+        System.arraycopy(array, 0, result, 0, array.length);
+        System.arraycopy(array2, 0, result, array.length, array2.length);
+        return result;
+    }
+
+    public static char[] mergeArrayAndCollection(char[] array, Collection<Character> collection) {
+        if (collection.isEmpty()) {
+            return array;
+        }
+
+        final char[] array2 = toCharArray(collection);
+
+        if (array.length == 0) {
+            return array2;
+        }
+
+        final char[] result = new char[collection.size() + array.length];
+        System.arraycopy(array, 0, result, 0, array.length);
+        System.arraycopy(array2, 0, result, array.length, array2.length);
+        return result;
+    }
+
+    public static float[] mergeArrayAndCollection(float[] array, Collection<Float> collection) {
+        if (collection.isEmpty()) {
+            return array;
+        }
+
+        final float[] array2 = toFloatArray(collection);
+
+        if (array.length == 0) {
+            return array2;
+        }
+
+        final float[] result = new float[collection.size() + array.length];
+        System.arraycopy(array, 0, result, 0, array.length);
+        System.arraycopy(array2, 0, result, array.length, array2.length);
+        return result;
+    }
+
+    public static double[] mergeArrayAndCollection(double[] array, Collection<Double> collection) {
+        if (collection.isEmpty()) {
+            return array;
+        }
+
+        final double[] array2 = toDoubleArray(collection);
+
+        if (array.length == 0) {
+            return array2;
+        }
+
+        final double[] result = new double[collection.size() + array.length];
+        System.arraycopy(array, 0, result, 0, array.length);
+        System.arraycopy(array2, 0, result, array.length, array2.length);
+        return result;
+    }
+
+    /*
+     * --------------------------------
+     * -------- CONTAINS ANY ----------
+     * --------------------------------
+     */
 
     public static <T> boolean containsAny(T[] base, T[] check) {
         for (T item : base)
@@ -1444,5 +1743,63 @@ public final class ArrayUtil {
                 return true;
         return false;
     }
+
+    public static boolean containsAny(int[] base, int[] check) {
+        for (int item : base)
+            if (contains(check, item))
+                return true;
+        return false;
+    }
+
+    public static boolean containsAny(short[] base, short[] check) {
+        for (short item : base)
+            if (contains(check, item))
+                return true;
+        return false;
+    }
+
+    public static boolean containsAny(long[] base, long[] check) {
+        for (long item : base)
+            if (contains(check, item))
+                return true;
+        return false;
+    }
+
+    public static boolean containsAny(boolean[] base, boolean[] check) {
+        for (boolean item : base)
+            if (contains(check, item))
+                return true;
+        return false;
+    }
+
+    public static boolean containsAny(char[] base, char[] check) {
+        for (char item : base)
+            if (contains(check, item))
+                return true;
+        return false;
+    }
+
+    public static boolean containsAny(float[] base, float[] check) {
+        for (float item : base)
+            if (contains(check, item))
+                return true;
+        return false;
+    }
+
+    public static boolean containsAny(double[] base, double[] check) {
+        for (double item : base)
+            if (contains(check, item))
+                return true;
+        return false;
+    }
+
+    public static boolean containsAny(byte[] base, byte[] check) {
+        for (byte item : base)
+            if (contains(check, item))
+                return true;
+        return false;
+    }
+
+    
 
 }
