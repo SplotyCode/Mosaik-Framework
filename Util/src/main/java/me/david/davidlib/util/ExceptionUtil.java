@@ -13,13 +13,24 @@ public final class ExceptionUtil {
     }
 
     public static boolean instanceOfCause(Throwable throwable, Class<? extends Throwable> clazz) {
+        return getInstanceOfCause(throwable, clazz) != null;
+    }
+
+    public static <T extends Throwable> T getInstanceOfCause(Throwable throwable, Class<T> clazz) {
         while (throwable != null) {
             if (clazz.isAssignableFrom(throwable.getClass())) {
-                return true;
+                return (T) throwable;
             }
             throwable = throwable.getCause();
         }
-        return false;
+        return null;
+    }
+
+    public static Throwable getRootCause(Throwable e) {
+        while (true) {
+            if (e.getCause() == null) return e;
+            e = e.getCause();
+        }
     }
 
 }
