@@ -33,4 +33,15 @@ public final class ExceptionUtil {
         }
     }
 
+    public static RuntimeException toRuntime(Throwable throwable) {
+        if (throwable instanceof RuntimeException) {
+            return (RuntimeException) throwable;
+        }
+        return new RuntimeException("Converted to Runtime Exception", throwable);
+    }
+
+    public static void throwRuntime(Throwable throwable) {
+        throw toRuntime(throwable);
+    }
+
 }
