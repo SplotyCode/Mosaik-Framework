@@ -8,11 +8,11 @@ import me.david.automatisation.generators.AbstractFileGenerator;
 public class MiddleNameGenerator extends AbstractFileGenerator {
 
     public MiddleNameGenerator() {
-        super("/middlenames.txt");
+        super("middlenames.txt");
     }
 
     public MiddleNameGenerator(boolean shouldCache) {
-        super("/middlenames.txt", shouldCache);
+        super("middlenames.txt", shouldCache);
     }
 
     /**

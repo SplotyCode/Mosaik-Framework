@@ -1,10 +1,10 @@
 package me.david.automatisation.generators;
 
+import me.david.davidlib.util.io.IOUtil;
+
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -26,13 +26,7 @@ public abstract class AbstractFileGenerator implements Generator<String> {
 
     public AbstractFileGenerator(String file, boolean shouldCache) {
         this.shouldCache = shouldCache;
-        Path path = null;
-        try {
-            path = Paths.get(getClass().getClassLoader().getResource(file).toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        this.path = path;
+        path = IOUtil.getResourcePath("/res/automatisation/" + file);
     }
 
     /**

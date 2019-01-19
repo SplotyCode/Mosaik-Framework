@@ -11,11 +11,11 @@ public class FirstNameGenerator extends AbstractFileGenerator {
     @Getter private static FirstNameGenerator instance = new FirstNameGenerator();
 
     private FirstNameGenerator() {
-        super("/firstnames.txt");
+        super("firstnames.txt");
     }
 
     public FirstNameGenerator(boolean shouldCache) {
-        super("/firstnames.txt", shouldCache);
+        super("firstnames.txt", shouldCache);
     }
 
     /**

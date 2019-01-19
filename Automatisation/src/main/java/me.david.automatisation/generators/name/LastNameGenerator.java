@@ -8,11 +8,11 @@ import me.david.automatisation.generators.AbstractFileGenerator;
 public class LastNameGenerator extends AbstractFileGenerator {
 
     public LastNameGenerator() {
-        super("/lastnames.txt");
+        super("lastnames.txt");
     }
 
     public LastNameGenerator(boolean shouldCache) {
-        super("/lastnames.txt", shouldCache);
+        super("lastnames.txt", shouldCache);
     }
 
     /**
