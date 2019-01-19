@@ -16,6 +16,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>${davidlib.plugin.jar}</version>
                 <configuration>
                     <finalName>DavidLib-All</finalName>
                     <archive>
@@ -35,7 +36,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>${davidlib.plugin.assembly}</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -115,11 +116,6 @@
         <dependency>
             <groupId>me.david.davidlib</groupId>
             <artifactId>Netty</artifactId>
-            <version>1.9.9</version>
-        </dependency>
-        <dependency>
-            <groupId>me.david.davidlib</groupId>
-            <artifactId>SpigotLib</artifactId>
             <version>1.9.9</version>
         </dependency>
         <dependency>
