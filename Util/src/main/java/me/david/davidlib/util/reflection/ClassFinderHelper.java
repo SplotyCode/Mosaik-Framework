@@ -71,6 +71,7 @@ public final class ClassFinderHelper {
 
     public static void registerSkippedPath(String path) {
         nonUserPrefixes.add(path);
+        userClassesCache.clear();
     }
 
     public static Collection<Class<?>> getUserClasses() {
