@@ -37,32 +37,35 @@ public class StartTaskExecutor {
 
     public void findAll(boolean externalCall) {
         if (externalCall) tasks.clear();
+        int run = 0;
         for (Class<?> clazz : classCollector.collectAll()) {
             try {
                 int priority = AnnotationHelper.getPriority(clazz.getAnnotations());
-                logger.info("Found StartUp Task: " + clazz.getSimpleName() + " with priority " + priority);
+                //logger.info("Found StartUp Task: " + clazz.getSimpleName() + " with priority " + priority);
                 StartupTask task = (StartupTask) clazz.newInstance();
                 tasks.put(priority, task);
+                run++;
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new FrameworkStartException("Could not create task instance (" + clazz.getSimpleName() + ")", e);
             } catch (ClassCastException e) {
                 throw new FrameworkStartException("Could not cast to StartupTask (" + clazz.getSimpleName() + ")", e);
             }
         }
+        logger.info("Found StartUp Tasks " + run + "/" + classCollector.totalResults() + ": " + StringUtil.join(tasks.values(), obj -> obj.getClass().getSimpleName(), ", "));
     }
 
     public void runAll(StartUpEnvironmentChanger environmentChanger) {
-        int runned = 0;
+        int run = 0;
         for (StartupTask task : tasks.values()) {
-            logger.info("Executing: " + task.getClass().getSimpleName());
+            //logger.info("Executing: " + task.getClass().getSimpleName());
             try {
                 task.execute(environmentChanger);
-                runned++;
+                run++;
             } catch (Exception ex) {
                 logger.info("Failed to Execute StartupTask", new FrameworkStartException("Exception in StartupTask", ex));
             }
         }
-        logger.info("Executing StartUp Tasks (" + runned + "/" + tasks.values().size() + "): " + StringUtil.join(tasks.values(), obj -> obj.getClass().getSimpleName(), ", "));
+        logger.info("Executing StartUp Tasks (" + run + "/" + tasks.values().size() + "): " + StringUtil.join(tasks.values(), obj -> obj.getClass().getSimpleName(), ", "));
     }
 
     public void collectSkippedPaths() {

@@ -76,18 +76,22 @@ public class Main {
         LinkBase.getInstance().registerLink(Links.STARTUP_ENVIRONMENT_CHANGER, environmentChanger);
 
         /* Running Startup Tasks*/
+        LoggingHelper.startSection("StartUp Tasks");
         StartTaskExecutor.getInstance().collectSkippedPaths();
         StartTaskExecutor.getInstance().findAll(false);
         StartTaskExecutor.getInstance().runAll(environmentChanger);
+        LoggingHelper.endSection();
 
+        LoggingHelper.startSection("Environment Information");
         LoggingHelper.printInfo();
+        LoggingHelper.endSection();
 
         /* Starting Applications */
+        LoggingHelper.startSection("Applications");
         applicationManager.startUp();
-
         StartUpProcessHandler.getInstance().end();
-
         logger.info("Started " + applicationManager.getLoadedApplicationsCount() + " Applications: " + StringUtil.join(applicationManager.getLoadedApplications(), IApplication::getName, ", "));
+        LoggingHelper.endSection();
     }
 
     private static void setUpLogging() {

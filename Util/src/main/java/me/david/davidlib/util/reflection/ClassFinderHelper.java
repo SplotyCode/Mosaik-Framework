@@ -1,6 +1,7 @@
 package me.david.davidlib.util.reflection;
 
 import com.google.common.reflect.ClassPath;
+import lombok.Getter;
 import me.david.davidlib.util.cache.CacheBuilder;
 import me.david.davidlib.util.cache.complex.ComplexCache;
 import me.david.davidlib.util.cache.complex.resolver.CacheValueResolver;
@@ -15,11 +16,13 @@ public final class ClassFinderHelper {
     private static Logger logger = Logger.getInstance(ClassFinderHelper.class);
 
     private static Set<String> nonUserPrefixes = new HashSet<>();
+    @Getter private static long totalClassCount;
 
     private static ComplexCache<Collection<Class<?>>> userClassesCache = new CacheBuilder<Collection<Class<?>>>().normal().setValidator(new TimeValidator<>(2 * 60 * 1000)).setResolver((CacheValueResolver<Collection<Class<?>>>) cache -> {
         Collection<Class<?>> list = new ArrayList<>();
         try {
             for (ClassPath.ClassInfo classInfo : ClassPath.from(Thread.currentThread().getContextClassLoader()).getAllClasses()) {
+                totalClassCount++;
                 boolean skip = false;
                 String packageName = classInfo.getPackageName();
                 for (String prefix : nonUserPrefixes) {

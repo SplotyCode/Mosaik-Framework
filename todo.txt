@@ -5,6 +5,6 @@
 - remove more stuff out of runtime
 - [ADDED] not that much info spamming
 - fix webapi minor bugs
-- nicer startup logging
+- [ADDED} nicer startup logging
 - [ADDED} more build modules
 - [ADDED] use lombok in StartUp
