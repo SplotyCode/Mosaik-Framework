@@ -15,11 +15,13 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>21.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.jodah</groupId>
             <artifactId>typetools</artifactId>
             <version>0.6.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>me.david.davidlib</groupId>

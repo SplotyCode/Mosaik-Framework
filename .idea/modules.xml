@@ -2,18 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Build/All/All.iml" filepath="$PROJECT_DIR$/Build/All/All.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Build/All-GameEngine/All-GameEngine.iml" filepath="$PROJECT_DIR$/Build/All-GameEngine/All-GameEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/AnnotationProcessing/AnnotationProcessing.iml" filepath="$PROJECT_DIR$/AnnotationProcessing/AnnotationProcessing.iml" />
       <module fileurl="file://$PROJECT_DIR$/Annotations/Annotations.iml" filepath="$PROJECT_DIR$/Annotations/Annotations.iml" />
       <module fileurl="file://$PROJECT_DIR$/ArgParser/ArgParser.iml" filepath="$PROJECT_DIR$/ArgParser/ArgParser.iml" />
       <module fileurl="file://$PROJECT_DIR$/Automatisation/Automatisation.iml" filepath="$PROJECT_DIR$/Automatisation/Automatisation.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Build/Build.iml" filepath="$PROJECT_DIR$/Build/Build.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Build/BuildStartUp/BuildStartUp.iml" filepath="$PROJECT_DIR$/Build/BuildStartUp/BuildStartUp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Build/BuildWebApi/BuildWebApi.iml" filepath="$PROJECT_DIR$/Build/BuildWebApi/BuildWebApi.iml" />
       <module fileurl="file://$PROJECT_DIR$/Console/Console.iml" filepath="$PROJECT_DIR$/Console/Console.iml" />
       <module fileurl="file://$PROJECT_DIR$/Database/Database.iml" filepath="$PROJECT_DIR$/Database/Database.iml" />
       <module fileurl="file://$PROJECT_DIR$/DavidLib.iml" filepath="$PROJECT_DIR$/DavidLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DavidLib-All/DavidLib-All.iml" filepath="$PROJECT_DIR$/DavidLib-All/DavidLib-All.iml" />
       <module fileurl="file://$PROJECT_DIR$/DomParsing/DomParsing.iml" filepath="$PROJECT_DIR$/DomParsing/DomParsing.iml" />
       <module fileurl="file://$PROJECT_DIR$/GameEngine/GameEngine.iml" filepath="$PROJECT_DIR$/GameEngine/GameEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/IUI/IUI.iml" filepath="$PROJECT_DIR$/IUI/IUI.iml" />

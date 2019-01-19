@@ -17,7 +17,6 @@
         <module>WebApi</module>
         <module>ValueTransformer</module>
         <module>SpigotLib</module>
-        <module>Build</module>
         <module>ArgParser</module>
         <module>DomParsing</module>
         <module>StartUp</module>
@@ -26,10 +25,14 @@
         <module>Annotations</module>
         <module>IUI</module>
         <module>AnnotationProcessing</module>
+        <module>DavidLib-All</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <name>DavidLib</name>
@@ -122,17 +125,20 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.25</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.25</version>
+            <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/log4j/log4j -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
