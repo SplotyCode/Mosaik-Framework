@@ -8,16 +8,13 @@ import de.splotycode.davidlib.startup.starttask.StartTaskExecutor;
 import lombok.Getter;
 import me.david.davidlib.runtime.LinkBase;
 import me.david.davidlib.runtime.Links;
-import me.david.davidlib.runtime.application.Application;
-import me.david.davidlib.runtime.application.ApplicationInfo;
 import me.david.davidlib.runtime.application.IApplication;
 import me.david.davidlib.runtime.logging.DavidLibLoggerFactory;
+import me.david.davidlib.runtime.logging.LoggingHelper;
 import me.david.davidlib.runtime.startup.BootContext;
 import me.david.davidlib.runtime.startup.envirement.StartUpEnvironmentChanger;
 import me.david.davidlib.util.StringUtil;
 import me.david.davidlib.util.collection.ArrayUtil;
-import me.david.davidlib.util.info.EnvironmentInformation;
-import me.david.davidlib.util.info.SystemInfo;
 import me.david.davidlib.util.init.AlreadyInitailizedException;
 import me.david.davidlib.util.logger.Logger;
 import me.david.davidlib.util.reflection.ReflectionUtil;
@@ -55,7 +52,7 @@ public class Main {
         initialised = true;
 
         setUpLogging();
-        logger.info("Starting FrameWork!");
+        LoggingHelper.loggingStartUp();
 
         if (ReflectionUtil.getCallerClasses().length >= 4) {
             logger.warn("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass().getName());
@@ -83,7 +80,7 @@ public class Main {
         StartTaskExecutor.getInstance().findAll(false);
         StartTaskExecutor.getInstance().runAll(environmentChanger);
 
-        printInfo();
+        LoggingHelper.printInfo();
 
         /* Starting Applications */
         applicationManager.startUp();
@@ -106,20 +103,8 @@ public class Main {
             e.printStackTrace();
         }
         logger = Logger.getInstance(Main.class);
-    }
 
-    private static void printInfo() {
-        Application.getGlobalShutdownManager().addShutdownTask(() -> {
-            logger.info("-----[Api Shutdown]-----");
-        });
-        logger.info("-----[Api Start]-----");
-        logger.info(ApplicationInfo.getApplicationInfo());
-
-        logger.info("Java (JDK): " + EnvironmentInformation.getJDKInfo());
-        logger.info("Java (JRE): " + EnvironmentInformation.getJREInfo());
-        logger.info("Jvm: " + EnvironmentInformation.getJVMInfo());
-        logger.info("JVM-Args: " + EnvironmentInformation.getJVMArgs());
-        logger.info("OS: " + SystemInfo.getOsNameVersionAndArch());
+        LoggingHelper.registerShutdownLogging();
     }
 
 }
