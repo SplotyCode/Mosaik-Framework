@@ -1,6 +1,7 @@
 package me.david.webapi.handler.anotation;
 
 import lombok.Getter;
+import me.david.davidlib.util.StringUtil;
 import me.david.davidlib.util.condition.ClassConditions;
 import me.david.davidlib.util.condition.Conditions;
 import me.david.davidlib.util.logger.Logger;
@@ -49,7 +50,6 @@ public class AnnotationHandlerFinder implements HandlerFinder {
         List<HttpHandler> handlers = new ArrayList<>();
         try {
             for (Class<?> clazz : classCollector.collectAll()) {
-                logger.info("Found Annotation Handler: " + clazz.getSimpleName());
                 Object obj = clazz.newInstance();
                 AnnotationHandler handler = new AnnotationHandler(obj, server);
                 handlers.add(handler);
@@ -57,6 +57,7 @@ public class AnnotationHandlerFinder implements HandlerFinder {
         } catch (IllegalAccessException | InstantiationException ex) {
             ex.printStackTrace();
         }
+        logger.info("Found Annotation Handlers (" + handlers.size() + "/" + classCollector.totalResults() + "): " + StringUtil.join(handlers, handler -> handler.getClass().getSimpleName(), ", "));
         return handlers;
     }
 
