@@ -1,7 +1,13 @@
 package me.david.davidlib.util.condition;
 
-public interface Condition<T> {
+import java.util.function.Predicate;
 
-    boolean check(T item);
+public interface Condition<T> extends Predicate<T> {
 
+   boolean check(T item);
+
+    @Override
+    default boolean test(T t) {
+        return check(t);
+    }
 }
