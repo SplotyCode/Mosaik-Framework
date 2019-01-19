@@ -1,14 +1,19 @@
 package me.david.davidlib.util.io;
 
+import me.david.davidlib.util.ExceptionUtil;
 import me.david.davidlib.util.collection.ArrayUtil;
+import me.david.davidlib.util.exception.ResourceNotFoundException;
 import me.david.davidlib.util.logger.Logger;
 
 import java.io.*;
 import java.io.ByteArrayInputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -179,6 +184,19 @@ public final class IOUtil {
             copy(input, output);
             return output.toByteArray();
         }
+    }
+
+    public static Path getResourcePath(String path) {
+        URL url = Thread.currentThread().getContextClassLoader().getResource(path);
+        if (url == null) {
+            throw new ResourceNotFoundException();
+        }
+        try {
+            return Paths.get(url.toURI());
+        } catch (URISyntaxException e) {
+            ExceptionUtil.throwRuntime(e);
+        }
+        return null;
     }
 
 }
