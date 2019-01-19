@@ -1,27 +1,33 @@
 package me.david.davidlib.runtime.application;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
 
 public class ShutdownManager implements IShutdownManager {
 
-    private Set<Runnable> tasks = new HashSet<>();
-    private Set<Thread> threads = new HashSet<>();
+    private LinkedList<Runnable> tasks = new LinkedList<>();
 
     public ShutdownManager() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            threads.forEach(Thread::start);
-            tasks.forEach(Runnable::run);
-        }, "DavidLib Shutdown Thread"));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> tasks.forEach(Runnable::run), "DavidLib Shutdown Thread"));
     }
 
     @Override
     public void addShutdownTask(Runnable runnable) {
-        tasks.add(runnable);
+        tasks.addLast(runnable);
     }
 
     @Override
     public void addShutdownTask(Thread thread) {
-        threads.add(thread);
+        tasks.addLast(thread::start);
     }
+
+    @Override
+    public void addFirstShutdownTask(Runnable runnable) {
+        tasks.addFirst(runnable);
+    }
+
+    @Override
+    public void addFirstShutdownTask(Thread thread) {
+        tasks.addFirst(thread::start);
+    }
+
 }
