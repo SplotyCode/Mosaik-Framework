@@ -127,6 +127,10 @@ public final class ClassCollector implements Condition<Class> {
         return this;
     }
 
+    public int totalResults() {
+        return collectAll().size();
+    }
+
     @Override
     public boolean check(Class item) {
         return buildCondition().check(item);
