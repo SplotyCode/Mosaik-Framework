@@ -1,9 +1,7 @@
 package me.david.davidlib.util.io;
 
 import me.david.davidlib.util.StringUtil;
-import me.david.davidlib.util.condition.Condition;
 import me.david.davidlib.util.condition.Conditions;
-import me.david.davidlib.util.condition.Processor;
 import me.david.davidlib.util.info.SystemInfo;
 import me.david.davidlib.util.logger.Logger;
 
@@ -13,6 +11,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.DosFileAttributes;
 import java.util.*;
+import java.util.function.Predicate;
 
 public final class FileUtil {
 
@@ -237,13 +236,13 @@ public final class FileUtil {
         }
     }
 
-    public static void copyDir(File fromDir, File toDir, Condition<File> filter) throws IOException {
+    public static void copyDir(File fromDir, File toDir, Predicate<File> filter) throws IOException {
         ensureExists(toDir);
         File[] files = fromDir.listFiles();
         if (files == null) throw new IOException("Could not list files from " + fromDir.getAbsolutePath());
         if (!fromDir.canRead()) throw new IOException("Can not read file");
         for (File file : files) {
-            if (filter != null && !filter.check(file)) {
+            if (filter != null && !filter.test(file)) {
                 continue;
             }
             if (file.isDirectory()) {
@@ -314,13 +313,13 @@ public final class FileUtil {
         }
     }
 
-    public static boolean processFilesRecursively(File root, Processor<File> processor, final Processor<File> directoryFilter) {
+    public static boolean processFilesRecursively(File root, Predicate<File> processor, final Predicate<File> directoryFilter) {
         final LinkedList<File> queue = new LinkedList<File>();
         queue.add(root);
         while (!queue.isEmpty()) {
             final File file = queue.removeFirst();
-            if (!processor.process(file)) return false;
-            if (directoryFilter != null && (!file.isDirectory() || !directoryFilter.process(file))) continue;
+            if (!processor.test(file)) return false;
+            if (directoryFilter != null && (!file.isDirectory() || !directoryFilter.test(file))) continue;
 
             final File[] children = file.listFiles();
             if (children != null) {
@@ -347,8 +346,8 @@ public final class FileUtil {
         }
     }
 
-    public static boolean visitFiles(File root, Processor<? super File> processor) {
-        if (!processor.process(root)) {
+    public static boolean visitFiles(File root, Predicate<? super File> processor) {
+        if (!processor.test(root)) {
             return false;
         }
 

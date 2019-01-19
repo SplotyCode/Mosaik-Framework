@@ -2,6 +2,7 @@ package me.david.davidlib.util.condition;
 
 import java.util.function.Predicate;
 
+@Deprecated
 public interface Condition<T> extends Predicate<T> {
 
    boolean check(T item);

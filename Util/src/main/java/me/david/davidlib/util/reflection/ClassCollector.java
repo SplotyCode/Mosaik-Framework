@@ -4,19 +4,19 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.david.davidlib.util.AlmostBoolean;
 import me.david.davidlib.util.condition.ClassConditions;
-import me.david.davidlib.util.condition.Condition;
 import me.david.davidlib.util.condition.Conditions;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ClassCollector implements Condition<Class> {
+public final class ClassCollector implements Predicate<Class> {
 
-    private Map<Integer, Condition<Class>> conditions = new HashMap<>();
-    private Condition<Class> lastCondition = null;
+    private Map<Integer, Predicate<Class>> conditions = new HashMap<>();
+    private Predicate<Class> lastCondition = null;
     private Collection<Class> lastFetchedClasses = null;
     private Collection<Object> lastFetchedInstances = null;
 
@@ -27,7 +27,7 @@ public final class ClassCollector implements Condition<Class> {
     }
 
     public Class collectFirst() {
-        return ClassFinderHelper.getUserClasses().stream().filter(this::check).findFirst().orElse(null);
+        return ClassFinderHelper.getUserClasses().stream().filter(this::test).findFirst().orElse(null);
     }
 
     public Collection<Class> collectAll() {
@@ -55,17 +55,17 @@ public final class ClassCollector implements Condition<Class> {
     }
 
     private Collection<Class> collectAll0() {
-        return ClassFinderHelper.getUserClasses().stream().filter(this::check).collect(Collectors.toList());
+        return ClassFinderHelper.getUserClasses().stream().filter(this::test).collect(Collectors.toList());
     }
 
-    public Condition<Class> buildCondition() {
+    public Predicate<Class> buildCondition() {
         if (lastCondition == null) {
             lastCondition = buildCondition0();
         }
         return lastCondition;
     }
 
-    private Condition<Class> buildCondition0() {
+    private Predicate<Class> buildCondition0() {
         return Conditions.and(conditions.values());
     }
 
@@ -121,7 +121,7 @@ public final class ClassCollector implements Condition<Class> {
         return this;
     }
 
-    public ClassCollector addCostom(Condition<Class> condition) {
+    public ClassCollector addCostom(Predicate<Class> condition) {
         conditions.put(100 + costomCounter, condition);
         costomCounter++;
         return this;
@@ -132,7 +132,7 @@ public final class ClassCollector implements Condition<Class> {
     }
 
     @Override
-    public boolean check(Class item) {
-        return buildCondition().check(item);
+    public boolean test(Class item) {
+        return buildCondition().test(item);
     }
 }

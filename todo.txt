@@ -1,10 +1,10 @@
 - [ADDED] add ClassCollector with goals (No Abstract goal etc) to collect classes easier
 - [ADDED] Add Blacklist to ClassFinder
-- replace Condition and Processor with Predicate
+- [ADDED] replace Condition and Processor with Predicate
 - tests
 - remove more stuff out of runtime
 - [ADDED] not that much info spamming
 - fix webapi minor bugs
 - nicer startup logging
-- more build modules
+- [ADDED} more build modules
 - [ADDED] use lombok in StartUp

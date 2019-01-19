@@ -1,10 +1,10 @@
 package me.david.davidlib.util.collection;
 
 import me.david.davidlib.util.Pair;
-import me.david.davidlib.util.condition.Condition;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public final class CollectionUtil {
 
@@ -173,22 +173,22 @@ public final class CollectionUtil {
         return collection == null || collection.isEmpty();
     }
 
-    public static <T, V extends T> V find(Iterable<V> iterable, Condition<T> condition) {
+    public static <T, V extends T> V find(Iterable<V> iterable, Predicate<T> condition) {
         return find(iterable.iterator(), condition);
     }
 
-    public static <T, V extends T> V find(Iterator<V> iterator, Condition<T> condition) {
+    public static <T, V extends T> V find(Iterator<V> iterator, Predicate<T> condition) {
         while (iterator.hasNext()) {
             V value = iterator.next();
-            if (condition.check(value)) return value;
+            if (condition.test(value)) return value;
         }
         return null;
     }
 
-    public static <T> int indexOf(List<T> list, Condition<? super T> condition) {
+    public static <T> int indexOf(List<T> list, Predicate<? super T> condition) {
         for (int i = 0, listSize = list.size(); i < listSize; i++) {
             T t = list.get(i);
-            if (condition.check(t)) {
+            if (condition.test(t)) {
                 return i;
             }
         }
