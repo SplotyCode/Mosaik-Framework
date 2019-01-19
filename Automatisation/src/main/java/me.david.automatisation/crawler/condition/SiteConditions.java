@@ -1,7 +1,8 @@
 package me.david.automatisation.crawler.condition;
 
 import me.david.automatisation.crawler.site.Site;
-import me.david.davidlib.util.condition.Condition;
+
+import java.util.function.Predicate;
 
 /**
  * General Conditions for sites
@@ -12,6 +13,6 @@ public final class SiteConditions {
     /**
      * Checks if an sits is using https
      */
-    Condition<Site> NEED_HTTPS = item -> item.getUrl().getProtocol().equalsIgnoreCase("https");
+    Predicate<Site> NEED_HTTPS = item -> item.getUrl().getProtocol().equalsIgnoreCase("https");
 
 }
