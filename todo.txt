@@ -10,4 +10,4 @@
 - fix webapi minor bugs
 - nicer startup logging
 - more build modules
-- use lombok in StartUp
+- [ADDED] use lombok in StartUp

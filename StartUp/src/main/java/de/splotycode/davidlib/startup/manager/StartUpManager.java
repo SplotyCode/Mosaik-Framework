@@ -26,10 +26,6 @@ public class StartUpManager implements IStartUpManager {
         return running;
     }
 
-    public boolean isRunning() {
-        return running;
-    }
-
     @Override
     public INamedTaskBar currentProcess() {
         return StartUpProcessHandler.getInstance().current();

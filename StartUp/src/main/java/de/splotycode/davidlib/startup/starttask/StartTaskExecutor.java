@@ -3,6 +3,7 @@ package de.splotycode.davidlib.startup.starttask;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
 import de.splotycode.davidlib.startup.exception.FrameworkStartException;
+import lombok.Getter;
 import me.david.davidlib.annotations.AnnotationHelper;
 import me.david.davidlib.runtime.startup.StartupTask;
 import me.david.davidlib.runtime.startup.envirement.StartUpEnvironmentChanger;
@@ -25,7 +26,7 @@ public class StartTaskExecutor {
 
     private static Logger logger = Logger.getInstance(StartTaskExecutor.class);
 
-    private static StartTaskExecutor instance = new StartTaskExecutor();
+    @Getter private static StartTaskExecutor instance = new StartTaskExecutor();
 
     private static ClassCollector classCollector = ClassCollector.newInstance()
                                                     .setOnlyClasses(true)
@@ -84,7 +85,4 @@ public class StartTaskExecutor {
         }
     }
 
-    public static StartTaskExecutor getInstance() {
-        return instance;
-    }
 }

@@ -1,6 +1,7 @@
 package de.splotycode.davidlib.startup.application;
 
 import de.splotycode.davidlib.startup.envirementchanger.ConfigureEnvironmentChangerImpl;
+import lombok.Getter;
 import me.david.davidlib.runtime.LinkBase;
 import me.david.davidlib.runtime.application.Application;
 import me.david.davidlib.runtime.application.ApplicationHandle;
@@ -13,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class ApplicationHandleImpl implements ApplicationHandle {
 
-    private Application application;
+    @Getter private Application application;
 
     public ApplicationHandleImpl(Application application) {
         this.application = application;
@@ -50,8 +51,4 @@ public class ApplicationHandleImpl implements ApplicationHandle {
         application.setState(ApplicationState.STARTED);
     }
 
-    @Override
-    public Application getApplication() {
-        return application;
-    }
 }
