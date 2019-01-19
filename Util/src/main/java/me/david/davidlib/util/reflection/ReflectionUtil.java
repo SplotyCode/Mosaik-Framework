@@ -26,7 +26,7 @@ public final class ReflectionUtil {
                 .setAbstracation(AlmostBoolean.fromBoolean(!noAbstraction))
                 .setOnlyClasses(true)
                 .setNoDisableds(disableAnnotation)
-                .setNeedAssignable(other).check(clazz);
+                .setNeedAssignable(other).test(clazz);
     }
 
     public static Class<?> getCallerClass() {
