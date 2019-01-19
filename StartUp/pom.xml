@@ -21,25 +21,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <configuration>
-                            <compilerArgument>-proc:none</compilerArgument>
-                            <includes>
-                                <include>me.david.davidlib.runtime/startup/SkipPath.java</include>
-                                <include>de/splotycode/davidlib/startup/processor/SkipPathProcessor.java</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-project</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
