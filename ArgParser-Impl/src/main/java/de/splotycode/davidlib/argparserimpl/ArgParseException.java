@@ -1,4 +1,4 @@
-package de.splotycode.davidlib.argparser.parser;
+package de.splotycode.davidlib.argparserimpl;
 
 /**
  * Thorns when the Arg Parser fails

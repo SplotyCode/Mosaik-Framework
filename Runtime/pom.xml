@@ -63,6 +63,11 @@
             <artifactId>IUI</artifactId>
             <version>1.9.9</version>
         </dependency>
+        <dependency>
+            <groupId>me.david.davidlib</groupId>
+            <artifactId>ArgParser</artifactId>
+            <version>1.9.9</version>
+        </dependency>
     </dependencies>
 
 

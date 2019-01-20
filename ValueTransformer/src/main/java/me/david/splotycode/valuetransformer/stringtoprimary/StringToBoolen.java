@@ -1,7 +1,7 @@
 package me.david.splotycode.valuetransformer.stringtoprimary;
 
-import me.david.davidlib.runtime.transformer.TransformException;
-import me.david.davidlib.runtime.transformer.ValueTransformer;
+import me.david.splotycode.valuetransformer.TransformException;
+import me.david.splotycode.valuetransformer.ValueTransformer;
 
 public class StringToBoolen extends ValueTransformer<String, Boolean> {
 

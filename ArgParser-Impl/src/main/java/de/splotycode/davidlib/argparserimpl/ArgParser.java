@@ -1,11 +1,8 @@
-package de.splotycode.davidlib.argparser;
+package de.splotycode.davidlib.argparserimpl;
 
-import de.splotycode.davidlib.argparser.parser.ArgParseException;
-import de.splotycode.davidlib.argparser.parser.Argument;
-import de.splotycode.davidlib.argparser.parser.ParsedArguments;
-import de.splotycode.davidlib.argparser.parser.ParsedObject;
+import de.splotycode.davidlib.argparser.IArgParser;
 import me.david.davidlib.runtime.LinkBase;
-import me.david.davidlib.runtime.argparser.IArgParser;
+import me.david.splotycode.valuetransformer.TransformerManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +45,7 @@ public class ArgParser implements IArgParser {
                 }
                 continue;
             }
-            Object result = LinkBase.getTransformerManager().transform(rawValue, argument.getField().getType());
+            Object result = TransformerManager.getInstance().transform(rawValue, argument.getField().getType());
             try {
                 argument.getField().set(obj, result);
             } catch (IllegalAccessException e) {

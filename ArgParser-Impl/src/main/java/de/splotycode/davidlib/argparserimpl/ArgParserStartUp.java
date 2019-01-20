@@ -1,4 +1,4 @@
-package de.splotycode.davidlib.argparser;
+package de.splotycode.davidlib.argparserimpl;
 
 import me.david.davidlib.annotations.priority.Priority;
 import me.david.davidlib.runtime.LinkBase;

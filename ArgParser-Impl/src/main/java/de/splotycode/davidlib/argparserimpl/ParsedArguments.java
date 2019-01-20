@@ -1,4 +1,4 @@
-package de.splotycode.davidlib.argparser.parser;
+package de.splotycode.davidlib.argparserimpl;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

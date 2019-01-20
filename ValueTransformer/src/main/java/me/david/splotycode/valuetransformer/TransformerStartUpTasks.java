@@ -2,7 +2,6 @@ package me.david.splotycode.valuetransformer;
 
 import me.david.davidlib.annotations.priority.Priority;
 import me.david.davidlib.runtime.LinkBase;
-import me.david.davidlib.runtime.Links;
 import me.david.davidlib.runtime.startup.StartUpPriorities;
 import me.david.davidlib.runtime.startup.StartupTask;
 import me.david.davidlib.runtime.startup.envirement.StartUpEnvironmentChanger;
@@ -12,8 +11,8 @@ public class TransformerStartUpTasks implements StartupTask {
 
     @Override
     public void execute(StartUpEnvironmentChanger environmentChanger) throws Exception {
-        LinkBase.getInstance().registerLink(Links.TRANSFORMER_MANAGER, new TransformerManager());
-        LinkBase.getTransformerManager().registerPackage("me.david.splotycode.valuetransformer");
+        LinkBase.getInstance().registerLink(TransformerManager.LINK, new TransformerManager());
+        TransformerManager.getInstance().registerPackage("me.david.splotycode.valuetransformer");
     }
 
 }

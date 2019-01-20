@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/AnnotationProcessing/AnnotationProcessing.iml" filepath="$PROJECT_DIR$/AnnotationProcessing/AnnotationProcessing.iml" />
       <module fileurl="file://$PROJECT_DIR$/Annotations/Annotations.iml" filepath="$PROJECT_DIR$/Annotations/Annotations.iml" />
       <module fileurl="file://$PROJECT_DIR$/ArgParser/ArgParser.iml" filepath="$PROJECT_DIR$/ArgParser/ArgParser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ArgParser-Impl/ArgParser-Impl.iml" filepath="$PROJECT_DIR$/ArgParser-Impl/ArgParser-Impl.iml" />
       <module fileurl="file://$PROJECT_DIR$/Automatisation/Automatisation.iml" filepath="$PROJECT_DIR$/Automatisation/Automatisation.iml" />
       <module fileurl="file://$PROJECT_DIR$/Console/Console.iml" filepath="$PROJECT_DIR$/Console/Console.iml" />
       <module fileurl="file://$PROJECT_DIR$/Database/Database.iml" filepath="$PROJECT_DIR$/Database/Database.iml" />

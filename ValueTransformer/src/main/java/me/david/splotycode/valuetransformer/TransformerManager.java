@@ -1,11 +1,18 @@
 package me.david.splotycode.valuetransformer;
 
-import me.david.davidlib.runtime.transformer.ITransformerManager;
-import me.david.davidlib.runtime.transformer.ValueTransformer;
+import me.david.davidlib.runtime.LinkBase;
+import me.david.davidlib.util.datafactory.DataKey;
+import me.david.davidlib.util.reflection.classregister.IListClassRegister;
 
 import java.util.*;
 
-public class TransformerManager implements ITransformerManager {
+public class TransformerManager implements IListClassRegister<ValueTransformer> {
+
+    public static final DataKey<TransformerManager> LINK = new DataKey<>("transformer.manager");
+
+    public static TransformerManager getInstance() {
+        return LinkBase.getInstance().getLink(LINK);
+    }
 
     private Set<ValueTransformer> transformers = new HashSet<>();
 
@@ -15,7 +22,6 @@ public class TransformerManager implements ITransformerManager {
     }
 
     //TODO: if we have a transformer that transforms int to string and a transformer that transforms string to short it should be possible to transform int to shorts
-    @Override
     public <T> T transform(Object input, Class<T> result) {
         if (result.isAssignableFrom(input.getClass())) return (T) input;
         //List<Class<?>> possibleResults = getPossibleResults(input.getClass());

@@ -1,4 +1,4 @@
-package me.david.davidlib.runtime.argparser;
+package de.splotycode.davidlib.argparser;
 
 public interface IArgParser {
 

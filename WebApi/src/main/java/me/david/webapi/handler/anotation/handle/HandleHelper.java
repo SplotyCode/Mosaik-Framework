@@ -1,8 +1,8 @@
 package me.david.webapi.handler.anotation.handle;
 
-import me.david.davidlib.runtime.LinkBase;
-import me.david.davidlib.runtime.transformer.TransformException;
-import me.david.davidlib.runtime.transformer.ValueTransformer;
+import me.david.splotycode.valuetransformer.TransformException;
+import me.david.splotycode.valuetransformer.TransformerManager;
+import me.david.splotycode.valuetransformer.ValueTransformer;
 import me.david.webapi.handler.anotation.parameter.ParameterResolveException;
 
 import java.lang.reflect.Parameter;
@@ -23,7 +23,7 @@ public final class HandleHelper {
             }
         }
         try {
-            return LinkBase.getTransformerManager().transform(input, parameter.getType());
+            return TransformerManager.getInstance().transform(input, parameter.getType());
         } catch (TransformException ex) {
             throw new ParameterResolveException("Failed to Transform Value", ex);
         }

@@ -1,8 +1,8 @@
 package me.david.davidlib.runtime.pathmanager;
 
+import de.splotycode.davidlib.argparser.Parameter;
 import me.david.davidlib.runtime.LinkBase;
 import me.david.davidlib.runtime.application.ApplicationInfo;
-import me.david.davidlib.runtime.argparser.Parameter;
 import me.david.davidlib.util.info.SystemInfo;
 import me.david.davidlib.util.info.SystemProperties;
 

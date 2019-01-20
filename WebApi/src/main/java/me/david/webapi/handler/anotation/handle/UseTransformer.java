@@ -1,6 +1,6 @@
 package me.david.webapi.handler.anotation.handle;
 
-import me.david.davidlib.runtime.transformer.ValueTransformer;
+import me.david.splotycode.valuetransformer.ValueTransformer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
