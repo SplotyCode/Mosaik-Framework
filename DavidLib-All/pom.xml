@@ -133,6 +133,11 @@
             <artifactId>WebApi</artifactId>
             <version>1.9.9</version>
         </dependency>
+        <dependency>
+            <groupId>me.david.davidlib</groupId>
+            <artifactId>ArgParser-Impl</artifactId>
+            <version>1.9.9</version>
+        </dependency>
     </dependencies>
 
 </project>
