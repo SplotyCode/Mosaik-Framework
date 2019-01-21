@@ -14,7 +14,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${davidlib.plugin.compile}</version>
+                <version>${mosaik.plugin.compile}</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>

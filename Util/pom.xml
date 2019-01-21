@@ -14,12 +14,12 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${davidlib.guava.version}</version>
+            <version>${mosaik.guava.version}</version>
         </dependency>
         <dependency>
             <groupId>net.jodah</groupId>
             <artifactId>typetools</artifactId>
-            <version>${davidlib.typetools.version}</version>
+            <version>${mosaik.typetools.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.spotycode.mosaik</groupId>

@@ -14,7 +14,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>${davidlib.mongo.version}</version>
+            <version>${mosaik.mongo.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${davidlib.guava.version}</version>
+            <version>${mosaik.guava.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.spotycode.mosaik</groupId>

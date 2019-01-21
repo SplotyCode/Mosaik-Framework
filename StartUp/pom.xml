@@ -16,7 +16,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${davidlib.plugin.compile}</version>
+                <version>${mosaik.plugin.compile}</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -25,7 +25,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>${davidlib.plugin.assembly}</version>
+                <version>${mosaik.plugin.assembly}</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>${davidlib.reflections.version}</version>
+            <version>${mosaik.reflections.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.spotycode.mosaik</groupId>

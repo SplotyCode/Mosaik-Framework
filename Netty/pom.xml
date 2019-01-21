@@ -29,7 +29,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>${davidlib.netty.version}</version>
+            <version>${mosaik.netty.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.spotycode.mosaik</groupId>

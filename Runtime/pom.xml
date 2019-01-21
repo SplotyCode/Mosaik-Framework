@@ -34,7 +34,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>${davidlib.plugin.codehaus-buildnumber}</version>
+                <version>${mosaik.plugin.codehaus-buildnumber}</version>
                 <executions>
                     <execution>
                         <id>useLastCommittedRevision</id>

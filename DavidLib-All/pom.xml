@@ -9,16 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>DavidLib-All</artifactId>
+    <artifactId>Mosik-All</artifactId>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>${davidlib.plugin.jar}</version>
+                <version>${mosaik.plugin.jar}</version>
                 <configuration>
-                    <finalName>DavidLib-All</finalName>
+                    <finalName>Mosaik-Framework</finalName>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
@@ -29,7 +29,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${davidlib.plugin.compile}</version>
+                <version>${mosaik.plugin.compile}</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -37,7 +37,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>${davidlib.plugin.assembly}</version>
+                <version>${mosaik.plugin.assembly}</version>
                 <executions>
                     <execution>
                         <id>davidlib-assemby</id>

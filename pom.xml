@@ -39,33 +39,33 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- Dependency Versions -->
-        <davidlib.slf4j.version>1.7.25</davidlib.slf4j.version>
-        <davidlib.log4j.version>1.2.17</davidlib.log4j.version>
-        <davidlib.lombok.version>1.16.20</davidlib.lombok.version>
-        <davidlib.typetools.version>0.6.0</davidlib.typetools.version>
-        <davidlib.guava.version>21.0</davidlib.guava.version>
-        <davidlib.netty.version>4.1.24.Final</davidlib.netty.version>
-        <davidlib.undertow.version>2.0.1.Final</davidlib.undertow.version>
-        <davidlib.mongo.version>3.4.0</davidlib.mongo.version>
-        <davidlib.reflections.version>0.9.11</davidlib.reflections.version>
+        <mosaik.slf4j.version>1.7.25</mosaik.slf4j.version>
+        <mosaik.log4j.version>1.2.17</mosaik.log4j.version>
+        <mosaik.lombok.version>1.16.20</mosaik.lombok.version>
+        <mosaik.typetools.version>0.6.0</mosaik.typetools.version>
+        <mosaik.guava.version>21.0</mosaik.guava.version>
+        <mosaik.netty.version>4.1.24.Final</mosaik.netty.version>
+        <mosaik.undertow.version>2.0.1.Final</mosaik.undertow.version>
+        <mosaik.mongo.version>3.4.0</mosaik.mongo.version>
+        <mosaik.reflections.version>0.9.11</mosaik.reflections.version>
 
         <!-- Plugin Utils -->
-        <davidlib.plugin.jar>2.4</davidlib.plugin.jar>
-        <davidlib.plugin.compile>3.5.1</davidlib.plugin.compile>
-        <davidlib.plugin.assembly>3.1.1</davidlib.plugin.assembly>
-        <davidlib.plugin.gpg>1.5</davidlib.plugin.gpg>
-        <davidlib.plugin.nexus-staging>1.6.7</davidlib.plugin.nexus-staging>
-        <davidlib.plugin.source>2.2.1</davidlib.plugin.source>
-        <davidlib.plugin.codehaus-buildnumber>1.4</davidlib.plugin.codehaus-buildnumber>
+        <mosaik.plugin.jar>2.4</mosaik.plugin.jar>
+        <mosaik.plugin.compile>3.5.1</mosaik.plugin.compile>
+        <mosaik.plugin.assembly>3.1.1</mosaik.plugin.assembly>
+        <mosaik.plugin.gpg>1.5</mosaik.plugin.gpg>
+        <mosaik.plugin.nexus-staging>1.6.7</mosaik.plugin.nexus-staging>
+        <mosaik.plugin.source>2.2.1</mosaik.plugin.source>
+        <mosaik.plugin.codehaus-buildnumber>1.4</mosaik.plugin.codehaus-buildnumber>
     </properties>
 
-    <name>DavidLib</name>
+    <name>Mosaik-Framework</name>
     <description>General Java Libary</description>
-    <url>https://github.com/SplotyCode/DavidLib</url>
+    <url>https://github.com/SplotyCode/Mosaik-Framework</url>
     <licenses>
         <license>
             <name>Eclipse Public License 2.0</name>
-            <url>https://github.com/SplotyCode/DavidLib/blob/master/LICENSE</url>
+            <url>https://github.com/SplotyCode/Mosaik-Framework/blob/master/LICENSE</url>
             <distribution>REPO</distribution>
         </license>
     </licenses>
@@ -78,9 +78,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/SplotyCode/DavidLib.git</connection>
-        <developerConnection>scm:git:git://github.com/C/SplotyCode/DavidLib.git</developerConnection>
-        <url>https://github.com/SplotyCode/DavidLib</url>
+        <connection>scm:git:git://github.com/SplotyCode/Mosaik-Framework.git</connection>
+        <developerConnection>scm:git:git://github.com/C/SplotyCode/Mosaik-Framework.git</developerConnection>
+        <url>https://github.com/SplotyCode/Mosaik-Framework</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -89,7 +89,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${davidlib.plugin.compile}</version>
+                <version>${mosaik.plugin.compile}</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <source>1.8</source>
@@ -99,7 +99,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>${davidlib.plugin.source}</version>
+                <version>${mosaik.plugin.source}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -112,7 +112,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>${davidlib.plugin.gpg}</version>
+                <version>${mosaik.plugin.gpg}</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
@@ -126,7 +126,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>${davidlib.plugin.nexus-staging}</version>
+                <version>${mosaik.plugin.nexus-staging}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
@@ -142,24 +142,24 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${davidlib.lombok.version}</version>
+            <version>${mosaik.lombok.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${davidlib.slf4j.version}</version>
+            <version>${mosaik.slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>${davidlib.slf4j.version}</version>
+            <version>${mosaik.slf4j.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/log4j/log4j -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>${davidlib.log4j.version}</version>
+            <version>${mosaik.log4j.version}</version>
         </dependency>
     </dependencies>
 

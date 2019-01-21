@@ -14,27 +14,27 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${davidlib.guava.version}</version>
+            <version>${mosaik.guava.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>${davidlib.netty.version}</version>
+            <version>${mosaik.netty.version}</version>
         </dependency>
         <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>undertow-core</artifactId>
-            <version>${davidlib.undertow.version}</version>
+            <version>${mosaik.undertow.version}</version>
         </dependency>
         <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>undertow-servlet</artifactId>
-            <version>${davidlib.undertow.version}</version>
+            <version>${mosaik.undertow.version}</version>
         </dependency>
         <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>undertow-websockets-jsr</artifactId>
-            <version>${davidlib.undertow.version}</version>
+            <version>${mosaik.undertow.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.spotycode.mosaik</groupId>
