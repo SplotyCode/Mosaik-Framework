@@ -1,4 +1,3 @@
-package firstapp;
 
 import de.splotycode.davidlib.startup.Main;
 import me.david.davidlib.runtime.application.Application;

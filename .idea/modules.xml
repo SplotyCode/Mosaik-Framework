@@ -12,6 +12,8 @@
       <module fileurl="file://$PROJECT_DIR$/DavidLib.iml" filepath="$PROJECT_DIR$/DavidLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/DavidLib-All/DavidLib-All.iml" filepath="$PROJECT_DIR$/DavidLib-All/DavidLib-All.iml" />
       <module fileurl="file://$PROJECT_DIR$/DomParsing/DomParsing.iml" filepath="$PROJECT_DIR$/DomParsing/DomParsing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Examples/firstapp/Examle-FirstApp.iml" filepath="$PROJECT_DIR$/Examples/firstapp/Examle-FirstApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Examples/papa/Examle-Papa.iml" filepath="$PROJECT_DIR$/Examples/papa/Examle-Papa.iml" />
       <module fileurl="file://$PROJECT_DIR$/GameEngine/GameEngine.iml" filepath="$PROJECT_DIR$/GameEngine/GameEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/IUI/IUI.iml" filepath="$PROJECT_DIR$/IUI/IUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/Netty/Netty.iml" filepath="$PROJECT_DIR$/Netty/Netty.iml" />
