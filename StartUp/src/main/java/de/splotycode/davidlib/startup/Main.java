@@ -54,6 +54,7 @@ public class Main {
         setUpLogging();
         LoggingHelper.loggingStartUp();
 
+        checkClassLoader();
         if (ReflectionUtil.getCallerClasses().length >= 4) {
             logger.warn("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass().getName());
         }
@@ -109,6 +110,19 @@ public class Main {
         logger = Logger.getInstance(Main.class);
 
         LoggingHelper.registerShutdownLogging();
+    }
+
+    private static void checkClassLoader() {
+        ClassLoader systemLoader = ClassLoader.getSystemClassLoader();
+        ClassLoader threadLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader thisLoader = Main.class.getClassLoader();
+
+        if (thisLoader.getClass() != threadLoader.getClass() || thisLoader.getClass() != systemLoader.getClass()) {
+            logger.warn(StringUtil.format("Invalid ClassLoader! ThisLoader: '{1}', SystemLoader: '{2}', ThisLoader: '{3}'",
+                    thisLoader.getClass().getName(),
+                    threadLoader.getClass().getName(),
+                    systemLoader.getClass().getName()));
+        }
     }
 
 }
