@@ -2,9 +2,13 @@ package me.david.webapi.request.body;
 
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import me.david.webapi.request.Request;
 import me.david.webapi.request.RequestHeaders;
 
+/* ClassRegister needs a No Args Constructor */
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class PostRequestContent implements RequestContent, RequestContentHandler {
 
     private PostRequestContent(Request request) {

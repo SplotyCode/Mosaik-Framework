@@ -2,9 +2,9 @@
 - [ADDED] Add Blacklist to ClassFinder
 - [ADDED] replace Condition and Processor with Predicate
 - tests
-- remove more stuff out of runtime
+- [ADDED] remove more stuff out of runtime
 - [ADDED] not that much info spamming
-- fix webapi minor bugs
-- [ADDED} nicer startup logging
-- [ADDED} more build modules
+- [ADDED] fix webapi minor bugs
+- [ADDED] nicer startup logging
+- [ADDED] more build modules
 - [ADDED] use lombok in StartUp

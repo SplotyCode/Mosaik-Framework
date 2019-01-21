@@ -65,7 +65,7 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     }
 
     public List<ParameterResolver> getParameterResolvers() {
-        return parameterResolverRegister.combind(application.getParameterResolvRegister());
+        return parameterResolverRegister.combind(application.getParameterResolveRegister());
     }
 
     public List<ParameterResolver> getLocalParameterResolvers() {
