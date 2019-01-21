@@ -14,8 +14,8 @@
       <module fileurl="file://$PROJECT_DIR$/Examples/papa/Examle-Papa.iml" filepath="$PROJECT_DIR$/Examples/papa/Examle-Papa.iml" />
       <module fileurl="file://$PROJECT_DIR$/GameEngine/GameEngine.iml" filepath="$PROJECT_DIR$/GameEngine/GameEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/IUI/IUI.iml" filepath="$PROJECT_DIR$/IUI/IUI.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Mosaik.iml" filepath="$PROJECT_DIR$/Mosaik.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Mosaik-All/Mosaik-All.iml" filepath="$PROJECT_DIR$/Mosaik-All/Mosaik-All.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Mosaik-Framework.iml" filepath="$PROJECT_DIR$/Mosaik-Framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Mosaik-All/Mosaik-All.iml" filepath="$PROJECT_DIR$/Mosaik-All/Mosik-All.iml" />
       <module fileurl="file://$PROJECT_DIR$/Netty/Netty.iml" filepath="$PROJECT_DIR$/Netty/Netty.iml" />
       <module fileurl="file://$PROJECT_DIR$/Runtime/Runtime.iml" filepath="$PROJECT_DIR$/Runtime/Runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/SpigotLib/SpigotLib.iml" filepath="$PROJECT_DIR$/SpigotLib/SpigotLib.iml" />
