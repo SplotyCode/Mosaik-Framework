@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>DavidLib</artifactId>
-        <groupId>me.david.davidlib</groupId>
-        <version>1.9.9</version>
+        <artifactId>Mosaik-Framework</artifactId>
+        <groupId>io.github.spotycode.mosaik</groupId>
+        <version>2.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -44,29 +44,29 @@
             <version>${davidlib.reflections.version}</version>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>Console</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>Runtime</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>AnnotationProcessing</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>ArgParser</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>DomParsing</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
 

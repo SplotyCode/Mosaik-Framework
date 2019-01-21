@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.david.davidlib</groupId>
+    <groupId>io.github.spotycode.mosaik</groupId>
     <artifactId>Examle-FirstApp</artifactId>
     <version>1.0</version>
     <build>
@@ -22,107 +22,107 @@
 
     <dependencies>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>Annotations</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>Util</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>AnnotationProcessing</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>Runtime</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>ArgParser</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>Automatisation</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>Console</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>Database</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>DomParsing</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>IUI</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>Netty</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>StartUp</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>ValueTransformer</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>WebApi</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>ArgParser-Impl</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

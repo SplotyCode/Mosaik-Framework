@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>me.david.davidlib</groupId>
-        <artifactId>DavidLib</artifactId>
-        <version>1.9.9</version>
+        <groupId>io.github.spotycode.mosaik</groupId>
+        <artifactId>Mosaik-Framework</artifactId>
+        <version>2.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.david.davidlib</groupId>
+    <groupId>io.github.spotycode.mosaik</groupId>
     <artifactId>Netty</artifactId>
     <build>
         <plugins>
@@ -32,9 +32,9 @@
             <version>${davidlib.netty.version}</version>
         </dependency>
         <dependency>
-            <groupId>me.david.davidlib</groupId>
+            <groupId>io.github.spotycode.mosaik</groupId>
             <artifactId>Util</artifactId>
-            <version>1.9.9</version>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
 
