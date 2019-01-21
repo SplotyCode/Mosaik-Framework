@@ -7,7 +7,7 @@ import io.github.splotycode.mosaik.annotations.priority.Priority;
 import java.lang.annotation.Annotation;
 
 /**
- * Helper Tools for DavidLib Annotations
+ * Helper Tools for Mosaik Annotations
  */
 public final class AnnotationHelper {
 

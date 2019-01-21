@@ -51,7 +51,7 @@ public class SkipPathProcessor extends AbstractProcessor {
                 long id = SkipPathProcessor.id.getAndIncrement();
                 FileObject descriptionFile = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "disabled_paths_" + id + ".txt");
                 try (Writer writer = descriptionFile.openWriter()) {
-                    writer.append("# disabled_paths.txt generated with DavidLib\n");
+                    writer.append("# disabled_paths.txt generated with Mosaik\n");
                     writer.append(StringUtil.join(skippedPaths, obj -> obj, "\n"));
                 }
             } catch (IOException ex) {

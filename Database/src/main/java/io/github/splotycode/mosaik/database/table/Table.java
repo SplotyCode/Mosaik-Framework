@@ -16,7 +16,7 @@ public @interface Table {
 
     /**
     * The name of the Table
-    * If no name is set DavidLib will use the Name of the Class
+    * If no name is set Mosaik will use the Name of the Class
     */
     String name() default "";
 

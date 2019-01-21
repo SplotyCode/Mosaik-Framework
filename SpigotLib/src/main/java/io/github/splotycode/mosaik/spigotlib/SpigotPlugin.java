@@ -19,7 +19,7 @@ public class SpigotPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
-            Class.forName("de.splotycode.davidlib.startup.Main").getMethod("mainIfNotInitialised").invoke(null);
+            Class.forName("io.github.splotycode.mosaik.startup.Main").getMethod("mainIfNotInitialised").invoke(null);
         } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }

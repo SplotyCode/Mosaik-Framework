@@ -40,7 +40,7 @@
                 <version>${mosaik.plugin.assembly}</version>
                 <executions>
                     <execution>
-                        <id>davidlib-assemby</id>
+                        <id>mosaik-assemby</id>
                         <phase>package</phase><!-- create assembly in package phase (invoke 'single' goal on assemby plugin)-->
                         <goals>
                             <goal>single</goal>

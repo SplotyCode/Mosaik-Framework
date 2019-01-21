@@ -25,7 +25,7 @@
         <module>Annotations</module>
         <module>IUI</module>
         <module>AnnotationProcessing</module>
-        <module>DavidLib-All</module>
+        <module>Mosaik-All</module>
         <module>ArgParser-Impl</module>
     </modules>
 

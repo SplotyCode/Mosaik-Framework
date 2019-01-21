@@ -20,7 +20,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>de.splotycode.davidlib.startup.Main</mainClass>
+                            <mainClass>io.github.splotycode.mosaik.startup.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -39,7 +39,7 @@
                         <configuration>
                             <compilerArgument>-proc:none</compilerArgument>
                             <includes>
-                                <include>me/david/davidlib/spigotlib/pluginyml/YamlProcessor.java</include>
+                                <include>io/github/splotycode/mosaik/spigotlib/pluginyml/YamlProcessor.java</include>
                             </includes>
                         </configuration>
                     </execution>

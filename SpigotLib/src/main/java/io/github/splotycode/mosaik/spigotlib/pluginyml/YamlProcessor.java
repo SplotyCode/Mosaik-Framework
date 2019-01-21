@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Set;
 
-@SupportedAnnotationTypes("me.david.davidlib.spigotlib.pluginyml.GenerateYaml")
+@SupportedAnnotationTypes("io.github.splotycode.mosaik.spigotlib.pluginyml.GenerateYaml")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class YamlProcessor extends AbstractProcessor {
 
@@ -41,7 +41,7 @@ public class YamlProcessor extends AbstractProcessor {
             try {
                 FileObject descriptionFile = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "plugin.yml");
                 try (Writer writer = descriptionFile.openWriter()) {
-                    writer.append("# plugin.yml generated with DavidLib\n");
+                    writer.append("# plugin.yml generated with Mosaik\n");
                     GenerateYaml annotation = mainTypeElement.getAnnotation(GenerateYaml.class);
                     String main = String.valueOf(pEnvironment.getElementUtils().getBinaryName(mainTypeElement));
                     processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Building plugin.yml for " + main);

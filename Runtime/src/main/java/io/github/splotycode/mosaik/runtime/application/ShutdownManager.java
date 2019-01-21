@@ -7,7 +7,7 @@ public class ShutdownManager implements IShutdownManager {
     private LinkedList<Runnable> tasks = new LinkedList<>();
 
     public ShutdownManager() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> tasks.forEach(Runnable::run), "DavidLib Shutdown Thread"));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> tasks.forEach(Runnable::run), "Mosaik Shutdown Thread"));
     }
 
     @Override

@@ -48,7 +48,7 @@ public class Response {
         setHeader(ResponseHeaders.DATE, DATE_FORMAT.format(CALENDAR.getTime()));
         setHeader("x-xss-protection", "1; mode=block");
         setHeader("X-Content-Type-Options", "nosniff");
-        setHeader("X-Powered-By", "DavidLib WebApi");
+        setHeader("X-Powered-By", "Mosaik WebApi");
     }
 
     public Response setCookie(CookieKey key, String value) {
