@@ -20,7 +20,7 @@ public class TimeHandler {
         response.setHeader("Server", "my cool server");
         response.setHeader("X-Task", name);
         //response.setHeader("X-Hey", hey);
-        return new StaticFileContent(new File("/home/david/Desktop/Programieren/java/davidlib/JavaDoc/allclasses-noframe.html"));
+        return new StaticFileContent(new File("../../docs/allclasses-noframe.html"));
     }
 
     @Mapping("test/?id?")

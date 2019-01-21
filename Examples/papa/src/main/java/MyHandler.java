@@ -1,4 +1,3 @@
-package papa;
 
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.webapi.handler.anotation.check.Handler;
@@ -16,7 +15,7 @@ public class MyHandler {
 
    // @Handler
     public ResponseContent abs(Request request) {
-        FileResponseContent content = new FileResponseContent("/home/david/Desktop/Programieren/java/davidlib/WebApi/src/test/java/papa/test.html");
+        FileResponseContent content = new FileResponseContent("test/java/papa/test.html");
         content.manipulate().variable("name", "David");
         return content;
     }
