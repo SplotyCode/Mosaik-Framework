@@ -20,7 +20,6 @@
     <orderEntry type="module" module-name="ArgParser" />
     <orderEntry type="module" module-name="Automatisation" />
     <orderEntry type="module" module-name="Console" />
-    <orderEntry type="library" name="Maven: me.david.davidlib:Crawler:1.9.9" level="project" />
     <orderEntry type="module" module-name="Database" />
     <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:3.4.0" level="project" />
     <orderEntry type="module" module-name="DomParsing" />
