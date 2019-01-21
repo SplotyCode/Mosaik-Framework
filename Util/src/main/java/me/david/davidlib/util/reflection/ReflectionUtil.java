@@ -50,6 +50,16 @@ public final class ReflectionUtil {
         return fields;
     }
 
+    public static Field getField(Class clazz, String name) {
+        while (clazz != Object.class) {
+            try {
+                return clazz.getDeclaredField(name);
+            } catch (NoSuchFieldException e) {}
+            clazz = clazz.getSuperclass();
+        }
+        return null;
+    }
+
     private static class CallerClass extends SecurityManager {
 
         @Override

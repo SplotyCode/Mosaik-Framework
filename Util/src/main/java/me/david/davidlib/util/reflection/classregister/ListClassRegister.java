@@ -20,6 +20,11 @@ public class ListClassRegister<T> implements IListClassRegister<T> {
         clazz = (Class<T>) TypeResolver.resolveRawArguments(ListClassRegister.class, getClass())[0];
     }
 
+    public ListClassRegister(Collection<T> collection, Class<T> clazz) {
+        this.collection = collection;
+        this.clazz = clazz;
+    }
+
     @Override
     public Collection<T> getList() {
         return collection;
