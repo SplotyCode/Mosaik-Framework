@@ -2,6 +2,7 @@ package me.david.davidlib.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.MessageFormat;
 
 public final class StringUtil {
 
@@ -104,6 +105,10 @@ public final class StringUtil {
         String result = builder.toString();
         if(result.endsWith(seperator)) return result.substring(0, result.length()-seperator.length());
         return result;
+    }
+
+    public static String format(String s, Object... args) {
+        return new MessageFormat(s).format(args);
     }
 
     public static <T> String join(T[] array, Joiner<T> joiner, String seperator){
