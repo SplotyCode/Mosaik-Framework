@@ -10,7 +10,7 @@ public class ApplicationInfo {
    @Getter private static final String buildDate, buildNumber, version;
 
    public static String getApplicationInfo() {
-       return "DavidLib " + version + " Built on " + buildDate + " (Git: #" + buildNumber + ")";
+       return "Mosaik-Framework " + version + " Built on " + buildDate + " (Git: #" + buildNumber + ")";
    }
 
    private static String implementingName = null;
@@ -18,7 +18,7 @@ public class ApplicationInfo {
    public static String getImplementingName() {
        if (implementingName != null) return implementingName;
 
-       implementingName = System.getProperty("davidlib.appname");
+       implementingName = System.getProperty("mosaik.appname");
        if (implementingName == null) {
            Application app = LinkBase.getApplicationManager().getApplications().iterator().next();
            if (app == null) return null;

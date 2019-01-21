@@ -7,11 +7,11 @@ import io.github.splotycode.mosaik.util.info.SystemInfo;
 import io.github.splotycode.mosaik.util.logger.Log4JLogger;
 import org.apache.log4j.Logger;
 
-public class DavidLibLogger extends Log4JLogger {
+public class MosaikLogger extends Log4JLogger {
 
     private static Exception firstException = null;
 
-    public DavidLibLogger(Logger logger4J) {
+    public MosaikLogger(Logger logger4J) {
         super(logger4J);
     }
 

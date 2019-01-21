@@ -10,11 +10,11 @@ import org.apache.log4j.xml.DOMConfigurator;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class DavidLibLoggerFactory extends InitialisedOnce implements LoggerFactory {
+public class MosaikLoggerFactory extends InitialisedOnce implements LoggerFactory {
     @Override
     public Logger getLoggerInstance(String name) {
         initalizeIfNotAlready();
-        return new DavidLibLogger(org.apache.log4j.Logger.getLogger(name));
+        return new MosaikLogger(org.apache.log4j.Logger.getLogger(name));
     }
 
     @Override

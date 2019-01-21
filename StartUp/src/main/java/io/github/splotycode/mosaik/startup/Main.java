@@ -9,7 +9,7 @@ import lombok.Getter;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import io.github.splotycode.mosaik.runtime.application.IApplication;
-import io.github.splotycode.mosaik.runtime.logging.DavidLibLoggerFactory;
+import io.github.splotycode.mosaik.runtime.logging.MosaikLoggerFactory;
 import io.github.splotycode.mosaik.runtime.logging.LoggingHelper;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.runtime.startup.envirement.StartUpEnvironmentChanger;
@@ -96,7 +96,7 @@ public class Main {
     }
 
     private static void setUpLogging() {
-        Logger.setFactory(DavidLibLoggerFactory.class);
+        Logger.setFactory(MosaikLoggerFactory.class);
         System.setProperty("log4j.defaultInitOverride", "true");
         try {
             org.apache.log4j.Logger root = org.apache.log4j.Logger.getRootLogger();
