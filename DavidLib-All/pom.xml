@@ -22,7 +22,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>de.splotycode.davidlib.startup.Main</mainClass>
+                            <mainClass>io.github.splotycode.mosaik.startup.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

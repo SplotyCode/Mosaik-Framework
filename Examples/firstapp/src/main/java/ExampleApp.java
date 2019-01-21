@@ -1,9 +1,9 @@
 
-import de.splotycode.davidlib.startup.Main;
-import me.david.davidlib.runtime.application.Application;
-import me.david.davidlib.runtime.startup.BootContext;
-import me.david.webapi.WebApplicationType;
-import me.david.webapi.server.undertow.UndertowWebServer;
+import io.github.splotycode.mosaik.startup.Main;
+import io.github.splotycode.mosaik.runtime.application.Application;
+import io.github.splotycode.mosaik.runtime.startup.BootContext;
+import io.github.splotycode.mosaik.webapi.WebApplicationType;
+import io.github.splotycode.mosaik.webapi.server.undertow.UndertowWebServer;
 
 public class ExampleApp extends Application implements WebApplicationType {
 

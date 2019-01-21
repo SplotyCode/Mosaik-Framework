@@ -25,8 +25,8 @@
                         <configuration>
                             <compilerArgument>-proc:none</compilerArgument>
                             <includes>
-                                <include>me/david/davidlib/annotations/skippedpath/SkipPath.java</include>
-                                <include>me/david/davidlib/annotationprocessors/SkipPathProcessor.java</include>
+                                <include>io/github/splotycode/mosaik/annotations/skippedpath/SkipPath.java</include>
+                                <include>io/github/splotycode/mosaik/annotationprocessors/SkipPathProcessor.java</include>
                             </includes>
                         </configuration>
                     </execution>

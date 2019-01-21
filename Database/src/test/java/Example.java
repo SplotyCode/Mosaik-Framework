@@ -1,11 +1,11 @@
+import io.github.splotycode.mosaik.database.table.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import me.david.davidlib.database.connection.impl.MySQLConnection;
-import me.david.davidlib.database.connection.sql.SQLDriverConnection;
-import me.david.davidlib.database.repo.Filters;
-import me.david.davidlib.database.repo.SQLExecutor;
-import me.david.davidlib.database.repo.TableExecutor;
-import me.david.davidlib.database.table.*;
+import io.github.splotycode.mosaik.database.connection.impl.MySQLConnection;
+import io.github.splotycode.mosaik.database.connection.sql.SQLDriverConnection;
+import io.github.splotycode.mosaik.database.repo.Filters;
+import io.github.splotycode.mosaik.database.repo.SQLExecutor;
+import io.github.splotycode.mosaik.database.repo.TableExecutor;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;

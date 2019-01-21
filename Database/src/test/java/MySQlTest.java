@@ -1,5 +1,5 @@
+import io.github.splotycode.mosaik.database.table.*;
 import lombok.Data;
-import me.david.davidlib.database.table.*;
 import org.junit.jupiter.api.Test;
 
 public class MySQlTest {
