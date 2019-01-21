@@ -21,6 +21,9 @@ public final class ClassConditions {
         return (Predicate<C>) MUST_BE_CLASS;
     }
 
+    public static Predicate<Class> isInPackage(String packageName) {
+        return clazz -> clazz.getName().startsWith(packageName);
+    }
 
     public static Predicate<Class> instanceOf(Class clazz) {
         return clazz::isInstance;

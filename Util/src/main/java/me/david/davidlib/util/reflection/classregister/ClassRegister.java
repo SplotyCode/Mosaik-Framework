@@ -1,12 +1,16 @@
 package me.david.davidlib.util.reflection.classregister;
 
 import com.google.common.reflect.ClassPath;
+import me.david.davidlib.util.logger.Logger;
+import me.david.davidlib.util.reflection.ClassCollector;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 public interface ClassRegister<T> {
+
+    Logger logger = Logger.getInstance(ClassRegister.class);
 
     void register(T obj);
     void unRegister(T obj);
@@ -17,7 +21,7 @@ public interface ClassRegister<T> {
         try {
             register(clazz.newInstance());
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException(clazz.getName() + " has not zero argument constructor", e);
         }
     }
 
@@ -46,6 +50,16 @@ public interface ClassRegister<T> {
     }
 
     Class<T> getObjectClass();
+
+    default void registerAll(ClassCollector collector) {
+        for (Class clazz : collector.collectAll()) {
+            if (getObjectClass().isAssignableFrom(clazz )) {
+                register(clazz);
+            } else {
+                logger.warn(clazz.getName() + " can not be registered because collector type is: " + getObjectClass().getName());
+            }
+        }
+    }
 
     default void registerPackage(String path) {
         try {

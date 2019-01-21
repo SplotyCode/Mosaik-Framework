@@ -121,6 +121,15 @@ public final class ClassCollector implements Predicate<Class> {
         return this;
     }
 
+    public ClassCollector setInPackage(String packageName) {
+        if (packageName == null) {
+            conditions.remove(4);
+        } else {
+            conditions.put(4, ClassConditions.isInPackage(packageName));
+        }
+        return this;
+    }
+
     public ClassCollector addCostom(Predicate<Class> condition) {
         conditions.put(100 + costomCounter, condition);
         costomCounter++;
