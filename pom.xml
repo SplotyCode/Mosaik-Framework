@@ -7,7 +7,7 @@
     <groupId>io.github.spotycode.mosaik</groupId>
     <artifactId>Mosaik-Framework</artifactId>
     <packaging>pom</packaging>
-    <version>2.1.0-Dev</version>
+    <version>2.1.1</version>
     <modules>
         <module>Console</module>
         <module>Netty</module>
