@@ -55,6 +55,24 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${mosaik.plugin.javadoc}</version>
+                <configuration>
+                    <includeDependencySources>true</includeDependencySources>
+                    <failOnError>false</failOnError>
+                    <reportOutputDirectory>${basedir}/docs/</reportOutputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
