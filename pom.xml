@@ -129,7 +129,6 @@
                         <version>${mosaik.plugin.javadoc}</version>
                         <configuration>
                             <failOnError>false</failOnError>
-                            <reportOutputDirectory>${basedir}/docs/</reportOutputDirectory>
                         </configuration>
                         <executions>
                             <execution>

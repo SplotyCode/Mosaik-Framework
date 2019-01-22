@@ -62,7 +62,9 @@
                 <configuration>
                     <includeDependencySources>true</includeDependencySources>
                     <failOnError>false</failOnError>
-                    <reportOutputDirectory>${basedir}/docs/</reportOutputDirectory>
+                    <dependencySourceIncludes>
+                        <dependencySourceInclude>io.github.spotycode.mosaik:*</dependencySourceInclude>
+                    </dependencySourceIncludes>
                 </configuration>
                 <executions>
                     <execution>
