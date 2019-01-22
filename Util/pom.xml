@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>Mosaik-Framework</artifactId>
-        <groupId>io.github.spotycode.mosaik</groupId>
+        <groupId>io.github.splotycode.mosaik</groupId>
         <version>2.1.0-Dev</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -22,7 +22,7 @@
             <version>${mosaik.typetools.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Annotations</artifactId>
             <version>2.1.0-Dev</version>
         </dependency>
