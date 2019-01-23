@@ -29,7 +29,7 @@
     <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:3.4.0" level="project" />
     <orderEntry type="library" name="Maven: io.github.splotycode.mosaik:DomParsing:2.1.0-Dev" level="project" />
     <orderEntry type="module" module-name="IUI" />
-    <orderEntry type="module" module-name="Netty" />
+    <orderEntry type="library" name="Maven: io.github.splotycode.mosaik:Netty:2.1.0-Dev" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-all:4.1.24.Final" level="project" />
     <orderEntry type="module" module-name="StartUp" />
     <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.11" level="project" />
