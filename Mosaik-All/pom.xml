@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>Mosaik-Framework</artifactId>
-        <groupId>io.github.spotycode.mosaik</groupId>
-        <version>2.1.1</version>
+        <groupId>io.github.splotycode.mosaik</groupId>
+        <version>2.1.0-Dev</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -55,112 +55,132 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${mosaik.plugin.javadoc}</version>
+                <configuration>
+                    <includeDependencySources>true</includeDependencySources>
+                    <failOnError>false</failOnError>
+                    <dependencySourceIncludes>
+                        <dependencySourceInclude>io.github.spotycode.mosaik:*</dependencySourceInclude>
+                    </dependencySourceIncludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Annotations</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Util</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>AnnotationProcessing</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Runtime</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>ArgParser</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Automatisation</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Console</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Database</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>DomParsing</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>IUI</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Netty</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>StartUp</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>ValueTransformer</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>WebApi</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>ArgParser-Impl</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.0-Dev</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>io.github.spotycode.mosaik</groupId>
+        <groupId>io.github.splotycode.mosaik</groupId>
         <artifactId>Mosaik-Framework</artifactId>
         <version>2.1.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.spotycode.mosaik</groupId>
+    <groupId>io.github.splotycode.mosaik</groupId>
     <artifactId>Netty</artifactId>
     <build>
         <plugins>
@@ -32,7 +32,7 @@
             <version>${mosaik.netty.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.spotycode.mosaik</groupId>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Util</artifactId>
             <version>2.1.1</version>
         </dependency>

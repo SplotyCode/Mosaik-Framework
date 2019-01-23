@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.spotycode.mosaik</groupId>
+    <groupId>io.github.splotycode.mosaik</groupId>
     <artifactId>Mosaik-Framework</artifactId>
     <packaging>pom</packaging>
     <version>2.1.1</version>
@@ -129,7 +129,6 @@
                         <version>${mosaik.plugin.javadoc}</version>
                         <configuration>
                             <failOnError>false</failOnError>
-                            <reportOutputDirectory>${basedir}/docs/</reportOutputDirectory>
                         </configuration>
                         <executions>
                             <execution>
