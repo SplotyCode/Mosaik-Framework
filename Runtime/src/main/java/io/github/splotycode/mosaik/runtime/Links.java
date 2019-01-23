@@ -1,12 +1,12 @@
 package io.github.splotycode.mosaik.runtime;
 
 import io.github.splotycode.mosaik.argparser.IArgParser;
+import io.github.splotycode.mosaik.domparsing.parsing.ParsingManager;
 import io.github.splotycode.mosaik.runtime.application.IApplicationManager;
-import io.github.splotycode.mosaik.runtime.parsing.ParsingManager;
 import io.github.splotycode.mosaik.runtime.pathmanager.PathManager;
+import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.runtime.startup.IStartUpManager;
 import io.github.splotycode.mosaik.runtime.startup.envirement.StartUpEnvironmentChanger;
-import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 
 public final class Links {

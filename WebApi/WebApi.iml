@@ -30,10 +30,13 @@
     <orderEntry type="module" module-name="Util" />
     <orderEntry type="library" name="Maven: net.jodah:typetools:0.6.0" level="project" />
     <orderEntry type="module" module-name="IUI" />
+    <orderEntry type="module" module-name="DomParsing" />
+    <orderEntry type="library" name="Maven: io.github.spotycode.mosaik:Util:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: io.github.spotycode.mosaik:Annotations:2.1.1" level="project" />
     <orderEntry type="module" module-name="AnnotationProcessing" />
     <orderEntry type="module" module-name="Annotations" />
     <orderEntry type="module" module-name="ArgParser" />
-    <orderEntry type="module" module-name="DomParsing" />
+    <orderEntry type="library" name="Maven: io.github.splotycode.mosaik:DomParsing:2.1.0-Dev" level="project" />
     <orderEntry type="module" module-name="ValueTransformer" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.20" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />

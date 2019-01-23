@@ -65,6 +65,11 @@
             <artifactId>ArgParser</artifactId>
             <version>2.1.0-Dev</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.spotycode.mosaik</groupId>
+            <artifactId>DomParsing</artifactId>
+            <version>2.1.1</version>
+        </dependency>
     </dependencies>
 
 
