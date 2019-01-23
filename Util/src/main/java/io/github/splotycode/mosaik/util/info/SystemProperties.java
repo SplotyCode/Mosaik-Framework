@@ -10,7 +10,7 @@ public final class SystemProperties {
     private static Cache<File> userHome = DefaultCaches.getNormalValueResolverCache(cache -> getUserHome0());
     private static Cache<String> lineSeparator = DefaultCaches.getNormalValueResolverCache(cache -> getLineSeparator0());
     private static Cache<File> javaHome = DefaultCaches.getNormalValueResolverCache(cache -> getJavaHome0());
-    private static Cache<File> userName = DefaultCaches.getNormalValueResolverCache(cache -> getUserHome0());
+    private static Cache<String> userName = DefaultCaches.getNormalValueResolverCache(cache -> getUserName0());
     private static Cache<File> workingDirectory = DefaultCaches.getNormalValueResolverCache(cache -> getWorkingDirectory0());
 
 
@@ -42,7 +42,7 @@ public final class SystemProperties {
         return System.getProperty("user.name");
     }
 
-    public static File getUserName() {
+    public static String getUserName() {
         return userName.getValue();
     }
 
