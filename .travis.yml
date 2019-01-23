@@ -16,29 +16,28 @@ jobs:
           -v '\[')
       deploy:
         provider: releases
-          api_key:
-            secure: DIa6r0fSYdL17vcWX1F1klttL4PfRWbxYiTZL0bt/AEFEeBbJyEO079Wi5lEwDU69nreX1ZzpsVB6Pps4yosqzBQxLTTw2FJwgpFjbzGTE9MdIj0R+sqa4aU4nMzqo47FFcregfRGqd3a/OHnUezLwZ6TIUD2iYR1dNl3n2ybf9lXc3DwYFW9olpDpJnVqZdfaWkfrHyKWErnrXGjnbML/7z6FAPQQNMEtM/w9fS3XO3aaAb37/R8V8yMCETv3sErUubopAtvk2vtRfgJ5Pnpgrb9LxTLw10DNq2qeVIeKuhrvbISShXxs/HH4XJ5BsMkrUsDkhNqiSWrMzBelTSHPCbLhtZH0siTZaPDkEoI0bN/k3uJ/Wr9fhZPEDZgTScL029C6eV4gyQMZNgmYmPt/HCvdNShWwDdRSJj5edhnZvrczgFVPOobg1KGVZHg+kPu6racCUFXqSXS6ji3TiVXBvJCyjpzFDIJZ5qf0Vnm0TLvc0QizXJhNZx3NlJOn6tmUzSVkzyNN6culI2R1so9t+347YHSWGcZaby0QaNpKdgItuaf1eDhOvoW3xbooXoFP7+kAAaqHHZf5tDo76LSi1XhHLDcqIdq0RtmXM7YlBxGoEyB6eTkTiuqQnvu+o6kWeTVyKFXGWsRoTHg/7RUG77ZScGOEJKj5Lj1eOtC8=
-          file:
-            - Mosaik-All/target/Mosaik-Framework.jar
-            - IUI/target/IUI-$project_version.jar
-            - AnnotationProcessing/target/AnnotationProcessing-$project_version.jar
-            - Annotations/target/Annotations-$project_version.jar
-            - ArgParser/target/ArgParser-$project_version.jar
-            - ArgParser-Impl/target/ArgParser-Impl-$project_version.jar
-            - Automatisation/target/Automatisation-$project_version.jar
-            - Console/target/Console-$project_version.jar
-            - Database/target/Database-$project_version.jar
-            - DomParsing/target/DomParsing-$project_version.jar
-            - Netty/target/Netty-$project_version.jar
-            - Runtime/target/Runtime-$project_version.jar
-            - Util/target/Util-$project_version.jar
-            - ValueTransformer/target/ValueTransformer-$project_version.jar
-            - WebApi/target/WebApi-$project_version.jar
-          skip_cleanup: true
-          name: $project_version
-          on:
-            repo: SplotyCode/Mosaik-Framework
-            branch: master
+        api_key: ${env.GITHUB_TOKEN}
+        file:
+          - Mosaik-All/target/Mosaik-Framework.jar
+          - IUI/target/IUI-$project_version.jar
+          - AnnotationProcessing/target/AnnotationProcessing-$project_version.jar
+          - Annotations/target/Annotations-$project_version.jar
+          - ArgParser/target/ArgParser-$project_version.jar
+          - ArgParser-Impl/target/ArgParser-Impl-$project_version.jar
+          - Automatisation/target/Automatisation-$project_version.jar
+          - Console/target/Console-$project_version.jar
+          - Database/target/Database-$project_version.jar
+          - DomParsing/target/DomParsing-$project_version.jar
+          - Netty/target/Netty-$project_version.jar
+          - Runtime/target/Runtime-$project_version.jar
+          - Util/target/Util-$project_version.jar
+          - ValueTransformer/target/ValueTransformer-$project_version.jar
+          - WebApi/target/WebApi-$project_version.jar
+        skip_cleanup: true
+        name: $project_version
+        on:
+          repo: SplotyCode/Mosaik-Framework
+          branch: master
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
