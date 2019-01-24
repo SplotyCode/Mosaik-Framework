@@ -15,6 +15,17 @@ import java.util.Set;
 
 public final class PathUtil {
 
+    public static String getFileNameWithoutEx(File file) {
+        return getFileNameWithoutEx(file.getName());
+    }
+
+    public static String getFileNameWithoutEx(String path) {
+        if (path == null || path.length() == 0) {
+            return "";
+        }
+        return path.replaceFirst("[.][^.]+$", "");
+    }
+
     public static String getFileName(String path) {
         if (path == null || path.length() == 0) {
             return "";
