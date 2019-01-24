@@ -30,6 +30,9 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
                 return (T) transformer.transform(input);
             }
         }
+        if (String.class.isAssignableFrom(result)) {
+            return (T) input.toString();
+        }
         return null;
     }
 
