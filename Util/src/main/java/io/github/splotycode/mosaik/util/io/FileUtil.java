@@ -308,6 +308,10 @@ public final class FileUtil {
     private static void writeToFile(File file, byte[] text, boolean append) throws IOException {
         createParentDirs(file);
 
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+
         try (OutputStream stream = new FileOutputStream(file, append)) {
             stream.write(text, 0, text.length);
         }
