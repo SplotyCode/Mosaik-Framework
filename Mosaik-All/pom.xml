@@ -177,6 +177,7 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>ArgParser-Impl</artifactId>

@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>Runtime</artifactId>
+            <artifactId>Util</artifactId>
             <version>2.1.0-Dev</version>
         </dependency>
     </dependencies>

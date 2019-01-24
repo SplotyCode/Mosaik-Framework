@@ -27,6 +27,7 @@
         <module>AnnotationProcessing</module>
         <module>Mosaik-All</module>
         <module>ArgParser-Impl</module>
+        <module>DomParsing-Impl</module>
     </modules>
 
     <properties>

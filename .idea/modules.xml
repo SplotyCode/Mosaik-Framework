@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/Console/Console.iml" filepath="$PROJECT_DIR$/Console/Console.iml" />
       <module fileurl="file://$PROJECT_DIR$/Database/Database.iml" filepath="$PROJECT_DIR$/Database/Database.iml" />
       <module fileurl="file://$PROJECT_DIR$/DomParsing/DomParsing.iml" filepath="$PROJECT_DIR$/DomParsing/DomParsing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DomParsing-Impl/DomParsing-Impl.iml" filepath="$PROJECT_DIR$/DomParsing-Impl/DomParsing-Impl.iml" />
       <module fileurl="file://$PROJECT_DIR$/Examples/firstapp/Examle-FirstApp.iml" filepath="$PROJECT_DIR$/Examples/firstapp/Examle-FirstApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/Examples/papa/Examle-Papa.iml" filepath="$PROJECT_DIR$/Examples/papa/Examle-Papa.iml" />
       <module fileurl="file://$PROJECT_DIR$/GameEngine/GameEngine.iml" filepath="$PROJECT_DIR$/GameEngine/GameEngine.iml" />

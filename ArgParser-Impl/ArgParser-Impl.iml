@@ -19,6 +19,7 @@
     <orderEntry type="module" module-name="ValueTransformer" />
     <orderEntry type="module" module-name="Runtime" />
     <orderEntry type="module" module-name="IUI" />
+    <orderEntry type="module" module-name="DomParsing" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.20" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.25" level="project" />
