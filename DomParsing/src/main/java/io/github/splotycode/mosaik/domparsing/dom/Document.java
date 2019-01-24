@@ -14,4 +14,8 @@ public interface Document {
 
     Node getNode(String name);
 
+    void addNode(Node node);
+
+    void installKeyValue(Node key, Node value);
+
 }

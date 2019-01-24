@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.dom;
 
 import io.github.splotycode.mosaik.domparsing.dom.attribute.Attribute;
 import io.github.splotycode.mosaik.domparsing.dom.Node;
+import io.github.splotycode.mosaik.util.exception.MethodNotSupportedExcpetion;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -35,5 +36,10 @@ public class ValueNode implements Node {
     @Override
     public Collection<Node> childs() {
         return Collections.EMPTY_SET;
+    }
+
+    @Override
+    public void addChild(Node node) {
+        throw new MethodNotSupportedExcpetion();
     }
 }

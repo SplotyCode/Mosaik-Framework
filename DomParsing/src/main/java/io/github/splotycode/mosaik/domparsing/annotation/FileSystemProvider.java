@@ -4,6 +4,8 @@ import java.io.File;
 
 public interface FileSystemProvider {
 
-    <P extends DomResolver> FileSystem<P> provide(File root, Class<P> clazz);
+    <P> FileSystem<P> provide(File root, Class<P> clazz);
+
+    <P> FileSystem<P> provide(Class<P> clazz);
 
 }

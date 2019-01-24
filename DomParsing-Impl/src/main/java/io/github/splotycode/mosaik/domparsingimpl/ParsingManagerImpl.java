@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.domparsingimpl;
 
+import io.github.splotycode.mosaik.util.io.FileUtil;
 import lombok.Getter;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingHandle;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingManager;
@@ -23,8 +24,18 @@ public class ParsingManagerImpl implements ParsingManager {
     @Getter private List<ParsingHandle> handles = new ArrayList<>();
 
     @Override
-    public Document parseDocument(DomInput input, ParsingHandle handle) {
+    public <P extends Document> P parseDocument(DomInput input, ParsingHandle<P> handle) {
         return handle.getParser(input).parse(input);
+    }
+
+    @Override
+    public <P extends Document> P parseDocument(DomInput input, Class<? extends ParsingHandle<P>> handleClazz) {
+        for (ParsingHandle handle : handles) {
+            if (handle.getClass() == handleClazz) {
+                return parseDocument(input, (ParsingHandle<P>) handle);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -32,6 +43,16 @@ public class ParsingManagerImpl implements ParsingManager {
         DomInput input = new DomFileInput(file);
         ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file.getName(), cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
         return parseDocument(input, handle);
+    }
+
+    @Override
+    public <P extends Document> P parseDocument(File file, ParsingHandle<P> handle) {
+        return parseDocument(new DomFileInput(file), handle);
+    }
+
+    @Override
+    public <P extends Document> P parseDocument(File file, Class<? extends ParsingHandle<P>> handle) {
+        return parseDocument(new DomFileInput(file), handle);
     }
 
     @Override
@@ -49,11 +70,57 @@ public class ParsingManagerImpl implements ParsingManager {
     }
 
     @Override
+    public <P extends Document> P parseDocument(URL url, ParsingHandle<P> handle) {
+        return parseDocument(new DomUrlInput(url), handle);
+    }
+
+    @Override
+    public <P extends Document> P parseDocument(URL url, Class<? extends ParsingHandle<P>> handle) {
+        return parseDocument(new DomUrlInput(url), handle);
+    }
+
+    @Override
     public Document parseResourceFile(String file) {
         DomInput input = new DomStreamInput(ParsingManagerImpl.class.getResourceAsStream(file));
         ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file, cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
         return parseDocument(input, handle);
     }
+
+    @Override
+    public <P extends Document> P parseDocument(String file, ParsingHandle<P> handle) {
+        return parseDocument(new DomStreamInput(ParsingManagerImpl.class.getResourceAsStream(file)), handle);
+    }
+
+    @Override
+    public <P extends Document> P parseDocument(String file, Class<? extends ParsingHandle<P>> handle) {
+        return parseDocument(new DomStreamInput(ParsingManagerImpl.class.getResourceAsStream(file)), handle);
+    }
+
+    @Override
+    public <D extends Document> String writeToText(D document, ParsingHandle<D> handle) {
+        return handle.getWriter().toText(document);
+    }
+
+    @Override
+    public <D extends Document> String writeToText(D document, Class<? extends ParsingHandle> handleClazz) {
+        for (ParsingHandle handle : handles) {
+            if (handle.getClass() == handleClazz) {
+                return writeToText(document, (ParsingHandle<D>) handle);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public <D extends Document> void writeToFile(D document, File file, ParsingHandle<D> handle) throws IOException {
+        FileUtil.writeToFile(file, writeToText(document, handle));
+    }
+
+    @Override
+    public void writeToFile(Document document, File file, Class<? extends ParsingHandle> handleClazz) throws IOException {
+        FileUtil.writeToFile(file, writeToText(document, handleClazz));
+    }
+
 
     @Override
     public Collection<ParsingHandle> getList() {

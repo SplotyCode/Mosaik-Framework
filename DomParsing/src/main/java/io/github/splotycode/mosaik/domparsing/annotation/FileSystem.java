@@ -1,19 +1,19 @@
 package io.github.splotycode.mosaik.domparsing.annotation;
 
-import io.github.splotycode.mosaik.util.io.FileUtil;
-
 import java.io.File;
+import java.util.Collection;
 
-public class FileSystem<D extends DomResolver> {
+public interface FileSystem<D> {
 
-    private File root;
-    private Class<D> clazz;
+    File getRoot();
+    Class<D> getEntryClass();
 
-    public FileSystem(File root, Class<D> clazz) {
-        FileUtil.createDirectory(root);
-        this.root = root;
-        this.clazz = clazz;
-    }
+    D getEntry(String key);
 
-    public D
+    D getEntry(String fileKey, D def);
+
+    void putEntry(String key, D entry);
+
+    Collection<D> getEntries();
+
 }

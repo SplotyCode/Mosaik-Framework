@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue;
 import io.github.splotycode.mosaik.domparsing.parsing.DomParser;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingHandle;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
+import io.github.splotycode.mosaik.domparsing.writing.DomWriter;
 
 public class KeyValueHandle implements ParsingHandle {
     @Override
@@ -18,5 +19,10 @@ public class KeyValueHandle implements ParsingHandle {
     @Override
     public DomParser getParser(DomInput input) {
         return new KeyValueParser();
+    }
+
+    @Override
+    public DomWriter getWriter() {
+        return null;
     }
 }

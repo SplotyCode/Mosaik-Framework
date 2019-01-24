@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.domparsing.parsing;
 
+import io.github.splotycode.mosaik.domparsing.dom.Document;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
-import io.github.splotycode.mosaik.runtime.storage.Document;
 
 import java.util.List;
 

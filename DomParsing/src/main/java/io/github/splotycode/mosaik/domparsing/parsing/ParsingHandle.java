@@ -1,12 +1,16 @@
 package io.github.splotycode.mosaik.domparsing.parsing;
 
+import io.github.splotycode.mosaik.domparsing.dom.Document;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
+import io.github.splotycode.mosaik.domparsing.writing.DomWriter;
 
-public interface ParsingHandle {
+public interface ParsingHandle<O extends Document> {
 
     String[] getFileTypes();
     String[] getMimeTypes();
 
-    DomParser getParser(DomInput input);
+    DomParser<O, ?> getParser(DomInput input);
+
+    DomWriter<O> getWriter();
 
 }

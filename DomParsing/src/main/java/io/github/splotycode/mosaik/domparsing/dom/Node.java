@@ -13,4 +13,6 @@ public interface Node {
     Node parent();
     Collection<Node> childs();
 
+    void addChild(Node node);
+
 }

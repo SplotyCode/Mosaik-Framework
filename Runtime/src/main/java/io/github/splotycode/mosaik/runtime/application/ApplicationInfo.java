@@ -1,9 +1,9 @@
 package io.github.splotycode.mosaik.runtime.application;
 
+import io.github.splotycode.mosaik.domparsing.dom.Document;
 import io.github.splotycode.mosaik.runtime.LinkBase;
-import lombok.Getter;
-import io.github.splotycode.mosaik.runtime.storage.Document;
 import io.github.splotycode.mosaik.runtime.Links;
+import lombok.Getter;
 
 public class ApplicationInfo {
 

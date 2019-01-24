@@ -31,4 +31,16 @@ public class KeyValueDocument implements Document {
         if (key == null) return null;
         return key.childs().iterator().next();
     }
+
+    @Override
+    public void addNode(Node node) {
+        node.addChild(node);
+    }
+
+    @Override
+    public void installKeyValue(Node key, Node value) {
+        key.addChild(value);
+        addNode(key);
+    }
+
 }

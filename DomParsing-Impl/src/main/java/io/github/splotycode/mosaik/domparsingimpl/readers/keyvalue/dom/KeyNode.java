@@ -38,4 +38,9 @@ public class KeyNode implements Node {
     public Collection<Node> childs() {
         return values;
     }
+
+    @Override
+    public void addChild(Node node) {
+        values.add(node);
+    }
 }
