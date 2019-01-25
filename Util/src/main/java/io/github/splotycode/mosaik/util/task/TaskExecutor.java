@@ -96,7 +96,7 @@ public class TaskExecutor extends Thread {
         }
     }
 
-    protected void runTask(Task task) {
+    public void runTask(Task task) {
         task.onInstall(this);
         long id = currentID.getAndIncrement();
         runningTasks.put(id, task);
