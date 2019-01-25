@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.task.types;
 
+import io.github.splotycode.mosaik.util.task.TaskExecutor;
 import io.github.splotycode.mosaik.util.task.TaskType;
 import lombok.Getter;
 
@@ -22,7 +23,8 @@ public class RepeatableTask extends AbstractTask {
     }
 
     @Override
-    public void onInstall() {
+    public void onInstall(TaskExecutor executor) {
         reset();
     }
+
 }
