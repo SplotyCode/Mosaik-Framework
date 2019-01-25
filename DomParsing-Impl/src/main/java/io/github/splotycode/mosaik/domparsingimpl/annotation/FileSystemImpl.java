@@ -25,8 +25,8 @@ public class FileSystemImpl<D> implements FileSystem<D> {
 
     private static Map<String, EntryData> data = new HashMap<>();
 
-    @Getter private File root;
-    @Getter private Class<D> entryClass;
+    @Getter protected File root;
+    @Getter protected Class<D> entryClass;
 
     public FileSystemImpl(Class<D> entryClass) {
         this(new File(LinkBase.getInstance().getLink(Links.PATH_MANAGER).getMainDirectory(), "save/" + entryClass.getAnnotation(DomEntry.class).value() + "/"), entryClass);
