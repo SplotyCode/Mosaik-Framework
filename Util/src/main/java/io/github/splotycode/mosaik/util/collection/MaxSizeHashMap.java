@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.util.cache;
+package io.github.splotycode.mosaik.util.collection;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

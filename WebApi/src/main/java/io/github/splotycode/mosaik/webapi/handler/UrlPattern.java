@@ -2,7 +2,7 @@ package io.github.splotycode.mosaik.webapi.handler;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import io.github.splotycode.mosaik.util.cache.MaxSizeHashMap;
+import io.github.splotycode.mosaik.util.collection.MaxSizeHashMap;
 import io.github.splotycode.mosaik.webapi.handler.anotation.IllegalHandlerException;
 
 import java.util.*;

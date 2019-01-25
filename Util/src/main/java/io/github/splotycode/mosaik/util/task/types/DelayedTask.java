@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.task.types;
 
+import io.github.splotycode.mosaik.util.task.TaskExecutor;
 import io.github.splotycode.mosaik.util.task.TaskType;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +30,7 @@ public class DelayedTask extends AbstractTask {
     }
 
     @Override
-    public void onInstall() {
+    public void onInstall(TaskExecutor executor) {
         start = System.currentTimeMillis();
     }
 }
