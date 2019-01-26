@@ -16,9 +16,9 @@ public class ApplicationInfo {
    private static String implementingName = null;
 
    public static String getImplementingName() {
-       if (implementingName != null) return implementingName;
+       if (implementingName != null && !LinkBase.getInstance().getLink(Links.STARTUP_MANAGER).running()) return implementingName;
 
-       implementingName = System.getProperty("mosaik.appname");
+       implementingName = System.getenv("mosaik.appname");
        if (implementingName == null) {
            Application app = LinkBase.getApplicationManager().getApplications().iterator().next();
            if (app == null) return null;
