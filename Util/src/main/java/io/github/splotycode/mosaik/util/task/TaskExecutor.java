@@ -3,7 +3,9 @@ package io.github.splotycode.mosaik.util.task;
 import io.github.splotycode.mosaik.util.task.types.CompressingTask;
 import io.github.splotycode.mosaik.util.task.types.DelayedTask;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
+import lombok.Getter;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -13,8 +15,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TaskExecutor extends Thread {
 
     private ConcurrentHashMap<Long, Task> runningTasks = new ConcurrentHashMap<>();
-    private ExecutorService service;
+    @Getter private ExecutorService service;
     private AtomicLong currentID = new AtomicLong();
+    private boolean interupt = false;
     private ConcurrentHashMap<Future, Task> futures = new ConcurrentHashMap<>();
 
     public TaskExecutor(ExecutorService service) {
@@ -25,6 +28,7 @@ public class TaskExecutor extends Thread {
     @Override
     public void run() {
         while (true) {
+            if (interupt) break;
             for (Map.Entry<Future, Task> pair : futures.entrySet()) {
                 Future future = pair.getKey();
                 if (future.isCancelled() || future.isDone()) {
@@ -86,6 +90,14 @@ public class TaskExecutor extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void interruptQueue() {
+        interupt = true;
+    }
+
+    public Collection<Task> getRunningTasks() {
+        return runningTasks.values();
     }
 
     private void exec(Task task) {

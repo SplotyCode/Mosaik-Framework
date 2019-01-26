@@ -312,8 +312,8 @@ public final class FileUtil {
             file.createNewFile();
         }
 
-        try (OutputStream stream = new FileOutputStream(file, append)) {
-            stream.write(text, 0, text.length);
+        try (FileOutputStream stream = new FileOutputStream(file, append)) {
+            stream.write(text);
         }
     }
 
