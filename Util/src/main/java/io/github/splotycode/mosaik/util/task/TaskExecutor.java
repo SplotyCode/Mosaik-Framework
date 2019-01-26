@@ -66,16 +66,25 @@ public class TaskExecutor extends Thread {
                             break;
                         } case COMPRESSING: {
                             CompressingTask cTask = (CompressingTask) task;
-                            synchronized (cTask.getCurrentWait()) {
-                                long wait = cTask.getCurrentWait().get();
-                                if (wait != -1) {
-                                    long end = wait + cTask.getWaitDelay();
-                                    long delay = end - System.currentTimeMillis();
-                                    if (delay > 0) {
-                                        minimumWait = Math.min(minimumWait, delay);
-                                    } else {
-                                        exec(task);
-                                        cTask.getCurrentWait().set(-1);
+                            synchronized (cTask.getFirstWait()) {
+                                synchronized (cTask.getCurrentWait()) {
+                                    long wait = cTask.getCurrentWait().get();
+                                    if (wait != -1) {
+                                        long end = wait + cTask.getWaitDelay();
+                                        long delay = end - System.currentTimeMillis();
+                                        if (delay > 0) {
+                                            if (cTask.getFirstWait().get() + cTask.getMaxDelay() >= System.currentTimeMillis()) {
+                                                exec(task);
+                                                cTask.getCurrentWait().set(-1);
+                                                cTask.getFirstWait().set(-1);
+                                            } else {
+                                                minimumWait = Math.min(minimumWait, delay);
+                                            }
+                                        } else {
+                                            exec(task);
+                                            cTask.getCurrentWait().set(-1);
+                                            cTask.getFirstWait().set(-1);
+                                        }
                                     }
                                 }
                             }

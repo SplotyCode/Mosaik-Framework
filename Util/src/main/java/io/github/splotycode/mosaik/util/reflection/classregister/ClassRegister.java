@@ -53,7 +53,7 @@ public interface ClassRegister<T> {
 
     default void registerAll(ClassCollector collector) {
         for (Class clazz : collector.collectAll()) {
-            if (getObjectClass().isAssignableFrom(clazz )) {
+            if (getObjectClass().isAssignableFrom(clazz)) {
                 register(clazz);
             } else {
                 logger.warn(clazz.getName() + " can not be registered because collector type is: " + getObjectClass().getName());
