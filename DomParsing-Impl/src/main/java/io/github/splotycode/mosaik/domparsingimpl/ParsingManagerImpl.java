@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.domparsingimpl;
 
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.io.FileUtil;
 import lombok.Getter;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingHandle;
@@ -31,17 +32,17 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public <P extends Document> P parseDocument(DomInput input, Class<? extends ParsingHandle<P>> handleClazz) {
         for (ParsingHandle handle : handles) {
-            if (handle.getClass() == handleClazz) {
+            if (handleClazz.isInstance(handle.getClass())) {
                 return parseDocument(input, (ParsingHandle<P>) handle);
             }
         }
-        return null;
+        throw new NoHandleFoundException();
     }
 
     @Override
     public Document parseDocument(File file) {
         DomInput input = new DomFileInput(file);
-        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file.getName(), cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
+        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file.getName(), cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFoundException::new);
         return parseDocument(input, handle);
     }
 
@@ -65,7 +66,7 @@ public class ParsingManagerImpl implements ParsingManager {
                 e.printStackTrace();
             }
             return false;
-        }).findFirst().orElseThrow(NoHandleFound::new);
+        }).findFirst().orElseThrow(NoHandleFoundException::new);
         return parseDocument(input, handle);
     }
 
@@ -82,7 +83,7 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public Document parseResourceFile(String file) {
         DomInput input = new DomStreamInput(ParsingManagerImpl.class.getResourceAsStream(file));
-        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file, cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
+        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file, cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFoundException::new);
         return parseDocument(input, handle);
     }
 
@@ -104,11 +105,11 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public <D extends Document> String writeToText(D document, Class<? extends ParsingHandle> handleClazz) {
         for (ParsingHandle handle : handles) {
-            if (handle.getClass() == handleClazz) {
+            if (handleClazz.isAssignableFrom(handle.getClass())) {
                 return writeToText(document, (ParsingHandle<D>) handle);
             }
         }
-        return null;
+        throw new NoHandleFoundException(handleClazz.getName() + " is not in " + StringUtil.join(handles, obj -> obj.getClass().getName(), ", "));
     }
 
     @Override
@@ -132,24 +133,24 @@ public class ParsingManagerImpl implements ParsingManager {
         return ParsingHandle.class;
     }
 
-    public static class NoHandleFound extends RuntimeException {
+    public static class NoHandleFoundException extends RuntimeException {
 
-        public NoHandleFound() {
+        public NoHandleFoundException() {
         }
 
-        public NoHandleFound(String s) {
+        public NoHandleFoundException(String s) {
             super(s);
         }
 
-        public NoHandleFound(String s, Throwable throwable) {
+        public NoHandleFoundException(String s, Throwable throwable) {
             super(s, throwable);
         }
 
-        public NoHandleFound(Throwable throwable) {
+        public NoHandleFoundException(Throwable throwable) {
             super(throwable);
         }
 
-        public NoHandleFound(String s, Throwable throwable, boolean b, boolean b1) {
+        public NoHandleFoundException(String s, Throwable throwable, boolean b, boolean b1) {
             super(s, throwable, b, b1);
         }
     }
