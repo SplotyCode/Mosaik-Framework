@@ -5,7 +5,7 @@
     <parent>
         <artifactId>Mosaik-Framework</artifactId>
         <groupId>io.github.splotycode.mosaik</groupId>
-        <version>2.2</version>
+        <version>2.2.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -80,100 +80,140 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${mosaik.guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.jodah</groupId>
+            <artifactId>typetools</artifactId>
+            <version>${mosaik.typetools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${mosaik.netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-core</artifactId>
+            <version>${mosaik.undertow.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-servlet</artifactId>
+            <version>${mosaik.undertow.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-websockets-jsr</artifactId>
+            <version>${mosaik.undertow.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>${mosaik.mongo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${mosaik.reflections.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Annotations</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Util</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>AnnotationProcessing</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Runtime</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>ArgParser</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Automatisation</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Console</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Database</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>DomParsing</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>IUI</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Netty</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>StartUp</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>ValueTransformer</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>WebApi</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -181,7 +221,7 @@
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>ArgParser-Impl</artifactId>
-            <version>2.2</version>
+            <version>2.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
