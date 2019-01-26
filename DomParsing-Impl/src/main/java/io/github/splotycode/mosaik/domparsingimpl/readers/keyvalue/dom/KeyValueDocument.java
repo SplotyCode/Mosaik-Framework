@@ -34,7 +34,7 @@ public class KeyValueDocument implements Document {
 
     @Override
     public void addNode(Node node) {
-        node.addChild(node);
+        nodes.add(node);
     }
 
     @Override
