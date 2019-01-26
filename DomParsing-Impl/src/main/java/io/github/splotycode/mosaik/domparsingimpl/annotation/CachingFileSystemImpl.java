@@ -10,19 +10,21 @@ import java.util.*;
 public class CachingFileSystemImpl<D> extends FileSystemImpl<D> {
 
     private Map<String, CachedFile> files = new HashMap<>();
-    private final long compressDelay;
+    private final long compressDelay, maxCompress;
     private final TaskExecutor taskExecutor;
 
-    public CachingFileSystemImpl(Class<D> entryClass, long compressDelay, TaskExecutor taskExecutor) {
+    public CachingFileSystemImpl(Class<D> entryClass, long compressDelay, long maxCompress, TaskExecutor taskExecutor) {
         super(entryClass);
         this.compressDelay = compressDelay;
+        this.maxCompress = maxCompress;
         this.taskExecutor = taskExecutor;
         setup();
     }
 
-    public CachingFileSystemImpl(File root, Class<D> entryClass, long compressDelay, TaskExecutor taskExecutor) {
+    public CachingFileSystemImpl(File root, Class<D> entryClass, long compressDelay, long maxCompress, TaskExecutor taskExecutor) {
         super(root, entryClass);
         this.compressDelay = compressDelay;
+        this.maxCompress = maxCompress;
         this.taskExecutor = taskExecutor;
         setup();
     }
@@ -42,7 +44,19 @@ public class CachingFileSystemImpl<D> extends FileSystemImpl<D> {
             file = new CachedFile(new File(root, entryKey + ".kv"), entry);
             files.put(entryKey, file);
             taskExecutor.runTask(file);
+        } else if (file.deleted) {
+            file.deleted = false;
+            file.obj = entry;
+        } else if (file.obj != entry){
+            file.obj = entry;
         }
+        file.requestUpdate();
+    }
+
+    @Override
+    public void deleteEntry(String key) {
+        CachedFile file = files.get(key);
+        file.deleted = true;
         file.requestUpdate();
     }
 
@@ -64,21 +78,32 @@ public class CachingFileSystemImpl<D> extends FileSystemImpl<D> {
 
         private D obj;
         private String name;
+        private boolean deleted = false;
 
         public CachedFile(File file) {
-            super(compressDelay);
+            super(compressDelay, maxCompress);
             name = PathUtil.getFileNameWithoutEx(file);
         }
 
         public CachedFile(File file, D obj) {
-            super(compressDelay);
+            super(compressDelay, maxCompress);
             this.obj = obj;
             name = PathUtil.getFileNameWithoutEx(file);
         }
 
         @Override
+        public boolean execOnShutdown() {
+            return true;
+        }
+
+        @Override
         public void run() {
-            CachingFileSystemImpl.super.putEntry(name, getObj());
+            if (deleted) {
+                deleted = false;
+                CachingFileSystemImpl.super.deleteEntry(name);
+            } else {
+                CachingFileSystemImpl.super.putEntry(name, getObj());
+            }
         }
 
         public D getObj() {
@@ -87,5 +112,6 @@ public class CachingFileSystemImpl<D> extends FileSystemImpl<D> {
             }
             return obj;
         }
+
     }
 }
