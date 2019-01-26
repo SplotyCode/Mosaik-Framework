@@ -22,12 +22,12 @@ public interface WebApplicationType extends ApplicationType {
 
     ClassCollector PARAMETER_RESOLVER_COLLECTOR = ClassCollector.newInstance()
                                                     .setNoDisableds(true)
-                                                    .setInPackage("me.david.webapi.handler.anotation.parameter.defaultresolver")
+                                                    .setInPackage("io.github.splotycode.mosaik.webapi.handler.anotation.parameter.defaultresolver")
                                                     .setNeedAssignable(ParameterResolver.class);
 
     ClassCollector CONTENT_HANDLER_COLLECTOR = ClassCollector.newInstance()
                                                     .setNoDisableds(true)
-                                                    .setInPackage("me.david.webapi.request.body")
+                                                    .setInPackage("io.github.splotycode.mosaik.webapi.request.body")
                                                     .setNeedAssignable(RequestContentHandler.class)
                                                     .setOnlyClasses(true);
 
@@ -41,7 +41,7 @@ public interface WebApplicationType extends ApplicationType {
         getDataFactory().putData(CONTENT_HANDLER_REGISTER, new ListClassRegister<>(new ArrayList<>(), RequestContentHandler.class));
         getDataFactory().putData(ERROR_HANDLER, new ErrorHandler());
 
-        getContentHandlerRegister().registerAll( CONTENT_HANDLER_COLLECTOR);
+        getContentHandlerRegister().registerAll(CONTENT_HANDLER_COLLECTOR);
         getParameterResolveRegister().registerAll(PARAMETER_RESOLVER_COLLECTOR);
         getLogger().info("Registered " + getParameterResolveRegister().getAll().size() + " default Parameter Resolvers");
     }
