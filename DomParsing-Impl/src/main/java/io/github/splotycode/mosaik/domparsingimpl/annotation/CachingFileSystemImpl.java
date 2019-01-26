@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.domparsingimpl.annotation;
 
+import io.github.splotycode.mosaik.runtime.application.Application;
 import io.github.splotycode.mosaik.util.io.PathUtil;
 import io.github.splotycode.mosaik.util.task.TaskExecutor;
 import io.github.splotycode.mosaik.util.task.types.CompressingTask;
@@ -30,6 +31,7 @@ public class CachingFileSystemImpl<D> extends FileSystemImpl<D> {
     }
 
     private void setup() {
+        Application.getGlobalShutdownManager().addLastTaskExecutor(taskExecutor);
         for (File file : root.listFiles()) {
             CachedFile cachedFile = new CachedFile(file);
             files.put(PathUtil.getFileNameWithoutEx(file), cachedFile);
