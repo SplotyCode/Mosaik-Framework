@@ -2,23 +2,23 @@ package io.github.splotycode.mosaik.startup.starttask;
 
 import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
-import io.github.splotycode.mosaik.startup.exception.FrameworkStartException;
-import lombok.Getter;
+import com.google.common.reflect.ClassPath;
 import io.github.splotycode.mosaik.annotations.AnnotationHelper;
 import io.github.splotycode.mosaik.runtime.startup.StartupTask;
 import io.github.splotycode.mosaik.runtime.startup.envirement.StartUpEnvironmentChanger;
+import io.github.splotycode.mosaik.startup.exception.FrameworkStartException;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.io.IOUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.ClassCollector;
 import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class StartTaskExecutor {
 
@@ -68,11 +68,25 @@ public class StartTaskExecutor {
         logger.info("Executing StartUp Tasks (" + run + "/" + tasks.values().size() + "): " + StringUtil.join(tasks.values(), obj -> obj.getClass().getSimpleName(), ", "));
     }
 
+    private List<ClassPath.ResourceInfo> getSippedFiles() {
+        try {
+            List<ClassPath.ResourceInfo> files = new ArrayList<>();
+            for (ClassPath.ResourceInfo resource : ClassPath.from(Thread.currentThread().getContextClassLoader()).getResources()) {
+                if (resource.getResourceName().contains("disabled_paths")) {
+                    files.add(resource);
+                }
+            }
+            return files;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
+
     public void collectSkippedPaths() {
-        Reflections reflections = new Reflections(".*", new ResourcesScanner());
-        Set<String> files = reflections.getResources(x -> x != null && x.startsWith("disabled_paths"));
-        for (String file : files) {
-            try (InputStream is = StartTaskExecutor.class.getResourceAsStream("/" + file)) {
+        List<ClassPath.ResourceInfo> files = getSippedFiles();
+        for (ClassPath.ResourceInfo file : files) {
+            try (InputStream is = file.asByteSource().openStream()) {
                 List<String> lines = IOUtil.loadLines(is);
                 for (String skippedPath : lines) {
                     ClassFinderHelper.registerSkippedPath(skippedPath);

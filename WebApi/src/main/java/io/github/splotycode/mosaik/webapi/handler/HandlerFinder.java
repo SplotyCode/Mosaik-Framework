@@ -4,6 +4,6 @@ import java.util.Collection;
 
 public interface HandlerFinder {
 
-    Collection<HttpHandler> search();
+    Collection<? extends HttpHandler> search();
 
 }
