@@ -19,13 +19,13 @@ public class FileSystemProviderImpl implements FileSystemProvider {
     }
 
     @Override
-    public <P> FileSystem<P> provideCashing(File root, Class<P> clazz, long compressDelay, TaskExecutor taskExecutor) {
-        return new CachingFileSystemImpl<>(root, clazz, compressDelay, taskExecutor);
+    public <P> FileSystem<P> provideCashing(File root, Class<P> clazz, long compressDelay, long maxCompress, TaskExecutor taskExecutor) {
+        return new CachingFileSystemImpl<>(root, clazz, compressDelay, maxCompress, taskExecutor);
     }
 
     @Override
-    public <P> FileSystem<P> provideCashing(Class<P> clazz, long compressDelay, TaskExecutor taskExecutor) {
-        return new CachingFileSystemImpl<>(clazz, compressDelay, taskExecutor);
+    public <P> FileSystem<P> provideCashing(Class<P> clazz, long compressDelay, long maxCompress, TaskExecutor taskExecutor) {
+        return new CachingFileSystemImpl<>(clazz, compressDelay, maxCompress, taskExecutor);
     }
 
 }

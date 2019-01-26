@@ -10,8 +10,8 @@ public interface FileSystemProvider {
 
     <P> FileSystem<P> provide(Class<P> clazz);
 
-    <P> FileSystem<P> provideCashing(File root, Class<P> clazz, long compressDelay, TaskExecutor taskExecutor);
+    <P> FileSystem<P> provideCashing(File root, Class<P> clazz, long compressDelay, long maxCompress, TaskExecutor taskExecutor);
 
-    <P> FileSystem<P> provideCashing(Class<P> clazz, long compressDelay, TaskExecutor taskExecutor);
+    <P> FileSystem<P> provideCashing(Class<P> clazz, long compressDelay, long maxCompress, TaskExecutor taskExecutor);
 
 }
