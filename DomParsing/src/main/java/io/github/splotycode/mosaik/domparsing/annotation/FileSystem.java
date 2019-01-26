@@ -12,6 +12,8 @@ public interface FileSystem<D> {
 
     D getEntry(String fileKey, D def);
 
+    void deleteEntry(String key);
+
     void putEntry(String key, D entry);
 
     Collection<D> getEntries();

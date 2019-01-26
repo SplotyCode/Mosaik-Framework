@@ -79,6 +79,13 @@ public class FileSystemImpl<D> implements FileSystem<D> {
     }
 
     @Override
+    public void deleteEntry(String key) {
+        data.remove(key);
+        File file = new File(root, key + ".kv");
+        FileUtil.delete(file);
+    }
+
+    @Override
     public void putEntry(String entryKey, D entry) {
         try {
             File file = new File(root, entryKey + ".kv");
