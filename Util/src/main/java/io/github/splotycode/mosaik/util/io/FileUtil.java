@@ -305,6 +305,12 @@ public final class FileUtil {
         writeToFile(file, text.getBytes(StandardCharsets.UTF_8), append);
     }
 
+    public static void writeToFile(File file, InputStream stream) throws IOException {
+        createParentDirs(file);
+
+        Files.copy(stream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    }
+
     private static void writeToFile(File file, byte[] text, boolean append) throws IOException {
         createParentDirs(file);
 
@@ -312,8 +318,8 @@ public final class FileUtil {
             file.createNewFile();
         }
 
-        try (OutputStream stream = new FileOutputStream(file, append)) {
-            stream.write(text, 0, text.length);
+        try (FileOutputStream stream = new FileOutputStream(file, append)) {
+            stream.write(text);
         }
     }
 

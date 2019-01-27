@@ -46,8 +46,8 @@ public class AnnotationHandlerFinder implements HandlerFinder {
     }
 
     @Override
-    public Collection<HttpHandler> search() {
-        List<HttpHandler> handlers = new ArrayList<>();
+    public Collection<? extends HttpHandler> search() {
+        List<AnnotationHandler> handlers = new ArrayList<>();
         try {
             for (Class<?> clazz : classCollector.collectAll()) {
                 Object obj = clazz.newInstance();
@@ -57,7 +57,7 @@ public class AnnotationHandlerFinder implements HandlerFinder {
         } catch (IllegalAccessException | InstantiationException ex) {
             ex.printStackTrace();
         }
-        logger.info("Found Annotation Handlers (" + handlers.size() + "/" + classCollector.totalResults() + "): " + StringUtil.join(handlers, handler -> handler.getClass().getSimpleName(), ", "));
+        logger.info("Found Annotation Handlers (" + handlers.size() + "/" + classCollector.totalResults() + "): " + StringUtil.join(handlers, handler -> handler.getHandlerObj().getClass().getSimpleName(), ", "));
         return handlers;
     }
 

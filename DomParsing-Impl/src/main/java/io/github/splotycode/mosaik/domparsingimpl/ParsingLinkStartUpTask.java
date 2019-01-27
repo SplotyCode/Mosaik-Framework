@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.domparsingimpl;
 
 import io.github.splotycode.mosaik.annotations.priority.Priority;
 import io.github.splotycode.mosaik.domparsingimpl.annotation.FileSystemProviderImpl;
+import io.github.splotycode.mosaik.domparsingimpl.annotation.parsing.ReflectiveParsingHelper;
 import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.KeyValueHandle;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
@@ -19,6 +20,9 @@ public class ParsingLinkStartUpTask implements StartupTask {
         LinkBase.getInstance().registerLink(Links.PARSING_MANAGER, manager);
 
         LinkBase.getInstance().registerLink(Links.PARSING_FILEPROVIDER, new FileSystemProviderImpl());
+
+        /* EntryParser for Annotation FileSystem */
+        ReflectiveParsingHelper.initialize();
     }
 
 }

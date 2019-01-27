@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.dom;
 
+import io.github.splotycode.mosaik.domparsing.dom.TextNode;
 import io.github.splotycode.mosaik.domparsing.dom.attribute.Attribute;
 import io.github.splotycode.mosaik.domparsing.dom.Node;
 import io.github.splotycode.mosaik.util.exception.MethodNotSupportedExcpetion;
@@ -8,7 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-public class ValueNode implements Node {
+public class ValueNode implements TextNode {
 
     private KeyNode parent;
     private String value;

@@ -87,6 +87,12 @@ public class StringManipulator implements ResponseManipulator {
         return this;
     }
 
+    @Override
+    public ResponseManipulator pattern(Iterable<?> objects) {
+        objects.forEach(this::pattern);
+        return this;
+    }
+
     public String getResult() {
         for (ManipulateData.ManipulatePattern pattern : manipulateData.getPatternMap().values()) {
             replacements.add(new Replacement(pattern.getStart(), pattern.getEnd(), ""));

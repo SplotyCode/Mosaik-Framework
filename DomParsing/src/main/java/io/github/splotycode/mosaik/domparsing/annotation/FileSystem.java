@@ -6,11 +6,13 @@ import java.util.Collection;
 public interface FileSystem<D> {
 
     File getRoot();
-    Class<D> getEntryClass();
+    IEntryParser getEntryParser();
 
     D getEntry(String key);
 
     D getEntry(String fileKey, D def);
+
+    void deleteEntry(String key);
 
     void putEntry(String key, D entry);
 

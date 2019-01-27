@@ -6,12 +6,12 @@ import java.io.File;
 
 public interface FileSystemProvider {
 
-    <P> FileSystem<P> provide(File root, Class<P> clazz);
+    FileSystem provide(File root, IEntryParser parser);
 
-    <P> FileSystem<P> provide(Class<P> clazz);
+    FileSystem provide(String name, IEntryParser parser);
 
-    <P> FileSystem<P> provideCashing(File root, Class<P> clazz, long compressDelay, TaskExecutor taskExecutor);
+    FileSystem provideCashing(File root, IEntryParser parser, long compressDelay, long maxCompress, TaskExecutor taskExecutor);
 
-    <P> FileSystem<P> provideCashing(Class<P> clazz, long compressDelay, TaskExecutor taskExecutor);
+    FileSystem provideCashing(String name, IEntryParser parser, long compressDelay, long maxCompress, TaskExecutor taskExecutor);
 
 }

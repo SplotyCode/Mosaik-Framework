@@ -8,6 +8,7 @@ import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolveException;
 import io.github.splotycode.mosaik.webapi.response.content.ResponseContent;
+import lombok.Getter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class AnnotationHandler implements HttpHandler {
 
-    private Object handlerObj;
+    @Getter private Object handlerObj;
     private AnnotationHandlerData global;
     private List<AnnotationHandlerData.SupAnnotationHandlerData> subs = new ArrayList<>();
 

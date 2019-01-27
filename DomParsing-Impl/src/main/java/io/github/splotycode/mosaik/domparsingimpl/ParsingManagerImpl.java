@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.domparsingimpl;
 
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.io.FileUtil;
 import lombok.Getter;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingHandle;
@@ -24,24 +25,29 @@ public class ParsingManagerImpl implements ParsingManager {
     @Getter private List<ParsingHandle> handles = new ArrayList<>();
 
     @Override
+    public <P extends ParsingHandle> P getHandleByClass(Class<P> clazz) {
+        for (ParsingHandle handle : handles) {
+            if (clazz == handle.getClass()) {
+                return (P) handle;
+            }
+        }
+        throw new NoHandleFoundException(clazz.getName() + " is not in " + StringUtil.join(handles, obj -> obj.getClass().getName(), ", "));
+    }
+
+    @Override
     public <P extends Document> P parseDocument(DomInput input, ParsingHandle<P> handle) {
         return handle.getParser(input).parse(input);
     }
 
     @Override
     public <P extends Document> P parseDocument(DomInput input, Class<? extends ParsingHandle<P>> handleClazz) {
-        for (ParsingHandle handle : handles) {
-            if (handle.getClass() == handleClazz) {
-                return parseDocument(input, (ParsingHandle<P>) handle);
-            }
-        }
-        return null;
+        return parseDocument(input, getHandleByClass(handleClazz));
     }
 
     @Override
     public Document parseDocument(File file) {
         DomInput input = new DomFileInput(file);
-        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file.getName(), cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
+        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file.getName(), cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFoundException::new);
         return parseDocument(input, handle);
     }
 
@@ -65,7 +71,7 @@ public class ParsingManagerImpl implements ParsingManager {
                 e.printStackTrace();
             }
             return false;
-        }).findFirst().orElseThrow(NoHandleFound::new);
+        }).findFirst().orElseThrow(NoHandleFoundException::new);
         return parseDocument(input, handle);
     }
 
@@ -82,7 +88,7 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public Document parseResourceFile(String file) {
         DomInput input = new DomStreamInput(ParsingManagerImpl.class.getResourceAsStream(file));
-        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file, cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFound::new);
+        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file, cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFoundException::new);
         return parseDocument(input, handle);
     }
 
@@ -102,13 +108,8 @@ public class ParsingManagerImpl implements ParsingManager {
     }
 
     @Override
-    public <D extends Document> String writeToText(D document, Class<? extends ParsingHandle> handleClazz) {
-        for (ParsingHandle handle : handles) {
-            if (handle.getClass() == handleClazz) {
-                return writeToText(document, (ParsingHandle<D>) handle);
-            }
-        }
-        return null;
+    public <D extends Document> String writeToText(D document, Class<? extends ParsingHandle<D>> handleClazz) {
+        return writeToText(document, getHandleByClass(handleClazz));
     }
 
     @Override
@@ -117,10 +118,14 @@ public class ParsingManagerImpl implements ParsingManager {
     }
 
     @Override
-    public void writeToFile(Document document, File file, Class<? extends ParsingHandle> handleClazz) throws IOException {
+    public <D extends Document> void writeToFile(D document, File file, Class<? extends ParsingHandle<D>> handleClazz) throws IOException {
         FileUtil.writeToFile(file, writeToText(document, handleClazz));
     }
 
+    @Override
+    public <D extends Document> void writeToFile(D document, File file) throws IOException {
+        writeToFile(document, file, document.getHandle());
+    }
 
     @Override
     public Collection<ParsingHandle> getList() {
@@ -132,24 +137,24 @@ public class ParsingManagerImpl implements ParsingManager {
         return ParsingHandle.class;
     }
 
-    public static class NoHandleFound extends RuntimeException {
+    public static class NoHandleFoundException extends RuntimeException {
 
-        public NoHandleFound() {
+        public NoHandleFoundException() {
         }
 
-        public NoHandleFound(String s) {
+        public NoHandleFoundException(String s) {
             super(s);
         }
 
-        public NoHandleFound(String s, Throwable throwable) {
+        public NoHandleFoundException(String s, Throwable throwable) {
             super(s, throwable);
         }
 
-        public NoHandleFound(Throwable throwable) {
+        public NoHandleFoundException(Throwable throwable) {
             super(throwable);
         }
 
-        public NoHandleFound(String s, Throwable throwable, boolean b, boolean b1) {
+        public NoHandleFoundException(String s, Throwable throwable, boolean b, boolean b1) {
             super(s, throwable, b, b1);
         }
     }

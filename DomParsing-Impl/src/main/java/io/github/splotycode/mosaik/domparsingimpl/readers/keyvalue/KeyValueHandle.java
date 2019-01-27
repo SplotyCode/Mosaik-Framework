@@ -4,8 +4,12 @@ import io.github.splotycode.mosaik.domparsing.parsing.DomParser;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingHandle;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
 import io.github.splotycode.mosaik.domparsing.writing.DomWriter;
+import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.dom.KeyValueDocument;
 
-public class KeyValueHandle implements ParsingHandle {
+public class KeyValueHandle implements ParsingHandle<KeyValueDocument> {
+
+    private KeyValueWriter writer = new KeyValueWriter();
+
     @Override
     public String[] getFileTypes() {
         return new String[] {"kv"};
@@ -23,6 +27,7 @@ public class KeyValueHandle implements ParsingHandle {
 
     @Override
     public DomWriter getWriter() {
-        return null;
+        return writer;
     }
+
 }

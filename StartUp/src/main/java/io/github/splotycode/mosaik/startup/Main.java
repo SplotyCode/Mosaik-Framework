@@ -66,11 +66,12 @@ public class Main {
 
     private Main() {
         ApplicationManager applicationManager = new ApplicationManager();
+        StartUpManager startUpManager = new StartUpManager();
 
         /* Register Links */
         LinkBase.getInstance().registerLink(Links.BOOT_DATA, bootData);
-        LinkBase.getInstance().registerLink(Links.APPLICATION_MANAGER, new ApplicationManager());
-        LinkBase.getInstance().registerLink(Links.STARTUP_MANAGER, new StartUpManager());
+        LinkBase.getInstance().registerLink(Links.APPLICATION_MANAGER, applicationManager);
+        LinkBase.getInstance().registerLink(Links.STARTUP_MANAGER, startUpManager);
 
         /* Register StartUp Environment Changer */
         StartUpEnvironmentChanger environmentChanger = new StartUpInvirementChangerImpl();
@@ -93,6 +94,7 @@ public class Main {
         StartUpProcessHandler.getInstance().end();
         logger.info("Started " + applicationManager.getLoadedApplicationsCount() + " Applications: " + StringUtil.join(applicationManager.getLoadedApplications(), IApplication::getName, ", "));
         LoggingHelper.endSection();
+        startUpManager.finished();
     }
 
     private static void setUpLogging() {
