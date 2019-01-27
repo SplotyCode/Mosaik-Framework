@@ -25,18 +25,23 @@ public class ParsingManagerImpl implements ParsingManager {
     @Getter private List<ParsingHandle> handles = new ArrayList<>();
 
     @Override
+    public <P extends ParsingHandle> P getHandleByClass(Class<P> clazz) {
+        for (ParsingHandle handle : handles) {
+            if (clazz.isInstance(handle.getClass())) {
+                return (P) handle;
+            }
+        }
+        throw new NoHandleFoundException(clazz.getName() + " is not in " + StringUtil.join(handles, obj -> obj.getClass().getName(), ", "));
+    }
+
+    @Override
     public <P extends Document> P parseDocument(DomInput input, ParsingHandle<P> handle) {
         return handle.getParser(input).parse(input);
     }
 
     @Override
     public <P extends Document> P parseDocument(DomInput input, Class<? extends ParsingHandle<P>> handleClazz) {
-        for (ParsingHandle handle : handles) {
-            if (handleClazz.isInstance(handle.getClass())) {
-                return parseDocument(input, (ParsingHandle<P>) handle);
-            }
-        }
-        throw new NoHandleFoundException();
+        return parseDocument(input, getHandleByClass(handleClazz));
     }
 
     @Override
@@ -103,13 +108,8 @@ public class ParsingManagerImpl implements ParsingManager {
     }
 
     @Override
-    public <D extends Document> String writeToText(D document, Class<? extends ParsingHandle> handleClazz) {
-        for (ParsingHandle handle : handles) {
-            if (handleClazz.isAssignableFrom(handle.getClass())) {
-                return writeToText(document, (ParsingHandle<D>) handle);
-            }
-        }
-        throw new NoHandleFoundException(handleClazz.getName() + " is not in " + StringUtil.join(handles, obj -> obj.getClass().getName(), ", "));
+    public <D extends Document> String writeToText(D document, Class<? extends ParsingHandle<D>> handleClazz) {
+        return writeToText(document, getHandleByClass(handleClazz));
     }
 
     @Override
@@ -118,10 +118,14 @@ public class ParsingManagerImpl implements ParsingManager {
     }
 
     @Override
-    public void writeToFile(Document document, File file, Class<? extends ParsingHandle> handleClazz) throws IOException {
+    public <D extends Document> void writeToFile(D document, File file, Class<? extends ParsingHandle<D>> handleClazz) throws IOException {
         FileUtil.writeToFile(file, writeToText(document, handleClazz));
     }
 
+    @Override
+    public <D extends Document> void writeToFile(D document, File file) throws IOException {
+        writeToFile(document, file, document.getHandle());
+    }
 
     @Override
     public Collection<ParsingHandle> getList() {

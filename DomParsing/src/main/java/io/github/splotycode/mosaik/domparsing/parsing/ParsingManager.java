@@ -13,6 +13,8 @@ public interface ParsingManager extends IListClassRegister<ParsingHandle> {
 
     Collection<ParsingHandle> getHandles();
 
+    <P extends ParsingHandle> P getHandleByClass(Class<P> clazz);
+
     /* Raw Input */
     <P extends Document> P parseDocument(DomInput input, ParsingHandle<P> handle);
     <P extends Document> P parseDocument(DomInput input, Class<? extends ParsingHandle<P>> handle);
@@ -33,9 +35,11 @@ public interface ParsingManager extends IListClassRegister<ParsingHandle> {
     <P extends Document> P  parseDocument(String file, Class<? extends ParsingHandle<P>> handle);
 
     <D extends Document> String writeToText(D document, ParsingHandle<D> handle);
-    <D extends Document> String writeToText(D document, Class<? extends ParsingHandle> handle);
+    <D extends Document> String writeToText(D document, Class<? extends ParsingHandle<D>> handle);
 
 
     <D extends Document> void writeToFile(D document, File file, ParsingHandle<D> handle) throws IOException;
-    void writeToFile(Document document, File file, Class<? extends ParsingHandle> handle) throws IOException;
+    <D extends Document> void writeToFile(D document, File file, Class<? extends ParsingHandle<D>> handle) throws IOException;
+    <D extends Document> void writeToFile(D document, File file) throws IOException;
+
 }
