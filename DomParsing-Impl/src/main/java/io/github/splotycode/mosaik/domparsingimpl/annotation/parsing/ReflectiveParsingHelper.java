@@ -63,6 +63,7 @@ public final class ReflectiveParsingHelper {
     public static byte[] fromObject(Object object) {
         try {
             KeyValueDocument document = new KeyValueDocument();
+            document.addNodeWithInnerText("_clazz__", object.getClass().getName());
             for (Map.Entry<String, String> node : getData(object.getClass()).entrySet()) {
                 Field field = object.getClass().getDeclaredField(node.getValue());
                 field.setAccessible(true);
