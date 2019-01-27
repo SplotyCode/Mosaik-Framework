@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.domparsingimpl.annotation;
 
-import io.github.splotycode.mosaik.domparsing.annotation.IEntry;
+import io.github.splotycode.mosaik.domparsing.annotation.IEntryParser;
 import io.github.splotycode.mosaik.runtime.application.Application;
 import io.github.splotycode.mosaik.util.io.PathUtil;
 import io.github.splotycode.mosaik.util.task.TaskExecutor;
@@ -9,22 +9,22 @@ import io.github.splotycode.mosaik.util.task.types.CompressingTask;
 import java.io.File;
 import java.util.*;
 
-public class CachingFileSystemImpl<D extends IEntry> extends FileSystemImpl<D> {
+public class CachingFileSystemImpl<D> extends FileSystemImpl<D> {
 
     private Map<String, CachedFile> files = new HashMap<>();
     private final long compressDelay, maxCompress;
     private final TaskExecutor taskExecutor;
 
-    public CachingFileSystemImpl(Class<D> entryClass, long compressDelay, long maxCompress, TaskExecutor taskExecutor) {
-        super(entryClass);
+    public CachingFileSystemImpl(File root, IEntryParser entryParser, long compressDelay, long maxCompress, TaskExecutor taskExecutor) {
+        super(root, entryParser);
         this.compressDelay = compressDelay;
         this.maxCompress = maxCompress;
         this.taskExecutor = taskExecutor;
         setup();
     }
 
-    public CachingFileSystemImpl(File root, Class<D> entryClass, long compressDelay, long maxCompress, TaskExecutor taskExecutor) {
-        super(root, entryClass);
+    public CachingFileSystemImpl(String name, IEntryParser entryParser, long compressDelay, long maxCompress, TaskExecutor taskExecutor) {
+        super(name, entryParser);
         this.compressDelay = compressDelay;
         this.maxCompress = maxCompress;
         this.taskExecutor = taskExecutor;

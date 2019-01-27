@@ -27,7 +27,7 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public <P extends ParsingHandle> P getHandleByClass(Class<P> clazz) {
         for (ParsingHandle handle : handles) {
-            if (clazz.isInstance(handle.getClass())) {
+            if (clazz == handle.getClass()) {
                 return (P) handle;
             }
         }
