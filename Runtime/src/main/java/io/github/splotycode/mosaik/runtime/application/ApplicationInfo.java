@@ -30,9 +30,9 @@ public class ApplicationInfo {
 
    static {
        Document document = LinkBase.getInstance().getLink(Links.PARSING_MANAGER).parseResourceFile("/versioninformation.kv");
-       buildNumber = document.getNode("number").name();
-       buildDate = document.getNode("date").name();
-       version = document.getNode("version").name();
+       buildNumber = document.getFirstTextFromNode("number");
+       buildDate = document.getFirstTextFromNode("date");
+       version = document.getFirstTextFromNode("version");
    }
 
 }

@@ -11,7 +11,7 @@ public class KeyValueWriter implements DomWriter<KeyValueDocument> {
         StringBuilder builder = new StringBuilder();
         for (Node node : document.getNodes()) {
             builder.append(node.name()).append(": ");
-            builder.append(document.getNode(node.name()).name()).append("\n");
+            builder.append(document.getFirstTextFromNode(node.name())).append("\n");
         }
         return builder.toString();
     }

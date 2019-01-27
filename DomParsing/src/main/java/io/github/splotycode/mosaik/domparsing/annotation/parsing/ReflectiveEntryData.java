@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.domparsingimpl.annotation;
+package io.github.splotycode.mosaik.domparsing.annotation.parsing;
 
 import io.github.splotycode.mosaik.domparsing.annotation.DomValue;
 
@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class EntryData {
+public class ReflectiveEntryData {
 
     private Class clazz;
     private Map<String, String> linkToFields = new HashMap<>();
 
-    public EntryData(Class clazz) {
+    public ReflectiveEntryData(Class clazz) {
         this.clazz = clazz;
         for (Field field : clazz.getDeclaredFields()) {
             String name = field.getName();
