@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.util.reflection;
 
 import com.google.common.reflect.ClassPath;
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.cache.complex.resolver.CacheValueResolver;
 import io.github.splotycode.mosaik.util.cache.complex.validator.TimeValidator;
 import lombok.Getter;
@@ -41,7 +42,7 @@ public final class ClassFinderHelper {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtil.throwRuntime(e);
         }
         return list;
     }).build();

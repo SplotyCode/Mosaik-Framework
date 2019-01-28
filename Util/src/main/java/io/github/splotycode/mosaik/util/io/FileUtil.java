@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.io;
 
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.info.SystemInfo;
@@ -277,7 +278,7 @@ public final class FileUtil {
                 DosFileAttributes attributes = Files.readAttributes(Paths.get(path), DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
                 return attributes.isDirectory() || !attributes.isReadOnly();
             } catch (IOException e) {
-                e.printStackTrace();
+                ExceptionUtil.throwRuntime(e);
             }
         }
         return new File(path).canWrite();

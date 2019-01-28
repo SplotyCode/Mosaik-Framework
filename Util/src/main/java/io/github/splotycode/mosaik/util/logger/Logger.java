@@ -1,8 +1,8 @@
 package io.github.splotycode.mosaik.util.logger;
 
 import io.github.splotycode.mosaik.util.ExceptionUtil;
-import lombok.Getter;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
+import lombok.Getter;
 import org.apache.log4j.Level;
 
 public abstract class Logger {
@@ -111,8 +111,7 @@ public abstract class Logger {
         try {
             Logger.factory = factory.newInstance();
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            ExceptionUtil.throwRuntime(e);
         }
     }
 

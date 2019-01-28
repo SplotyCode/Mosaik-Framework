@@ -39,15 +39,16 @@ public class StringManipulator implements ResponseManipulator {
         for (Map.Entry<String, String> entry : data.getFields().entrySet()) {
             List<ManipulateData.ManipulateVariable> variables = manipulateData.getVariables(entry.getValue());
             if (variables != null) {
+                Field field = null;
                 try {
-                    Field field = object.getClass().getField(entry.getKey());
+                    field = object.getClass().getField(entry.getKey());
                     field.setAccessible(true);
                     String value = field.get(object).toString();
                     for (ManipulateData.ManipulateVariable variable : variables) {
                         replacements.add(new Replacement(variable.getStart(), variable.getEnd(), value));
                     }
                 } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    throw new ManipulationException("On " + object.getClass().getName() + "#" + (field == null ? "null" : field.getName()), e);
                 }
             }
         }
@@ -64,15 +65,16 @@ public class StringManipulator implements ResponseManipulator {
         for (Map.Entry<String, String> entry : ManipulateObjectAnalyser.getObject(object).getFields().entrySet()) {
             List<ManipulateData.ManipulateVariable> variables = pattern.getVariables().get(entry.getValue());
             if (variables != null) {
+                Field field = null;
                 try {
-                    Field field = object.getClass().getField(entry.getKey());
+                    field = object.getClass().getField(entry.getKey());
                     field.setAccessible(true);
                     String value = field.get(object).toString();
                     for (ManipulateData.ManipulateVariable variable : variables) {
                         repVars.add(new Replacement(variable.getStart(), variable.getEnd(), value));
                     }
                 } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    throw new ManipulationException("On " + object.getClass().getName() + "#" + (field == null ? "null" : field.getName()), e);
                 }
             }
         }

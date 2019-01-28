@@ -33,7 +33,7 @@ public final class IOUtil {
             try {
                 n = reader.read(chars, count, chars.length - count);
             } catch (IOException e) {
-                e.printStackTrace();
+                ExceptionUtil.throwRuntime(e);
             }
             if (n <= 0) break;
             count += n;
@@ -54,7 +54,7 @@ public final class IOUtil {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream, charset))) {
             return loadLines(br);
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtil.throwRuntime(e);
         }
         return Collections.emptyList();
     }

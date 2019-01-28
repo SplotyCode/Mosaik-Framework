@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.automatisation.generators;
 
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.io.IOUtil;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public abstract class AbstractFileGenerator implements Generator<String> {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtil.throwRuntime(e);
         }
         return null;
     }

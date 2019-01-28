@@ -18,16 +18,10 @@ public class DomStringOutput implements DomOutput {
 
     @Override
     public void writeFile(File file) {
-        if (!file.getParentFile().exists()) file.mkdirs();
-        if (!file.exists()) try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         try {
             FileUtil.writeToFile(file, string);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DomOutputException("Could not write string to file", e);
         }
     }
 

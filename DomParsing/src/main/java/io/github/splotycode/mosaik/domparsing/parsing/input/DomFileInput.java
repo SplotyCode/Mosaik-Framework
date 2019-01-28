@@ -20,9 +20,8 @@ public class DomFileInput implements DomInput {
         try {
             return IOUtil.toByteArray(getStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DomInputException("Could not convert stream to byte array", e);
         }
-        return null;
     }
 
     @Override
@@ -30,9 +29,8 @@ public class DomFileInput implements DomInput {
         try {
             return IOUtil.loadText(getStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DomInputException("Could not convert stream to text", e);
         }
-        return null;
     }
 
     @Override
@@ -40,9 +38,8 @@ public class DomFileInput implements DomInput {
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new DomInputException("Could not find file" + file.getAbsolutePath(), e);
         }
-        return null;
     }
 
     @Override
