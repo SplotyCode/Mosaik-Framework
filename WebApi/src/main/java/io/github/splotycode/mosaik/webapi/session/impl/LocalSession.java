@@ -3,7 +3,7 @@ package io.github.splotycode.mosaik.webapi.session.impl;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.session.Session;
 
-public abstract class AbstractSession implements Session {
+public class LocalSession implements Session {
 
     protected long lastRefresh;
     protected String lastIpAddress, startedIpAddress;
@@ -13,6 +13,8 @@ public abstract class AbstractSession implements Session {
         startedIpAddress = lastIpAddress = request.getIpAddress();
         lastRefresh = System.currentTimeMillis();
     }
+
+    @Override public void onDestruction() {}
 
     @Override
     public void onRefresh(Request request) {
