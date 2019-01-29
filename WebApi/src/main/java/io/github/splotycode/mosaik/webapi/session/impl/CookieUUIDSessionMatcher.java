@@ -22,8 +22,8 @@ public class CookieUUIDSessionMatcher extends AbstractUUIDSessionMatcher {
 
     @Override
     public UUID getUUID(Request request) {
-        long most = Long.valueOf(request.getCookies().get(mostKey.getName()));
-        long least = Long.valueOf(request.getCookies().get(leastKey.getName()));
+        long most = Long.valueOf(request.getCookie(mostKey));
+        long least = Long.valueOf(request.getCookie(leastKey));
         return new UUID(most, least);
     }
 
