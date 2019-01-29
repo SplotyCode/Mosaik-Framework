@@ -45,7 +45,7 @@ public interface Request {
 
     Map<String, String> getCookies();
     String getCookie(String name);
-    String getCookie(CookieKey name);
+    String getCookie(CookieKey key);
 
     void setPost(Map<String, ? extends Collection<String>> parameters);
 

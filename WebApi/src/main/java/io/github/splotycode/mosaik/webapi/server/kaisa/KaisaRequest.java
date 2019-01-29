@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.webapi.server.kaisa;
 
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContent;
+import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.github.splotycode.mosaik.webapi.session.Session;
@@ -49,6 +50,11 @@ public class KaisaRequest implements Request {
             path = provider.resolvePath();
         }
         return path;
+    }
+
+    @Override
+    public String getFullUrl() {
+        return null;
     }
 
     @Override
@@ -173,6 +179,16 @@ public class KaisaRequest implements Request {
             cookies = provider.resolveCookies();
         }
         return cookies;
+    }
+
+    @Override
+    public String getCookie(String name) {
+        return null;
+    }
+
+    @Override
+    public String getCookie(CookieKey key) {
+        return null;
     }
 
     @Override
