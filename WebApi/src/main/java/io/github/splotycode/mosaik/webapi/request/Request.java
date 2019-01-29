@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.request;
 
+import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContent;
@@ -14,6 +15,7 @@ public interface Request {
     WebServer getWebServer();
 
     String getPath();
+    String getFullUrl();
     Method getMethod();
 
     Response getResponse();
@@ -42,6 +44,8 @@ public interface Request {
     Map<String, ? extends Collection<String>> getPost();
 
     Map<String, String> getCookies();
+    String getCookie(String name);
+    String getCookie(CookieKey name);
 
     void setPost(Map<String, ? extends Collection<String>> parameters);
 
