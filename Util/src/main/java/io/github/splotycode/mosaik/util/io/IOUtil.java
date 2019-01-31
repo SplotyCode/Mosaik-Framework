@@ -187,9 +187,9 @@ public final class IOUtil {
     }
 
     public static Path getResourcePath(String path) {
-        URL url = Thread.currentThread().getContextClassLoader().getResource(path);
+        URL url = IOUtil.class.getResource(path);
         if (url == null) {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("Resource not found: " + path);
         }
         try {
             return Paths.get(url.toURI());
