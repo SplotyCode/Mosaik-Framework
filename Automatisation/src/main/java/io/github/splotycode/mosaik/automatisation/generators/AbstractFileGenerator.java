@@ -43,10 +43,8 @@ public abstract class AbstractFileGenerator implements Generator<String> {
                 }
                 return cache.get(ThreadLocalRandom.current().nextInt(0, cache.size()));
             } else {
+                if (count == -1) count = Files.lines(path).count();
                 try (Stream<String> lines = Files.lines(path)) {
-                    if (count == -1) {
-                        count = lines.count();
-                    }
                     return lines.skip(ThreadLocalRandom.current().nextLong(0, count)).findFirst().orElse(null);
                 }
             }
