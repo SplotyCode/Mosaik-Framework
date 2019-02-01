@@ -87,14 +87,20 @@ public class StringManipulator implements ResponseManipulator {
         return this;
     }
 
-    public void reset() {
-        replacements.clear();
+    @Override
+    public ResponseManipulator pattern(String name, Iterable<?> objects) {
+        objects.forEach(o -> pattern(name, o));
+        return this;
     }
 
     @Override
     public ResponseManipulator pattern(Iterable<?> objects) {
         objects.forEach(this::pattern);
         return this;
+    }
+
+    public void reset() {
+        replacements.clear();
     }
 
     public String getResult() {

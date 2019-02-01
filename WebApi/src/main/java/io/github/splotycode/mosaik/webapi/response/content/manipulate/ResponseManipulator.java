@@ -6,6 +6,7 @@ public interface ResponseManipulator {
     ResponseManipulator object(Object object);
     ResponseManipulator pattern(String name, Object object);
     ResponseManipulator pattern(Object object);
-    ResponseManipulator pattern(Iterable<?> object);
+    ResponseManipulator pattern(String name, Iterable<?> objects);
+    ResponseManipulator pattern(Iterable<?> objects);
 
 }
