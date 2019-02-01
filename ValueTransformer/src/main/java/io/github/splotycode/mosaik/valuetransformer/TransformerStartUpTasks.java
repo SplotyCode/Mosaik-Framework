@@ -13,7 +13,7 @@ public class TransformerStartUpTasks implements StartupTask {
 
     private static ClassCollector collector = ClassCollector.newInstance()
                                             .setAbstracation(AlmostBoolean.NO)
-                                            .setInPackage("me.david.splotycode.valuetransformer")
+                                            .setInPackage("io.github.splotycode.mosaik.valuetransformer")
                                             .setNoDisableds(true)
                                             .setNeedAssignable(ValueTransformer.class);
 
