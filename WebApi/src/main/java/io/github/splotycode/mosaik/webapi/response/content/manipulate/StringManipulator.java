@@ -1,5 +1,7 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
+import io.github.splotycode.mosaik.runtime.LinkBase;
+import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,18 +36,17 @@ public class StringManipulator implements ResponseManipulator {
     @Override
     public ResponseManipulator object(Object object) {
         ManipulateObjectAnalyser.AnalysedObject data = ManipulateObjectAnalyser.getObject(object);
-        for (Map.Entry<String, String> entry : data.getFields().entrySet()) {
-            List<ManipulateData.ManipulateVariable> variables = manipulateData.getVariables(entry.getValue());
+        for (Map.Entry<String, Field> entry : data.getFields().entrySet()) {
+            List<ManipulateData.ManipulateVariable> variables = manipulateData.getVariables(entry.getKey());
+            Field field = entry.getValue();
             if (variables != null) {
-                Field field = null;
                 try {
-                    field = object.getClass().getField(entry.getKey());
                     field.setAccessible(true);
                     String value = field.get(object).toString();
                     for (ManipulateData.ManipulateVariable variable : variables) {
                         replacements.add(new Replacement(variable.getStart(), variable.getEnd(), value));
                     }
-                } catch (NoSuchFieldException | IllegalAccessException e) {
+                } catch (IllegalAccessException e) {
                     throw new ManipulationException("On " + object.getClass().getName() + "#" + (field == null ? "null" : field.getName()), e);
                 }
             }
@@ -55,27 +56,25 @@ public class StringManipulator implements ResponseManipulator {
 
     @Override
     public ResponseManipulator pattern(String name, Object object) {
+        ManipulateObjectAnalyser.AnalysedObject analysedObject = ManipulateObjectAnalyser.getObject(object);
         ManipulateData.ManipulatePattern pattern = manipulateData.getPattern(name);
         if (pattern == null) throw new PatternNotFoundException("Could not find " + name);
 
         Set<Replacement> repVars = new HashSet<>();
 
-        for (Map.Entry<String, String> entry : ManipulateObjectAnalyser.getObject(object).getFields().entrySet()) {
-            List<ManipulateData.ManipulateVariable> variables = pattern.getVariables().get(entry.getValue());
-            if (variables != null) {
-                Field field = null;
-                try {
-                    field = object.getClass().getDeclaredField(entry.getKey());
-                    field.setAccessible(true);
-                    String value = field.get(object).toString();
-                    for (ManipulateData.ManipulateVariable variable : variables) {
-                        repVars.add(new Replacement(variable.getStart(), variable.getEnd(), value));
-                    }
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    throw new ManipulationException("On " + object.getClass().getName() + "#" + (field == null ? "null" : field.getName()), e);
+        for (Map.Entry<String, List<ManipulateData.ManipulateVariable>> varibles : pattern.getVariables().entrySet()) {
+            try {
+                String varName = varibles.getKey();
+                Object varRawValue = analysedObject.getValueByName(object, varName);
+                String varValue = varRawValue == null ? "null" : LinkBase.getInstance().getLink(TransformerManager.LINK).transform(varRawValue, String.class);
+                for (ManipulateData.ManipulateVariable variable : varibles.getValue()) {
+                    repVars.add(new Replacement(variable.getStart(), variable.getEnd(), varValue));
                 }
+            } catch (ReflectiveOperationException e) {
+                throw new ManipulationException("On " + object.getClass().getName() + "#" + varibles.getKey(), e);
             }
         }
+
         String result = applyReplacements(repVars, pattern.getContent());
         replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result));
         return this;
