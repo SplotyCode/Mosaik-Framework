@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.domparsingimpl.annotation.parsing;
 
+import io.github.splotycode.mosaik.domparsing.annotation.EntryParseExcpetion;
 import io.github.splotycode.mosaik.domparsing.annotation.parsing.ReflectiveEntryData;
 import io.github.splotycode.mosaik.domparsing.annotation.parsing.ReflectiveParsingEntry;
 import io.github.splotycode.mosaik.domparsing.dom.Document;
@@ -55,9 +56,8 @@ public final class ReflectiveParsingHelper {
             stream.close();
             return obj;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new EntryParseExcpetion("Failed to provide Object", ex);
         }
-        return null;
     }
 
     public static byte[] fromObject(Object object) {
@@ -72,9 +72,8 @@ public final class ReflectiveParsingHelper {
 
             return LinkBase.getInstance().getLink(Links.PARSING_MANAGER).writeToText(document, KeyValueHandle.class).getBytes();
         } catch (ReflectiveOperationException ex) {
-            ex.printStackTrace();
+            throw new EntryParseExcpetion("Failed to parse Obect to byte[]", ex);
         }
-        return null;
     }
 
 }

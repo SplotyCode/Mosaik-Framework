@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
+import io.github.splotycode.mosaik.InvokeStartUp;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +13,7 @@ class StringManipulatorTest {
 
     @Test
     void testGetResult() {
+        InvokeStartUp.start();
         StringManipulator manipulator = new StringManipulator("Hallo my friend $name$");
         manipulator.getReplacements().add(new StringManipulator.Replacement(2, 3, "no"));
         Assertions.assertEquals(manipulator.getResult(), "Hanolo my friend $name$");
@@ -26,6 +28,7 @@ class StringManipulatorTest {
 
     @Test
     void testVariables() {
+        InvokeStartUp.start();
         StringManipulator manipulator = new StringManipulator("Hallo my friend $name$");
         manipulator.variable("name", 33);
         Assertions.assertEquals(manipulator.getResult(), "Hallo my friend 33");
@@ -33,6 +36,7 @@ class StringManipulatorTest {
 
     @Test
     void testMultipleVariables() {
+        InvokeStartUp.start();
         StringManipulator manipulator = new StringManipulator("Hallo my friend $name$, $name1$, $name2$ and $name3$");
         manipulator.variable("name", "hallo");
         manipulator.variable("name1", "duuu222222");
@@ -50,6 +54,7 @@ class StringManipulatorTest {
 
     @Test
     void testPatterns() {
+        InvokeStartUp.start();
         StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $name$ 333 $age$ $@@$hasdasdas");
         manipulator.pattern(new Pat());
         Assertions.assertEquals(manipulator.getResult(), "hallo dasd david 333 14 hasdasdas");
@@ -57,6 +62,7 @@ class StringManipulatorTest {
 
     @Test
     void testPatternList() {
+        InvokeStartUp.start();
         StringManipulator manipulator = new StringManipulator("hallo$@pat$ Name: $name$ <br> Age: $age$ <br><br> $@@$hasdasdas");
         List<Pat> data = new ArrayList<>();
         for (int i = 0; i < 12; i++) {

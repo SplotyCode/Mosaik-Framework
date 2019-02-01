@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
+import io.github.splotycode.mosaik.InvokeStartUp;
 import io.github.splotycode.mosaik.util.prettyprint.PrettyPrint;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,12 +35,14 @@ class ManipulateDataTest {
 
     @Test
     void testVariablePositions() {
+        InvokeStartUp.start();
         StringManipulator manipulator = new StringManipulator("Hallo my friend $name$, $name1$, $name2$ and $name3$");
         Assertions.assertEquals(EXPECTED_VAR, new PrettyPrint(manipulator.getManipulateData().getVariableMap()).prettyPrintType());
     }
 
     @Test
     void testPatternPositions() {
+        InvokeStartUp.start();
         StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $name$ 333 $age$ $@@$hasdasdas");
         Assertions.assertEquals(EXPECTED, new PrettyPrint(manipulator.getManipulateData().getPatternMap()).prettyPrintType());
     }
