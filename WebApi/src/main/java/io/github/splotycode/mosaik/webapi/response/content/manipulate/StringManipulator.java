@@ -5,10 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public class StringManipulator implements ResponseManipulator {
@@ -67,7 +65,7 @@ public class StringManipulator implements ResponseManipulator {
             if (variables != null) {
                 Field field = null;
                 try {
-                    field = object.getClass().getField(entry.getKey());
+                    field = object.getClass().getDeclaredField(entry.getKey());
                     field.setAccessible(true);
                     String value = field.get(object).toString();
                     for (ManipulateData.ManipulateVariable variable : variables) {
@@ -89,6 +87,10 @@ public class StringManipulator implements ResponseManipulator {
         return this;
     }
 
+    public void reset() {
+        replacements.clear();
+    }
+
     @Override
     public ResponseManipulator pattern(Iterable<?> objects) {
         objects.forEach(this::pattern);
@@ -104,9 +106,9 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     private String applyReplacements(Set<Replacement> replacements, String str) {
-        StringBuilder buffer = new StringBuilder(input);
+        StringBuilder buffer = new StringBuilder(str);
         int delta = 0;
-        for (Replacement replacement : replacements) {
+        for (Replacement replacement : replacements.stream().sorted(Comparator.comparingInt(replacement -> replacement.end)).collect(Collectors.toList())) {
             buffer.replace(replacement.start + delta, replacement.end + delta, replacement.content);
             delta += replacement.lengthDiff();
         }
