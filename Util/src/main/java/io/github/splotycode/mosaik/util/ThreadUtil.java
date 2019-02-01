@@ -5,10 +5,16 @@ import java.util.concurrent.*;
 public final class ThreadUtil {
 
     public static void sleep(long delay) {
+        sleep(delay, true);
+    }
+
+    public static void sleep(long delay, boolean ignore) {
         try {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            if (!ignore) {
+                ExceptionUtil.throwRuntime(e);
+            }
         }
     }
 

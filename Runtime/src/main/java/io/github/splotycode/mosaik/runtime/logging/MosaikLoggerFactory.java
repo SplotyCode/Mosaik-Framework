@@ -7,6 +7,7 @@ import io.github.splotycode.mosaik.util.logger.LoggerFactory;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.xml.DOMConfigurator;
 
+import java.io.IOError;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -25,7 +26,7 @@ public class MosaikLoggerFactory extends InitialisedOnce implements LoggerFactor
             config = config.replaceAll("_\\$log\\$_", "log/");
             new DOMConfigurator().doConfigure(IOUtil.toInputStream(config, StandardCharsets.UTF_8), LogManager.getLoggerRepository());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IOError(e);
         }
     }
 

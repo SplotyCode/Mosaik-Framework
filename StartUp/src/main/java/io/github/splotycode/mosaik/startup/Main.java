@@ -1,23 +1,24 @@
 package io.github.splotycode.mosaik.startup;
 
-import io.github.splotycode.mosaik.startup.application.ApplicationManager;
-import io.github.splotycode.mosaik.startup.envirementchanger.StartUpInvirementChangerImpl;
-import io.github.splotycode.mosaik.startup.manager.StartUpManager;
-import io.github.splotycode.mosaik.startup.processbar.StartUpProcessHandler;
-import io.github.splotycode.mosaik.startup.starttask.StartTaskExecutor;
-import lombok.Getter;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import io.github.splotycode.mosaik.runtime.application.IApplication;
-import io.github.splotycode.mosaik.runtime.logging.MosaikLoggerFactory;
 import io.github.splotycode.mosaik.runtime.logging.LoggingHelper;
+import io.github.splotycode.mosaik.runtime.logging.MosaikLoggerFactory;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.runtime.startup.envirement.StartUpEnvironmentChanger;
+import io.github.splotycode.mosaik.startup.application.ApplicationManager;
+import io.github.splotycode.mosaik.startup.envirementchanger.StartUpInvirementChangerImpl;
+import io.github.splotycode.mosaik.startup.exception.FrameworkStartException;
+import io.github.splotycode.mosaik.startup.manager.StartUpManager;
+import io.github.splotycode.mosaik.startup.processbar.StartUpProcessHandler;
+import io.github.splotycode.mosaik.startup.starttask.StartTaskExecutor;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.init.AlreadyInitailizedException;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
+import lombok.Getter;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
@@ -107,7 +108,7 @@ public class Main {
                 root.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.DEFAULT_CONVERSION_PATTERN)));
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            throw new FrameworkStartException("Could not initialize log4j logging", e);
         }
         logger = Logger.getInstance(Main.class);
 

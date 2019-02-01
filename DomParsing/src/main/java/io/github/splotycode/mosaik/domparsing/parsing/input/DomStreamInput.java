@@ -1,12 +1,11 @@
 package io.github.splotycode.mosaik.domparsing.parsing.input;
 
-import lombok.AllArgsConstructor;
 import io.github.splotycode.mosaik.domparsing.parsing.DomSourceType;
 import io.github.splotycode.mosaik.util.io.IOUtil;
+import lombok.AllArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 @AllArgsConstructor
 public class DomStreamInput implements DomInput {
@@ -18,19 +17,17 @@ public class DomStreamInput implements DomInput {
         try {
             return IOUtil.toByteArray(stream);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DomInputException("Could not convert stream to byte array", e);
         }
-        return null;
     }
 
     @Override
     public String getString() {
         try {
-            return IOUtil.loadText(stream, StandardCharsets.UTF_8);
+            return IOUtil.loadText(stream);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DomInputException("Could not load text from stream", e);
         }
-        return null;
     }
 
     @Override

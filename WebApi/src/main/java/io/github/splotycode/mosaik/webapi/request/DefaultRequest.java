@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.webapi.request;
 
 import io.github.splotycode.mosaik.webapi.request.body.RequestBodyHelper;
+import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.github.splotycode.mosaik.webapi.session.Session;
@@ -29,14 +30,16 @@ public class DefaultRequest implements Request {
     private RequestContent content;
     private byte[] body;
     private WebServer webServer;
+    private String fullUrl;
 
     private Response response = new Response(null);
 
-    public DefaultRequest(WebServer webServer, String path, String ipAddress, Method method, boolean keepAlive, byte[] body) {
+    public DefaultRequest(WebServer webServer, String path, String ipAddress, Method method, String fullUrl, boolean keepAlive, byte[] body) {
         this.path = path;
         this.webServer = webServer;
         this.ipAddress = ipAddress;
         this.method = method;
+        this.fullUrl = fullUrl;
         this.keepAlive = keepAlive;
         this.body = body;
     }
@@ -78,6 +81,16 @@ public class DefaultRequest implements Request {
 
     public boolean isPost() {
         return method.isStandard() && method.getStandardMethod() == Method.StandardMethod.POST;
+    }
+
+    @Override
+    public String getCookie(String name) {
+        return cookies.get(name);
+    }
+
+    @Override
+    public String getCookie(CookieKey key) {
+        return cookies.get(key.getName());
     }
 
     @Override

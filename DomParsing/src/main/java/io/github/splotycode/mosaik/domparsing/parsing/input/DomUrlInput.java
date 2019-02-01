@@ -24,9 +24,8 @@ public class DomUrlInput implements DomInput {
         try {
             return IOUtil.toByteArray(getStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DomInputException("Could not convert stream to byte array", e);
         }
-        return null;
     }
 
     @Override
@@ -34,9 +33,8 @@ public class DomUrlInput implements DomInput {
         try {
             return IOUtil.loadText(getStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DomInputException("Could not load text from file", e);
         }
-        return null;
     }
 
     @Override
@@ -44,9 +42,8 @@ public class DomUrlInput implements DomInput {
         try (InputStream inputStream = getConnection().getInputStream()) {
             return inputStream;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new DomInputException("Could not open stream to url", e);
         }
-        return null;
     }
 
     public URLConnection getConnection() throws IOException {

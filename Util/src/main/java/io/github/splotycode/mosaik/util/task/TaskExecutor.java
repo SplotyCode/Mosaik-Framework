@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.task;
 
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.task.types.CompressingTask;
 import io.github.splotycode.mosaik.util.task.types.DelayedTask;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
@@ -129,7 +130,7 @@ public class TaskExecutor extends Thread {
             Task task = taskClazz.newInstance();
             runTask(task);
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+            ExceptionUtil.throwRuntime(e);
         }
     }
 

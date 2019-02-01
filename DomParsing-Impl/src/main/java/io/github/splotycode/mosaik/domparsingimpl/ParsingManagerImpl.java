@@ -1,17 +1,17 @@
 package io.github.splotycode.mosaik.domparsingimpl;
 
-import io.github.splotycode.mosaik.util.StringUtil;
-import io.github.splotycode.mosaik.util.io.FileUtil;
-import lombok.Getter;
+import io.github.splotycode.mosaik.domparsing.dom.Document;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingHandle;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingManager;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomFileInput;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomStreamInput;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomUrlInput;
-import io.github.splotycode.mosaik.domparsing.dom.Document;
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
+import io.github.splotycode.mosaik.util.io.FileUtil;
 import io.github.splotycode.mosaik.util.io.PathUtil;
+import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,14 +64,13 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public Document parseDocument(URL url) {
         DomUrlInput input = new DomUrlInput(url);
-        ParsingHandle handle = handles.stream().filter(cHandle -> {
-            try {
-                return ArrayUtil.contains(cHandle.getMimeTypes(), input.getConnection().getContentType());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }).findFirst().orElseThrow(NoHandleFoundException::new);
+        String contentType;
+        try {
+            contentType = input.getConnection().getContentType();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to receive content type");
+        }
+        ParsingHandle handle = handles.stream().filter(cHandle -> ArrayUtil.contains(cHandle.getMimeTypes(), contentType)).findFirst().orElseThrow(NoHandleFoundException::new);
         return parseDocument(input, handle);
     }
 

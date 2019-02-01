@@ -20,6 +20,9 @@ public class ManipulateData {
     public HashMap<String, ManipulatePattern> getPatternMap() {
         return patterns;
     }
+    public HashMap<String, List<ManipulateVariable>> getVariableMap() {
+        return variables;
+    }
 
     public List<ManipulateVariable> getVariables(String name) {
         return variables.get(name);
@@ -33,6 +36,7 @@ public class ManipulateData {
         int state = 0;
         String stack = "";
         int start = -1;
+        int varStartForPattern = -1;
         int current = 0;
         String patternContent = null;
         ManipulatePattern currentPattern = null;
@@ -52,9 +56,8 @@ public class ManipulateData {
                         if (currentPattern == null) {
                             addVariable(variables, stack, new ManipulateVariable(start, current + 1));
                         } else {
-                            addVariable(currentPattern.variables, stack, new ManipulateVariable(start - currentPattern.start, current + 1 - currentPattern.start));
+                            addVariable(currentPattern.variables, stack, new ManipulateVariable(start - varStartForPattern - 1, current - varStartForPattern));
                         }
-                        patternContent = "";
                         stack = "";
                         state = 0;
                     } else {
@@ -67,6 +70,8 @@ public class ManipulateData {
                     } else if (ch == '$') {
                         currentPattern = new ManipulatePattern(start);
                         patterns.put(stack, currentPattern);
+                        patternContent = "";
+                        varStartForPattern = current;
                         stack = "";
                         state = 0;
                     } else {
@@ -76,7 +81,7 @@ public class ManipulateData {
                 case 3:
                     if (ch == '$') {
                         if (currentPattern == null) throw new SyntaxException("Can not close Pattern if there was no pattern opened");
-                        currentPattern.setEnd(current);
+                        currentPattern.setEnd(current + 1);
                         currentPattern.setContent(StringUtil.removeLast(patternContent, 4));
                         patternContent = null;
                         currentPattern = null;

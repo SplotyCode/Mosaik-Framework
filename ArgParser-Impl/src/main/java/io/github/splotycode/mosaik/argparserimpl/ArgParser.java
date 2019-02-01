@@ -49,7 +49,7 @@ public class ArgParser implements IArgParser {
             try {
                 argument.getField().set(obj, result);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                throw new ArgParseException("Could not access " + obj.getClass().getName() + "#" + argument.getField().getName(), e);
             }
         }
     }

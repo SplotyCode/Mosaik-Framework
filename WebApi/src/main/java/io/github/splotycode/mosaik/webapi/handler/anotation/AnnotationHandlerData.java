@@ -129,11 +129,7 @@ public class AnnotationHandlerData {
                 boolean found;
                 for (Parameter parameter : method.getParameters()) {
                     if (parameter.isAnnotationPresent(UseResolver.class)) {
-                        try {
-                            parameters.add(new Pair<>(parameter.getAnnotation(UseResolver.class).value().newInstance(), parameter));
-                        } catch (InstantiationException | IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
+                        parameters.add(new Pair<>(parameter.getAnnotation(UseResolver.class).value().newInstance(), parameter));
                         break;
                     }
                     found = false;

@@ -31,7 +31,7 @@ public class NettyRequest extends AbstractRequest {
     private Map<String, ? extends Collection<String>> post = null;
 
     public NettyRequest(WebServer server, FullHttpRequest request, ChannelHandlerContext ctx) {
-        super(server);
+        super(server, request.uri());
         this.request = request;
         this.ctx = ctx;
     }

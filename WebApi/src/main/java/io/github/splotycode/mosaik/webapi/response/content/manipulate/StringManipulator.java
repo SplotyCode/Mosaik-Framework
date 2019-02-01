@@ -5,10 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public class StringManipulator implements ResponseManipulator {
@@ -39,15 +37,16 @@ public class StringManipulator implements ResponseManipulator {
         for (Map.Entry<String, String> entry : data.getFields().entrySet()) {
             List<ManipulateData.ManipulateVariable> variables = manipulateData.getVariables(entry.getValue());
             if (variables != null) {
+                Field field = null;
                 try {
-                    Field field = object.getClass().getField(entry.getKey());
+                    field = object.getClass().getField(entry.getKey());
                     field.setAccessible(true);
                     String value = field.get(object).toString();
                     for (ManipulateData.ManipulateVariable variable : variables) {
                         replacements.add(new Replacement(variable.getStart(), variable.getEnd(), value));
                     }
                 } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    throw new ManipulationException("On " + object.getClass().getName() + "#" + (field == null ? "null" : field.getName()), e);
                 }
             }
         }
@@ -64,15 +63,16 @@ public class StringManipulator implements ResponseManipulator {
         for (Map.Entry<String, String> entry : ManipulateObjectAnalyser.getObject(object).getFields().entrySet()) {
             List<ManipulateData.ManipulateVariable> variables = pattern.getVariables().get(entry.getValue());
             if (variables != null) {
+                Field field = null;
                 try {
-                    Field field = object.getClass().getField(entry.getKey());
+                    field = object.getClass().getDeclaredField(entry.getKey());
                     field.setAccessible(true);
                     String value = field.get(object).toString();
                     for (ManipulateData.ManipulateVariable variable : variables) {
                         repVars.add(new Replacement(variable.getStart(), variable.getEnd(), value));
                     }
                 } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    throw new ManipulationException("On " + object.getClass().getName() + "#" + (field == null ? "null" : field.getName()), e);
                 }
             }
         }
@@ -85,6 +85,10 @@ public class StringManipulator implements ResponseManipulator {
     public ResponseManipulator pattern(Object object) {
         pattern(object.getClass().getSimpleName().toLowerCase(), object);
         return this;
+    }
+
+    public void reset() {
+        replacements.clear();
     }
 
     @Override
@@ -102,9 +106,9 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     private String applyReplacements(Set<Replacement> replacements, String str) {
-        StringBuilder buffer = new StringBuilder(input);
+        StringBuilder buffer = new StringBuilder(str);
         int delta = 0;
-        for (Replacement replacement : replacements) {
+        for (Replacement replacement : replacements.stream().sorted(Comparator.comparingInt(replacement -> replacement.end)).collect(Collectors.toList())) {
             buffer.replace(replacement.start + delta, replacement.end + delta, replacement.content);
             delta += replacement.lengthDiff();
         }

@@ -9,7 +9,11 @@ public class PrettyPrint {
     private Object object;
     private String prefix;
 
-    public PrettyPrint(Object object, String prefix){
+    public PrettyPrint(Object object) {
+        this(object, "");
+    }
+
+    public PrettyPrint(Object object, String prefix) {
         this.object = object;
         this.prefix = prefix;
     }
@@ -18,7 +22,16 @@ public class PrettyPrint {
         return prettyPrint(0);
     }
 
-    private String prettyPrint(int tab){
+    public String prettyPrintType(){
+        try {
+            return getValue(object, 0);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String prettyPrint(int tab) {
         tab++;
         StringBuilder builder = new StringBuilder();
         builder.append(object.getClass().getSimpleName());
@@ -43,12 +56,18 @@ public class PrettyPrint {
 
     private String getValue(Field field, int tab) throws IllegalAccessException {
         field.setAccessible(true);
-        Object o = field.get(object);
+        if (field.getAnnotation(IgnorePrint.class) != null) {
+            return "Disabled";
+        }
+        return getValue(field.get(object), tab);
+    }
+
+    private String getValue(Object o, int tab) throws IllegalAccessException {
         if (o == null)
             return "null";
         //System.out.println(field.getName() + " : " + o.toString());
         Class<?> arrayType = o.getClass().getComponentType();
-        if (arrayType != null) {
+        if (arrayType != null && o.getClass().isArray()) {
             if (!arrayType.isPrimitive()) {
                 return Arrays.deepToString((Object[]) o);
             } else if (arrayType.equals(Integer.TYPE)) {
@@ -70,33 +89,31 @@ public class PrettyPrint {
             } else {
                 return "?????????";
             }
-        } else if(field.getType().isEnum()){
-            return field.getClass().getName().toUpperCase() + "." + o.toString() + "(enum)";
-        }else if (o instanceof Set) {
-            Set<Object> set = (Set<Object>) o;
-            ArrayList<String> list = new ArrayList<>(set.size());
-            for(Object obj: set) {
-                list.add(obj.toString());
+        } else if(o.getClass().isEnum()){
+            return o.getClass().getName().toUpperCase() + "." + o.toString() + "(enum)";
+        }else if (o instanceof Collection) {
+            Collection<Object> collection = (Collection<Object>) o;
+            ArrayList<String> list = new ArrayList<>(collection.size());
+            for(Object obj: collection) {
+                list.add(getValue(obj, 0));
             }
             Collections.sort(list);
             return list.toString();
         } else if (o instanceof Map) {
-            Map<Object,Object> map= (Map<Object, Object>) o;
-            ArrayList<String> list= new ArrayList<>(map.size());
-            for(Object key: map.keySet()) {
-                list.add(key.toString()+"="+map.get(key));
+            Map<Object,Object> map = (Map<Object, Object>) o;
+            ArrayList<String> list = new ArrayList<>(map.size());
+            for (Object key : map.keySet()) {
+                list.add(getValue(key, 0) + "=" + getValue(map.get(key), 0));
             }
             Collections.sort(list);
             return list.toString();
-        } else if (o instanceof Collection) {
-            return o.toString();
         } else if (o instanceof Calendar) {
             DateFormat f = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.UK);
             Calendar c = (Calendar) o;
             return f.format(c.getTime()) + " milliSecond=" + c.get(Calendar.MILLISECOND);
-        } else if(o instanceof String || o instanceof Number || o instanceof Boolean || field.getAnnotation(IgnorePrint.class) != null){
+        } else if (o instanceof String || o instanceof Number || o instanceof Boolean || o instanceof Character){
             return o.toString();
-        }else {
+        } else {
             PrettyPrint obj = new PrettyPrint(o, prefix);
             return obj.prettyPrint(tab);
         }

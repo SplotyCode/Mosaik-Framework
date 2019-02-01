@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.webapi.request;
 
 import io.github.splotycode.mosaik.webapi.request.body.RequestBodyHelper;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContent;
+import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.github.splotycode.mosaik.webapi.session.Session;
@@ -22,9 +23,11 @@ public abstract class AbstractRequest implements Request {
 
     private boolean checkedSession;
     private Session session = null;
+    private String fullUrl;
 
-    public AbstractRequest(WebServer webServer) {
+    public AbstractRequest(WebServer webServer, String fullUrl) {
         this.webServer = webServer;
+        this.fullUrl = fullUrl;
     }
 
     @Override
@@ -91,6 +94,16 @@ public abstract class AbstractRequest implements Request {
             return null;
         }
         return session;
+    }
+
+    @Override
+    public String getCookie(String name) {
+        return getCookies().get(name);
+    }
+
+    @Override
+    public String getCookie(CookieKey key) {
+        return getCookie(key.getName());
     }
 
 }

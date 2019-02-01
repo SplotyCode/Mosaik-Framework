@@ -37,7 +37,7 @@ public interface ClassRegister<T> {
         try {
             register((T) Class.forName(clazz));
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.warn("Class " + clazz + " is not found by class loader");
         }
     }
 

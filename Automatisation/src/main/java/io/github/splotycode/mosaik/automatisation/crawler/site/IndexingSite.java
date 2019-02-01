@@ -1,8 +1,8 @@
 package io.github.splotycode.mosaik.automatisation.crawler.site;
 
 import io.github.splotycode.mosaik.automatisation.crawler.Crawler;
-import lombok.Getter;
 import io.github.splotycode.mosaik.util.io.IOUtil;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,9 +22,8 @@ public class IndexingSite implements Site {
         try {
             return IOUtil.loadText(url.openConnection().getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Could not load url to text", e);
         }
-        return null;
     }
 
     public static final Pattern pattern = Pattern.compile("<a\\s+(?:[^>]*?\\s+)?href=([\"'])(.*?)\\1");
