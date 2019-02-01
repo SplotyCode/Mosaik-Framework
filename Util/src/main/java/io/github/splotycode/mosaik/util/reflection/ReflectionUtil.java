@@ -3,11 +3,10 @@ package io.github.splotycode.mosaik.util.reflection;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public final class ReflectionUtil {
 
@@ -50,11 +49,40 @@ public final class ReflectionUtil {
         return fields;
     }
 
+    public static Set<Method> getAllMethods(Class clazz) {
+        Set<Method> methods = new HashSet<>();
+        while (clazz != Object.class) {
+            collectMethodsInInterfaces(true, clazz, methods);
+            methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
+            clazz = clazz.getSuperclass();
+        }
+        return methods;
+    }
+
+    private static void collectMethodsInInterfaces(boolean base, Class clazz, Set<Method> methods) {
+        for (Class inter : clazz.getInterfaces()) {
+            collectMethodsInInterfaces(false, inter, methods);
+        }
+        if (!base) {
+            methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
+        }
+    }
+
     public static Field getField(Class clazz, String name) {
         while (clazz != Object.class) {
             try {
                 return clazz.getDeclaredField(name);
             } catch (NoSuchFieldException e) {}
+            clazz = clazz.getSuperclass();
+        }
+        return null;
+    }
+
+    public static Method getMethod(Class clazz, String name, Class<?>... parameters) {
+        while (clazz != Object.class) {
+            try {
+                return clazz.getDeclaredMethod(name, parameters);
+            } catch (NoSuchMethodException e) {}
             clazz = clazz.getSuperclass();
         }
         return null;
