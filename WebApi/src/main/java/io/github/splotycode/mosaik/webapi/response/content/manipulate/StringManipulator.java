@@ -1,6 +1,8 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
 import io.github.splotycode.mosaik.runtime.LinkBase;
+import io.github.splotycode.mosaik.util.Pair;
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -8,6 +10,7 @@ import lombok.Getter;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Getter
@@ -54,9 +57,7 @@ public class StringManipulator implements ResponseManipulator {
         return this;
     }
 
-    @Override
-    public ResponseManipulator pattern(String name, Object object) {
-        ManipulateObjectAnalyser.AnalysedObject analysedObject = ManipulateObjectAnalyser.getObject(object);
+    private void doPattern(String name, boolean needFind, Function<String, Object> getValue) {
         ManipulateData.ManipulatePattern pattern = manipulateData.getPattern(name);
         if (pattern == null) throw new PatternNotFoundException("Could not find " + name);
 
@@ -65,18 +66,29 @@ public class StringManipulator implements ResponseManipulator {
         for (Map.Entry<String, List<ManipulateData.ManipulateVariable>> varibles : pattern.getVariables().entrySet()) {
             try {
                 String varName = varibles.getKey();
-                Object varRawValue = analysedObject.getValueByName(object, varName);
+                Object varRawValue = getValue.apply(varName);
                 String varValue = varRawValue == null ? "null" : LinkBase.getInstance().getLink(TransformerManager.LINK).transform(varRawValue, String.class);
                 for (ManipulateData.ManipulateVariable variable : varibles.getValue()) {
                     repVars.add(new Replacement(variable.getStart(), variable.getEnd(), varValue));
                 }
-            } catch (ReflectiveOperationException e) {
-                throw new ManipulationException("On " + object.getClass().getName() + "#" + varibles.getKey(), e);
+            } catch (ManipulationException e){
+                if (needFind) {
+                    throw new ManipulationException("Failed to find value by key", e);
+                }
             }
         }
+    }
 
-        String result = applyReplacements(repVars, pattern.getContent());
-        replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result));
+    @Override
+    public ResponseManipulator pattern(String name, Object object) {
+        ManipulateObjectAnalyser.AnalysedObject analysedObject = ManipulateObjectAnalyser.getObject(object);
+        doPattern(name, true, varName -> {
+            try {
+                return analysedObject.getValueByName(object, varName);
+            } catch (ReflectiveOperationException e) {
+                throw new ManipulationException("On " + object.getClass().getName() + "#" + varName, e);
+            }
+        });
         return this;
     }
 
@@ -87,15 +99,68 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     @Override
-    public ResponseManipulator pattern(String name, Iterable<?> objects) {
+    public ResponseManipulator patternList(String name, Iterable<?> objects) {
         objects.forEach(o -> pattern(name, o));
         return this;
     }
 
     @Override
-    public ResponseManipulator pattern(Iterable<?> objects) {
+    public ResponseManipulator patternList(Iterable<?> objects) {
         objects.forEach(this::pattern);
         return this;
+    }
+
+    @Override
+    public ResponseManipulator patternArray(String name, String... objects) {
+        Arrays.stream(objects).forEach(s -> pattern(name, s));
+        return this;
+    }
+
+    @Override
+    public ResponseManipulator patternArray(Object... objects) {
+        Arrays.stream(objects).forEach(this::pattern);
+        return this;
+    }
+
+    @SafeVarargs
+    @Override
+    public final ResponseManipulator patternCostom(String name, Pair<String, Object>... values) {
+        Map<String, Object> valueMap = CollectionUtil.newHashMap(values);
+        doPattern(name, true, varName -> {
+            Object value = valueMap.get(varName);
+            if (value == null) {
+                throw new ManipulationException("No value found for variable " + varName);
+            }
+            return value;
+        });
+        return this;
+    }
+
+    @SafeVarargs
+    @Override
+    public final ResponseManipulator patternCostom(String name, Object main, Pair<String, Object>... values) {
+        Map<String, Object> valueMap = CollectionUtil.newHashMap(values);
+        ManipulateObjectAnalyser.AnalysedObject analysedObject = ManipulateObjectAnalyser.getObject(main);
+        doPattern(name, true, varName -> {
+            try {
+                return analysedObject.getValueByName(main, varName);
+            } catch (ReflectiveOperationException e) {
+                throw new ManipulationException("On " + main.getClass().getName() + "#" + varName, e);
+            } catch (ManipulationException e) {
+                Object obj = valueMap.get(varName);
+                if (obj == null) {
+                    throw new ManipulationException("Variable not found in costom or in main obect", e);
+                }
+                return obj;
+            }
+        });
+        return this;
+    }
+
+    @SafeVarargs
+    @Override
+    public final ResponseManipulator patternCostom(Object main, Pair<String, Object>... values) {
+        return patternCostom(main.getClass().getSimpleName(), main, values);
     }
 
     public void reset() {
