@@ -6,6 +6,7 @@ import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import io.github.splotycode.mosaik.util.reflection.ClassCollector;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
+import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContentHandler;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
@@ -32,6 +33,7 @@ public interface WebApplicationType extends ApplicationType {
                                                     .setOnlyClasses(true);
 
     default void initType(BootContext context, WebApplicationType dummy) {
+        putConfig(WebConfig.SEARCH_ANNOTATION_HANDLERS, true);
         getLocalShutdownManager().addShutdownTask(() -> {
             WebServer server = getWebServer();
             if (server != null && server.isRunning())

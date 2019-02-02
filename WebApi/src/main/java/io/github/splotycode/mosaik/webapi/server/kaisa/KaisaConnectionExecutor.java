@@ -45,11 +45,11 @@ public class KaisaConnectionExecutor {
                 connection.configureBlocking(false);
                 KaisaRequest request = new KaisaRequest(server, connection);
                 Response response = server.handleRequest(request);
-                response.finish(request, server.getApplication());
+                response.finish(request, server);
                 //TODO write headers and response
             } catch (Throwable cause) {
                 Response response = server.getErrorHandler().handleError(cause);
-                response.finish(null, server.getApplication());
+                response.finish(null, server);
                 //TODO write headers and response
             }
         });

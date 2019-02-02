@@ -48,7 +48,7 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
 
                             long start = System.currentTimeMillis();
                             Response response = handleRequest(request);
-                            response.finish(request, application);
+                            response.finish(request, this);
                             addTotalTime(System.currentTimeMillis() - start);
 
                             exchange.setStatusCode(response.getResponseCode());
@@ -61,7 +61,7 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
                             send(exchange, response.getRawContent());
                         } catch (Throwable cause) {
                             Response response = handleError(cause);
-                            response.finish(null, application);
+                            response.finish(null, this);
                             exchange.setStatusCode(response.getResponseCode());
                             for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
                                 exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey()), pair.getValue());
