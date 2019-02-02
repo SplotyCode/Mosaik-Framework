@@ -3,7 +3,6 @@ package io.github.splotycode.mosaik.util.reflection.classregister;
 import lombok.Setter;
 import net.jodah.typetools.TypeResolver;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class ListClassRegister<T> implements IListClassRegister<T> {
@@ -28,12 +27,6 @@ public class ListClassRegister<T> implements IListClassRegister<T> {
     @Override
     public Collection<T> getList() {
         return collection;
-    }
-
-    public ArrayList<T> combind(IListClassRegister<T> register) {
-        ArrayList<T> list = new ArrayList<>(register.getList());
-        list.addAll(collection);
-        return list;
     }
 
     @Override

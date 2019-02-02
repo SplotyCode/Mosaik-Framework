@@ -3,12 +3,15 @@ package io.github.splotycode.mosaik.webapi.server.netty;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
+import io.github.splotycode.mosaik.webapi.server.BadRequestException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.AllArgsConstructor;
-import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
 
 import java.util.Map;
 
@@ -23,13 +26,13 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest nettyRequest = (FullHttpRequest) msg;
             if (!nettyRequest.decoderResult().isSuccess()) {
-                throw new AbstractWebServer.BadRequestException("Netty Decoder Failed");
+                throw new BadRequestException("Netty Decoder Failed");
             }
             Request request = new NettyRequest(server, nettyRequest, ctx);
 
             long start = System.currentTimeMillis();
             Response response = server.handleRequest(request);
-            response.finish(request, server.getApplication());
+            response.finish(request, server);
             server.addTotalTime(System.currentTimeMillis() - start);
 
             ByteBuf content = Unpooled.buffer(response.getRawContent().available());
@@ -63,7 +66,7 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Response response = server.getErrorHandler().handleError(cause);
-        response.finish(null, server.getApplication());
+        response.finish(null, server);
         ByteBuf byteBuf = Unpooled.buffer();
         byteBuf.writeBytes(response.getRawContent(), response.getRawContent().available());
         DefaultFullHttpResponse nettyResponse = new DefaultFullHttpResponse(

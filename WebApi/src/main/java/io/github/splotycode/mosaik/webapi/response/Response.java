@@ -1,9 +1,5 @@
 package io.github.splotycode.mosaik.webapi.response;
 
-import io.github.splotycode.mosaik.webapi.WebApplicationType;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import io.github.splotycode.mosaik.util.EnumUtil;
 import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
@@ -11,6 +7,10 @@ import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.response.content.ContentException;
 import io.github.splotycode.mosaik.webapi.response.content.ResponseContent;
 import io.github.splotycode.mosaik.webapi.response.content.string.StaticStringContent;
+import io.github.splotycode.mosaik.webapi.server.WebServer;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,9 +78,9 @@ public class Response {
         return this;
     }
 
-    public void finish(Request request, WebApplicationType application) {
+    public void finish(Request request, WebServer server) {
         if (content == null) {
-            content = application.getConfig(WebConfig.NO_CONTENT_RESPONSE);
+            content = server.getConfig().getData(WebConfig.NO_CONTENT_RESPONSE);
             if (content == null) {
                 content = new StaticStringContent("No Content Provided");
             }

@@ -110,7 +110,7 @@ public abstract class Logger {
 
         try {
             Logger.factory = factory.newInstance();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             ExceptionUtil.throwRuntime(e);
         }
     }

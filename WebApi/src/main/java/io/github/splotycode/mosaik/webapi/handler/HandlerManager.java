@@ -36,7 +36,7 @@ public class HandlerManager extends InitialisedOnce {
 
     @Override
     protected void init() {
-        addFinder(new StaticHandlerFinder());
+        addFinder(new StaticHandlerFinder(null));
         addFinder(new AnnotationHandlerFinder(null));
     }
 }

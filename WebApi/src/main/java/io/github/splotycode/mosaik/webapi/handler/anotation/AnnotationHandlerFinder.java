@@ -5,6 +5,8 @@ import io.github.splotycode.mosaik.util.condition.ClassConditions;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.ClassCollector;
+import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
+import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.handler.HandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.anotation.check.*;
@@ -17,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class AnnotationHandlerFinder implements HandlerFinder {
+public class AnnotationHandlerFinder extends ListClassRegister<Object> implements HandlerFinder {
 
     private static Logger logger = Logger.getInstance(AnnotationHandlerFinder.class);
 
@@ -25,12 +27,12 @@ public class AnnotationHandlerFinder implements HandlerFinder {
                                             .setNoDisableds(true)
                                             .setOnlyClasses(true)
                                             .addCostom(Conditions.or(
-                                                    item -> Arrays.stream(handlerAnotation).anyMatch(item::isAnnotationPresent),
-                                                    ClassConditions.anyMethod(method -> Arrays.stream(handlerAnotation).anyMatch(method::isAnnotationPresent))
+                                                    item -> Arrays.stream(handlerAnnotation).anyMatch(item::isAnnotationPresent),
+                                                    ClassConditions.anyMethod(method -> Arrays.stream(handlerAnnotation).anyMatch(method::isAnnotationPresent))
                                             ));
 
 
-    @Getter private static Class<Annotation>[] handlerAnotation = new Class[]{
+    @Getter private static Class<Annotation>[] handlerAnnotation = new Class[]{
             Handler.class, AddTransformer.class,
             First.class, GetMustBe.class,
             Last.class, Mapping.class,
@@ -39,26 +41,30 @@ public class AnnotationHandlerFinder implements HandlerFinder {
             NeedPostParameter.class, PostMustBe.class,
             Priority.class
     };
-    private AbstractWebServer server;
+    @Getter private AbstractWebServer webServer;
 
-    public AnnotationHandlerFinder(AbstractWebServer server) {
-        this.server = server;
+    public AnnotationHandlerFinder(AbstractWebServer webServer) {
+        this.webServer = webServer;
     }
 
     @Override
     public Collection<? extends HttpHandler> search() {
         List<AnnotationHandler> handlers = new ArrayList<>();
-        try {
-            for (Class<?> clazz : classCollector.collectAll()) {
-                Object obj = clazz.newInstance();
-                AnnotationHandler handler = new AnnotationHandler(obj, server);
-                handlers.add(handler);
+        if (webServer.getConfig().getData(WebConfig.SEARCH_ANNOTATION_HANDLERS)) {
+            for (Object obj : classCollector.collectAllInstances()) {
+                add(obj, handlers);
             }
-        } catch (IllegalAccessException | InstantiationException ex) {
-            ex.printStackTrace();
+        }
+        for (Object obj : getAll()) {
+            add(obj, handlers);
         }
         logger.info("Found Annotation Handlers (" + handlers.size() + "/" + classCollector.totalResults() + "): " + StringUtil.join(handlers, handler -> handler.getHandlerObj().getClass().getSimpleName(), ", "));
         return handlers;
+    }
+
+    private void add(Object obj, Collection<AnnotationHandler> handlers) {
+        AnnotationHandler handler = new AnnotationHandler(obj, webServer);
+        handlers.add(handler);
     }
 
 }

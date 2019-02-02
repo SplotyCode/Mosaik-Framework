@@ -61,7 +61,7 @@ public class StartTaskExecutor {
             try {
                 task.execute(environmentChanger);
                 run++;
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 logger.info("Failed to Execute StartupTask", new FrameworkStartException("Exception in StartupTask", ex));
             }
         }

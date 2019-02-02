@@ -27,7 +27,7 @@ public class ApplicationHandleImpl implements ApplicationHandle {
         application.setState(ApplicationState.CONFIGURISED);
         try {
             application.configurise(environmentChanger, application.getConfig());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ApplicationStartUpException("Exception in " + application.getName() + "#configurise() method");
         }
     }
@@ -45,7 +45,7 @@ public class ApplicationHandleImpl implements ApplicationHandle {
         });
         try {
             application.start(bootContext);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new ApplicationStartUpException("Exception in " + application.getName() + "#start", e);
         }
         application.setState(ApplicationState.STARTED);

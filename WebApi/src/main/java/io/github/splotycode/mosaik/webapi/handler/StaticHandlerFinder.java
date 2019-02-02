@@ -1,22 +1,36 @@
 package io.github.splotycode.mosaik.webapi.handler;
 
+import io.github.splotycode.mosaik.util.AlmostBoolean;
+import io.github.splotycode.mosaik.util.reflection.ClassCollector;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
+import io.github.splotycode.mosaik.webapi.config.WebConfig;
+import io.github.splotycode.mosaik.webapi.server.WebServer;
+import lombok.Getter;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
+@Getter
 public class StaticHandlerFinder extends ListClassRegister<HttpHandler> implements HandlerFinder {
 
-    private Set<HttpHandler> handlers = new HashSet<>();
+    private static final ClassCollector collector = ClassCollector.newInstance()
+            .setAbstracation(AlmostBoolean.NO)
+            .setOnlyClasses(true)
+            .setNeedAssignable(HttpHandler.class);
 
-    public StaticHandlerFinder() {
-        setCollection(handlers);
+    private WebServer webServer;
+
+    public StaticHandlerFinder(WebServer webServer) {
+        super(new HashSet<>());
+        this.webServer = webServer;
     }
 
     @Override
     public Collection<HttpHandler> search() {
-        return handlers;
+        if (webServer.getConfig().getData(WebConfig.SEARCH_HANDLERS)) {
+            return combind(collector.collectAllInstances());
+        }
+        return getAll();
     }
 
 }
