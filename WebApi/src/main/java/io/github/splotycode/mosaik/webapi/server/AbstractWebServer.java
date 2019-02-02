@@ -1,22 +1,24 @@
 package io.github.splotycode.mosaik.webapi.server;
 
-import io.github.splotycode.mosaik.webapi.WebApplicationType;
-import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
-import io.github.splotycode.mosaik.webapi.request.Request;
-import io.github.splotycode.mosaik.webapi.request.body.RequestContentHandler;
-import io.github.splotycode.mosaik.webapi.response.Response;
-import io.github.splotycode.mosaik.webapi.response.error.ErrorHandler;
-import lombok.Getter;
-import lombok.Setter;
+import io.github.splotycode.mosaik.util.datafactory.DataFactory;
+import io.github.splotycode.mosaik.util.datafactory.LinkedDataFactory;
 import io.github.splotycode.mosaik.util.init.InitialisedOnce;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
+import io.github.splotycode.mosaik.webapi.WebApplicationType;
 import io.github.splotycode.mosaik.webapi.handler.HandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.StaticHandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.anotation.AnnotationHandlerFinder;
+import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.webapi.request.Request;
+import io.github.splotycode.mosaik.webapi.request.body.RequestContentHandler;
+import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.response.error.ErrorFactory;
+import io.github.splotycode.mosaik.webapi.response.error.ErrorHandler;
 import io.github.splotycode.mosaik.webapi.session.SessionSystem;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -34,13 +36,15 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
 
     @Getter protected WebApplicationType application;
     @Setter @Getter protected ErrorHandler errorHandler = new ErrorHandler();
+    @Getter private DataFactory config;
 
     public AbstractWebServer(WebApplicationType application) {
         this.application = application;
+        config = new LinkedDataFactory(application.getConfig());
     }
 
     @Getter private List<HttpHandler> allHandlers = new ArrayList<>();
-    @Getter private StaticHandlerFinder staticHandlerFinder = new StaticHandlerFinder();
+    @Getter private StaticHandlerFinder staticHandlerFinder = new StaticHandlerFinder(this);
     @Getter private AnnotationHandlerFinder annotationHandlerFinder = new AnnotationHandlerFinder(this);
 
     private List<ParameterResolver> parameterResolvers = new ArrayList<>();

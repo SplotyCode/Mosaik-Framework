@@ -1,12 +1,12 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation;
 
-import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.condition.ClassConditions;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.ClassCollector;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
+import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.handler.HandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.anotation.check.*;
@@ -41,22 +41,19 @@ public class AnnotationHandlerFinder extends ListClassRegister<Object> implement
             NeedPostParameter.class, PostMustBe.class,
             Priority.class
     };
-    private AbstractWebServer server;
+    @Getter private AbstractWebServer webServer;
 
-    public AnnotationHandlerFinder(AbstractWebServer server) {
-        this.server = server;
+    public AnnotationHandlerFinder(AbstractWebServer webServer) {
+        this.webServer = webServer;
     }
 
     @Override
     public Collection<? extends HttpHandler> search() {
         List<AnnotationHandler> handlers = new ArrayList<>();
-        try {
-            for (Class<?> clazz : classCollector.collectAll()) {
-                Object obj = clazz.newInstance();
+        if (webServer.getConfig().getData(WebConfig.SEARCH_ANNOTATION_HANDLERS)) {
+            for (Object obj : classCollector.collectAllInstances()) {
                 add(obj, handlers);
             }
-        } catch (IllegalAccessException | InstantiationException ex) {
-            ExceptionUtil.throwRuntime(ex);
         }
         for (Object obj : getAll()) {
             add(obj, handlers);
@@ -66,7 +63,7 @@ public class AnnotationHandlerFinder extends ListClassRegister<Object> implement
     }
 
     private void add(Object obj, Collection<AnnotationHandler> handlers) {
-        AnnotationHandler handler = new AnnotationHandler(obj, server);
+        AnnotationHandler handler = new AnnotationHandler(obj, webServer);
         handlers.add(handler);
     }
 
