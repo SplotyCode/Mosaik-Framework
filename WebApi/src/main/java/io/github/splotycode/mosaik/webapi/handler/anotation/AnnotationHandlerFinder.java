@@ -44,6 +44,7 @@ public class AnnotationHandlerFinder extends ListClassRegister<Object> implement
     @Getter private AbstractWebServer webServer;
 
     public AnnotationHandlerFinder(AbstractWebServer webServer) {
+        super(new ArrayList<>());
         this.webServer = webServer;
     }
 

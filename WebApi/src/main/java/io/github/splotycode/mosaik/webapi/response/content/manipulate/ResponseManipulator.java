@@ -10,14 +10,14 @@ public interface ResponseManipulator {
     ResponseManipulator pattern(String name, Object object);
     ResponseManipulator pattern(Object object);
 
-    ResponseManipulator patternList(String name, Iterable<?> objects);
+    ResponseManipulator patternListName(String name, Iterable<?> objects);
     ResponseManipulator patternList(Iterable<?> objects);
 
-    ResponseManipulator patternArray(String name, String... objects);
+    ResponseManipulator patternArrayName(String name, Object... objects);
     ResponseManipulator patternArray(Object... objects);
 
-    ResponseManipulator patternCostom(String name, Pair<String, Object>... values);
-    ResponseManipulator patternCostom(String name, Object main, Pair<String, Object>... values);
-    ResponseManipulator patternCostom(Object main, Pair<String, Object>... values);
+    ResponseManipulator patternCostomName(String name, Pair<String, Object>... values);
+    ResponseManipulator patternCostomWithObj(String name, Object main, Pair<String, Object>... values);
+    ResponseManipulator patternCostomWithObj(Object main, Pair<String, Object>... values);
 
 }
