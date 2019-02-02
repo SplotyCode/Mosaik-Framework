@@ -102,7 +102,7 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     @Override
-    public ResponseManipulator patternList(String name, Iterable<?> objects) {
+    public ResponseManipulator patternListName(String name, Iterable<?> objects) {
         objects.forEach(o -> pattern(name, o));
         return this;
     }
@@ -114,8 +114,8 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     @Override
-    public ResponseManipulator patternArray(String name, String... objects) {
-        Arrays.stream(objects).forEach(s -> pattern(name, s));
+    public ResponseManipulator patternArrayName(String name, Object... objects) {
+        Arrays.stream(objects).forEach(o -> pattern(name, o));
         return this;
     }
 
@@ -127,7 +127,7 @@ public class StringManipulator implements ResponseManipulator {
 
     @SafeVarargs
     @Override
-    public final ResponseManipulator patternCostom(String name, Pair<String, Object>... values) {
+    public final ResponseManipulator patternCostomName(String name, Pair<String, Object>... values) {
         Map<String, Object> valueMap = CollectionUtil.newHashMap(values);
         doPattern(name, true, varName -> {
             Object value = valueMap.get(varName);
@@ -141,7 +141,7 @@ public class StringManipulator implements ResponseManipulator {
 
     @SafeVarargs
     @Override
-    public final ResponseManipulator patternCostom(String name, Object main, Pair<String, Object>... values) {
+    public final ResponseManipulator patternCostomWithObj(String name, Object main, Pair<String, Object>... values) {
         Map<String, Object> valueMap = CollectionUtil.newHashMap(values);
         ManipulateObjectAnalyser.AnalysedObject analysedObject = ManipulateObjectAnalyser.getObject(main);
         doPattern(name, true, varName -> {
@@ -162,8 +162,8 @@ public class StringManipulator implements ResponseManipulator {
 
     @SafeVarargs
     @Override
-    public final ResponseManipulator patternCostom(Object main, Pair<String, Object>... values) {
-        return patternCostom(main.getClass().getSimpleName(), main, values);
+    public final ResponseManipulator patternCostomWithObj(Object main, Pair<String, Object>... values) {
+        return patternCostomWithObj(main.getClass().getSimpleName(), main, values);
     }
 
     public void reset() {
