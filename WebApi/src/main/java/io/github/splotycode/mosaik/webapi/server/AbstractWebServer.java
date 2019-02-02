@@ -40,7 +40,8 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     }
 
     @Getter private List<HttpHandler> allHandlers = new ArrayList<>();
-    @Getter private StaticHandlerFinder staticHandlerFinder;
+    @Getter private StaticHandlerFinder staticHandlerFinder = new StaticHandlerFinder();
+    @Getter private AnnotationHandlerFinder annotationHandlerFinder = new AnnotationHandlerFinder(this);
 
     private List<ParameterResolver> parameterResolvers = new ArrayList<>();
     @Getter private ListClassRegister<ParameterResolver> parameterResolverRegister = new ListClassRegister<>(parameterResolvers);
@@ -74,9 +75,8 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
 
     @Override
     protected void init() {
-        staticHandlerFinder = new StaticHandlerFinder();
         addFinder(staticHandlerFinder);
-        addFinder(new AnnotationHandlerFinder(this));
+        addFinder(annotationHandlerFinder);
     }
 
     public void addFinder(HandlerFinder finder) {
@@ -119,48 +119,4 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
         if (isRunning()) throw new ServerAlreadyRunningException();
     }
 
-    public static class ServerAlreadyRunningException extends RuntimeException {
-
-        public ServerAlreadyRunningException() {
-        }
-
-        public ServerAlreadyRunningException(String s) {
-            super(s);
-        }
-
-        public ServerAlreadyRunningException(String s, Throwable throwable) {
-            super(s, throwable);
-        }
-
-        public ServerAlreadyRunningException(Throwable throwable) {
-            super(throwable);
-        }
-
-        public ServerAlreadyRunningException(String s, Throwable throwable, boolean b, boolean b1) {
-            super(s, throwable, b, b1);
-        }
-    }
-
-    public static class BadRequestException extends RuntimeException {
-
-        public BadRequestException() {
-        }
-
-        public BadRequestException(String s) {
-            super(s);
-        }
-
-        public BadRequestException(String s, Throwable throwable) {
-            super(s, throwable);
-        }
-
-        public BadRequestException(Throwable throwable) {
-            super(throwable);
-        }
-
-        public BadRequestException(String s, Throwable throwable, boolean b, boolean b1) {
-            super(s, throwable, b, b1);
-        }
-
-    }
 }
