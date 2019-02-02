@@ -159,7 +159,7 @@ public class AnnotationHandlerData {
                 }
             } catch (IllegalHandlerException ex) {
                 setLoadingError(ex);
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 setLoadingError(new IllegalHandlerException("Exception while parsing handler", ex));
             }
 

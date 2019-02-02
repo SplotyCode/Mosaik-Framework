@@ -20,9 +20,8 @@ public final class CollectionUtil {
         return map;
     }
 
-    public static <K, V> Map<K, V> newHashMap(Pair<K, ? extends V> first, Pair<K, ? extends V>... entries) {
+    public static <K, V> Map<K, V> newHashMap(Pair<K, ? extends V>... entries) {
         Map<K, V> map = new HashMap<>(entries.length + 1);
-        map.put(first.getOne(), first.getTwo());
         for (Pair<K, ? extends V> entry : entries) {
             map.put(entry.getOne(), entry.getTwo());
         }
