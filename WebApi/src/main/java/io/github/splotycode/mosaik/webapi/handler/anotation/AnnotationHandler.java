@@ -30,7 +30,7 @@ public class AnnotationHandler implements HttpHandler {
         global = new AnnotationHandlerData(handlerObj.getClass().getAnnotations());
 
         for (Method method : handlerObj.getClass().getMethods()) {
-            for (Class<Annotation> annotation : AnnotationHandlerFinder.getHandlerAnotation()) {
+            for (Class<Annotation> annotation : AnnotationHandlerFinder.getHandlerAnnotation()) {
                 if (method.isAnnotationPresent(annotation)) {
                     AnnotationHandlerData.SupAnnotationHandlerData data = new AnnotationHandlerData.SupAnnotationHandlerData(method.getDeclaredAnnotations(), method, server);
                     subs.add(data);
