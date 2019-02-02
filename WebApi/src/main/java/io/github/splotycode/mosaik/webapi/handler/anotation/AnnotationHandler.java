@@ -42,7 +42,7 @@ public class AnnotationHandler implements HttpHandler {
 
     @Override
     public boolean valid(Request request) {
-        return global.valid(request) || subs.stream().anyMatch(sub -> sub.valid(request));
+        return global.valid(request) && subs.stream().anyMatch(sub -> sub.valid(request));
     }
 
     @Override
