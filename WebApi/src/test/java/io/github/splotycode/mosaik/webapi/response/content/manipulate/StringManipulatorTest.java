@@ -68,7 +68,7 @@ class StringManipulatorTest {
         for (int i = 0; i < 12; i++) {
             data.add(new Pat("david", i + 10));
         }
-        manipulator.pattern(data);
+        manipulator.patternList(data);
         Assertions.assertEquals(manipulator.getResult(), "hallo Name: david <br> Age: 15 <br><br>  Name: david <br> Age: 20 <br><br>  Name: david <br> Age: 13 <br><br>  Name: david <br> Age: 21 <br><br>  Name: david <br> Age: 14 <br><br>  Name: david <br> Age: 19 <br><br>  Name: david <br> Age: 10 <br><br>  Name: david <br> Age: 12 <br><br>  Name: david <br> Age: 18 <br><br>  Name: david <br> Age: 17 <br><br>  Name: david <br> Age: 16 <br><br>  Name: david <br> Age: 11 <br><br> hasdasdas");
     }
 
