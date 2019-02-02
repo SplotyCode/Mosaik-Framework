@@ -77,6 +77,9 @@ public class StringManipulator implements ResponseManipulator {
                 }
             }
         }
+
+        String result = applyReplacements(repVars, pattern.getContent());
+        replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result));
     }
 
     @Override
