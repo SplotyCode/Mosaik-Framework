@@ -17,21 +17,23 @@ public class DataFactory {
     }
 
     public <T> T getData(DataKey<T> key) {
-        return (T) data.get(key.name);
+        return getData(key.name, key);
     }
 
     /*
      * This will use the name instead of the key name
      * The Key is only for providing the Generic
      */
+    @SuppressWarnings("unused")
     public <T> T getData(String name, DataKey<T> key) {
         return (T) data.get(name);
     }
 
     public <T> void putData(DataKey<T> key, T obj) {
-        data.putIfAbsent(key.name, obj);
+        putData(key.name, key, obj);
     }
 
+    @SuppressWarnings("unused")
     public <T> void putData(String name, DataKey<T> key, T obj) {
         data.putIfAbsent(name, obj);
     }
@@ -49,7 +51,7 @@ public class DataFactory {
     }
 
     public boolean containsData(DataKey<?> key) {
-        return data.containsKey(key.getName());
+        return containsData(key.getName());
     }
 
     public int getDataSize() {
