@@ -69,7 +69,12 @@ class StringManipulatorTest {
             data.add(new Pat("david", i + 10));
         }
         manipulator.patternList(data);
-        Assertions.assertEquals(manipulator.getResult(), "hallo Name: david <br> Age: 15 <br><br>  Name: david <br> Age: 20 <br><br>  Name: david <br> Age: 13 <br><br>  Name: david <br> Age: 21 <br><br>  Name: david <br> Age: 14 <br><br>  Name: david <br> Age: 19 <br><br>  Name: david <br> Age: 10 <br><br>  Name: david <br> Age: 12 <br><br>  Name: david <br> Age: 18 <br><br>  Name: david <br> Age: 17 <br><br>  Name: david <br> Age: 16 <br><br>  Name: david <br> Age: 11 <br><br> hasdasdas");
+        Assertions.assertEquals("hallo Name: david <br> Age: 15 <br><br>  Name: david <br> Age: 20 <br><br>  Name: david <br> Age: 13 <br><br>  Name: david <br> Age: 21 <br><br>  Name: david <br> Age: 14 <br><br>  Name: david <br> Age: 19 <br><br>  Name: david <br> Age: 10 <br><br>  Name: david <br> Age: 12 <br><br>  Name: david <br> Age: 18 <br><br>  Name: david <br> Age: 17 <br><br>  Name: david <br> Age: 16 <br><br>  Name: david <br> Age: 11 <br><br> hasdasdas", manipulator.getResult());
+    }
+
+    @Test
+    void testPatternInPattern() {
+
     }
 
 

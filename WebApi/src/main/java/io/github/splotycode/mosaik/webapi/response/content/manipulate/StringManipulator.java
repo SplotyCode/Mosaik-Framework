@@ -4,11 +4,14 @@ import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
+import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternCommand;
+import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -39,6 +42,22 @@ public class StringManipulator implements ResponseManipulator {
     @Override
     public ResponseManipulator object(Object object) {
         ManipulateObjectAnalyser.AnalysedObject data = ManipulateObjectAnalyser.getObject(object);
+        for (Map.Entry<String, List<ManipulateData.ManipulateVariable>> variable : manipulateData.getVariableMap().entrySet()) {
+            String name = variable.getKey();
+            try {
+                Object rawValue = data.getValueByName(object, name);
+                String value = rawValue == null ? "null" : LinkBase.getInstance().getLink(TransformerManager.LINK).transform(rawValue, String.class);
+
+                for (ManipulateData.ManipulateVariable rep : variable.getValue()) {
+                    replacements.add(new Replacement(rep.getStart(), rep.getEnd(), value));
+                }
+            } catch (ManipulationException ignore) {
+
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new ManipulationException("On " + object.getClass().getName() + "#" + name, e);
+            }
+
+        }
         for (Map.Entry<String, Field> entry : data.getFields().entrySet()) {
             List<ManipulateData.ManipulateVariable> variables = manipulateData.getVariables(entry.getKey());
             Field field = entry.getValue();
@@ -57,16 +76,26 @@ public class StringManipulator implements ResponseManipulator {
         return this;
     }
 
-    private void doPattern(String name, boolean needFind, Function<String, Object> getValue) {
+    private ManipulateData.ManipulatePattern patternFromName(String name) {
         ManipulateData.ManipulatePattern pattern = manipulateData.getPattern(name);
         if (pattern == null) throw new PatternNotFoundException("Could not find " + name);
+        return pattern;
+    }
 
+    private void doPattern(String name, boolean needFind, Function<String, Object> valueFunc) {
+        ManipulateData.ManipulatePattern pattern = patternFromName(name);
+
+        String result = applyReplacements(createPatternReplacements(pattern, needFind, valueFunc), pattern.getContent());
+        replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result));
+    }
+
+    private Set<Replacement> createPatternReplacements(ManipulateData.ManipulatePattern pattern, boolean needFind, Function<String, Object> valueFunc) {
         Set<Replacement> repVars = new HashSet<>();
 
         for (Map.Entry<String, List<ManipulateData.ManipulateVariable>> varibles : pattern.getVariables().entrySet()) {
             try {
                 String varName = varibles.getKey();
-                Object varRawValue = getValue.apply(varName);
+                Object varRawValue = valueFunc.apply(varName);
                 String varValue = varRawValue == null ? "null" : LinkBase.getInstance().getLink(TransformerManager.LINK).transform(varRawValue, String.class);
                 for (ManipulateData.ManipulateVariable variable : varibles.getValue()) {
                     repVars.add(new Replacement(variable.getStart(), variable.getEnd(), varValue));
@@ -78,8 +107,7 @@ public class StringManipulator implements ResponseManipulator {
             }
         }
 
-        String result = applyReplacements(repVars, pattern.getContent());
-        replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result));
+        return repVars;
     }
 
     @Override
@@ -100,6 +128,46 @@ public class StringManipulator implements ResponseManipulator {
         pattern(object.getClass().getSimpleName().toLowerCase(), object);
         return this;
     }
+
+    @Override
+    public ResponseManipulator pattern(PatternCommand command) {
+        //patternAction(command.getPrimary());
+        //command.getSecondaries().forEach(this::patternAction);
+        return this;
+    }
+
+    /*private Set<Replacement> commandToReplacements(PatternCommand command, Set<Replacement> replacements) {
+        for (PatternCommand child : command.)
+    }
+
+    private void patternAction(PatternAction action) {
+        Set<Replacement> repl = new HashSet<>();
+        String patName = action.getCommand().getName();
+        ManipulateData.ManipulatePattern pattern = patternFromName(patName);
+
+        repl.addAll(createPatternReplacements(pattern, true, name -> {
+            for (Object object : action.getObjects()) {
+                try {
+                    return ManipulateObjectAnalyser.getObject(object).getValueByName(object, name);
+                } catch (ManipulationException ignore) {
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    ExceptionUtil.throwRuntime(e);
+                }
+            }
+            Object object = action.getCostom().get(name);
+            if (object == null) {
+                throw new ManipulationException("No value found for variable " + name);
+            }
+            return object;
+        }));
+        for (PatternCommand command : action.getChilds()) {
+            repl.addAll(commandToReplacements(command, new HashSet<>()));
+        }
+
+
+        String result = applyReplacements(repl, pattern.getContent());
+        replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result));
+    }*/
 
     @Override
     public ResponseManipulator patternListName(String name, Iterable<?> objects) {
@@ -231,25 +299,4 @@ public class StringManipulator implements ResponseManipulator {
         }
     }
 
-    public static class PatternNotFoundException extends RuntimeException {
-
-        public PatternNotFoundException() {
-        }
-
-        public PatternNotFoundException(String s) {
-            super(s);
-        }
-
-        public PatternNotFoundException(String s, Throwable throwable) {
-            super(s, throwable);
-        }
-
-        public PatternNotFoundException(Throwable throwable) {
-            super(throwable);
-        }
-
-        public PatternNotFoundException(String s, Throwable throwable, boolean b, boolean b1) {
-            super(s, throwable, b, b1);
-        }
-    }
 }

@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
 import io.github.splotycode.mosaik.util.Pair;
+import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternCommand;
 
 public interface ResponseManipulator {
 
@@ -9,6 +10,7 @@ public interface ResponseManipulator {
 
     ResponseManipulator pattern(String name, Object object);
     ResponseManipulator pattern(Object object);
+    ResponseManipulator pattern(PatternCommand command);
 
     ResponseManipulator patternListName(String name, Iterable<?> objects);
     ResponseManipulator patternList(Iterable<?> objects);
