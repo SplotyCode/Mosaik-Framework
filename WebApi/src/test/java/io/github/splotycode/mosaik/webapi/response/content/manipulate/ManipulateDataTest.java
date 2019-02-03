@@ -47,4 +47,10 @@ class ManipulateDataTest {
         Assertions.assertEquals(EXPECTED, new PrettyPrint(manipulator.getManipulateData().getPatternMap()).prettyPrintType());
     }
 
+    @Test
+    void testPatternInPatternPositions() {
+        InvokeStartUp.start();
+        StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $@pat2$ $adsd$ $eee$ $@@$ $name$ 333 $age$ $@@$hasdasdas");
+    }
+
 }

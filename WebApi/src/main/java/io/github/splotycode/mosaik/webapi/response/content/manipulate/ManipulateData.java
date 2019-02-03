@@ -38,10 +38,14 @@ public class ManipulateData {
         int start = -1;
         int varStartForPattern = -1;
         int current = 0;
-        String patternContent = null;
+       // String patternContent = null;
         ManipulatePattern currentPattern = null;
         for (char ch : input.toCharArray()) {
-            if (patternContent != null) patternContent += ch;
+            ManipulatePattern upper = currentPattern;
+            while (upper != null) {
+                upper.setContent(upper.getContent() == null ? "" : upper.getContent() + ch);
+                upper = upper.parent;
+            }
             switch (state) {
                 case 0:
                     if (ch == '$') {
@@ -68,9 +72,13 @@ public class ManipulateData {
                     if (stack.isEmpty() && ch == '@') {
                         state = 3;
                     } else if (ch == '$') {
-                        currentPattern = new ManipulatePattern(start);
-                        patterns.put(stack, currentPattern);
-                        patternContent = "";
+                        ManipulatePattern parent = currentPattern;
+                        currentPattern = new ManipulatePattern(start, parent);
+                        if (parent != null) {
+                            parent.getChilds().put(stack, currentPattern);
+                        } else {
+                            patterns.put(stack, currentPattern);
+                        }
                         varStartForPattern = current;
                         stack = "";
                         state = 0;
@@ -82,9 +90,8 @@ public class ManipulateData {
                     if (ch == '$') {
                         if (currentPattern == null) throw new SyntaxException("Can not close Pattern if there was no pattern opened");
                         currentPattern.setEnd(current + 1);
-                        currentPattern.setContent(StringUtil.removeLast(patternContent, 4));
-                        patternContent = null;
-                        currentPattern = null;
+                        currentPattern.setContent(StringUtil.removeLast(currentPattern.getContent(), 4));
+                        currentPattern = currentPattern.parent;
                         stack = "";
                         state = 0;
                     } else throw new SyntaxException("Expected $ for pattern close");
@@ -119,9 +126,12 @@ public class ManipulateData {
         private int start;
         @Setter private int end;
         @Setter private String content;
+        private HashMap<String, ManipulatePattern> childs = new HashMap<>();
+        private ManipulatePattern parent;
 
-        public ManipulatePattern(int start) {
+        public ManipulatePattern(int start, ManipulatePattern parent) {
             this.start = start;
+            this.parent = parent;
         }
 
         private HashMap<String, List<ManipulateVariable>> variables = new HashMap<>();
