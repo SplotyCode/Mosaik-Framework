@@ -198,6 +198,7 @@ public final class StringUtil {
     }
 
     public static String removeLast(String str, int places) {
+        if (isEmpty(str)) return str;
         return str.substring(0, str.length() - places);
     }
 
