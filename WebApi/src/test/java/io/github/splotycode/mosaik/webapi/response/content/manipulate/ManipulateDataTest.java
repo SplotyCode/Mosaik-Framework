@@ -11,6 +11,8 @@ class ManipulateDataTest {
             "    start: 5\n" +
             "    end: 38\n" +
             "    content:  dasd $name$ 333 $age$ \n" +
+            "    childs: []\n" +
+            "    parent: null\n" +
             "    variables: [age=[ManipulateVariable[\n" +
             "    start: 17\n" +
             "    end: 22\n" +

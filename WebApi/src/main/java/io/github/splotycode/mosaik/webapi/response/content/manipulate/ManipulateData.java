@@ -43,7 +43,7 @@ public class ManipulateData {
         for (char ch : input.toCharArray()) {
             ManipulatePattern upper = currentPattern;
             while (upper != null) {
-                upper.setContent(upper.getContent() == null ? "" : upper.getContent() + ch);
+                upper.setContent((upper.getContent() == null ? "" : upper.getContent()) + ch);
                 upper = upper.parent;
             }
             switch (state) {

@@ -1,9 +1,11 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
 import io.github.splotycode.mosaik.runtime.LinkBase;
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
+import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternAction;
 import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternCommand;
 import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternNotFoundException;
 import lombok.AllArgsConstructor;
@@ -129,15 +131,16 @@ public class StringManipulator implements ResponseManipulator {
         return this;
     }
 
+    //TODO
     @Override
     public ResponseManipulator pattern(PatternCommand command) {
-        //patternAction(command.getPrimary());
-        //command.getSecondaries().forEach(this::patternAction);
+        patternAction(command.getPrimary());
+        command.getSecondaries().forEach(this::patternAction);
         return this;
     }
 
-    /*private Set<Replacement> commandToReplacements(PatternCommand command, Set<Replacement> replacements) {
-        for (PatternCommand child : command.)
+    private Set<Replacement> commandToReplacements(PatternCommand command, Set<Replacement> replacements) {
+        return new HashSet<>();
     }
 
     private void patternAction(PatternAction action) {
@@ -167,7 +170,7 @@ public class StringManipulator implements ResponseManipulator {
 
         String result = applyReplacements(repl, pattern.getContent());
         replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result));
-    }*/
+    }
 
     @Override
     public ResponseManipulator patternListName(String name, Iterable<?> objects) {

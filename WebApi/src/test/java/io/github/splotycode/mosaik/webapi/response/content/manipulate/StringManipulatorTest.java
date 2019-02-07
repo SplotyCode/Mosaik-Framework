@@ -57,7 +57,7 @@ class StringManipulatorTest {
         InvokeStartUp.start();
         StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $name$ 333 $age$ $@@$hasdasdas");
         manipulator.pattern(new Pat());
-        Assertions.assertEquals(manipulator.getResult(), "hallo dasd david 333 14 hasdasdas");
+        Assertions.assertEquals("hallo dasd david 333 14 hasdasdas", manipulator.getResult());
     }
 
     @Test
