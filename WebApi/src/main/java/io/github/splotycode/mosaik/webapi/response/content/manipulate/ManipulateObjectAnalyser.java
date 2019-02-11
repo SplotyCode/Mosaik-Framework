@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
+import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.Pattern;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
@@ -14,13 +15,11 @@ import java.util.stream.Stream;
 
 public class ManipulateObjectAnalyser {
 
-    private static HashMap<String, AnalysedObject> objects = new HashMap<>();
+    private static HashMap<Class, AnalysedObject> objects = new HashMap<>();
 
     public static AnalysedObject getObject(Object object) {
-        String className = object.getClass().getSimpleName();
-        //if (object.getClass().isAnnotationPresent(Pattern.class))
-        //    objects.put(object.getClass().getAnnotation(Pattern.class).value(), data);
-        return objects.computeIfAbsent(className, k -> new AnalysedObject(object));
+        Class clazz = object.getClass();
+        return objects.computeIfAbsent(clazz, k -> new AnalysedObject(clazz));
     }
 
     @Getter
@@ -29,15 +28,18 @@ public class ManipulateObjectAnalyser {
         private Map<String, Field> fields = new HashMap<>();
         private Map<String, Method> methods = new HashMap<>();
 
-        private AnalysedObject(Object object) {
-            for (Field field : ReflectionUtil.getAllFields(object.getClass())) {
+        private Class clazz;
+
+        private AnalysedObject(Class clazz) {
+            this.clazz = clazz;
+            for (Field field : ReflectionUtil.getAllFields(clazz)) {
                 String name = field.getName();
                 if (field.isAnnotationPresent(Pattern.class)) {
                     name = field.getAnnotation(Pattern.class).value();
                 }
                 fields.put(name, field);
             }
-            for (Method method : ReflectionUtil.getAllMethods(object.getClass())) {
+            for (Method method : ReflectionUtil.getAllMethods(clazz)) {
                 HandleAsField anno = method.getAnnotation(HandleAsField.class);
                 if (anno != null) {
                     if (method.getParameterCount() != 0) throw new ManipulationException("Methods with @HandleAsField may not have parameters");

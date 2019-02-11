@@ -1,14 +1,20 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
+import com.google.common.collect.Lists;
 import io.github.splotycode.mosaik.runtime.LinkBase;
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
+import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternAction;
+import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternCommand;
+import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -31,7 +37,7 @@ public class StringManipulator implements ResponseManipulator {
         if (variables == null) throw new VariableNotFoundException("Could not find " + str);
 
         for (ManipulateData.ManipulateVariable variable : variables) {
-            replacements.add(new Replacement(variable.getStart(), variable.getEnd(), obj.toString()));
+            replacements.add(new Replacement(variable.getStart(), variable.getEnd(), obj.toString(), "replace normal variable"));
         }
         return this;
     }
@@ -39,47 +45,57 @@ public class StringManipulator implements ResponseManipulator {
     @Override
     public ResponseManipulator object(Object object) {
         ManipulateObjectAnalyser.AnalysedObject data = ManipulateObjectAnalyser.getObject(object);
-        for (Map.Entry<String, Field> entry : data.getFields().entrySet()) {
-            List<ManipulateData.ManipulateVariable> variables = manipulateData.getVariables(entry.getKey());
-            Field field = entry.getValue();
-            if (variables != null) {
-                try {
-                    field.setAccessible(true);
-                    String value = field.get(object).toString();
-                    for (ManipulateData.ManipulateVariable variable : variables) {
-                        replacements.add(new Replacement(variable.getStart(), variable.getEnd(), value));
-                    }
-                } catch (IllegalAccessException e) {
-                    throw new ManipulationException("On " + object.getClass().getName() + "#" + (field == null ? "null" : field.getName()), e);
+        for (Map.Entry<String, List<ManipulateData.ManipulateVariable>> variable : manipulateData.getVariableMap().entrySet()) {
+            String name = variable.getKey();
+            try {
+                Object rawValue = data.getValueByName(object, name);
+                String value = rawValue == null ? "null" : LinkBase.getInstance().getLink(TransformerManager.LINK).transform(rawValue, String.class);
+
+                for (ManipulateData.ManipulateVariable rep : variable.getValue()) {
+                    replacements.add(new Replacement(rep.getStart(), rep.getEnd(), value, "replace object variable"));
                 }
+            } catch (ManipulationException ignore) {
+
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new ManipulationException("On " + object.getClass().getName() + "#" + name, e);
             }
+
         }
         return this;
     }
 
-    private void doPattern(String name, boolean needFind, Function<String, Object> getValue) {
+    private ManipulateData.ManipulatePattern patternFromName(String name) {
         ManipulateData.ManipulatePattern pattern = manipulateData.getPattern(name);
         if (pattern == null) throw new PatternNotFoundException("Could not find " + name);
+        return pattern;
+    }
 
+    private void doPattern(String name, boolean needFind, Function<String, Object> valueFunc) {
+        ManipulateData.ManipulatePattern pattern = patternFromName(name);
+
+        String result = applyReplacements(createPatternReplacements(pattern, needFind, valueFunc), pattern.getContent());
+        replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result, "replace pattern instance: " + name));
+    }
+
+    private Set<Replacement> createPatternReplacements(ManipulateData.ManipulatePattern pattern, boolean needFind, Function<String, Object> valueFunc) {
         Set<Replacement> repVars = new HashSet<>();
 
         for (Map.Entry<String, List<ManipulateData.ManipulateVariable>> varibles : pattern.getVariables().entrySet()) {
             try {
                 String varName = varibles.getKey();
-                Object varRawValue = getValue.apply(varName);
+                Object varRawValue = valueFunc.apply(varName);
                 String varValue = varRawValue == null ? "null" : LinkBase.getInstance().getLink(TransformerManager.LINK).transform(varRawValue, String.class);
                 for (ManipulateData.ManipulateVariable variable : varibles.getValue()) {
-                    repVars.add(new Replacement(variable.getStart(), variable.getEnd(), varValue));
+                    repVars.add(new Replacement(variable.getStart(), variable.getEnd(), varValue, "createPatternReplacements: " + pattern.getName() + " var: " + varName));
                 }
             } catch (ManipulationException e){
                 if (needFind) {
-                    throw new ManipulationException("Failed to find value by key", e);
+                    throw new ManipulationException("Failed to find value by key: " + varibles.getKey(), e);
                 }
             }
         }
 
-        String result = applyReplacements(repVars, pattern.getContent());
-        replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result));
+        return repVars;
     }
 
     @Override
@@ -99,6 +115,74 @@ public class StringManipulator implements ResponseManipulator {
     public ResponseManipulator pattern(Object object) {
         pattern(object.getClass().getSimpleName().toLowerCase(), object);
         return this;
+    }
+
+    @Override
+    public ResponseManipulator pattern(PatternCommand command) {
+        handlePatternCommand(command, replacements);
+        return this;
+    }
+
+    private void handlePatternCommand(PatternCommand command, Set<Replacement> replacements) {
+        List<PatternAction> actions = new ArrayList<>();
+        if (command.getPrimary() != null) {
+            actions.add(command.getPrimary());
+        }
+        actions.addAll(command.getSecondaries());
+
+        ManipulateData.ManipulatePattern cmdPatt = findPattern(command);
+
+        if (replacements != this.replacements) {
+            replacements.add(new Replacement(cmdPatt.getStart(), cmdPatt.getEnd(), "", "remove sub pattern"));
+        }
+
+        for (PatternAction action : actions) {
+            String str = patternAction(action, cmdPatt);
+            replacements.add(new Replacement(cmdPatt.getStart(), cmdPatt.getStart(), str, "replace sub pattern instance"));
+        }
+    }
+
+    private ManipulateData.ManipulatePattern findPattern(PatternAction action) {
+        return findPattern(action.getCommand());
+    }
+
+    private ManipulateData.ManipulatePattern findPattern(PatternCommand command) {
+        List<PatternCommand> parents = new ArrayList<>();
+        while (command.getParent() != null) {
+            parents.add(command);
+            command = command.getParent();
+        }
+
+        ManipulateData.ManipulatePattern pattern = patternFromName(command.getName());
+        for (PatternCommand parent : Lists.reverse(parents)) {
+            pattern = pattern.getChilds().get(parent.getName());
+        }
+        return pattern;
+    }
+
+    private String patternAction(PatternAction action, ManipulateData.ManipulatePattern pattern) {
+        HashSet<Replacement> repl = new HashSet<>();
+
+        repl.addAll(createPatternReplacements(pattern, true, name -> {
+            for (Object object : action.getObjects()) {
+                try {
+                    return ManipulateObjectAnalyser.getObject(object).getValueByName(object, name);
+                } catch (ManipulationException ignore) {
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    ExceptionUtil.throwRuntime(e);
+                }
+            }
+            Object object = action.getCostom().get(name);
+            if (object == null) {
+                throw new ManipulationException("No value found for variable " + name);
+            }
+            return object;
+        }));
+        for (PatternCommand command : action.getChilds()) {
+            handlePatternCommand(command, repl);
+        }
+
+        return applyReplacements(repl, pattern.getContent());
     }
 
     @Override
@@ -170,9 +254,24 @@ public class StringManipulator implements ResponseManipulator {
         replacements.clear();
     }
 
-    public String getResult() {
+    public void collectAllPatterns(Collection<ManipulateData.ManipulatePattern> patterns, ManipulateData.ManipulatePattern pattern) {
+        for (ManipulateData.ManipulatePattern sub : pattern.getChilds().values()) {
+            collectAllPatterns(patterns, sub);
+        }
+        patterns.add(pattern);
+    }
+
+    public Collection<ManipulateData.ManipulatePattern> collectAllPatterns() {
+        List<ManipulateData.ManipulatePattern> collection = new ArrayList<>();
         for (ManipulateData.ManipulatePattern pattern : manipulateData.getPatternMap().values()) {
-            replacements.add(new Replacement(pattern.getStart(), pattern.getEnd(), ""));
+            collectAllPatterns(collection, pattern);
+        }
+        return collection;
+    }
+
+    public String getResult() {
+        for (ManipulateData.ManipulatePattern pattern : manipulateData.getPatterns()) {
+            replacements.add(new Replacement(pattern.getAbsoulteStart(), pattern.getAbsoulteEnd(), "", "remove pattern template"));
         }
 
         return applyReplacements(replacements, input);
@@ -190,10 +289,18 @@ public class StringManipulator implements ResponseManipulator {
 
     @AllArgsConstructor
     @EqualsAndHashCode
+    @Getter
     public static class Replacement {
 
         private int start, end;
         private String content;
+        @Setter private String note;
+
+        public Replacement(int start, int end, String content) {
+            this.start = start;
+            this.end = end;
+            this.content = content;
+        }
 
         public int beforeLength() {
             return end - start;
@@ -231,25 +338,4 @@ public class StringManipulator implements ResponseManipulator {
         }
     }
 
-    public static class PatternNotFoundException extends RuntimeException {
-
-        public PatternNotFoundException() {
-        }
-
-        public PatternNotFoundException(String s) {
-            super(s);
-        }
-
-        public PatternNotFoundException(String s, Throwable throwable) {
-            super(s, throwable);
-        }
-
-        public PatternNotFoundException(Throwable throwable) {
-            super(throwable);
-        }
-
-        public PatternNotFoundException(String s, Throwable throwable, boolean b, boolean b1) {
-            super(s, throwable, b, b1);
-        }
-    }
 }

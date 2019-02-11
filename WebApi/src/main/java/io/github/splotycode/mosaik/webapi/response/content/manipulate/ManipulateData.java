@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
+import io.github.splotycode.mosaik.util.prettyprint.IgnorePrint;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,10 +39,14 @@ public class ManipulateData {
         int start = -1;
         int varStartForPattern = -1;
         int current = 0;
-        String patternContent = null;
+       // String patternContent = null;
         ManipulatePattern currentPattern = null;
         for (char ch : input.toCharArray()) {
-            if (patternContent != null) patternContent += ch;
+            ManipulatePattern upper = currentPattern;
+            while (upper != null) {
+                upper.setContent((upper.getContent() == null ? "" : upper.getContent()) + ch);
+                upper = upper.parent;
+            }
             switch (state) {
                 case 0:
                     if (ch == '$') {
@@ -68,9 +73,14 @@ public class ManipulateData {
                     if (stack.isEmpty() && ch == '@') {
                         state = 3;
                     } else if (ch == '$') {
-                        currentPattern = new ManipulatePattern(start);
-                        patterns.put(stack, currentPattern);
-                        patternContent = "";
+                        ManipulatePattern parent = currentPattern;
+                        currentPattern = new ManipulatePattern(start, stack, parent);
+                        if (parent != null) {
+                            currentPattern.setStart(start - parent.getContentStart());
+                            parent.getChilds().put(stack, currentPattern);
+                        } else {
+                            patterns.put(stack, currentPattern);
+                        }
                         varStartForPattern = current;
                         stack = "";
                         state = 0;
@@ -81,10 +91,9 @@ public class ManipulateData {
                 case 3:
                     if (ch == '$') {
                         if (currentPattern == null) throw new SyntaxException("Can not close Pattern if there was no pattern opened");
-                        currentPattern.setEnd(current + 1);
-                        currentPattern.setContent(StringUtil.removeLast(patternContent, 4));
-                        patternContent = null;
-                        currentPattern = null;
+                        currentPattern.setEnd(currentPattern.getContentStart() + currentPattern.getContent().length());
+                        currentPattern.setContent(StringUtil.removeLast(currentPattern.getContent(), 4));
+                        currentPattern = currentPattern.parent;
                         stack = "";
                         state = 0;
                     } else throw new SyntaxException("Expected $ for pattern close");
@@ -107,24 +116,59 @@ public class ManipulateData {
         private int start;
         private int end;
 
-        public int getLenght() {
-            return end - start;
-        }
-
     }
 
     @Getter
     public static class ManipulatePattern {
 
-        private int start;
+        @Setter private int start;
         @Setter private int end;
         @Setter private String content;
+        private String name;
 
-        public ManipulatePattern(int start) {
+        private HashMap<String, ManipulatePattern> childs = new HashMap<>();
+        @IgnorePrint private ManipulatePattern parent;
+
+        public ManipulatePattern(int start, String name, ManipulatePattern parent) {
             this.start = start;
+            this.name = name;
+            this.parent = parent;
         }
 
         private HashMap<String, List<ManipulateVariable>> variables = new HashMap<>();
+
+        public int getContentStart() {
+            return 3 + name.length() + start;
+        }
+
+        public List<ManipulatePattern> getAllParents() {
+            if(parent == null) return Collections.emptyList();
+            List<ManipulatePattern> parents = new ArrayList<>();
+
+            ManipulatePattern current = parent;
+            while (current != null) {
+                parents.add(current);
+                current = current.getParent();
+            }
+            return parents;
+        }
+
+        public int getAbsoulteStart() {
+            int prefix = 0;
+            for (ManipulatePattern parent : getAllParents()) {
+                prefix += parent.start;
+            }
+            return prefix + start;
+        }
+
+        public int getAbsoulteEnd() {
+            int prefix = 0;
+            for (ManipulatePattern parent : getAllParents()) {
+                prefix += parent.end;
+            }
+            return prefix + end;
+        }
+
 
     }
 }

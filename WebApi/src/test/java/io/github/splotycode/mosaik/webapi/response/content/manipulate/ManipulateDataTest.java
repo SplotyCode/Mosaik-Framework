@@ -11,6 +11,9 @@ class ManipulateDataTest {
             "    start: 5\n" +
             "    end: 38\n" +
             "    content:  dasd $name$ 333 $age$ \n" +
+            "    name: pat\n" +
+            "    childs: []\n" +
+            "    parent: Disabled\n" +
             "    variables: [age=[ManipulateVariable[\n" +
             "    start: 17\n" +
             "    end: 22\n" +
@@ -19,7 +22,7 @@ class ManipulateDataTest {
             "    end: 12\n" +
             "]]]\n" +
             "]]";
-    final String EXPECTED_VAR = "[name1=[ManipulateVariable[\n" +
+    private static final String EXPECTED_VAR = "[name1=[ManipulateVariable[\n" +
             "    start: 24\n" +
             "    end: 31\n" +
             "]], name2=[ManipulateVariable[\n" +
@@ -45,6 +48,13 @@ class ManipulateDataTest {
         InvokeStartUp.start();
         StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $name$ 333 $age$ $@@$hasdasdas");
         Assertions.assertEquals(EXPECTED, new PrettyPrint(manipulator.getManipulateData().getPatternMap()).prettyPrintType());
+    }
+
+    @Test
+    void testPatternInPatternPositions() {
+        InvokeStartUp.start();
+        StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $@pat2$ $adsd$ $eee$ $@@$ $name$ 333 $age$ $@@$hasdasdas");
+        System.out.println(new PrettyPrint(manipulator.getManipulateData().getPatternMap()).prettyPrintType());
     }
 
 }
