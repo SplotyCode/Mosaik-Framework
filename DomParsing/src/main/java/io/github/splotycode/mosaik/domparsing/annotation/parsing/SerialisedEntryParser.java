@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.domparsing.annotation.parsing;
 
+import io.github.splotycode.mosaik.domparsing.annotation.EntryListener;
 import io.github.splotycode.mosaik.domparsing.annotation.EntryParseExcpetion;
 import io.github.splotycode.mosaik.domparsing.annotation.IEntryParser;
 
@@ -12,6 +13,9 @@ public class SerialisedEntryParser implements IEntryParser {
         try {
             ObjectInputStream is = new ObjectInputStream(stream);
             Object obj = is.readObject();
+            if (obj instanceof EntryListener) {
+                ((EntryListener) obj).postDeserialization();
+            }
             is.close();
             return obj;
         } catch (Exception ex) {
@@ -24,8 +28,18 @@ public class SerialisedEntryParser implements IEntryParser {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
+            EntryListener listener = null;
+            if (object instanceof EntryListener) {
+                listener = (EntryListener) object;
+                listener.preSerialisation();
+            }
             oos.writeObject(object);
-            return baos.toByteArray();
+            byte[] result = baos.toByteArray();
+            if (listener != null) {
+                listener.postSerialisation();
+            }
+            oos.close();
+            return result;
         } catch (IOException e) {
             throw new EntryParseExcpetion("Failed to save Object", e);
         }
