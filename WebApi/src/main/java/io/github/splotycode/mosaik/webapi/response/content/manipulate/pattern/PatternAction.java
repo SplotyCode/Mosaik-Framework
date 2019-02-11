@@ -13,7 +13,6 @@ public class PatternAction {
     List<Object> objects = new ArrayList<>();
     private Map<String, Object> costom = new HashMap<>();
 
-    PatternCommand parent;
     List<PatternCommand> childs = new ArrayList<>();
 
     public PatternAction(PatternCommand command) {
@@ -51,21 +50,21 @@ public class PatternAction {
 
     public PatternCommand createChild() {
         PatternCommand child = PatternCommand.create();
-        child.primary.parent = command;
+        child.setParent(command);
         childs.add(child);
         return child;
     }
 
     public PatternCommand createChild(String name) {
         PatternCommand child = PatternCommand.create(name);
-        child.primary.parent = command;
+        child.setParent(command);
         childs.add(child);
         return child;
     }
 
     public PatternCommand createChild(Object object) {
         PatternCommand child = PatternCommand.create(object);
-        child.primary.parent = command;
+        child.setParent(command);
         childs.add(child);
         return child;
     }

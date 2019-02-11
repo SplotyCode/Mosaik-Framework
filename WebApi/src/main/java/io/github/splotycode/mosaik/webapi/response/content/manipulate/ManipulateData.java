@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
+import io.github.splotycode.mosaik.util.prettyprint.IgnorePrint;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -73,8 +74,9 @@ public class ManipulateData {
                         state = 3;
                     } else if (ch == '$') {
                         ManipulatePattern parent = currentPattern;
-                        currentPattern = new ManipulatePattern(start, parent);
+                        currentPattern = new ManipulatePattern(start, stack, parent);
                         if (parent != null) {
+                            currentPattern.setStart(start - parent.getContentStart());
                             parent.getChilds().put(stack, currentPattern);
                         } else {
                             patterns.put(stack, currentPattern);
@@ -89,7 +91,7 @@ public class ManipulateData {
                 case 3:
                     if (ch == '$') {
                         if (currentPattern == null) throw new SyntaxException("Can not close Pattern if there was no pattern opened");
-                        currentPattern.setEnd(current + 1);
+                        currentPattern.setEnd(currentPattern.getContentStart() + currentPattern.getContent().length());
                         currentPattern.setContent(StringUtil.removeLast(currentPattern.getContent(), 4));
                         currentPattern = currentPattern.parent;
                         stack = "";
@@ -114,27 +116,59 @@ public class ManipulateData {
         private int start;
         private int end;
 
-        public int getLenght() {
-            return end - start;
-        }
-
     }
 
     @Getter
     public static class ManipulatePattern {
 
-        private int start;
+        @Setter private int start;
         @Setter private int end;
         @Setter private String content;
-        private HashMap<String, ManipulatePattern> childs = new HashMap<>();
-        private ManipulatePattern parent;
+        private String name;
 
-        public ManipulatePattern(int start, ManipulatePattern parent) {
+        private HashMap<String, ManipulatePattern> childs = new HashMap<>();
+        @IgnorePrint private ManipulatePattern parent;
+
+        public ManipulatePattern(int start, String name, ManipulatePattern parent) {
             this.start = start;
+            this.name = name;
             this.parent = parent;
         }
 
         private HashMap<String, List<ManipulateVariable>> variables = new HashMap<>();
+
+        public int getContentStart() {
+            return 3 + name.length() + start;
+        }
+
+        public List<ManipulatePattern> getAllParents() {
+            if(parent == null) return Collections.emptyList();
+            List<ManipulatePattern> parents = new ArrayList<>();
+
+            ManipulatePattern current = parent;
+            while (current != null) {
+                parents.add(current);
+                current = current.getParent();
+            }
+            return parents;
+        }
+
+        public int getAbsoulteStart() {
+            int prefix = 0;
+            for (ManipulatePattern parent : getAllParents()) {
+                prefix += parent.start;
+            }
+            return prefix + start;
+        }
+
+        public int getAbsoulteEnd() {
+            int prefix = 0;
+            for (ManipulatePattern parent : getAllParents()) {
+                prefix += parent.end;
+            }
+            return prefix + end;
+        }
+
 
     }
 }

@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern;
 
 import io.github.splotycode.mosaik.util.Pair;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +30,17 @@ public class PatternCommand {
 
     private PatternCommand() {}
 
+    @Setter private PatternCommand parent = null;
     private String name;
-    PatternAction primary = new PatternAction(this);
+    PatternAction primary = null;
     private List<PatternAction> secondaries = new ArrayList<>();
+
+    public PatternAction getPrimary(boolean force) {
+        if (primary == null && force) {
+            primary = new PatternAction(this);
+        }
+        return primary;
+    }
 
     public PatternAction createSecondary() {
         PatternAction secondary = new PatternAction(this);
@@ -48,47 +57,56 @@ public class PatternCommand {
         return this;
     }
 
+    public <T> PatternCommand createSecondaries(Consumer<Pair<T, PatternAction>> func, Iterable<T> objects) {
+        for (T object : objects) {
+            PatternAction action = createSecondary();
+            action.addObject(object);
+            func.accept(new Pair<>(object, action));
+        }
+        return this;
+    }
+
     public PatternCommand setName(String name) {
         this.name = name;
         return this;
     }
 
     public PatternCommand addObject(Object object) {
-        primary.addObject(object);
+        getPrimary(true).addObject(object);
         return this;
     }
 
     public PatternCommand addObjects(Object... objects) {
-        primary.addObjects(objects);
+        getPrimary(true).addObjects(objects);
         return this;
     }
 
     public PatternCommand addObjects(Iterable<Object> objects) {
-        primary.addObjects(objects);
+        getPrimary(true).addObjects(objects);
         return this;
     }
 
     public PatternCommand addCostom(String key, Object value) {
-        primary.addCostom(key, value);
+        getPrimary(true).addCostom(key, value);
         return this;
     }
 
     public PatternCommand addCostom(Pair<String, Object>... values) {
-        primary.addCostom(values);
+        getPrimary(true).addCostom(values);
         return this;
     }
 
     public PatternCommand createChild() {
-        return primary.createChild();
+        return getPrimary(true).createChild();
     }
 
 
     public PatternCommand createChild(String name) {
-        return primary.createChild();
+        return getPrimary(true).createChild();
     }
 
     public PatternCommand createChild(Object object) {
-        return primary.createChild(object);
+        return getPrimary(true).createChild(object);
     }
 
 }
