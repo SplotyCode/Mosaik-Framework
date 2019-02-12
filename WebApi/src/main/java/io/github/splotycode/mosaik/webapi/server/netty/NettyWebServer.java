@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.webapi.server.netty;
 
 import io.github.splotycode.mosaik.webapi.WebApplicationType;
+import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -51,7 +52,12 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
 
         @Override
         public void run() {
-            loopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+            if (getConfig().containsData(WebConfig.NETTY_THREADS)) {
+                int numThreads = getConfig().getData(WebConfig.NETTY_THREADS);
+                loopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(numThreads) : new NioEventLoopGroup(numThreads);
+            } else {
+                loopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+            }
             try {
                 channel = new ServerBootstrap()
                         .option(ChannelOption.SO_BACKLOG, 1024)
