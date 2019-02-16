@@ -42,6 +42,10 @@ public class DataFactory {
         return data;
     }
 
+    public Map<String, Object> getRawMap() {
+        return data;
+    }
+
     public void setMap(Map<String, Object> map) {
         data = map;
     }
@@ -55,6 +59,6 @@ public class DataFactory {
     }
 
     public int getDataSize() {
-        return data.size();
+        return getMap().size();
     }
 }

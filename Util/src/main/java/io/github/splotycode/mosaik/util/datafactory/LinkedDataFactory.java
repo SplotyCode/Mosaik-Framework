@@ -1,6 +1,9 @@
 package io.github.splotycode.mosaik.util.datafactory;
 
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import lombok.AllArgsConstructor;
+
+import java.util.Map;
 
 @AllArgsConstructor
 public class LinkedDataFactory extends DataFactory {
@@ -22,7 +25,8 @@ public class LinkedDataFactory extends DataFactory {
     }
 
     @Override
-    public int getDataSize() {
-        return super.getDataSize() + linked.getDataSize();
+    public Map<String, Object> getMap() {
+        return CollectionUtil.combind(getRawMap(), linked.getMap());
     }
+
 }
