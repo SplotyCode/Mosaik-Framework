@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.request;
 
+import io.github.splotycode.mosaik.webapi.handler.UrlPattern;
 import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
@@ -15,6 +16,11 @@ public interface Request {
     WebServer getWebServer();
 
     String getPath();
+
+    default String getSimplifiedPath() {
+        return UrlPattern.simplify(getPath());
+    }
+
     String getFullUrl();
     Method getMethod();
 

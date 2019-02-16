@@ -12,7 +12,7 @@ public class UrlPattern {
 
     private MaxSizeHashMap<String, MatchResult> cachedResults = new MaxSizeHashMap<>(25);
 
-    private static String simplify(String url) {
+    public static String simplify(String url) {
         if (url.length() > 1) {
             while (url.startsWith("/")) {
                 url = url.substring(1);

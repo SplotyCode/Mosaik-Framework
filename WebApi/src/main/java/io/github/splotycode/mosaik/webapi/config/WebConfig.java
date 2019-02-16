@@ -10,5 +10,4 @@ public final class WebConfig {
     public static final DataKey<Boolean> SEARCH_ANNOTATION_HANDLERS = new DataKey<>("web.annotation_handlers.search");
     public static final DataKey<Integer> NETTY_THREADS = new DataKey<>("web.netty.threads");
 
-
 }
