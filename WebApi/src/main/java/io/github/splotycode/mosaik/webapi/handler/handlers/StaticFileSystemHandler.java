@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.handler.handlers;
 
+import io.github.splotycode.mosaik.annotations.Disabled;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
@@ -11,6 +12,7 @@ import java.io.File;
 
 @AllArgsConstructor
 @Getter
+@Disabled
 public class StaticFileSystemHandler implements HttpHandler {
 
     private File root;
