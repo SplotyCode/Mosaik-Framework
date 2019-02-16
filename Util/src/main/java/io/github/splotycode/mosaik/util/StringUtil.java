@@ -17,11 +17,11 @@ public final class StringUtil {
         return String.format("%.1f %sB", bytes / Math.pow(1024, exp), pre);
     }
 
-    public static boolean isNoWhiteSpace(char ch){
+    public static boolean isNoWhiteSpace(char ch) {
         return ch != Character.MIN_VALUE && ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t';
     }
 
-    public static boolean isNoSpecialSpace(char ch){
+    public static boolean isNoSpecialSpace(char ch) {
         return ch != '\n' && ch != '\r' && ch != '\t' && ch != Character.MIN_VALUE;
     }
 
@@ -29,7 +29,11 @@ public final class StringUtil {
         return !isNoWhiteSpace(ch);
     }
 
-    public static String fromException(Throwable throwable){
+    /**
+     * @deprecated instead use  {@link ExceptionUtil#toString(Throwable)}
+     */
+    @Deprecated
+    public static String fromException(Throwable throwable) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         throwable.printStackTrace(pw);
