@@ -23,6 +23,10 @@ public class LinkBase {
         return linkFactory.getData(key);
     }
 
+    public <T> T getLinkDefault(DataKey<T> key, T def) {
+        return linkFactory.getDataDefault(key, def);
+    }
+
     public static BootContext getBootContext() {
         return instance.getLink(Links.BOOT_DATA);
     }

@@ -80,7 +80,7 @@ public class Response {
 
     public void finish(Request request, WebServer server) {
         if (content == null) {
-            content = server.getConfig().getData(WebConfig.NO_CONTENT_RESPONSE);
+            content = server.getConfig().getDataDefault(WebConfig.NO_CONTENT_RESPONSE);
             if (content == null) {
                 content = new StaticStringContent("No Content Provided");
             }

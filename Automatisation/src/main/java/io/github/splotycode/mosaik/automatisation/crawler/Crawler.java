@@ -42,7 +42,7 @@ public interface Crawler extends DataFactoryComponent {
      * @see SiteConditions
      */
     default Predicate<Site> getSiteCondition() {
-        return getDataFactory().getData(SITE_CONDITION);
+        return getDataFactory().getDataDefault(SITE_CONDITION);
     }
 
     /**
@@ -59,7 +59,7 @@ public interface Crawler extends DataFactoryComponent {
      * @return the used ExecutorService
      */
     default ExecutorService getExecutorService() {
-        return getDataFactory().getData(EXECUTOR_SERVICE);
+        return getDataFactory().getDataDefault(EXECUTOR_SERVICE);
     }
 
     /**
@@ -68,7 +68,7 @@ public interface Crawler extends DataFactoryComponent {
      * @return the LinkRepository
      */
     default LinkRepository getLinkRepository() {
-        return getDataFactory().getData(LINK_REPOSITORY);
+        return getDataFactory().getDataDefault(LINK_REPOSITORY);
     }
 
     /**
@@ -85,7 +85,7 @@ public interface Crawler extends DataFactoryComponent {
      * @return the site processor
      */
     default Predicate<IndexingSite> getSiteExecutor() {
-        return getDataFactory().getData(SITE_EXECUTOR);
+        return getDataFactory().getDataDefault(SITE_EXECUTOR);
     }
 
     /**
@@ -101,7 +101,7 @@ public interface Crawler extends DataFactoryComponent {
      * @return the used FallbackLinkProvider
      */
     default FallbackLinkProvider getFallbackProvider() {
-        return getDataFactory().getData(FALLBACK_LINK_PROVIDER);
+        return getDataFactory().getDataDefault(FALLBACK_LINK_PROVIDER);
     }
 
     /**

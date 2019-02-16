@@ -7,6 +7,11 @@ public interface HttpHandler {
 
     boolean valid(Request request) throws HandleRequestException;
 
+    /**s
+     * @param request the request to handle
+     * @return should be cancel all oder handlers
+     * @throws HandleRequestException error while handling the exception
+     */
     boolean handle(Request request) throws HandleRequestException;
 
     default int priority() {
