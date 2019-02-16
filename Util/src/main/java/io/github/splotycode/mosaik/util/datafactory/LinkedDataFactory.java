@@ -15,12 +15,14 @@ public class LinkedDataFactory extends DataFactory {
         return super.containsData(name) || linked.containsData(name);
     }
 
+
     @Override
-    public <T> T getData(String name, DataKey<T> key) {
+    public <T> T getDataDefault(String name, DataKey<T> key, T def) {
         T obj = super.getData(name, key);
         if (obj == null) {
             obj = linked.getData(name, key);
         }
+        if (obj == null) obj = def;
         return obj;
     }
 

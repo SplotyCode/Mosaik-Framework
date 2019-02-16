@@ -20,13 +20,34 @@ public class DataFactory {
         return getData(key.name, key);
     }
 
+    public <T> T getDataDefault(DataKey<T> key) {
+        return getDataDefault(key, null);
+    }
+
+    public <T> T getDataDefault(DataKey<T> key, T def) {
+        return getData(key.name, key);
+    }
+
+    public <T> T getDataDefault(String name, DataKey<T> key, T def) {
+        T result = (T) data.get(name);
+        return result == null ? def : result;
+    }
+
+    public <T> T getDataDefault(String name, DataKey<T> key) {
+        return getDataDefault(name, key, null);
+    }
+
+
+
     /*
      * This will use the name instead of the key name
      * The Key is only for providing the Generic
      */
     @SuppressWarnings("unused")
     public <T> T getData(String name, DataKey<T> key) {
-        return (T) data.get(name);
+        T result = getDataDefault(name, key);
+        if (result == null) throw new DataNotFoundException("Could not find data for " + name);
+        return result;
     }
 
     public <T> void putData(DataKey<T> key, T obj) {
