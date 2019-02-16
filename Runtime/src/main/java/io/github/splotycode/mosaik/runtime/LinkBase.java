@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.runtime;
 
 import io.github.splotycode.mosaik.runtime.application.IApplicationManager;
+import io.github.splotycode.mosaik.util.datafactory.DataFactoryComponent;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class LinkBase {
+public class LinkBase implements DataFactoryComponent {
 
     @Getter private static LinkBase instance = new LinkBase();
 
@@ -35,4 +36,8 @@ public class LinkBase {
         return instance.getLink(Links.APPLICATION_MANAGER);
     }
 
+    @Override
+    public DataFactory getDataFactory() {
+        return linkFactory;
+    }
 }
