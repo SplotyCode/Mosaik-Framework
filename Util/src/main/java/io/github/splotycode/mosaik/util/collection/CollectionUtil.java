@@ -44,6 +44,12 @@ public final class CollectionUtil {
         return list;
     }
 
+    public static <K, V> Map<K, V> combind(Map<K, V> map1, Map<K, V> map2) {
+        Map<K, V> map3 = new HashMap<>(map1);
+        map3.putAll(map2);
+        return map3;
+    }
+
     public static <T> ArrayList<T> newArrayList(Iterable<? extends T> elements) {
         if (elements instanceof Collection) {
             Collection<? extends T> collection = (Collection<? extends T>)elements;
