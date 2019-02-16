@@ -25,7 +25,7 @@ public class DataFactory {
     }
 
     public <T> T getDataDefault(DataKey<T> key, T def) {
-        return getData(key.name, key);
+        return getDataDefault(key.name, key, def);
     }
 
     public <T> T getDataDefault(String name, DataKey<T> key, T def) {

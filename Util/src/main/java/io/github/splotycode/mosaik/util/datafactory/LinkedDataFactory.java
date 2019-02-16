@@ -18,9 +18,9 @@ public class LinkedDataFactory extends DataFactory {
 
     @Override
     public <T> T getDataDefault(String name, DataKey<T> key, T def) {
-        T obj = super.getData(name, key);
+        T obj = super.getDataDefault(name, key, null);
         if (obj == null) {
-            obj = linked.getData(name, key);
+            obj = linked.getDataDefault(name, key, null);
         }
         if (obj == null) obj = def;
         return obj;
