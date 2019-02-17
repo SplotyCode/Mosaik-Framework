@@ -16,7 +16,12 @@ public interface WebServer {
         return getApplication().getConfig();
     }
 
-    void listen(int port);
+    void listen(int port, boolean ssl);
+
+    @Deprecated
+    default void listen(int port) {
+        listen(port, false);
+    }
 
     void shutdown();
 

@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.server.undertow;
 
+import io.github.splotycode.mosaik.util.exception.MethodNotSupportedExcpetion;
 import io.github.splotycode.mosaik.webapi.WebApplicationType;
 import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
@@ -26,7 +27,9 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
 
 
     @Override
-    public void listen(int port) {
+    public void listen(int port, boolean ssl) {
+        super.listen(port, ssl);
+        if (ssl) throw new MethodNotSupportedExcpetion("ssl");
         server = Undertow.builder()
                 .addHttpListener(port, "localhost")
                 .setHandler(ex -> {

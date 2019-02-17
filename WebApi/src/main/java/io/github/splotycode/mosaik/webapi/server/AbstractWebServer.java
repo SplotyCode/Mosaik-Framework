@@ -126,7 +126,7 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     }
 
     @Override
-    public void listen(int port) {
+    public void listen(int port, boolean ssl) {
         if (!isInitialised()) initalize();
         address = new InetSocketAddress(port);
         if (isRunning()) throw new ServerAlreadyRunningException();

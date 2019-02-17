@@ -1,7 +1,9 @@
 package io.github.splotycode.mosaik.webapi.server.netty;
 
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.webapi.WebApplicationType;
 import io.github.splotycode.mosaik.webapi.config.WebConfig;
+import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -12,8 +14,16 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.*;
-import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
+import io.netty.handler.codec.http.HttpContentCompressor;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpRequestDecoder;
+import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
+
+import javax.net.ssl.SSLException;
+import java.security.cert.CertificateException;
 
 public class NettyWebServer extends AbstractWebServer implements WebServer {
 
@@ -23,13 +33,23 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
 
     private WebServerHandler handler = new WebServerHandler(this);
 
+    private SslContext sslContext = null;
+
     public NettyWebServer(WebApplicationType application) {
         super(application);
     }
 
     @Override
-    public void listen(int port) {
-        super.listen(port);
+    public void listen(int port, boolean ssl) {
+        super.listen(port, ssl);
+        if (ssl) {
+            try {
+                SelfSignedCertificate ssc = new SelfSignedCertificate();
+                sslContext = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
+            } catch (CertificateException | SSLException e) {
+                ExceptionUtil.throwRuntime(e);
+            }
+        }
         thread.start();
     }
 
@@ -68,6 +88,9 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
                             @Override
                             protected void initChannel(SocketChannel channel) throws Exception {
                                 final ChannelPipeline p = channel.pipeline();
+                                if (sslContext != null) {
+                                    p.addLast(sslContext.newHandler(channel.alloc()));
+                                }
                                 p.addLast(new HttpRequestDecoder());
                                 p.addLast("aggregator", new HttpObjectAggregator(512*1024));
                                 p.addLast(new HttpResponseEncoder());

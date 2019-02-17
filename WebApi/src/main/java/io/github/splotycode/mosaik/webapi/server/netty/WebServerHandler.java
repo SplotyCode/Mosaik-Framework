@@ -21,6 +21,8 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
 
     private NettyWebServer server;
 
+
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof FullHttpRequest) {

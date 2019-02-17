@@ -66,12 +66,17 @@ public interface WebApplicationType extends ApplicationType {
         return getData(PARAMETER_RESOLVER_REGISTER);
     }
 
+    @Deprecated
     default void listen(int port) {
+        listen(port, false);
+    }
+
+    default void listen(int port, boolean ssl) {
         WebServer server = getWebServer();
         if (server.isRunning())
             server.shutdown();
         getLogger().info("Starting WebServer under " + port + " (" + server.getClass().getSimpleName() + ")");
-        server.listen(port);
+        server.listen(port, ssl);
     }
 
     default void setWebServer(WebServer server) {
