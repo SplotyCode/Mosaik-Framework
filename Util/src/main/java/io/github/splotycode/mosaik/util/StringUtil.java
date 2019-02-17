@@ -206,4 +206,10 @@ public final class StringUtil {
         return str.substring(0, str.length() - places);
     }
 
+    public static boolean containsDouble(String s, char letter) {
+        int firstIndex = s.indexOf(letter);
+
+        return firstIndex > -1 && s.indexOf(letter, firstIndex + 1) > -1;
+    }
+
 }
