@@ -18,6 +18,8 @@ import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
@@ -86,8 +88,9 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
                         .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             @Override
-                            protected void initChannel(SocketChannel channel) throws Exception {
+                            protected void initChannel(SocketChannel channel) {
                                 final ChannelPipeline p = channel.pipeline();
+                                p.addFirst(new LoggingHandler(LogLevel.DEBUG));
                                 if (sslContext != null) {
                                     p.addLast(sslContext.newHandler(channel.alloc()));
                                 }
@@ -95,7 +98,7 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
                                 p.addLast("aggregator", new HttpObjectAggregator(512*1024));
                                 p.addLast(new HttpResponseEncoder());
                                 p.addLast(new HttpContentCompressor());
-                                p.addLast("handler", handler);
+                                p.addLast("handler", new WebServerHandler(NettyWebServer.this));
                             }
                         })
                         .childOption(ChannelOption.ALLOCATOR, new PooledByteBufAllocator(true))

@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractWebServer extends InitialisedOnce implements WebServer {
 
     @Getter protected InetSocketAddress address;
+    @Getter protected boolean ssl;
 
     @Getter protected int requests = 0;
     @Getter protected long totalTime = 0;
@@ -129,6 +130,7 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     public void listen(int port, boolean ssl) {
         if (!isInitialised()) initalize();
         address = new InetSocketAddress(port);
+        this.ssl = ssl;
         if (isRunning()) throw new ServerAlreadyRunningException();
     }
 

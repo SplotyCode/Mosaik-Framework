@@ -35,6 +35,7 @@ public interface WebApplicationType extends ApplicationType {
     default void initType(BootContext context, WebApplicationType dummy) {
         putConfig(WebConfig.SEARCH_ANNOTATION_HANDLERS, true);
         putConfig(WebConfig.SEARCH_HANDLERS, false);
+        putConfig(WebConfig.FORCE_HTTPS, true);
         getLocalShutdownManager().addShutdownTask(() -> {
             WebServer server = getWebServer();
             if (server != null && server.isRunning())
