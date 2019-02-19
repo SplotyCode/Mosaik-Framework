@@ -8,6 +8,16 @@ import java.util.function.Predicate;
 
 public final class CollectionUtil {
 
+    public static <K, V, M extends Map<K, V>> M copyWithType(final M source) throws Exception {
+        final M newMap = (M) source.getClass().newInstance();
+        newMap.putAll(source);
+        return newMap;
+    }
+
+    public static <K, V> Map<K, V> copy(final Map<K, V> source) {
+        return new HashMap<>(source);
+    }
+
     public static <K, V> Map<K, V> newHashMap(List<K> keys, List<V> values) {
         if (keys.size() != values.size()) {
             throw new IllegalArgumentException("Lists need to have the same lengths");
