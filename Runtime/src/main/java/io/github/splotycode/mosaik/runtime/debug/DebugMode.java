@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.runtime.debug;
 
-public enum DebugModes implements DebugModeType {
+public enum DebugMode implements DebugModeType {
 
     ALL,
     LOG,

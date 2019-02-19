@@ -13,6 +13,7 @@ public class DefaultPathManager implements PathManager {
     @Parameter(name = "maindir")
     private File mainDirectory = null;
 
+    @Parameter(name = "logdir")
     private File logDirectory;
 
     public DefaultPathManager() {

@@ -1,0 +1,5 @@
+argparser.argparser: io.github.splotycode.mosaik.argparserimpl.ArgParser
+startup.applicationManager: io.github.splotycode.mosaik.startup.application.ApplicationManager
+startup.manager: io.github.splotycode.mosaik.startup.manager.StartUpManager
+debug.provider: io.github.splotycode.mosaik.runtime.debug.DebugProvider
+path_manager: io.github.splotycode.mosaik.runtime.pathmanager.DefaultPathManager

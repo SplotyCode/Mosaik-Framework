@@ -1,12 +1,17 @@
 package io.github.splotycode.mosaik.runtime.debug;
 
 import io.github.splotycode.mosaik.runtime.LinkBase;
+import io.github.splotycode.mosaik.runtime.Links;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class DebugProvider {
+
+    public static DebugProvider getInstance() {
+        return LinkBase.getInstance().getLink(Links.DEBUG_PROVIDER);
+    }
 
     private Set<String> enabledModes = new HashSet<>();
 
