@@ -10,9 +10,10 @@ public interface IArgParser {
     void parseArgs(Object obj, String[] args);
     void parseArgs(Object obj, String label, String[] args);
 
-    Map<String, String> getParameters(String[] args);
-    Map<String, String> getParameters(String label, String[] args);
     Map<String, String> getParameters();
     Map<String, String> getParameters(String label);
+
+    Map<String, String> getParameters(String[] args);
+    Map<String, String> getParameters(String label, String[] args);
 
 }

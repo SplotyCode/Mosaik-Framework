@@ -27,7 +27,7 @@ public class ParsedArguments {
         for (String arg : args) {
             if (arg.startsWith("-")) {
                 if (key != null) {
-                    argument.arguments.put(key, null);
+                    argument.arguments.put(key, "_no_value_");
                 }
                 key = arg.substring(1);
             } else {

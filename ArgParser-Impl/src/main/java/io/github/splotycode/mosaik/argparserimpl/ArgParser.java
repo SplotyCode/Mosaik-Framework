@@ -40,13 +40,19 @@ public class ArgParser implements IArgParser {
         for (Argument argument : object.getAll()) {
             String name = label == null ? "" : label + ":" + argument.getName();
             String rawValue = arguments.getByKey(name);
-            if (rawValue == null) {
-                if (argument.getParameter().needed()) {
-                    throw new ArgParseException("Could not fill argument " + name + " because it foes not exsits in arg");
+            Object result;
+            if (rawValue.equals("_no_value_")) {
+                if (argument.getField().getType() != Boolean.class) {
+                    if (argument.getParameter().needed()) {
+                        throw new ArgParseException("Could not fill argument " + name + " because it foes not exsits in arg");
+                    }
+                    continue;
+                } else {
+                    result = true;
                 }
-                continue;
+            } else {
+                result = TransformerManager.getInstance().transform(rawValue, argument.getField().getType());
             }
-            Object result = TransformerManager.getInstance().transform(rawValue, argument.getField().getType());
             try {
                 argument.getField().set(obj, result);
             } catch (IllegalAccessException e) {
