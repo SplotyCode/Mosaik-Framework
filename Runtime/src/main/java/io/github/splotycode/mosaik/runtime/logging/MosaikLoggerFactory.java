@@ -4,7 +4,6 @@ import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import io.github.splotycode.mosaik.runtime.debug.DebugMode;
 import io.github.splotycode.mosaik.runtime.debug.DebugProvider;
-import io.github.splotycode.mosaik.runtime.startup.tasks.PreLinkBaseStartUp;
 import io.github.splotycode.mosaik.util.init.InitialisedOnce;
 import io.github.splotycode.mosaik.util.io.IOUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
@@ -26,9 +25,6 @@ public class MosaikLoggerFactory extends InitialisedOnce implements LoggerFactor
     @Override
     protected void init() {
         System.setProperty("log4j.defaultInitOverride", "true");
-        if (!LinkBase.getInstance().getLinkFactory().containsData(Links.PARSING_MANAGER)) {
-            new PreLinkBaseStartUp().execute(null);
-        }
         try {
             String config = IOUtil.resourceToText("/log-config.xml");
             config = config.replaceAll("_\\$log\\$_", LinkBase.getInstance().getLink(Links.PATH_MANAGER).getLogDirectory().getAbsolutePath());
