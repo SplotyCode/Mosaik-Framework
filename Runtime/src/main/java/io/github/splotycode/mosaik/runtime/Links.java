@@ -4,6 +4,7 @@ import io.github.splotycode.mosaik.argparser.IArgParser;
 import io.github.splotycode.mosaik.domparsing.annotation.FileSystemProvider;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingManager;
 import io.github.splotycode.mosaik.runtime.application.IApplicationManager;
+import io.github.splotycode.mosaik.runtime.debug.DebugProvider;
 import io.github.splotycode.mosaik.runtime.pathmanager.PathManager;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.runtime.startup.IStartUpManager;
@@ -20,5 +21,6 @@ public final class Links {
     public static final DataKey<FileSystemProvider> PARSING_FILEPROVIDER = new DataKey<>("parsing.file_system_provider");
     public static final DataKey<PathManager> PATH_MANAGER = new DataKey<>("path_manager");
     public static final DataKey<IArgParser> ARG_PARSER = new DataKey<>("argparser.argparser");
+    public static final DataKey<DebugProvider> DEBUG_PROVIDER = new DataKey<>("debug.provider");
 
 }
