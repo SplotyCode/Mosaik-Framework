@@ -22,7 +22,12 @@ public class DefaultPathManager implements PathManager {
     @Override
     public File getMainDirectory() {
         if (mainDirectory == null) {
-            mainDirectory = new File(SystemProperties.getUserHome(), "." + ApplicationInfo.getImplementingName());
+            String envPath = System.getenv("main-path");
+            if (envPath != null) {
+                mainDirectory = new File(envPath);
+            } else {
+                mainDirectory = new File(SystemProperties.getUserHome(), "." + ApplicationInfo.getImplementingName());
+            }
         }
         return mainDirectory;
     }
@@ -30,7 +35,10 @@ public class DefaultPathManager implements PathManager {
     @Override
     public File getLogDirectory() {
         if (logDirectory == null) {
-            if (SystemInfo.isMac) {
+            String envPath = System.getenv("log-path");
+            if (envPath != null) {
+                logDirectory = new File(envPath);
+            } else if (SystemInfo.isMac) {
                 logDirectory = new File(SystemProperties.getUserHome(), "Library/Logs/" + ApplicationInfo.getImplementingName());
             } else {
                 logDirectory = new File(getMainDirectory(), "Logs/");
