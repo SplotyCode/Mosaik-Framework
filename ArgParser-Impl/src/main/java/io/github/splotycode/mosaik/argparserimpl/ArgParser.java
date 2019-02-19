@@ -24,13 +24,8 @@ public class ArgParser implements IArgParser {
      */
     @Override
     public void parseArgs(Object obj, String label, String[] args) {
-        ParsedArguments arguments = cachedArguments.get(args);
+        ParsedArguments arguments = getArguments(args);
         ParsedObject object = cachedObjects.get(obj);
-
-        if (arguments == null) {
-            arguments = ParsedArguments.parse(args);
-            cachedArguments.put(args, arguments);
-        }
 
         if (object == null) {
             object = ParsedObject.parse(obj);
@@ -41,7 +36,7 @@ public class ArgParser implements IArgParser {
             String name = label == null ? "" : label + ":" + argument.getName();
             String rawValue = arguments.getByKey(name);
             Object result;
-            if (rawValue.equals("_no_value_")) {
+            if (rawValue == null || rawValue.equals("_no_value_")) {
                 if (argument.getField().getType() != Boolean.class) {
                     if (argument.getParameter().needed()) {
                         throw new ArgParseException("Could not fill argument " + name + " because it foes not exsits in arg");
@@ -61,15 +56,24 @@ public class ArgParser implements IArgParser {
         }
     }
 
+    private ParsedArguments getArguments(String[] args) {
+        ParsedArguments arguments = cachedArguments.get(args);
+        if (arguments == null) {
+            arguments = ParsedArguments.parse(args);
+            cachedArguments.put(args, arguments);
+        }
+        return arguments;
+    }
+
     @Override
     public Map<String, String> getParameters(String[] args) {
-        return CollectionUtil.copy(cachedArguments.get(args).getArgumentMap());
+        return CollectionUtil.copy(getArguments(args).getArgumentMap());
     }
 
     @Override
     public Map<String, String> getParameters(String label, String[] args) {
         Map<String, String> parameters = new HashMap<>();
-        Map<String, String> rawParameters = cachedArguments.get(args).getArgumentMap();
+        Map<String, String> rawParameters = getArguments(args).getArgumentMap();
 
         for (String parameter : rawParameters.keySet()) {
             if (parameter.startsWith(label + ":")) {
