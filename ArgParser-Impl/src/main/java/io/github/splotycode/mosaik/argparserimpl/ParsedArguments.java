@@ -15,6 +15,10 @@ public class ParsedArguments {
         return arguments.get(key);
     }
 
+    public Map<String, String> getArgumentMap() {
+        return arguments;
+    }
+
     public static ParsedArguments parse(String[] args) {
         ParsedArguments argument = new ParsedArguments();
 

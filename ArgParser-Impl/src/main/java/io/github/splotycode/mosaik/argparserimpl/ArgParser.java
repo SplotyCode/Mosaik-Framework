@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.argparserimpl;
 
 import io.github.splotycode.mosaik.argparser.IArgParser;
 import io.github.splotycode.mosaik.runtime.LinkBase;
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 
 import java.util.HashMap;
@@ -52,6 +53,35 @@ public class ArgParser implements IArgParser {
                 throw new ArgParseException("Could not access " + obj.getClass().getName() + "#" + argument.getField().getName(), e);
             }
         }
+    }
+
+    @Override
+    public Map<String, String> getParameters(String[] args) {
+        return CollectionUtil.copy(cachedArguments.get(args).getArgumentMap());
+    }
+
+    @Override
+    public Map<String, String> getParameters(String label, String[] args) {
+        Map<String, String> parameters = new HashMap<>();
+        Map<String, String> rawParameters = cachedArguments.get(args).getArgumentMap();
+
+        for (String parameter : rawParameters.keySet()) {
+            if (parameter.startsWith(label + ":")) {
+                parameters.put(parameter.substring(label.length() + 1), rawParameters.get(parameter));
+            }
+        }
+
+        return parameters;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        return getParameters(LinkBase.getBootContext().getArgs());
+    }
+
+    @Override
+    public Map<String, String> getParameters(String label) {
+        return getParameters(label, LinkBase.getBootContext().getArgs());
     }
 
     /**
