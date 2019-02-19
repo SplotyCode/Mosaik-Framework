@@ -12,10 +12,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.ssl.NotSslRecordException;
 
 import java.util.Map;
@@ -28,13 +25,15 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
         this.server = server;
     }
 
-    private FullHttpRequest originalRequest = null;
+    private HttpRequest originalRequest = null;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if (msg instanceof HttpRequest) {
+            originalRequest = (HttpRequest) msg;
+        }
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest nettyRequest = (FullHttpRequest) msg;
-            originalRequest = nettyRequest;
             if (!nettyRequest.decoderResult().isSuccess()) {
                 throw new BadRequestException("Netty Decoder Failed");
             }

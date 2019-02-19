@@ -10,6 +10,7 @@ public enum ResponseHeaders {
     CONTENT_TYPE,
     CONTENT_LENGTH,
     CONNECTION,
+    EXPIRES,
     LOCATION,
     ETAG,
     LAST_MODIFIED

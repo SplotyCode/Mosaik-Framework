@@ -36,6 +36,9 @@ public class ParsedArguments {
                 key = null;
             }
         }
+        if (key != null) {
+            argument.arguments.put(key, "_no_value_");
+        }
         return argument;
     }
 
