@@ -12,7 +12,6 @@ import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.StaticHandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.anotation.AnnotationHandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
-import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContentHandler;
 import io.github.splotycode.mosaik.webapi.response.Response;
@@ -109,13 +108,16 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
                     break;
                 }
             } catch (Throwable throwable) {
-                if (!(throwable instanceof HandleRequestException)) {
-                    ExceptionUtil.throwRuntime(throwable);
-                }
+                ExceptionUtil.throwRuntime(throwable);
             }
         }
         requests++;
         return request.getResponse();
+    }
+
+    @Override
+    public IListClassRegister<HttpHandler> getHttpHandlerRegister() {
+        return staticHandlerFinder;
     }
 
     public Response handleError(Throwable throwable) {
