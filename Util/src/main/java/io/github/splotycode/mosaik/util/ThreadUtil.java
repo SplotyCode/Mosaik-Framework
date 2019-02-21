@@ -5,7 +5,7 @@ import java.util.concurrent.*;
 public final class ThreadUtil {
 
     public static void sleep(long delay) {
-        sleep(delay, true);
+        sleep(delay, false);
     }
 
     public static void sleep(long delay, boolean ignore) {
