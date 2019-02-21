@@ -28,8 +28,8 @@ public class MosaikLoggerFactory extends InitialisedOnce implements LoggerFactor
         try {
             String config = IOUtil.resourceToText("/log-config.xml");
             config = config.replaceAll("_\\$log\\$_", LinkBase.getInstance().getLink(Links.PATH_MANAGER).getLogDirectory().getAbsolutePath());
-            config = config.replaceAll("_\\$file_mode\\$_", DebugProvider.getInstance().hasDebug(DebugMode.LOG_FILE) ? "DEBUG" : "NORMAL");
-            config = config.replaceAll("_\\$log_mode\\$_", DebugProvider.getInstance().hasDebug(DebugMode.LOG) ? "DEBUG" : "INFO");
+            config = config.replaceAll("_\\$file_mode\\$_", DebugProvider.getInstance().hasDebug(DebugMode.LOG_FILE) ? "TRACE" : "INFO");
+            config = config.replaceAll("_\\$log_mode\\$_", DebugProvider.getInstance().hasDebug(DebugMode.LOG) ? "TRACE" : "INFO");
             new DOMConfigurator().doConfigure(IOUtil.toInputStream(config, StandardCharsets.UTF_8), LogManager.getLoggerRepository());
         } catch (IOException e) {
             throw new IOError(e);
