@@ -7,22 +7,19 @@ import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpContentCompressor;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpRequestDecoder;
-import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.net.ssl.SSLException;
 import java.security.cert.CertificateException;
@@ -33,9 +30,14 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
     private EventLoopGroup loopGroup;
     private NettyThread thread = new NettyThread();
 
+    @Getter @Setter
     private WebServerHandler handler = new WebServerHandler(this);
 
+    @Getter @Setter
     private SslContext sslContext = null;
+
+    @Getter @Setter
+    private NettyChannelInitializer channelInitializer = new NettyChannelInitializer(this);
 
     public NettyWebServer(WebApplicationType application) {
         super(application);
@@ -86,21 +88,7 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
                         .option(ChannelOption.SO_REUSEADDR, true)
                         .group(loopGroup)
                         .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                        .childHandler(new ChannelInitializer<SocketChannel>() {
-                            @Override
-                            protected void initChannel(SocketChannel channel) {
-                                final ChannelPipeline p = channel.pipeline();
-                                p.addFirst(new LoggingHandler(LogLevel.DEBUG));
-                                if (sslContext != null) {
-                                    p.addLast(sslContext.newHandler(channel.alloc()));
-                                }
-                                p.addLast(new HttpRequestDecoder());
-                                p.addLast("aggregator", new HttpObjectAggregator(512*1024));
-                                p.addLast(new HttpResponseEncoder());
-                                p.addLast(new HttpContentCompressor());
-                                p.addLast("handler", new WebServerHandler(NettyWebServer.this));
-                            }
-                        })
+                        .childHandler(channelInitializer)
                         .childOption(ChannelOption.ALLOCATOR, new PooledByteBufAllocator(true))
                         .childOption(ChannelOption.SO_REUSEADDR, true)
                         .childOption(ChannelOption.SO_KEEPALIVE, true)
