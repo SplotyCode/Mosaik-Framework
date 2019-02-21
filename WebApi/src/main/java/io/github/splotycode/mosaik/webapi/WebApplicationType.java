@@ -7,6 +7,7 @@ import io.github.splotycode.mosaik.util.reflection.ClassCollector;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
 import io.github.splotycode.mosaik.webapi.config.WebConfig;
+import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContentHandler;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
@@ -50,8 +51,20 @@ public interface WebApplicationType extends ApplicationType {
         getLogger().info("Registered " + getParameterResolveRegister().getAll().size() + " default Parameter Resolvers");
     }
 
+    default IListClassRegister<HttpHandler> getHttpRegister() {
+        return getWebServer().getHttpHandlerRegister();
+    }
+
     default WebServer getWebServer() {
         return getData(WEB_SERVER);
+    }
+
+    default <W extends WebServer> W getWebServer(Class<? extends W> clazz) {
+        WebServer server = getWebServer();
+        if (clazz.isAssignableFrom(server.getClass())) {
+            return (W) server;
+        }
+        throw new IllegalArgumentException("Can not provide WebServer of type " + clazz + " ceause it does not exsits");
     }
 
     default IListClassRegister<RequestContentHandler> getContentHandlerRegister() {
