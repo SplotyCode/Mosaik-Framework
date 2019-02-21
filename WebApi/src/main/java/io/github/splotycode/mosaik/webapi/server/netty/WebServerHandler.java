@@ -11,15 +11,17 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import lombok.AllArgsConstructor;
 
 import java.util.Map;
 
 @ChannelHandler.Sharable
-@AllArgsConstructor
 public class WebServerHandler extends SimpleChannelInboundHandler {
 
     private NettyWebServer server;
+
+    public WebServerHandler(NettyWebServer server) {
+        this.server = server;
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -59,12 +61,22 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
     }
 
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+    public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        /*if (server.isSsl() &&
+                server.getConfig().getDataDefault(WebConfig.FORCE_HTTPS, false) &&
+            ExceptionUtil.instanceOfCause(cause, NotSslRecordException.class)) {
+            DefaultFullHttpResponse req = new DefaultFullHttpResponse(
+                    HttpVersion.HTTP_1_1,
+                    HttpResponseStatus.PERMANENT_REDIRECT
+            );
+            req.headers().set(HttpHeaderNames.LOCATION, originalRequest.uri());
+            ctx.writeAndFlush(req).addListener(ChannelFutureListener.CLOSE);
+        }*/
         Response response = server.getErrorHandler().handleError(cause);
         response.finish(null, server);
         ByteBuf byteBuf = Unpooled.buffer();

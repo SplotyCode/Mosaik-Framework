@@ -6,7 +6,7 @@ import lombok.Getter;
 
 public class RepeatableTask extends AbstractTask {
 
-    @Getter private long delay, lastReset;
+    @Getter private volatile long delay, lastReset;
 
     public RepeatableTask(String displayName, long delay) {
         super(TaskType.REPEATABLE, displayName);

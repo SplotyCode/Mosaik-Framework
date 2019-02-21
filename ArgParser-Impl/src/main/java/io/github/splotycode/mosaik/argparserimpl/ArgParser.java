@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.argparserimpl;
 
 import io.github.splotycode.mosaik.argparser.IArgParser;
 import io.github.splotycode.mosaik.runtime.LinkBase;
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 
 import java.util.HashMap;
@@ -23,13 +24,8 @@ public class ArgParser implements IArgParser {
      */
     @Override
     public void parseArgs(Object obj, String label, String[] args) {
-        ParsedArguments arguments = cachedArguments.get(args);
+        ParsedArguments arguments = getArguments(args);
         ParsedObject object = cachedObjects.get(obj);
-
-        if (arguments == null) {
-            arguments = ParsedArguments.parse(args);
-            cachedArguments.put(args, arguments);
-        }
 
         if (object == null) {
             object = ParsedObject.parse(obj);
@@ -39,19 +35,63 @@ public class ArgParser implements IArgParser {
         for (Argument argument : object.getAll()) {
             String name = label == null ? "" : label + ":" + argument.getName();
             String rawValue = arguments.getByKey(name);
-            if (rawValue == null) {
-                if (argument.getParameter().needed()) {
-                    throw new ArgParseException("Could not fill argument " + name + " because it foes not exsits in arg");
+            Object result;
+            if (rawValue == null || rawValue.equals("_no_value_")) {
+                if (argument.getField().getType() != Boolean.class) {
+                    if (argument.getParameter().needed()) {
+                        throw new ArgParseException("Could not fill argument " + name + " because it foes not exsits in arg");
+                    }
+                    continue;
+                } else {
+                    result = true;
                 }
-                continue;
+            } else {
+                result = TransformerManager.getInstance().transform(rawValue, argument.getField().getType());
             }
-            Object result = TransformerManager.getInstance().transform(rawValue, argument.getField().getType());
             try {
                 argument.getField().set(obj, result);
             } catch (IllegalAccessException e) {
                 throw new ArgParseException("Could not access " + obj.getClass().getName() + "#" + argument.getField().getName(), e);
             }
         }
+    }
+
+    private ParsedArguments getArguments(String[] args) {
+        ParsedArguments arguments = cachedArguments.get(args);
+        if (arguments == null) {
+            arguments = ParsedArguments.parse(args);
+            cachedArguments.put(args, arguments);
+        }
+        return arguments;
+    }
+
+    @Override
+    public Map<String, String> getParameters(String[] args) {
+        return CollectionUtil.copy(getArguments(args).getArgumentMap());
+    }
+
+    @Override
+    public Map<String, String> getParameters(String label, String[] args) {
+        Map<String, String> parameters = new HashMap<>();
+        Map<String, String> rawParameters = getArguments(args).getArgumentMap();
+
+        for (String parameter : rawParameters.keySet()) {
+            if (parameter.startsWith(label + ":")) {
+                parameters.put(parameter.substring(label.length() + 1), rawParameters.get(parameter));
+            }
+        }
+
+        return parameters;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        return getParameters(LinkBase.getBootContext().getArgs());
+    }
+
+    @Override
+    public Map<String, String> getParameters(String label) {
+        return getParameters(label, LinkBase.getBootContext().getArgs());
     }
 
     /**

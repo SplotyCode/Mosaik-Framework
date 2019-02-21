@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.server;
 
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.LinkedDataFactory;
 import io.github.splotycode.mosaik.util.init.InitialisedOnce;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractWebServer extends InitialisedOnce implements WebServer {
 
     @Getter protected InetSocketAddress address;
+    @Getter protected boolean ssl;
 
     @Getter protected int requests = 0;
     @Getter protected long totalTime = 0;
@@ -101,11 +103,21 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     public Response handleRequest(Request request) {
         List<HttpHandler> handlers = allHandlers.stream().filter(handler -> handler.valid(request)).sorted(Comparator.comparingInt(HttpHandler::priority)).collect(Collectors.toList());
         for (HttpHandler handler : handlers) {
-            if (handler.handle(request))
-                break;
+            try {
+                if (handler.handle(request)) {
+                    break;
+                }
+            } catch (Throwable throwable) {
+                ExceptionUtil.throwRuntime(throwable);
+            }
         }
         requests++;
         return request.getResponse();
+    }
+
+    @Override
+    public IListClassRegister<HttpHandler> getHttpHandlerRegister() {
+        return staticHandlerFinder;
     }
 
     public Response handleError(Throwable throwable) {
@@ -117,9 +129,10 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     }
 
     @Override
-    public void listen(int port) {
+    public void listen(int port, boolean ssl) {
         if (!isInitialised()) initalize();
         address = new InetSocketAddress(port);
+        this.ssl = ssl;
         if (isRunning()) throw new ServerAlreadyRunningException();
     }
 

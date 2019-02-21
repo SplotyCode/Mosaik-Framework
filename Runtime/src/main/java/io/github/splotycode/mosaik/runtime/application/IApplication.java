@@ -23,12 +23,12 @@ public interface IApplication extends DataFactoryComponent {
     Collection<Class<ApplicationType>> getApplicationTypes();
 
     default <T> T getData(DataKey<T> key) {
-        return getDataFactory().getData(key);
+        return getDataFactory().getDataDefault(key);
     }
 
     DataFactory getConfig();
     default <T> T getConfig(DataKey<T> key) {
-        return getConfig().getData(key);
+        return getConfig().getDataDefault(key);
     }
 
     default <T> void putConfig(DataKey<T> key, T value) {

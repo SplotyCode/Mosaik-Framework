@@ -16,12 +16,15 @@ import io.github.splotycode.mosaik.startup.starttask.StartTaskExecutor;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.init.AlreadyInitailizedException;
+import io.github.splotycode.mosaik.util.io.IOUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import lombok.Getter;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
+
+import java.io.IOException;
 
 public class Main {
 
@@ -31,27 +34,31 @@ public class Main {
 
     @Getter private static boolean initialised = false;
 
-    public static void main() {
+    public static void main() throws Exception {
         main(ArrayUtil.EMPTY_STRING_ARRAY);
     }
 
-    public static void mainIfNotInitialised() {
+    public static void mainIfNotInitialised() throws Exception {
         if (!initialised)
             main();
     }
 
-    public static void mainIfNotInitialised(String[] args) {
+    public static void mainIfNotInitialised(String[] args) throws Exception {
         if (!initialised)
             main(args);
     }
 
     private static Logger logger;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
         if (initialised) throw new AlreadyInitailizedException("Main.main() already called");
         initialised = true;
 
+        bootData = new BootContext(args, start);
+        LinkBase.getInstance().registerLink(Links.BOOT_DATA, bootData);
+
+        loadLinkBase();
         setUpLogging();
         LoggingHelper.loggingStartUp();
 
@@ -61,18 +68,20 @@ public class Main {
         }
         logger.info("");
 
-        bootData = new BootContext(args, start);
         instance = new Main();
     }
 
-    private Main() {
-        ApplicationManager applicationManager = new ApplicationManager();
-        StartUpManager startUpManager = new StartUpManager();
+    private static void loadLinkBase() throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+        String[] lines = IOUtil.resourceToText("/linkbase.txt").split("\n");
+        for (String line : lines) {
+            String[] lineSplit = line.split(": ");
+            LinkBase.getInstance().getLinkFactory().putData(lineSplit[0], null, Class.forName(lineSplit[1]).newInstance());
+        }
+    }
 
-        /* Register Links */
-        LinkBase.getInstance().registerLink(Links.BOOT_DATA, bootData);
-        LinkBase.getInstance().registerLink(Links.APPLICATION_MANAGER, applicationManager);
-        LinkBase.getInstance().registerLink(Links.STARTUP_MANAGER, startUpManager);
+    private Main() {
+        ApplicationManager applicationManager = (ApplicationManager) LinkBase.getInstance().getLink(Links.APPLICATION_MANAGER);
+        StartUpManager startUpManager = (StartUpManager) LinkBase.getInstance().getLink(Links.STARTUP_MANAGER);
 
         /* Register StartUp Environment Changer */
         StartUpEnvironmentChanger environmentChanger = new StartUpInvirementChangerImpl();

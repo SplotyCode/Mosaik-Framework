@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.runtime.logging;
 
 import io.github.splotycode.mosaik.runtime.application.ApplicationInfo;
 import io.github.splotycode.mosaik.runtime.application.Application;
+import io.github.splotycode.mosaik.runtime.debug.DebugProvider;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.info.EnvironmentInformation;
 import io.github.splotycode.mosaik.util.info.SystemInfo;
@@ -56,6 +57,7 @@ public final class LoggingHelper {
         logger.info("JVM-Args: " + EnvironmentInformation.getJVMArgs());
         logger.info("OS: " + SystemInfo.getOsNameVersionAndArch());
         logger.info("ClassPath: " + ClassFinderHelper.getUserClasses().size() + "/" + ClassFinderHelper.getTotalClassCount());
+        logger.info("Active Debug Modes: " + StringUtil.join(DebugProvider.getInstance().getEnabledModes()));
     }
 
 }

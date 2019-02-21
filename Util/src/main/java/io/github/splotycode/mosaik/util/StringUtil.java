@@ -17,11 +17,11 @@ public final class StringUtil {
         return String.format("%.1f %sB", bytes / Math.pow(1024, exp), pre);
     }
 
-    public static boolean isNoWhiteSpace(char ch){
+    public static boolean isNoWhiteSpace(char ch) {
         return ch != Character.MIN_VALUE && ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t';
     }
 
-    public static boolean isNoSpecialSpace(char ch){
+    public static boolean isNoSpecialSpace(char ch) {
         return ch != '\n' && ch != '\r' && ch != '\t' && ch != Character.MIN_VALUE;
     }
 
@@ -29,7 +29,11 @@ public final class StringUtil {
         return !isNoWhiteSpace(ch);
     }
 
-    public static String fromException(Throwable throwable){
+    /**
+     * @deprecated instead use  {@link ExceptionUtil#toString(Throwable)}
+     */
+    @Deprecated
+    public static String fromException(Throwable throwable) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         throwable.printStackTrace(pw);
@@ -90,7 +94,11 @@ public final class StringUtil {
 
     public static final Joiner<String> STRING_JOINER = str -> str;
 
-    public static String join(Iterable<String> iterable, String seperator){
+    public static String join(Iterable<String> iterable) {
+        return join(iterable, ", ");
+    }
+
+    public static String join(Iterable<String> iterable, String seperator) {
         return join(iterable, STRING_JOINER, seperator);
     }
 
@@ -98,7 +106,15 @@ public final class StringUtil {
         return join(array, STRING_JOINER, seperator);
     }
 
-    public static <T> String join(Iterable<T> iterable, Joiner<T> joiner, String seperator){
+    public static String join(String[] array){
+        return join(array, STRING_JOINER, ", ");
+    }
+
+    public static <T> String join(Iterable<T> iterable, Joiner<T> joiner) {
+        return join(iterable, joiner, ", ");
+    }
+
+    public static <T> String join(Iterable<T> iterable, Joiner<T> joiner, String seperator) {
         StringBuilder builder = new StringBuilder();
         for (T element : iterable)
             builder.append(joiner.join(element)).append(seperator);
@@ -111,7 +127,11 @@ public final class StringUtil {
         return new MessageFormat(s).format(args);
     }
 
-    public static <T> String join(T[] array, Joiner<T> joiner, String seperator){
+    public static <T> String join(T[] array, Joiner<T> joiner) {
+        return join(array, joiner, ", ");
+    }
+
+    public static <T> String join(T[] array, Joiner<T> joiner, String seperator) {
         StringBuilder builder = new StringBuilder();
         for (T element : array)
             builder.append(joiner.join(element)).append(seperator);
@@ -200,6 +220,25 @@ public final class StringUtil {
     public static String removeLast(String str, int places) {
         if (isEmpty(str)) return str;
         return str.substring(0, str.length() - places);
+    }
+
+    public static boolean containsDouble(String s, char letter) {
+        int firstIndex = s.indexOf(letter);
+
+        return firstIndex > -1 && s.indexOf(letter, firstIndex + 1) > -1;
+    }
+
+    public static String camelCase(String s) {
+        if (s == null)  return null;
+
+        StringBuilder b = new StringBuilder();
+        String[] split = s.split(" ");
+        for (String srt : split) {
+            if (srt.length() > 0) {
+                b.append(srt.substring(0, 1).toUpperCase()).append(srt.substring(1).toLowerCase()).append(" ");
+            }
+        }
+        return b.toString().trim();
     }
 
 }

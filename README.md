@@ -11,6 +11,5 @@ Mosaik is on the Maven central.
   <artifactId>Mosaik-All</artifactId>
   <version>2.2.3</version>
 </dependency>
-</code>
 ```
 Note: GameEngine and SpigotLib are not part of Mosaik-All

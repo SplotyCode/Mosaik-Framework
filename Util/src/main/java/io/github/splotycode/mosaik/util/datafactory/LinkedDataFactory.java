@@ -1,6 +1,9 @@
 package io.github.splotycode.mosaik.util.datafactory;
 
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import lombok.AllArgsConstructor;
+
+import java.util.Map;
 
 @AllArgsConstructor
 public class LinkedDataFactory extends DataFactory {
@@ -12,17 +15,20 @@ public class LinkedDataFactory extends DataFactory {
         return super.containsData(name) || linked.containsData(name);
     }
 
+
     @Override
-    public <T> T getData(String name, DataKey<T> key) {
-        T obj = super.getData(name, key);
+    public <T> T getDataDefault(String name, DataKey<T> key, T def) {
+        T obj = super.getDataDefault(name, key, null);
         if (obj == null) {
-            obj = linked.getData(name, key);
+            obj = linked.getDataDefault(name, key, null);
         }
+        if (obj == null) obj = def;
         return obj;
     }
 
     @Override
-    public int getDataSize() {
-        return super.getDataSize() + linked.getDataSize();
+    public Map<String, Object> getMap() {
+        return CollectionUtil.combind(getRawMap(), linked.getMap());
     }
+
 }

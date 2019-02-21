@@ -7,7 +7,7 @@ import lombok.Setter;
 
 public class DelayedTask extends AbstractTask {
 
-    @Getter @Setter private long start, delay;
+    @Getter @Setter private volatile long start, delay;
     
     public DelayedTask(long delay) {
         super(TaskType.DELAYED);

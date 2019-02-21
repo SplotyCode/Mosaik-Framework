@@ -11,7 +11,7 @@ public interface Cache<T> {
         setValue(null);
     }
 
-    ListenerHandler getHandler();
+    ListenerHandler<CacheListener<T>> getHandler();
 
     default void addListener(CacheListener<T> listener) {
         getHandler().addListener(listener);

@@ -7,7 +7,11 @@ import org.junit.runner.notification.RunListener;
 public class InvokeStartUp extends RunListener {
 
     public static void start() {
-        Main.mainIfNotInitialised(new String[] {"-mosaik.appname", "tests"});
+        try {
+            Main.mainIfNotInitialised(new String[] {"-mosaik.appname", "tests", "-debug:log_file"});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

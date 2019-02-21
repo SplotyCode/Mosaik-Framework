@@ -8,6 +8,16 @@ import java.util.function.Predicate;
 
 public final class CollectionUtil {
 
+    public static <K, V, M extends Map<K, V>> M copyWithType(final M source) throws Exception {
+        final M newMap = (M) source.getClass().newInstance();
+        newMap.putAll(source);
+        return newMap;
+    }
+
+    public static <K, V> Map<K, V> copy(final Map<K, V> source) {
+        return new HashMap<>(source);
+    }
+
     public static <K, V> Map<K, V> newHashMap(List<K> keys, List<V> values) {
         if (keys.size() != values.size()) {
             throw new IllegalArgumentException("Lists need to have the same lengths");
@@ -42,6 +52,12 @@ public final class CollectionUtil {
         ArrayList<T> list = new ArrayList<>(elements.length);
         Collections.addAll(list, elements);
         return list;
+    }
+
+    public static <K, V> Map<K, V> combind(Map<K, V> map1, Map<K, V> map2) {
+        Map<K, V> map3 = new HashMap<>(map1);
+        map3.putAll(map2);
+        return map3;
     }
 
     public static <T> ArrayList<T> newArrayList(Iterable<? extends T> elements) {

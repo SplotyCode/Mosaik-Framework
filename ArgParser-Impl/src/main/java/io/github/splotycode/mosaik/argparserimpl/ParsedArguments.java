@@ -15,6 +15,10 @@ public class ParsedArguments {
         return arguments.get(key);
     }
 
+    public Map<String, String> getArgumentMap() {
+        return arguments;
+    }
+
     public static ParsedArguments parse(String[] args) {
         ParsedArguments argument = new ParsedArguments();
 
@@ -23,7 +27,7 @@ public class ParsedArguments {
         for (String arg : args) {
             if (arg.startsWith("-")) {
                 if (key != null) {
-                    argument.arguments.put(key, null);
+                    argument.arguments.put(key, "_no_value_");
                 }
                 key = arg.substring(1);
             } else {
@@ -31,6 +35,9 @@ public class ParsedArguments {
                 argument.arguments.put(key, arg);
                 key = null;
             }
+        }
+        if (key != null) {
+            argument.arguments.put(key, "_no_value_");
         }
         return argument;
     }

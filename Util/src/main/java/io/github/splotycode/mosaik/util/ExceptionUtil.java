@@ -40,8 +40,16 @@ public final class ExceptionUtil {
         return new RuntimeException("Converted to Runtime Exception", throwable);
     }
 
+    public static RuntimeException toRuntime(Throwable throwable, String message) {
+        return new RuntimeException(message, throwable);
+    }
+
     public static void throwRuntime(Throwable throwable) {
         throw toRuntime(throwable);
+    }
+
+    public static void throwRuntime(Throwable throwable, String message) {
+        throw toRuntime(throwable, message);
     }
 
 }
