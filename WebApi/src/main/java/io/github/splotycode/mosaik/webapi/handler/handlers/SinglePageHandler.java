@@ -26,12 +26,19 @@ public class SinglePageHandler implements HttpHandler {
         return "/views/" + path + ".html";
     }
 
+    protected ManipulateableContent manipulate(ManipulateableContent content, String rawPath, String path) {
+        return content;
+    }
+
     @Override
     public boolean handle(Request request) throws HandleRequestException {
-        String path = request.getSimplifiedPath();
+        String rawPath = request.getSimplifiedPath();
+        String path = toVarPath(rawPath);
 
         ManipulateableContent content = new FileResponseContent(basePage);
-        content.manipulate().variable(variable, toVarPath(path));
+        content.manipulate().variable(variable, path);
+        content = manipulate(content, rawPath, path);
+
         request.getResponse().setContent(content);
         return false;
     }
