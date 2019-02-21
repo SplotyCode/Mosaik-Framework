@@ -26,9 +26,6 @@ public class MyHandler {
         return null;
     }
 
-    /*
-     * TODO: fix return type
-     */
     @Mapping()
     public boolean two() {
         return false;

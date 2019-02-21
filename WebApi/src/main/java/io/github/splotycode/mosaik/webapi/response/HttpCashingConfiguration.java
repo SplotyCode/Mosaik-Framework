@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.webapi.response;
 
 import java.util.Date;
 
+//TODO
 public class HttpCashingConfiguration {
 
     private long expires = -1;
