@@ -18,11 +18,25 @@ public class RedirectHandler implements HttpHandler {
 
     private HashMap<UrlPattern, Pair<String, Integer>> redirects = new HashMap<>();
 
-    public RedirectHandler createSimple(Pair<String, String>... redirects) {
+    public static RedirectHandler createSimple(Pair<String, String>... redirects) {
         RedirectHandler handler = new RedirectHandler();
         for (Pair<String, String> redirect : redirects) {
-            this.redirects.put(new UrlPattern(redirect.getOne()), new Pair<>(redirect.getTwo(), 307));
+            handler.redirects.put(new UrlPattern(redirect.getOne()), new Pair<>(redirect.getTwo(), 307));
         }
+        return handler;
+    }
+
+    public static RedirectHandler createSimple(boolean permanent, Pair<String, String>... redirects) {
+        RedirectHandler handler = new RedirectHandler();
+        for (Pair<String, String> redirect : redirects) {
+            handler.redirects.put(new UrlPattern(redirect.getOne()), new Pair<>(redirect.getTwo(), permanent ? 308 : 307));
+        }
+        return handler;
+    }
+
+    public static RedirectHandler createSimple(boolean permanent, String origin, String destination) {
+        RedirectHandler handler = new RedirectHandler();
+        handler.redirects.put(new UrlPattern(origin), new Pair<>(destination, permanent ? 308 : 307));
         return handler;
     }
 
