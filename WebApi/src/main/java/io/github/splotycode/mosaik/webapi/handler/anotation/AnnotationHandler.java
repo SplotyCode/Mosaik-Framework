@@ -1,17 +1,16 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation;
 
 import io.github.splotycode.mosaik.util.Pair;
+import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
+import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolveException;
 import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
-import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
-import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
-import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolveException;
 import io.github.splotycode.mosaik.webapi.response.content.ResponseContent;
+import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
 import lombok.Getter;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class AnnotationHandler implements HttpHandler {
                     boolean cancel = (boolean) result;
                     if (cancel) return true;
                 }
-            } catch (IllegalAccessException | InvocationTargetException ex) {
+            } catch (Throwable ex) {
                 throw new HandleRequestException("Could not invoke Method: " + sup.getTargetMethod().getName(), ex);
             }
         }
