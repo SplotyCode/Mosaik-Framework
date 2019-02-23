@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.server.netty;
 
+import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
@@ -7,10 +8,8 @@ import io.github.splotycode.mosaik.webapi.server.BadRequestException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.*;
+import io.netty.handler.ssl.SslHandler;
 
 import java.util.Map;
 
@@ -23,6 +22,32 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
         this.server = server;
     }
 
+    private boolean doHttpsRedirect(FullHttpRequest request, ChannelHandlerContext ctx) {
+        if (server.isSsl() && server.getConfig().getDataDefault(WebConfig.FORCE_HTTPS, false) &&
+                ctx.pipeline().get(SslHandler.class) == null) {
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(request.protocolVersion(), HttpResponseStatus.MOVED_PERMANENTLY);
+            String host = request.headers().get(HttpHeaderNames.HOST);
+            if (host != null) {
+                response.headers().set(HttpHeaderNames.LOCATION, "https://" + host + request.uri());
+            } else {
+                String hostAndPort = server.getAddress().toString();
+                response.headers().set(HttpHeaderNames.LOCATION, "https://" + hostAndPort + request.uri());
+            }
+            ChannelFuture future = ctx.writeAndFlush(response);
+            if (!HttpUtil.isKeepAlive(request)) {
+                future.addListener(ChannelFutureListener.CLOSE);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        super.channelReadComplete(ctx);
+        ctx.flush();
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof FullHttpRequest) {
@@ -30,6 +55,9 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
             if (!nettyRequest.decoderResult().isSuccess()) {
                 throw new BadRequestException("Netty Decoder Failed");
             }
+
+            if (doHttpsRedirect(nettyRequest, ctx)) return;
+
             Request request = new NettyRequest(server, nettyRequest, ctx);
 
             long start = System.currentTimeMillis();
@@ -61,22 +89,7 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
     }
 
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) {
-        ctx.flush();
-    }
-
-    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        /*if (server.isSsl() &&
-                server.getConfig().getDataDefault(WebConfig.FORCE_HTTPS, false) &&
-            ExceptionUtil.instanceOfCause(cause, NotSslRecordException.class)) {
-            DefaultFullHttpResponse req = new DefaultFullHttpResponse(
-                    HttpVersion.HTTP_1_1,
-                    HttpResponseStatus.PERMANENT_REDIRECT
-            );
-            req.headers().set(HttpHeaderNames.LOCATION, originalRequest.uri());
-            ctx.writeAndFlush(req).addListener(ChannelFutureListener.CLOSE);
-        }*/
         Response response = server.getErrorHandler().handleError(cause);
         response.finish(null, server);
         ByteBuf byteBuf = Unpooled.buffer();

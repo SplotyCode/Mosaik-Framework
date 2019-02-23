@@ -9,6 +9,7 @@ public final class WebConfig {
     public static final DataKey<Boolean> SEARCH_HANDLERS = new DataKey<>("web.static_handlers.search");
     public static final DataKey<Boolean> SEARCH_ANNOTATION_HANDLERS = new DataKey<>("web.annotation_handlers.search");
     public static final DataKey<Integer> NETTY_THREADS = new DataKey<>("web.netty.threads");
+    public static final DataKey<Boolean> IGNORE_NO_SSL_RECORD = new DataKey<>("weg.inore_no_ssl");
     public static final DataKey<Boolean> FORCE_HTTPS = new DataKey<>("web.force_https");
 
 }
