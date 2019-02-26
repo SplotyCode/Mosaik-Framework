@@ -53,6 +53,8 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
             } catch (CertificateException | SSLException e) {
                 ExceptionUtil.throwRuntime(e);
             }
+        } else {
+            sslContext = null;
         }
         thread.start();
     }
