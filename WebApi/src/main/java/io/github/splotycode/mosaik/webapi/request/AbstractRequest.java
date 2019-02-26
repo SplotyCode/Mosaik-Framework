@@ -43,7 +43,7 @@ public abstract class AbstractRequest implements Request {
     }
 
     public String getHeader(RequestHeaders header) {
-        return getHeaders().get(EnumUtil.toDisplayName(header));
+        return getHeader(EnumUtil.toDisplayName(header));
     }
 
     public Collection<String> getGetParameter(String name) {
