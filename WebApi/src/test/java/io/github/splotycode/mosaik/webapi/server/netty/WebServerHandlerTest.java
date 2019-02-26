@@ -3,7 +3,6 @@ package io.github.splotycode.mosaik.webapi.server.netty;
 import io.github.splotycode.mosaik.InvokeStartUp;
 import io.github.splotycode.mosaik.runtime.application.Application;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
-import io.github.splotycode.mosaik.util.ThreadUtil;
 import io.github.splotycode.mosaik.webapi.WebApplicationType;
 import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
@@ -47,7 +46,7 @@ public class WebServerHandlerTest {
     @Test
     public void testSSL() {
         InvokeStartUp.start();
-        ThreadUtil.sleep(1000 * 30);
+       // ThreadUtil.sleep(1000 * 30);
     }
 
 }

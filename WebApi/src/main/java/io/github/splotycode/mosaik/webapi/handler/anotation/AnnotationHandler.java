@@ -54,14 +54,18 @@ public class AnnotationHandler implements HttpHandler {
                 throw new HandleRequestException("Count not use Handler Method: " + sup.getDisplayName() + " because it fails loading on startup", sup.getLoadingError());
             }
             Object[] objects = new Object[sup.getParameters().size()];
-            int i = 0;
-            for (Pair<ParameterResolver, Parameter> pair : sup.getParameters()) {
-                try {
-                    objects[i] = pair.getOne().transform(pair.getTwo(), request, global, sup);
-                } catch (ParameterResolveException ex) {
-                    throw new HandleRequestException("Failed to transform parameter", ex);
+            try {
+                int i = 0;
+                for (Pair<ParameterResolver, Parameter> pair : sup.getParameters()) {
+                    try {
+                        objects[i] = pair.getOne().transform(pair.getTwo(), request, global, sup);
+                    } catch (ParameterResolveException ex) {
+                        throw new HandleRequestException("Failed to transform parameter", ex);
+                    }
+                    i++;
                 }
-                i++;
+            } catch (Throwable ex) {
+                throw new HandleRequestException("Could not prepair parameters for Method: " + sup.getTargetMethod().getName(), ex);
             }
             try {
                 Object result = sup.getTargetMethod().invoke(handlerObj, objects);
