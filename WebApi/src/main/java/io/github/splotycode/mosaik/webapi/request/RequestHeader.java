@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.webapi.request;
 
-public enum RequestHeaders {
+public enum RequestHeader {
 
     ACCEPT,
     ACCEPT_CHARSET,

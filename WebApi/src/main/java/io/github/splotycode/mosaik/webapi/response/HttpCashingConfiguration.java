@@ -10,7 +10,7 @@ public class HttpCashingConfiguration {
     public void apply(Response response) {
         if (expires != -1) {
             Date date = new Date(expires * 1000L + System.currentTimeMillis());
-            response.setHeader(ResponseHeaders.EXPIRES, Response.DATE_FORMAT.format(date));
+            response.setHeader(ResponseHeader.EXPIRES, Response.DATE_FORMAT.format(date));
         }
     }
 

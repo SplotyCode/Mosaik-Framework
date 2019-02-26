@@ -7,7 +7,7 @@ import io.github.splotycode.mosaik.webapi.handler.anotation.check.*;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.UseResolver;
 import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.webapi.request.Request;
-import io.github.splotycode.mosaik.webapi.request.RequestHeaders;
+import io.github.splotycode.mosaik.webapi.request.RequestHeader;
 import io.github.splotycode.mosaik.webapi.response.content.ResponseContent;
 import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
 import lombok.EqualsAndHashCode;
@@ -83,7 +83,7 @@ public class AnnotationHandlerData {
     }
 
     public boolean valid(Request request) {
-        String host = request.getHeader(RequestHeaders.HOST);
+        String host = request.getHeader(RequestHeader.HOST);
         if (host == null) {
             if (this.host != null) return false;
         } else if (!host.trim().toLowerCase(Locale.ENGLISH).equals(host)) {

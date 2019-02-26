@@ -55,7 +55,7 @@ public class DefaultRequest implements Request {
         return headers.get(name);
     }
 
-    public String getHeader(RequestHeaders header) {
+    public String getHeader(RequestHeader header) {
         return headers.get(EnumUtil.toDisplayName(header));
     }
 

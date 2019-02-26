@@ -11,7 +11,7 @@ import lombok.Setter;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
 import io.github.splotycode.mosaik.util.EnumUtil;
 import io.github.splotycode.mosaik.webapi.request.Method;
-import io.github.splotycode.mosaik.webapi.request.RequestHeaders;
+import io.github.splotycode.mosaik.webapi.request.RequestHeader;
 import io.github.splotycode.mosaik.webapi.server.netty.NettyUtils;
 
 import java.io.IOException;
@@ -110,7 +110,7 @@ public class KaisaRequest implements Request {
     }
 
     @Override
-    public String getHeader(RequestHeaders header) {
+    public String getHeader(RequestHeader header) {
         if (headers == null) {
             headers = provider.resolveHeaders();
         }

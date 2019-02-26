@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.webapi.response;
 
-public enum ResponseHeaders {
+public enum ResponseHeader {
 
     ALLOW,
     CACHE_CONTROL,

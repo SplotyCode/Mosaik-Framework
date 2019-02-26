@@ -45,7 +45,7 @@ public class Response {
         setContentType(ContentType.TEXT_HTML);
 
         /* Default Headers */
-        setHeader(ResponseHeaders.DATE, DATE_FORMAT.format(CALENDAR.getTime()));
+        setHeader(ResponseHeader.DATE, DATE_FORMAT.format(CALENDAR.getTime()));
         setHeader("x-xss-protection", "1; mode=block");
         setHeader("X-Content-Type-Options", "nosniff");
         setHeader("X-Powered-By", "Mosaik WebApi");
@@ -62,7 +62,7 @@ public class Response {
         return this;
     }
 
-    public Response setHeader(ResponseHeaders httpHeader, String value) {
+    public Response setHeader(ResponseHeader httpHeader, String value) {
         headers.put(EnumUtil.toDisplayName(httpHeader), value);
         return this;
     }
@@ -74,7 +74,7 @@ public class Response {
     }
 
     public Response setContentType(ContentType contentType) {
-        setHeader(ResponseHeaders.CONTENT_TYPE, contentType.value());
+        setHeader(ResponseHeader.CONTENT_TYPE, contentType.value());
         return this;
     }
 
@@ -87,26 +87,26 @@ public class Response {
         }
         try {
             rawContent = content.getInputStream();
-            setHeader(ResponseHeaders.CONTENT_LENGTH, String.valueOf(rawContent.available()));
+            setHeader(ResponseHeader.CONTENT_LENGTH, String.valueOf(rawContent.available()));
         } catch (IOException ex) {
            throw new ContentException("Could not load content", ex);
         }
         try {
             String contentType = content.getContentType();
             if (contentType != null) {
-                setHeader(ResponseHeaders.CONTENT_TYPE, contentType);
+                setHeader(ResponseHeader.CONTENT_TYPE, contentType);
             }
         } catch (IOException ex) {
             throw new ContentException("Could not set content type", ex);
         }
         if (request != null && request.isKeepAlive()) {
-            setHeader(ResponseHeaders.CONNECTION, "keep-alive");
+            setHeader(ResponseHeader.CONNECTION, "keep-alive");
         }
     }
 
     public void redirect(String url, int errorCode) {
         responseCode = errorCode;
-        setHeader(ResponseHeaders.LOCATION, url);
+        setHeader(ResponseHeader.LOCATION, url);
     }
 
     public void redirect(String url, boolean permanent) {

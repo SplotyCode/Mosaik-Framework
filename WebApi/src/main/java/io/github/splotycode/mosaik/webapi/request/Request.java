@@ -34,7 +34,7 @@ public interface Request {
     boolean isKeepAlive();
 
     String getHeader(String name);
-    String getHeader(RequestHeaders header);
+    String getHeader(RequestHeader header);
     HashMap<String, String> getHeaders();
 
     Collection<String> getGetParameter(String name);
