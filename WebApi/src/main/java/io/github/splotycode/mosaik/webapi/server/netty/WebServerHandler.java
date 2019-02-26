@@ -14,7 +14,7 @@ import io.netty.handler.ssl.SslHandler;
 import java.util.Map;
 
 @ChannelHandler.Sharable
-public class WebServerHandler extends SimpleChannelInboundHandler {
+public class WebServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     private NettyWebServer server;
 
@@ -49,40 +49,37 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof FullHttpRequest) {
-            FullHttpRequest nettyRequest = (FullHttpRequest) msg;
-            if (!nettyRequest.decoderResult().isSuccess()) {
-                throw new BadRequestException("Netty Decoder Failed");
-            }
+    protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
+        if (!msg.decoderResult().isSuccess()) {
+            throw new BadRequestException("Netty Decoder Failed");
+        }
 
-            if (doHttpsRedirect(nettyRequest, ctx)) return;
+        if (doHttpsRedirect(msg, ctx)) return;
 
-            Request request = new NettyRequest(server, nettyRequest, ctx);
+        Request request = new NettyRequest(server, msg, ctx);
 
-            long start = System.currentTimeMillis();
-            Response response = server.handleRequest(request);
-            response.finish(request, server);
-            server.addTotalTime(System.currentTimeMillis() - start);
+        long start = System.currentTimeMillis();
+        Response response = server.handleRequest(request);
+        response.finish(request, server);
+        server.addTotalTime(System.currentTimeMillis() - start);
 
-            ByteBuf content = Unpooled.buffer(response.getRawContent().available());
-            content.writeBytes(response.getRawContent(), response.getRawContent().available());
+        ByteBuf content = Unpooled.buffer(response.getRawContent().available());
+        content.writeBytes(response.getRawContent(), response.getRawContent().available());
 
-            DefaultFullHttpResponse nettyResponse = new DefaultFullHttpResponse(
-                    NettyUtils.convertHttpVersion(response.getHttpVersion()),
-                    HttpResponseStatus.valueOf(response.getResponseCode()),
-                    content
-            );
-            for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
-                nettyResponse.headers().set(pair.getKey(), pair.getValue());
-            }
-            for (Map.Entry<CookieKey, String> cookie : response.getSetCookies().entrySet()) {
-                nettyResponse.headers().add(HttpHeaderNames.SET_COOKIE, cookie.getKey().toHeaderString(cookie.getValue()));
-            }
-            ChannelFuture future = ctx.writeAndFlush(nettyResponse);
-            if (!request.isKeepAlive()) {
-                future.addListener(ChannelFutureListener.CLOSE);
-            }
+        DefaultFullHttpResponse nettyResponse = new DefaultFullHttpResponse(
+                NettyUtils.convertHttpVersion(response.getHttpVersion()),
+                HttpResponseStatus.valueOf(response.getResponseCode()),
+                content
+        );
+        for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
+            nettyResponse.headers().set(pair.getKey(), pair.getValue());
+        }
+        for (Map.Entry<CookieKey, String> cookie : response.getSetCookies().entrySet()) {
+            nettyResponse.headers().add(HttpHeaderNames.SET_COOKIE, cookie.getKey().toHeaderString(cookie.getValue()));
+        }
+        ChannelFuture future = ctx.writeAndFlush(nettyResponse);
+        if (!request.isKeepAlive()) {
+            future.addListener(ChannelFutureListener.CLOSE);
         }
     }
 
