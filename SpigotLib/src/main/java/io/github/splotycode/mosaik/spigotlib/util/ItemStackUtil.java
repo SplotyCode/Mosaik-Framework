@@ -129,7 +129,7 @@ public class ItemStackUtil {
      * Displayname, Amount, color as boolean
      */
     public static ItemStack createColoredWool(String name, int amount, boolean color) {
-        ItemStack is = new ItemStack(Material.WOOL, amount, (short) (color?ColorCodes.LIME.getId():ColorCodes.RED.getId()));
+        ItemStack is = new ItemStack(Material.WOOL, amount, (short) (color? ColorCode.LIME.getId(): ColorCode.RED.getId()));
         ItemMeta im = is.getItemMeta();
         im.setDisplayName(name);
         is.setItemMeta(im);

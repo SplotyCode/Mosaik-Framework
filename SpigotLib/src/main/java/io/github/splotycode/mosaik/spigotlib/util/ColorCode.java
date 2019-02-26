@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.spigotlib.util;
 
-public enum  ColorCodes {
+public enum ColorCode {
 
     WHITE(0, "white"),
     ORANGE(1, "orange"),
@@ -22,7 +22,7 @@ public enum  ColorCodes {
     private final int id;
     private final String color;
 
-    ColorCodes(int id, String color) {
+    ColorCode(int id, String color) {
         this.id = id;
         this.color = color;
     }
