@@ -1,6 +1,5 @@
 package io.github.splotycode.mosaik.webapi.server;
 
-import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.LinkedDataFactory;
 import io.github.splotycode.mosaik.util.init.InitialisedOnce;
@@ -12,6 +11,7 @@ import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.StaticHandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.anotation.AnnotationHandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContentHandler;
 import io.github.splotycode.mosaik.webapi.response.Response;
@@ -108,7 +108,7 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
                     break;
                 }
             } catch (Throwable throwable) {
-                ExceptionUtil.throwRuntime(throwable);
+                throw new HandleRequestException("Error while Handling " + handler.getClass().getName(), throwable);
             }
         }
         requests++;
