@@ -83,8 +83,6 @@ public class WebServerHandler extends SimpleChannelInboundHandler {
             if (!request.isKeepAlive()) {
                 future.addListener(ChannelFutureListener.CLOSE);
             }
-        } else {
-            super.channelRead(ctx, msg);
         }
     }
 
