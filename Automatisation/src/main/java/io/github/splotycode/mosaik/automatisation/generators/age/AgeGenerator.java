@@ -18,27 +18,27 @@ public class AgeGenerator implements Generator<Integer> {
      * The default age Generator instance
      */
     @Getter private static AgeGenerator defaultGenerator = AgeBuilder.builder().next()
-                                                                    .setRegion(AgeRegions.CHILD)
+                                                                    .setRegion(AgeRegion.CHILD)
                                                                     .setProbability(4)
                                                                 .back()
                                                                 .next()
-                                                                    .setRegion(AgeRegions.TEENAGER)
+                                                                    .setRegion(AgeRegion.TEENAGER)
                                                                     .setProbability(14)
                                                                 .back()
                                                                 .next()
-                                                                    .setRegion(AgeRegions.JUNG_AGED)
+                                                                    .setRegion(AgeRegion.JUNG_AGED)
                                                                     .setProbability(32)
                                                                 .back()
                                                                 .next()
-                                                                    .setRegion(AgeRegions.MIDDLE_AGED)
+                                                                    .setRegion(AgeRegion.MIDDLE_AGED)
                                                                     .setProbability(16)
                                                                 .back()
                                                                 .next()
-                                                                    .setRegion(AgeRegions.OLD_AGED)
+                                                                    .setRegion(AgeRegion.OLD_AGED)
                                                                     .setProbability(26)
                                                                 .back()
                                                                 .next()
-                                                                    .setRegion(AgeRegions.SUPER_OLD_AGED)
+                                                                    .setRegion(AgeRegion.SUPER_OLD_AGED)
                                                                     .setProbability(7)
                                                                 .back()
                                                                 .build();
@@ -95,7 +95,7 @@ public class AgeGenerator implements Generator<Integer> {
              * @param region the Region
              * @return the current WeightBuilder
              */
-            public WightBuilder setRegion(AgeRegions region) {
+            public WightBuilder setRegion(AgeRegion region) {
                 data.setRegion(region);
                 return this;
             }
@@ -134,7 +134,7 @@ public class AgeGenerator implements Generator<Integer> {
     @Data
     public static class AgeData {
 
-        private AgeRegions region = null;
+        private AgeRegion region = null;
         private int probability = -2;
 
     }
@@ -144,7 +144,7 @@ public class AgeGenerator implements Generator<Integer> {
      */
     @AllArgsConstructor
     @Getter
-    public enum AgeRegions {
+    public enum AgeRegion {
 
         /**
          * From 3 to 12
