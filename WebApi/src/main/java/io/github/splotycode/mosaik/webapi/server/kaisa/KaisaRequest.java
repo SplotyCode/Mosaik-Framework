@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.server.kaisa;
 
+import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContent;
 import io.github.splotycode.mosaik.webapi.response.CookieKey;
@@ -27,6 +28,8 @@ public class KaisaRequest implements Request {
     private SocketChannel connection;
     private AlmostBoolean isPost = AlmostBoolean.MAYBE, isGet = AlmostBoolean.MAYBE;
     private Response response = new Response(null);
+
+    @Getter private DataFactory dataFactory;
     
     private HashMap<String, String> headers;
     @Getter @Setter private Map<String, ? extends Collection<String>> get;
