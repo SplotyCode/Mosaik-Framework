@@ -8,7 +8,7 @@ import io.github.splotycode.mosaik.runtime.debug.DebugProvider;
 import io.github.splotycode.mosaik.runtime.pathmanager.PathManager;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.runtime.startup.IStartUpManager;
-import io.github.splotycode.mosaik.runtime.startup.envirement.StartUpEnvironmentChanger;
+import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 
 public final class Links {

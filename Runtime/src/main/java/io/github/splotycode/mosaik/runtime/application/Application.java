@@ -2,7 +2,7 @@ package io.github.splotycode.mosaik.runtime.application;
 
 import lombok.Getter;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
-import io.github.splotycode.mosaik.runtime.startup.envirement.ConfiguriseEnvironmentChanger;
+import io.github.splotycode.mosaik.runtime.startup.environment.ConfiguriseEnvironmentChanger;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.logger.Logger;
 

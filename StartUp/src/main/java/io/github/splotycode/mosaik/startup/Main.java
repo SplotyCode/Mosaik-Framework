@@ -6,7 +6,7 @@ import io.github.splotycode.mosaik.runtime.application.IApplication;
 import io.github.splotycode.mosaik.runtime.logging.LoggingHelper;
 import io.github.splotycode.mosaik.runtime.logging.MosaikLoggerFactory;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
-import io.github.splotycode.mosaik.runtime.startup.envirement.StartUpEnvironmentChanger;
+import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
 import io.github.splotycode.mosaik.startup.application.ApplicationManager;
 import io.github.splotycode.mosaik.startup.envirementchanger.StartUpInvirementChangerImpl;
 import io.github.splotycode.mosaik.startup.exception.FrameworkStartException;
