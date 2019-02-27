@@ -12,11 +12,13 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.OptionalSslHandler;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class NettyChannelInitializer extends ChannelInitializer {
 
-    private NettyWebServer webServer;
+    protected NettyWebServer webServer;
 
     @Override
     protected void initChannel(Channel channel) {
