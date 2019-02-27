@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.request;
 
+import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.webapi.request.body.RequestBodyHelper;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContent;
 import io.github.splotycode.mosaik.webapi.response.CookieKey;
@@ -24,6 +25,8 @@ public abstract class AbstractRequest implements Request {
     private boolean checkedSession;
     private Session session = null;
     private String fullUrl;
+
+    protected DataFactory dataFactory;
 
     public AbstractRequest(WebServer webServer, String fullUrl) {
         this.webServer = webServer;

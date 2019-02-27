@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.request;
 
+import io.github.splotycode.mosaik.util.datafactory.DataFactoryComponent;
 import io.github.splotycode.mosaik.webapi.handler.UrlPattern;
 import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
@@ -11,7 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public interface Request {
+public interface Request extends DataFactoryComponent {
 
     WebServer getWebServer();
 
