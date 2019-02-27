@@ -26,7 +26,7 @@ public abstract class AbstractRequest implements Request {
     private Session session = null;
     private String fullUrl;
 
-    protected DataFactory dataFactory;
+    protected DataFactory dataFactory = new DataFactory();
 
     public AbstractRequest(WebServer webServer, String fullUrl) {
         this.webServer = webServer;
