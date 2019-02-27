@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.spigotlib;
 
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.application.Application;
+import io.github.splotycode.mosaik.runtime.startup.StartUpInvoke;
 import io.github.splotycode.mosaik.spigotlib.exception.PluginLoadException;
 import io.github.splotycode.mosaik.spigotlib.gui.GuiListener;
 import io.github.splotycode.mosaik.spigotlib.link.SpigotLinks;
@@ -9,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 public class SpigotPlugin extends JavaPlugin {
@@ -18,11 +18,7 @@ public class SpigotPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        try {
-            Class.forName("io.github.splotycode.mosaik.startup.Main").getMethod("mainIfNotInitialised").invoke(null);
-        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        StartUpInvoke.inokeIfNotInitialised();
         if (firstPlugin) {
             firstPlugin = false;
             firstPluginLoad();

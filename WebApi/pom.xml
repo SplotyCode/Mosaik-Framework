@@ -68,6 +68,11 @@
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
+            <artifactId>Runtime</artifactId>
+            <version>2.2.8-PreRelease</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>StartUp</artifactId>
             <version>2.2.8-PreRelease</version>
         </dependency>
@@ -108,7 +113,7 @@
                     <properties>
                         <property>
                             <name>listener</name>
-                            <value>io.github.splotycode.mosaik.InvokeStartUp</value>
+                            <value>io.github.splotycode.mosaik.runtime.InvokeStartUp</value>
                         </property>
                     </properties>
                 </configuration>
