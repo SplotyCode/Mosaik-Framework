@@ -1,5 +1,7 @@
 package io.github.splotycode.mosaik.util.reflection.modules;
 
+import io.github.splotycode.mosaik.util.collection.ArrayUtil;
+
 public enum MosaikModule implements IModule {
 
     ANNOTATIONS("io.github.splotycode.mosaik.annotations.Disabled"),
@@ -54,6 +56,7 @@ public enum MosaikModule implements IModule {
 
     @Override
     public String[] loadChecker() {
+        if (loadChecker == null) return ArrayUtil.EMPTY_STRING_ARRAY;
         return new String[] {loadChecker};
     }
 
