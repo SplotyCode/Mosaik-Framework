@@ -15,7 +15,7 @@ public interface IModule {
     String[] loadChecker();
 
     default Collection<String> getAllLoadChecker() {
-        Collection<String> loadCheckers = new ArrayList<>();
+        Collection<String> loadCheckers = new ArrayList<>(Arrays.asList(loadChecker()));
         for (IModule dependency : getAllDependencies()) {
             loadCheckers.addAll(Arrays.asList(dependency.loadChecker()));
         }
@@ -44,10 +44,15 @@ public interface IModule {
     }
 
     default void checkLoaded() {
+        for (String checker : loadChecker()) {
+            if (!ReflectionUtil.clazzExists(checker)) {
+                throw new ModuleNotInClassPathExcpetion("Module: " + getDisplayName() + " is not in the classpath (" + checker + ")");
+            }
+        }
         for (IModule dependency : getAllDependencies()) {
             for (String checker : dependency.loadChecker()) {
                 if (!ReflectionUtil.clazzExists(checker)) {
-                    throw new ModuleNotInClassPathExcpetion(dependency.getDisplayName() + " is not in classpath (" + checker + ")");
+                    throw new ModuleNotInClassPathExcpetion(getDisplayName() +  " could not be loaded because its dependency " + dependency.getDisplayName() + " is not in classpath (" + checker + ")");
                 }
             }
         }
