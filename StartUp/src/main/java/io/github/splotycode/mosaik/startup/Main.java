@@ -19,6 +19,7 @@ import io.github.splotycode.mosaik.util.init.AlreadyInitailizedException;
 import io.github.splotycode.mosaik.util.io.IOUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
+import io.github.splotycode.mosaik.util.reflection.modules.MosaikModule;
 import lombok.Getter;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -62,10 +63,14 @@ public class Main {
         setUpLogging();
         LoggingHelper.loggingStartUp();
 
-        checkClassLoader();
         if (ReflectionUtil.getCallerClasses().length >= 4) {
             logger.warn("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass().getName());
         }
+        checkClassLoader();
+        MosaikModule.STARTUP.checkLoaded();
+        MosaikModule.DOM_PARSING_IMPL.checkLoaded();
+        MosaikModule.ARG_PARSER_IMPL.checkLoaded();
+
         logger.info("");
 
         instance = new Main();
