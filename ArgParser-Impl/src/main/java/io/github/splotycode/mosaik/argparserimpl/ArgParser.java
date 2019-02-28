@@ -35,13 +35,13 @@ public class ArgParser implements IArgParser {
 
         for (Argument argument : object.getAll()) {
             Class type = argument.getField().getType();
-            String name = label == null ? "" : label + ":" + argument.getName();
+            String name = (label == null ? "" : label + ":") + argument.getName();
             String rawValue = arguments.getByKey(name);
             Object result;
             if (rawValue == null || rawValue.equals("_no_value_")) {
-                if (ReflectionUtil.isAssignable(Boolean.class, type)) {
+                if (!ReflectionUtil.isAssignable(Boolean.class, type)) {
                     if (argument.getParameter().needed()) {
-                        throw new ArgParseException("Could not fill argument " + name + " because it foes not exsits in arg");
+                        throw new ArgParseException("Could not fill argument " + name + " because it does not exists in args");
                     }
                     continue;
                 } else {
