@@ -111,7 +111,8 @@ public final class ReflectionUtil {
                samePrimitive(one, two, "double", "Double") ||
                samePrimitive(one, two, "char", "Character") ||
                samePrimitive(one, two, "long", "Long") ||
-               samePrimitive(one, two, "short", "Short");
+               samePrimitive(one, two, "short", "Short") ||
+               samePrimitive(one, two, "boolean", "Boolean");
     }
 
     private static boolean samePrimitive(Class one, Class two, String primiClass, String clazz) {
