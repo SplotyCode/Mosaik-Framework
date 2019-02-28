@@ -43,7 +43,7 @@ public enum MosaikModule implements IModule {
     }
 
     @Override
-    public IModule[] getDependecies() {
+    public IModule[] getDependencies() {
         return dependencies;
     }
 
