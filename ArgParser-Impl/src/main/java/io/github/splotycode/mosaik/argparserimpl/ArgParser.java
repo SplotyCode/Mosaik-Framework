@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.argparserimpl;
 import io.github.splotycode.mosaik.argparser.IArgParser;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.util.collection.CollectionUtil;
+import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 
 import java.util.HashMap;
@@ -33,11 +34,12 @@ public class ArgParser implements IArgParser {
         }
 
         for (Argument argument : object.getAll()) {
+            Class type = argument.getField().getType();
             String name = label == null ? "" : label + ":" + argument.getName();
             String rawValue = arguments.getByKey(name);
             Object result;
             if (rawValue == null || rawValue.equals("_no_value_")) {
-                if (argument.getField().getType() != Boolean.class) {
+                if (ReflectionUtil.isAssignable(Boolean.class, type)) {
                     if (argument.getParameter().needed()) {
                         throw new ArgParseException("Could not fill argument " + name + " because it foes not exsits in arg");
                     }
@@ -52,6 +54,8 @@ public class ArgParser implements IArgParser {
                 argument.getField().set(obj, result);
             } catch (IllegalAccessException e) {
                 throw new ArgParseException("Could not access " + obj.getClass().getName() + "#" + argument.getField().getName(), e);
+            } catch (IllegalArgumentException e) {
+                throw new ArgParseException("Type mismatch " + obj.getClass().getName() + "#" + argument.getField().getName(), e);
             }
         }
     }
