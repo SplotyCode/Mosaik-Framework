@@ -34,7 +34,7 @@ public class Response {
     }
 
     @Getter private HttpVersion httpVersion = HttpVersion.VERSION_1_1;
-    private Map<String, String> headers = new HashMap<>();
+    private Map<CharSequence, CharSequence> headers = new HashMap<>();
     private Map<CookieKey, String> setCookies = new HashMap<>();
     @Setter private ResponseContent content;
     private InputStream rawContent;
@@ -62,12 +62,12 @@ public class Response {
         return this;
     }
 
-    public Response setHeader(ResponseHeader httpHeader, String value) {
+    public Response setHeader(ResponseHeader httpHeader, CharSequence value) {
         headers.put(EnumUtil.toDisplayName(httpHeader), value);
         return this;
     }
 
-    public Response setHeader(String httpHeader, String value) {
+    public Response setHeader(CharSequence httpHeader, CharSequence value) {
         if (value == null) throw new HandleRequestException("Can not set a header to Null");
         headers.put(httpHeader, value);
         return this;

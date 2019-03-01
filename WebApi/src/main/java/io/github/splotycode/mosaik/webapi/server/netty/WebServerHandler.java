@@ -71,7 +71,7 @@ public class WebServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                 HttpResponseStatus.valueOf(response.getResponseCode()),
                 content
         );
-        for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
+        for (Map.Entry<CharSequence, CharSequence> pair : response.getHeaders().entrySet()) {
             nettyResponse.headers().set(pair.getKey(), pair.getValue());
         }
         for (Map.Entry<CookieKey, String> cookie : response.getSetCookies().entrySet()) {
@@ -94,7 +94,7 @@ public class WebServerHandler extends SimpleChannelInboundHandler<FullHttpReques
                 HttpResponseStatus.valueOf(response.getResponseCode()),
                 byteBuf
         );
-        for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
+        for (Map.Entry<CharSequence, CharSequence> pair : response.getHeaders().entrySet()) {
             nettyResponse.headers().set(pair.getKey(), pair.getValue());
         }
         for (Map.Entry<CookieKey, String> cookie : response.getSetCookies().entrySet()) {
