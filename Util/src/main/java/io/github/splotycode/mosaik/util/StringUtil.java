@@ -6,7 +6,7 @@ import java.text.MessageFormat;
 
 public final class StringUtil {
 
-    public static boolean isEmpty(String str){
+    public static boolean isEmpty(CharSequence str){
         return str == null || str.length() == 0;
     }
 
