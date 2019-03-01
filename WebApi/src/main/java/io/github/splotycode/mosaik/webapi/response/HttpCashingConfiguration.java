@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
 
-//TODO
 @Getter
 public class HttpCashingConfiguration {
 
@@ -36,7 +35,7 @@ public class HttpCashingConfiguration {
     private ETagMode eTagMode = ETagMode.SHA_512;
 
     public void apply(Response response) {
-        response.cashing = this;
+        response.cashingConfiguration = this;
         if (expires != -1) {
             Date date = new Date(expires * 1000L + System.currentTimeMillis());
             response.setHeader(ResponseHeader.EXPIRES, Response.DATE_FORMAT.format(date));

@@ -44,7 +44,7 @@ public class Response {
     private InputStream rawContent;
     @Setter private int responseCode = 200;
 
-    HttpCashingConfiguration cashing;
+    HttpCashingConfiguration cashingConfiguration;
 
     public Response(ResponseContent content) {
         this.content = content;
@@ -55,6 +55,12 @@ public class Response {
         setHeader("x-xss-protection", "1; mode=block");
         setHeader("X-Content-Type-Options", "nosniff");
         setHeader("X-Powered-By", "Mosaik WebApi");
+    }
+
+    public Response applyCashingConfiguration(HttpCashingConfiguration cashingConfiguration) {
+        this.cashingConfiguration = cashingConfiguration;
+        cashingConfiguration.apply(this);
+        return this;
     }
 
     public Response setCookie(CookieKey key, String value) {
@@ -106,8 +112,8 @@ public class Response {
         };
 
         try {
-            if (cashing != null &&
-                    cashing.getValidationModes().contains(HttpCashingConfiguration.ValidationMode.MODIFIED)) {
+            if (cashingConfiguration != null &&
+                    cashingConfiguration.getValidationModes().contains(HttpCashingConfiguration.ValidationMode.MODIFIED)) {
                 long lastModified = content.lastModified();
                 if (lastModified != -1) {
                     String rawLastModified = request.getHeader(RequestHeader.IF_MODIFIED_SINCE);
@@ -125,9 +131,9 @@ public class Response {
 
         /* E-Tag */
         try {
-            if (cashing != null &&
-                    cashing.getValidationModes().contains(HttpCashingConfiguration.ValidationMode.E_TAG)) {
-                String currentETag = content.eTag(cashing, possibleContent);
+            if (cashingConfiguration != null &&
+                    cashingConfiguration.getValidationModes().contains(HttpCashingConfiguration.ValidationMode.E_TAG)) {
+                String currentETag = content.eTag(cashingConfiguration, possibleContent);
                 String lastETag = request.getHeader(RequestHeader.IF_NONE_MATCH);
                 if (currentETag != null && currentETag.equals(lastETag)) {
                     responseCode = HttpResponseStatus.NOT_MODIFIED.code();
