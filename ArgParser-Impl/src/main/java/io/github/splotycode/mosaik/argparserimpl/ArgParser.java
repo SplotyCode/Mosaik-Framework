@@ -45,7 +45,7 @@ public class ArgParser implements IArgParser {
                     }
                     continue;
                 } else {
-                    result = true;
+                    result = rawValue != null;
                 }
             } else {
                 result = TransformerManager.getInstance().transform(rawValue, argument.getField().getType());
