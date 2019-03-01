@@ -12,6 +12,22 @@ import java.util.HashSet;
 @Getter
 public class HttpCashingConfiguration {
 
+    public static final HttpCashingConfiguration ASSET_CASHING = getAssetsConfiguration();
+    public static final HttpCashingConfiguration NO_CACHE = getNoCacheConfiguration();
+
+    public static HttpCashingConfiguration getNoCacheConfiguration() {
+        return new HttpCashingConfiguration()
+                .setNoCache(true)
+                .setNoStore(true)
+                .setMustRevalidate(true);
+    }
+
+    public static HttpCashingConfiguration getAssetsConfiguration() {
+        return new HttpCashingConfiguration()
+                .setMaxAge(31536000)
+                .setPublic(true);
+    }
+
     private long expires = -1;
     private boolean noCache, noStore, noTransform, onlyIfCashed, mustRevalidate, isPublic, isPrivate;
     private long maxAge = -1, maxStale = -1, minFresh = -1;
