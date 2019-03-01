@@ -87,4 +87,69 @@ public class HttpCashingConfiguration {
 
     }
 
+    public HttpCashingConfiguration seteTagMode(ETagMode eTagMode) {
+        this.eTagMode = eTagMode;
+        return this;
+    }
+
+    public HttpCashingConfiguration setExpires(long expires) {
+        this.expires = expires;
+        return this;
+    }
+
+    public HttpCashingConfiguration setMaxStale(long maxStale) {
+        this.maxStale = maxStale;
+        return this;
+    }
+
+    public HttpCashingConfiguration setMinFresh(long minFresh) {
+        this.minFresh = minFresh;
+        return this;
+    }
+
+    public HttpCashingConfiguration setMaxAge(long maxAge) {
+        this.maxAge = maxAge;
+        return this;
+    }
+
+    public HttpCashingConfiguration setNoCache(boolean noCache) {
+        this.noCache = noCache;
+        return this;
+    }
+
+    public HttpCashingConfiguration setMustRevalidate(boolean mustRevalidate) {
+        this.mustRevalidate = mustRevalidate;
+        return this;
+    }
+
+    public HttpCashingConfiguration setNoTransform(boolean noTransform) {
+        this.noTransform = noTransform;
+        return this;
+    }
+
+    public HttpCashingConfiguration setNoStore(boolean noStore) {
+        this.noStore = noStore;
+        return this;
+    }
+
+    public HttpCashingConfiguration setOnlyIfCashed(boolean onlyIfCashed) {
+        this.onlyIfCashed = onlyIfCashed;
+        return this;
+    }
+
+    public HttpCashingConfiguration setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+        return this;
+    }
+
+    public HttpCashingConfiguration setValidationModes(HashSet<ValidationMode> validationModes) {
+        this.validationModes = validationModes;
+        return this;
+    }
+
+    public HttpCashingConfiguration setPublic(boolean aPublic) {
+        isPublic = aPublic;
+        return this;
+    }
+
 }
