@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -24,7 +25,9 @@ public class HttpCashingConfiguration {
     public static HttpCashingConfiguration getAssetsConfiguration() {
         return new HttpCashingConfiguration()
                 .setMaxAge(31536000)
-                .setPublic(true);
+                .setPublic(true)
+                .addValidationModes(ValidationMode.E_TAG, ValidationMode.MODIFIED)
+                .seteTagMode(ETagMode.SHA_1);
     }
 
     private long expires = -1;
@@ -159,6 +162,11 @@ public class HttpCashingConfiguration {
 
     public HttpCashingConfiguration setValidationModes(HashSet<ValidationMode> validationModes) {
         this.validationModes = validationModes;
+        return this;
+    }
+
+    public HttpCashingConfiguration addValidationModes(ValidationMode... validationModes) {
+        this.validationModes.addAll(Arrays.asList(validationModes));
         return this;
     }
 
