@@ -53,6 +53,11 @@ public class FileResponseContent implements ManipulateableContent {
     }
 
     @Override
+    public long lastModified() throws IOException {
+        return file.lastModified();
+    }
+
+    @Override
     public ResponseManipulator manipulate() {
         return manipulator;
     }

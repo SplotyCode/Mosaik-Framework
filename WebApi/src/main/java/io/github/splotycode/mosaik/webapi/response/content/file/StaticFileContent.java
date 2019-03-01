@@ -20,6 +20,11 @@ public class StaticFileContent implements ResponseContent {
     }
 
     @Override
+    public long lastModified() throws IOException {
+        return file.lastModified();
+    }
+
+    @Override
     public String getContentType() throws IOException {
         return Files.probeContentType(file.toPath());
     }
