@@ -11,6 +11,7 @@ import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.ssl.SslHandler;
 
+import java.io.IOException;
 import java.util.Map;
 
 @ChannelHandler.Sharable
@@ -63,13 +64,10 @@ public class WebServerHandler extends SimpleChannelInboundHandler<FullHttpReques
         response.finish(request, server);
         server.addTotalTime(System.currentTimeMillis() - start);
 
-        ByteBuf content = Unpooled.buffer(response.getRawContent().available());
-        content.writeBytes(response.getRawContent(), response.getRawContent().available());
-
         DefaultFullHttpResponse nettyResponse = new DefaultFullHttpResponse(
                 NettyUtils.convertHttpVersion(response.getHttpVersion()),
                 HttpResponseStatus.valueOf(response.getResponseCode()),
-                content
+                getContent(response)
         );
         for (Map.Entry<CharSequence, CharSequence> pair : response.getHeaders().entrySet()) {
             nettyResponse.headers().set(pair.getKey(), pair.getValue());
@@ -83,16 +81,26 @@ public class WebServerHandler extends SimpleChannelInboundHandler<FullHttpReques
         }
     }
 
+    private ByteBuf getContent(Response response) throws IOException {
+        if (response.getRawContent() == null) {
+            return Unpooled.buffer(0, 0);
+        } else {
+            int capacity = response.getRawContent().available();
+            ByteBuf byteBuf = Unpooled.buffer(capacity, capacity);
+            byteBuf.writeBytes(response.getRawContent(), capacity);
+            return byteBuf;
+        }
+    }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Response response = server.getErrorHandler().handleError(cause);
         response.finish(null, server);
-        ByteBuf byteBuf = Unpooled.buffer();
-        byteBuf.writeBytes(response.getRawContent(), response.getRawContent().available());
+
         DefaultFullHttpResponse nettyResponse = new DefaultFullHttpResponse(
                 NettyUtils.convertHttpVersion(response.getHttpVersion()),
                 HttpResponseStatus.valueOf(response.getResponseCode()),
-                byteBuf
+                getContent(response)
         );
         for (Map.Entry<CharSequence, CharSequence> pair : response.getHeaders().entrySet()) {
             nettyResponse.headers().set(pair.getKey(), pair.getValue());
