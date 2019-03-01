@@ -1,6 +1,8 @@
 package io.github.splotycode.mosaik.webapi.response;
 
 import io.github.splotycode.mosaik.util.EnumUtil;
+import io.github.splotycode.mosaik.util.io.ByteArrayInputStream;
+import io.github.splotycode.mosaik.util.io.IOUtil;
 import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
@@ -19,7 +21,6 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Supplier;
 
 @Getter
 @EqualsAndHashCode
@@ -41,7 +42,7 @@ public class Response {
     private Map<CharSequence, CharSequence> headers = new HashMap<>();
     private Map<CookieKey, String> setCookies = new HashMap<>();
     @Setter private ResponseContent content;
-    private InputStream rawContent;
+    private InputStream rawContent = null;
     @Setter private int responseCode = 200;
 
     HttpCashingConfiguration cashingConfiguration;
@@ -91,6 +92,11 @@ public class Response {
     }
 
     public void finish(Request request, WebServer server) {
+        /* Keep Alive */
+        if (request != null && request.isKeepAlive()) {
+            setHeader(ResponseHeader.CONNECTION, "keep-alive");
+        }
+
         /* Content  */
         if (content == null) {
             content = server.getConfig().getDataDefault(WebConfig.NO_CONTENT_RESPONSE);
@@ -99,20 +105,9 @@ public class Response {
             }
         }
 
-        Supplier<InputStream> possibleContent = () -> {
-            if (rawContent == null) {
-                /* Load content */
-                try {
-                    rawContent = content.getInputStream();
-                } catch (IOException ex) {
-                    throw new ContentException("Could not load content", ex);
-                }
-            }
-            return rawContent;
-        };
-
+        /* Last Modified */
         try {
-            if (cashingConfiguration != null &&
+            if (request != null && cashingConfiguration != null &&
                     cashingConfiguration.getValidationModes().contains(HttpCashingConfiguration.ValidationMode.MODIFIED)) {
                 long lastModified = content.lastModified();
                 if (lastModified != -1) {
@@ -131,9 +126,18 @@ public class Response {
 
         /* E-Tag */
         try {
-            if (cashingConfiguration != null &&
+            if (request != null && cashingConfiguration != null &&
                     cashingConfiguration.getValidationModes().contains(HttpCashingConfiguration.ValidationMode.E_TAG)) {
-                String currentETag = content.eTag(cashingConfiguration, possibleContent);
+                String currentETag = content.eTag(cashingConfiguration, () -> {
+                    if (rawContent == null) {
+                        try {
+                            rawContent = new ByteArrayInputStream(IOUtil.toByteArray(loadContent()));
+                        } catch (IOException ex) {
+                            throw new ContentException("Failed to convert stream to byte array");
+                        }
+                    }
+                    return new ByteArrayInputStream(((ByteArrayInputStream)rawContent).getOriginal());
+                });
                 String lastETag = request.getHeader(RequestHeader.IF_NONE_MATCH);
                 if (currentETag != null && currentETag.equals(lastETag)) {
                     responseCode = HttpResponseStatus.NOT_MODIFIED.code();
@@ -141,12 +145,14 @@ public class Response {
                 }
                 setHeader(ResponseHeader.ETAG, currentETag);
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             throw new ContentException("Could not set E_TAG", ex);
         }
 
-        /* Get content if not already loaded */
-        possibleContent.get();
+        /* Load content if not already loaded */
+        if (rawContent == null) {
+            rawContent = loadContent();
+        }
 
         /* Content Length */
         try {
@@ -164,10 +170,13 @@ public class Response {
         } catch (IOException ex) {
             throw new ContentException("Could not set content type", ex);
         }
+    }
 
-        /* Keep Alive */
-        if (request != null && request.isKeepAlive()) {
-            setHeader(ResponseHeader.CONNECTION, "keep-alive");
+    private InputStream loadContent() {
+        try {
+            return content.getInputStream();
+        } catch (IOException ex) {
+            throw new ContentException("Could not load content", ex);
         }
     }
 
