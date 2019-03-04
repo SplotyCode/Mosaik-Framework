@@ -13,3 +13,4 @@ Mosaik is on the Maven central.
 </dependency>
 ```
 Note: GameEngine and SpigotLib are not part of Mosaik-All
+Don't use argparser or domparser standalone. 
