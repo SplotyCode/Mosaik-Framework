@@ -78,9 +78,13 @@ public final class CollectionUtil {
     public static <T> HashSet<T> newHashSet(Iterable<? extends T> elements) {
         if (elements instanceof Collection) {
             Collection<? extends T> collection = (Collection<? extends T>)elements;
-            return new java.util.HashSet<>(collection);
+            return new HashSet<>(collection);
         }
         return newHashSet(elements.iterator());
+    }
+
+    public static <T> HashSet<T> newHashSet(T[] elements) {
+        return new HashSet<>(Arrays.asList(elements));
     }
 
     public static <T> HashSet<T> newHashSet(Iterator<? extends T> iterator) {
