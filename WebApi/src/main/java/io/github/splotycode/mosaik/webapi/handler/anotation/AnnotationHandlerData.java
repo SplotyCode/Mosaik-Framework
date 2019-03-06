@@ -5,9 +5,13 @@ import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.webapi.handler.UrlPattern;
 import io.github.splotycode.mosaik.webapi.handler.anotation.check.*;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.UseResolver;
+import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.CacheDefaultProvider;
 import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.request.RequestHeader;
+import io.github.splotycode.mosaik.webapi.response.HttpCashingConfiguration;
+import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.response.content.ResponseContent;
 import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
 import lombok.EqualsAndHashCode;
@@ -33,6 +37,7 @@ public class AnnotationHandlerData {
     private List<String> neededGet = new ArrayList<>(), neededPost = new ArrayList<>();
     private HashMap<String, String> getMustBe = new HashMap<>(), postMustBe = new HashMap<>();
     private Throwable loadingError = null;
+    private HttpCashingConfiguration cashingConfiguration;
 
     protected List<ParameterResolver> costomParameterResolvers = new ArrayList<>();
 
@@ -72,6 +77,8 @@ public class AnnotationHandlerData {
                 }
             } else if (annotation instanceof Host) {
                 host = (((Host) annotation).value()).trim().toLowerCase(Locale.ENGLISH);
+            } else if (annotation instanceof CacheDefaultProvider) {
+                cashingConfiguration = ((CacheDefaultProvider) annotation).value().get();
             }
         }
     }
@@ -80,6 +87,16 @@ public class AnnotationHandlerData {
         if (this.method != null && !method.equals(this.method))
             throw new IllegalStateException("Can not force two different methods (" + priority + " and " + this.priority);
         this.method = method;
+    }
+
+    public void applyCashingConfiguration(Response response) {
+        try {
+            if (cashingConfiguration != null) {
+                response.applyCashingConfiguration(cashingConfiguration);
+            }
+        } catch (Throwable throwable) {
+            throw new HandleRequestException("Failed to apply cashing configuration");
+        }
     }
 
     public boolean valid(Request request) {
