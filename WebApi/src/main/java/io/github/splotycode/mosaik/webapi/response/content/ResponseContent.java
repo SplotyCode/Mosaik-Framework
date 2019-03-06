@@ -19,7 +19,7 @@ public interface ResponseContent {
     }
 
     default String eTag(HttpCashingConfiguration conf, Supplier<InputStream> stream) throws IOException {
-        return conf.generateEtag(stream.get());
+        return conf.generateETag(stream.get());
     }
 
 }

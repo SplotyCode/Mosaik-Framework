@@ -1,7 +1,9 @@
 package io.github.splotycode.mosaik.webapi.response;
 
 import io.github.splotycode.mosaik.util.CodecUtil;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +12,8 @@ import java.util.Date;
 import java.util.HashSet;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class HttpCashingConfiguration {
 
     public static final HttpCashingConfiguration ASSET_CASHING = getAssetsConfiguration();
@@ -74,7 +78,7 @@ public class HttpCashingConfiguration {
         }
     }
 
-    public String generateEtag(InputStream content) throws IOException {
+    public String generateETag(InputStream content) throws IOException {
         switch (eTagMode) {
             case MD5:
                 return CodecUtil.md5Hex(content);
