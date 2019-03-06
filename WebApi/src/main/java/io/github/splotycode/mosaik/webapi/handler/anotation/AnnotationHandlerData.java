@@ -2,9 +2,11 @@ package io.github.splotycode.mosaik.webapi.handler.anotation;
 
 import io.github.splotycode.mosaik.annotations.AnnotationHelper;
 import io.github.splotycode.mosaik.util.Pair;
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.webapi.handler.UrlPattern;
 import io.github.splotycode.mosaik.webapi.handler.anotation.check.*;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.UseResolver;
+import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.Cache;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.CacheDefaultProvider;
 import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
@@ -79,17 +81,34 @@ public class AnnotationHandlerData {
                 host = (((Host) annotation).value()).trim().toLowerCase(Locale.ENGLISH);
             } else if (annotation instanceof CacheDefaultProvider) {
                 cashingConfiguration = ((CacheDefaultProvider) annotation).value().get();
+            } else if (annotation instanceof Cache) {
+                Cache cache = (Cache) annotation;
+                cashingConfiguration = new HttpCashingConfiguration(
+                        cache.expires(),
+                        cache.noCache(),
+                        cache.noStore(),
+                        cache.noTransform(),
+                        cache.onlyIfCashed(),
+                        cache.mustRevalidate(),
+                        cache.isPublic(),
+                        cache.isPrivate(),
+                        cache.maxAge(),
+                        cache.maxStale(),
+                        cache.minFresh(),
+                        CollectionUtil.newHashSet(cache.modes()),
+                        cache.eTagMode()
+                );
             }
         }
     }
 
     private void setMethod(String method) {
         if (this.method != null && !method.equals(this.method))
-            throw new IllegalStateException("Can not force two different methods (" + priority + " and " + this.priority);
+            throw new IllegalStateException("Can not force two different methods (" + method + " and " + this.method);
         this.method = method;
     }
 
-    public void applyCashingConfiguration(Response response) {
+    void applyCashingConfiguration(Response response) {
         try {
             if (cashingConfiguration != null) {
                 response.applyCashingConfiguration(cashingConfiguration);
