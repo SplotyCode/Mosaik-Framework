@@ -2,6 +2,13 @@ package io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache;
 
 import io.github.splotycode.mosaik.webapi.response.HttpCashingConfiguration;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface Cache {
 
     long expires() default  -1;
