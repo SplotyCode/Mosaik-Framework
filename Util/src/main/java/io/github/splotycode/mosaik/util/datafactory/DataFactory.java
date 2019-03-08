@@ -60,7 +60,7 @@ public class DataFactory {
     }
 
     public Map<String, Object> getMap() {
-        return data;
+        return getRawMap();
     }
 
     public Map<String, Object> getRawMap() {
@@ -81,5 +81,9 @@ public class DataFactory {
 
     public int getDataSize() {
         return getMap().size();
+    }
+
+    public boolean isEmpty() {
+        return getDataSize() == 0;
     }
 }
