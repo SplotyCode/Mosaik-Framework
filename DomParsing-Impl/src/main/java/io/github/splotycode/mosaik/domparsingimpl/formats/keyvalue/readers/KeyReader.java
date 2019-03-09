@@ -1,8 +1,8 @@
-package io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.readers;
+package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.readers;
 
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.KeyValueParser;
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.dom.KeyNode;
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.dom.ValueNode;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.KeyValueParser;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyNode;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.ValueNode;
 import io.github.splotycode.mosaik.domparsing.parsing.DomParseException;
 import io.github.splotycode.mosaik.domparsing.parsing.DomReader;
 import io.github.splotycode.mosaik.domparsing.dom.Node;
@@ -11,7 +11,7 @@ import io.github.splotycode.mosaik.util.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.readers.KeyReader.State.*;
+import static io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.readers.KeyReader.State.*;
 
 public class KeyReader implements DomReader<KeyValueParser> {
 

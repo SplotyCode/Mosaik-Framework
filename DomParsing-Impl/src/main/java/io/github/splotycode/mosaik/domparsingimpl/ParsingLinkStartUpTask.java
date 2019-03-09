@@ -3,7 +3,7 @@ package io.github.splotycode.mosaik.domparsingimpl;
 import io.github.splotycode.mosaik.annotations.priority.Priority;
 import io.github.splotycode.mosaik.domparsingimpl.annotation.FileSystemProviderImpl;
 import io.github.splotycode.mosaik.domparsingimpl.annotation.parsing.ReflectiveParsingHelper;
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.KeyValueHandle;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.KeyValueHandle;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import io.github.splotycode.mosaik.runtime.startup.StartUpPriorities;

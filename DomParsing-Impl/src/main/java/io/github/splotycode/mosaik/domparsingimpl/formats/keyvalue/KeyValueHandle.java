@@ -1,10 +1,10 @@
-package io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue;
+package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue;
 
 import io.github.splotycode.mosaik.domparsing.parsing.DomParser;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingHandle;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
 import io.github.splotycode.mosaik.domparsing.writing.DomWriter;
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.dom.KeyValueDocument;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyValueDocument;
 
 public class KeyValueHandle implements ParsingHandle<KeyValueDocument> {
 

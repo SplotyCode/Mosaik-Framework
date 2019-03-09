@@ -1,6 +1,6 @@
-package io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.readers;
+package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.readers;
 
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.KeyValueParser;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.KeyValueParser;
 import io.github.splotycode.mosaik.domparsing.parsing.DomReader;
 
 public class CommentReader implements DomReader<KeyValueParser> {

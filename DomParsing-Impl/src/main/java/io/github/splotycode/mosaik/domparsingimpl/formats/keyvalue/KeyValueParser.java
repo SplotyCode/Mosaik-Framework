@@ -1,8 +1,8 @@
-package io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue;
+package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue;
 
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.dom.KeyValueDocument;
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.readers.CommentReader;
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.readers.KeyReader;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyValueDocument;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.readers.CommentReader;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.readers.KeyReader;
 import lombok.Getter;
 import io.github.splotycode.mosaik.domparsing.parsing.DefaultStringDomParser;
 import io.github.splotycode.mosaik.domparsing.parsing.DomParseException;

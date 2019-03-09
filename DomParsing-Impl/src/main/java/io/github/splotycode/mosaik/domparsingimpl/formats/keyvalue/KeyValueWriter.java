@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue;
+package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue;
 
 import io.github.splotycode.mosaik.domparsing.dom.Document;
 import io.github.splotycode.mosaik.domparsing.dom.Node;

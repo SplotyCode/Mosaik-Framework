@@ -1,8 +1,8 @@
-package io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.dom;
+package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom;
 
 import io.github.splotycode.mosaik.domparsing.dom.TextNode;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingHandle;
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.KeyValueHandle;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.KeyValueHandle;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import lombok.Getter;
