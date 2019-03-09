@@ -2,6 +2,8 @@ package io.github.splotycode.mosaik.domparsing.parsing;
 
 import io.github.splotycode.mosaik.domparsing.dom.Document;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
+import io.github.splotycode.mosaik.domparsing.parsing.input.DomUrlInput;
+import io.github.splotycode.mosaik.domparsing.parsing.output.DomOutput;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 
 import java.io.File;
@@ -14,6 +16,8 @@ public interface ParsingManager extends IListClassRegister<ParsingHandle> {
     Collection<ParsingHandle> getHandles();
 
     <P extends ParsingHandle> P getHandleByClass(Class<P> clazz);
+    ParsingHandle getHandle(File file);
+    ParsingHandle getHandle(DomUrlInput url);
 
     /* Raw Input */
     <P extends Document> P parseDocument(DomInput input, ParsingHandle<P> handle);
@@ -41,5 +45,10 @@ public interface ParsingManager extends IListClassRegister<ParsingHandle> {
     <D extends Document> void writeToFile(D document, File file, ParsingHandle<D> handle) throws IOException;
     <D extends Document> void writeToFile(D document, File file, Class<? extends ParsingHandle<D>> handle) throws IOException;
     <D extends Document> void writeToFile(D document, File file) throws IOException;
+
+    /* Convert */
+    <C extends Document, L extends Document> DomOutput convert(DomInput domInput, ParsingHandle<C> current, ParsingHandle<L> later);
+    <C extends Document, L extends Document> void convert(File file, ParsingHandle<C> current, ParsingHandle<L> later);
+    <L extends Document> void convert(File file, ParsingHandle<L> later);
 
 }
