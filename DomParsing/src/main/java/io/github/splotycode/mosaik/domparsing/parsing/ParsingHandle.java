@@ -11,6 +11,6 @@ public interface ParsingHandle<O extends Document> {
 
     DomParser<O, ?> getParser(DomInput input);
 
-    DomWriter<O> getWriter();
+    DomWriter getWriter();
 
 }
