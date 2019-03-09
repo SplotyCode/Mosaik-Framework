@@ -25,7 +25,7 @@ public @interface Cache {
     long maxStale() default -1;
     long minFresh() default -1;
 
-    HttpCashingConfiguration.ETagMode eTagMode() default HttpCashingConfiguration.ETagMode.SHA_512;
+    HttpCashingConfiguration.DefaultETagMode eTagMode() default HttpCashingConfiguration.DefaultETagMode.SHA_512;
 
     HttpCashingConfiguration.ValidationMode[] modes();
 

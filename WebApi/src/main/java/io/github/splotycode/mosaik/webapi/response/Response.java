@@ -128,7 +128,7 @@ public class Response {
         try {
             if (request != null && cashingConfiguration != null &&
                     cashingConfiguration.getValidationModes().contains(HttpCashingConfiguration.ValidationMode.E_TAG)) {
-                String currentETag = content.eTag(cashingConfiguration, () -> {
+                String currentETag = content.eTag(request, cashingConfiguration, () -> {
                     if (rawContent == null) {
                         try {
                             rawContent = new ByteArrayInputStream(IOUtil.toByteArray(loadContent()));

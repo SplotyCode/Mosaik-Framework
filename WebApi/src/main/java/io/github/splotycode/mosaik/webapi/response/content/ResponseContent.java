@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.response.content;
 
+import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.response.HttpCashingConfiguration;
 
 import java.io.IOException;
@@ -18,8 +19,8 @@ public interface ResponseContent {
         return -1;
     }
 
-    default String eTag(HttpCashingConfiguration conf, Supplier<InputStream> stream) throws IOException {
-        return conf.generateETag(stream.get());
+    default String eTag(Request request, HttpCashingConfiguration conf, Supplier<InputStream> stream) throws IOException {
+        return conf.getETagMode().getETag(request, stream.get());
     }
 
 }

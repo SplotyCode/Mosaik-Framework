@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.webapi.response;
 
 import io.github.splotycode.mosaik.util.CodecUtil;
+import io.github.splotycode.mosaik.webapi.request.Request;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +32,7 @@ public class HttpCashingConfiguration {
                 .setMaxAge(31536000)
                 .setPublic(true)
                 .addValidationModes(ValidationMode.E_TAG, ValidationMode.MODIFIED)
-                .seteTagMode(ETagMode.SHA_1);
+                .setETagMode(DefaultETagMode.SHA_1);
     }
 
     private long expires = -1;
@@ -39,7 +40,7 @@ public class HttpCashingConfiguration {
     private long maxAge = -1, maxStale = -1, minFresh = -1;
 
     private HashSet<ValidationMode> validationModes = new HashSet<>();
-    private ETagMode eTagMode = ETagMode.SHA_512;
+    private ETagMode eTagMode = DefaultETagMode.SHA_512;
 
     public void apply(Response response) {
         response.cashingConfiguration = this;
@@ -78,21 +79,6 @@ public class HttpCashingConfiguration {
         }
     }
 
-    public String generateETag(InputStream content) throws IOException {
-        switch (eTagMode) {
-            case MD5:
-                return CodecUtil.md5Hex(content);
-            case SHA_512:
-                return CodecUtil.sha512Hex(content);
-            case SHA_1:
-                return CodecUtil.sha1Hex(content);
-            case SHA_256:
-                return CodecUtil.sha256Hex(content);
-            default:
-                throw new IllegalArgumentException("E-Tag mode " + eTagMode + " not supported");
-        }
-    }
-
     public enum ValidationMode {
 
         E_TAG,
@@ -100,16 +86,45 @@ public class HttpCashingConfiguration {
 
     }
 
-    public enum ETagMode {
+    public interface ETagMode {
 
-        SHA_1,
-        SHA_256,
-        SHA_512,
-        MD5
+        String getETag(Request request, InputStream stream) throws IOException;
 
     }
 
-    public HttpCashingConfiguration seteTagMode(ETagMode eTagMode) {
+    public enum DefaultETagMode implements ETagMode {
+
+        SHA_1 {
+            @Override
+            public String getETag(Request request, InputStream stream) throws IOException {
+                return CodecUtil.sha1Hex(stream);
+            }
+        },
+        SHA_256 {
+            @Override
+            public String getETag(Request request, InputStream stream) throws IOException {
+                return CodecUtil.sha256Hex(stream);
+            }
+        },
+        SHA_512 {
+            @Override
+            public String getETag(Request request, InputStream stream) throws IOException {
+                return CodecUtil.sha512Hex(stream);
+            }
+        },
+        MD5 {
+            @Override
+            public String getETag(Request request, InputStream stream) throws IOException {
+                return CodecUtil.md5Hex(stream);
+            }
+        };
+
+        @Override
+        public abstract String getETag(Request request, InputStream stream) throws IOException;
+
+    }
+
+    public HttpCashingConfiguration setETagMode(ETagMode eTagMode) {
         this.eTagMode = eTagMode;
         return this;
     }
