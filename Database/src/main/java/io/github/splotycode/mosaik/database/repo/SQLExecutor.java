@@ -1,22 +1,27 @@
 package io.github.splotycode.mosaik.database.repo;
 
-import io.github.splotycode.mosaik.database.table.ColumnType;
-import io.github.splotycode.mosaik.database.table.FieldObject;
 import io.github.splotycode.mosaik.database.connection.sql.SQLDriverConnection;
 import io.github.splotycode.mosaik.database.table.ColumnNameResolver;
+import io.github.splotycode.mosaik.database.table.ColumnType;
+import io.github.splotycode.mosaik.database.table.FieldObject;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
+import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
 
     private static Map<Filters.FilterType, String> filterTypes = new HashMap<>();
+
+    public SQLExecutor(Class<?> clazz) {
+        super(clazz);
+    }
 
     static {
         filterTypes.put(Filters.FilterType.EQUAL, "=");
@@ -29,14 +34,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
 
     @Override
     public void drop(SQLDriverConnection connection) {
-        try {
-            PreparedStatement statement = connection.getConnection().prepareStatement("DROP TABLE ?");
-            statement.setString(1, name);
-            statement.execute();
-            statement.close();
-        } catch (SQLException ex) {
-            throw new RepoException("Error on deleting Table: " + ex.getMessage(), ex);
-        }
+        exec(connection, new StringBuilder("DROP TABLE ").append(name), "DROP");
     }
 
     @Override
@@ -57,12 +55,14 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
                 for (int parameter : object.getColumn().typeParameters()) {
                     builder.append(parameter).append(", ");
                 }
-                builder.setLength(builder.length() - 2);
+                if (object.getColumn().typeParameters().length != 0) {
+                    builder.setLength(builder.length() - 2);
+                }
                 builder.append(") ");
             }
-            if (object.isAutoIncrement()) builder.append("AUTO_INCREMENT");
-            if (object.isPrimary()) builder.append("PRIMARY KEY");
-            if (object.isNotNull()) builder.append("NOT NULL");
+            if (object.isAutoIncrement()) builder.append(" AUTO_INCREMENT");
+            if (object.isPrimary()) builder.append(" PRIMARY KEY");
+            if (object.isNotNull()) builder.append(" NOT NULL");
             builder.append(", ");
         }
         if (fields.values().size() != 0) builder.setLength(builder.length() - 2);
@@ -76,6 +76,9 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
             Class<?> clazz = field.getField().getType();
             if (ReflectionUtil.isAssignable(Integer.class, clazz)) {
                 return ColumnType.INT;
+            }
+            if (ReflectionUtil.isAssignable(Long.class, clazz)) {
+                return ColumnType.DOUBLE;
             }
             if (String.class.isAssignableFrom(clazz)) {
                 return ColumnType.VARCHAR;
@@ -91,57 +94,23 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
 
     @Override
     public void save(SQLDriverConnection connection, T entry) {
-        StringBuilder builder = new StringBuilder("INSERT INTO ");
-        builder.append(name).append(" (");
-        for (FieldObject field : fields.values()) {
-            try {
-                builder.append(field.getField().get(entry).toString()).append(", ");
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        if (fields.size() != 0) builder.setLength(builder.length() - 2);
-        builder.append(")");
-        exec(connection, builder, "Saving table");
-    }
-
-    @Override
-    public void save(SQLDriverConnection connection, T entry, String... fields) {
-        StringBuilder builder = new StringBuilder("INSERT INTO ");
-        builder.append(name).append(" (");
-        for (String field : fields) {
-            try {
-                builder.append(this.fields.get(field).getField().get(entry).toString()).append(", ");
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        if (fields.length != 0) builder.setLength(builder.length() - 2);
-        builder.append(")");
-        exec(connection, builder, "Saving table");
+        save(connection, entry, (ColumnNameResolver[]) fields.values().stream().map(obj -> (ColumnNameResolver) obj::getName).toArray(ColumnNameResolver[]::new));
     }
 
     @Override
     public void save(SQLDriverConnection connection, T entry, ColumnNameResolver... fields) {
         StringBuilder builder = new StringBuilder("INSERT INTO ");
-        builder.append(name).append(" (");
+        builder.append(name).append(" SET ");
         for (ColumnNameResolver fieldResolver : fields) {
             String field = fieldResolver.getColumnName();
             try {
-                builder.append(this.fields.get(field).getField().get(entry).toString()).append(", ");
+                builder.append(field).append("='").append(getValue(field, entry)).append("', ");
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
         if (fields.length != 0) builder.setLength(builder.length() - 2);
-        builder.append(")");
-        try {
-            Statement statement = connection.getConnection().createStatement();
-            statement.execute(builder.toString());
-            statement.close();
-        } catch (SQLException ex) {
-            throw new RepoException("Error on saving Table: " + ex.getMessage(), ex);
-        }
+        exec(connection, builder, "Saving Table");
     }
 
     /*@Override public void delete(SQLDriverConnection connection, T entity) {}
@@ -157,6 +126,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     private void exec(SQLDriverConnection connection, StringBuilder builder, String action) {
+        System.out.println("excuting " + builder.toString());
         try {
             Statement statement = connection.getConnection().createStatement();
             statement.execute(builder.toString());
@@ -225,6 +195,40 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
         }
     }
 
+    private void update(SQLDriverConnection connection, T entity, Filters.Filter filter, Collection<FieldObject> fields) {
+        StringBuilder builder = new StringBuilder("UPDATE ");
+        builder.append(table).append(" SET ");
+        for (FieldObject field : fields) {
+            try {
+                builder.append(field.getName()).append(" = '").append(getValue(field, entity)).append("', ");
+            } catch (IllegalAccessException e) {
+                throw new RepoException("Could not getvalue for " + field.getName(), e);
+            }
+        }
+        if (fields.size() != 0) {
+            builder.setLength(builder.length() - 2);
+        }
+        if (filter != null) {
+            builder.append(" ").append(generateWhere(filter));
+        }
+        exec(connection, builder, "Updating");
+    }
+
+    @Override
+    public void update(SQLDriverConnection connection, T entity, Filters.Filter filter) {
+        update(connection, entity, filter, fields.values());
+    }
+
+    @Override
+    public void update(SQLDriverConnection connection, T entity, ColumnNameResolver... fields) {
+        update(connection, entity, null, Arrays.stream(fields).map(resolver -> this.fields.get(resolver.getColumnName())).collect(Collectors.toList()));
+    }
+
+    @Override
+    public void update(SQLDriverConnection connection, T entity, Filters.Filter filter, ColumnNameResolver... fields) {
+        update(connection, entity, filter, Arrays.stream(fields).map(resolver -> this.fields.get(resolver.getColumnName())).collect(Collectors.toList()));
+    }
+
     private String generateWhere(Filters.Filter filter) {
         return "where " + buildFilter(filter);
     }
@@ -236,37 +240,78 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
         }
         String operator = filterTypes.get(type);
         Filters.ValueFilter valueFilter = (Filters.ValueFilter) filter;
-        return valueFilter.field + operator + valueFilter.getObject().toString();
+        String value = TransformerManager.getInstance().transform(valueFilter.getObject(), String.class);
+        return valueFilter.field + operator + value;
     }
 
     @Override
-    public void update(SQLDriverConnection connection, T entity, Filters.Filter filter) {
-
+    public Iterable<T> selectAll(SQLDriverConnection connection, ColumnNameResolver... fields) {
+        return select(connection, null, fields);
     }
 
     @Override
-    public void update(SQLDriverConnection connection, T entity, String... fields) {
-
+    public Iterable<T> selectAll(SQLDriverConnection connection) {
+        return select(connection, false, null);
     }
 
     @Override
-    public void update(SQLDriverConnection connection, T entity, Filters.Filter filter, String... fields) {
-
+    public Iterable<T> select(SQLDriverConnection connection, Filters.Filter filter, ColumnNameResolver... fields) {
+        return select(connection, false, filter, fields);
     }
 
     @Override
-    public Iterable<T> selectAll(SQLDriverConnection connection, String... fields) {
+    public Iterable<T> select(SQLDriverConnection connection, Filters.Filter filter) {
+        return select(connection, false, filter);
+    }
+
+    private Iterable<T> select(SQLDriverConnection connection, boolean onlyOne, Filters.Filter filter, ColumnNameResolver... fields) {
+        StringBuilder builder = new StringBuilder("SELECT ");
+        builder.append(StringUtil.join(fields, ColumnNameResolver::getColumnName));
+        builder.append(" FROM ").append(table);
+        if (filter != null) builder.append(generateWhere(filter));
+
+        try {
+            Statement statement = connection.getConnection().createStatement();
+            ResultSet result = statement.executeQuery(builder.toString());
+
+            boolean exists = result.next();
+            if (exists) {
+                ArrayList<T> list = new ArrayList<>();
+                do {
+                    T object = (T) clazz.newInstance();
+                    for (ColumnNameResolver field : fields) {
+                        setValue(field.getColumnName(), result.getString(field.getColumnName()), object);
+                    }
+                    list.add(object);
+                } while (result.next() || onlyOne);
+                result.close();
+                statement.close();
+                return list;
+            }
+            result.close();
+            statement.close();
+            return null;
+        } catch (SQLException ex) {
+            throw new RepoException("Failed on executing select query", ex);
+        } catch (IllegalAccessException | InstantiationException ex) {
+            throw new RepoException("Failed to create new Object/setting values", ex);
+        }
+    }
+
+    @Override
+    public T selectFirst(SQLDriverConnection connection, Filters.Filter filter, ColumnNameResolver... fields) {
+        Iterable<T> iterable = select(connection, true, filter, fields);
+        if (iterable != null) {
+            return iterable.iterator().next();
+        }
         return null;
     }
 
     @Override
-    public Iterable<T> select(SQLDriverConnection connection, Filters.Filter filter, String... fields) {
-        return null;
-    }
-
-    @Override
-    public T selectFirst(SQLDriverConnection connection, Filters.Filter filter, String... fields) {
-        return null;
+    public T selectFirst(SQLDriverConnection connection, Filters.Filter filter) {
+        Iterable<T> iterable = select(connection, true, filter);
+        if (iterable == null) return null;
+        return iterable.iterator().next();
     }
 
 }
