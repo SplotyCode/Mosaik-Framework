@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor
-public class CachedFileResponseContent implements ManipulateableContent {
+public class CachedFileResponseContent implements ManipulateableContent<CachedFileResponseContent> {
 
     private static Map<File, String> files = new HashMap<>();
 
@@ -45,7 +45,7 @@ public class CachedFileResponseContent implements ManipulateableContent {
                 content = FileUtil.loadFile(file, encoding);
                 files.put(file, content);
             }
-            manipulator = new StringManipulator(content);
+            manipulator = new StringManipulator(content).setCashing(true);
         } catch (IOException e) {
             throw new HandleRequestException("Could not find file: " + file.getAbsolutePath(), e);
         }
@@ -64,5 +64,10 @@ public class CachedFileResponseContent implements ManipulateableContent {
     @Override
     public ResponseManipulator manipulate() {
         return manipulator;
+    }
+
+    @Override
+    public CachedFileResponseContent self() {
+        return this;
     }
 }

@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-public class StringContent implements ManipulateableContent {
+public class StringContent implements ManipulateableContent<StringContent> {
 
     private Charset charset;
 
@@ -34,5 +34,10 @@ public class StringContent implements ManipulateableContent {
     @Override
     public ResponseManipulator manipulate() {
         return manipulator;
+    }
+
+    @Override
+    public StringContent self() {
+        return this;
     }
 }
