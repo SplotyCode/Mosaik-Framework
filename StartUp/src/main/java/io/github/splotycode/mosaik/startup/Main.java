@@ -59,6 +59,12 @@ public class Main {
         bootData = new BootContext(args, start);
         LinkBase.getInstance().registerLink(Links.BOOT_DATA, bootData);
 
+        checkClassLoader();
+
+        MosaikModule.STARTUP.checkLoaded();
+        MosaikModule.DOM_PARSING_IMPL.checkLoaded();
+        MosaikModule.ARG_PARSER_IMPL.checkLoaded();
+
         loadLinkBase();
         setUpLogging();
         LoggingHelper.loggingStartUp();
@@ -66,10 +72,6 @@ public class Main {
         if (ReflectionUtil.getCallerClasses().length >= 4) {
             logger.warn("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass().getName());
         }
-        checkClassLoader();
-        MosaikModule.STARTUP.checkLoaded();
-        MosaikModule.DOM_PARSING_IMPL.checkLoaded();
-        MosaikModule.ARG_PARSER_IMPL.checkLoaded();
 
         logger.info("");
 
