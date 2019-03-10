@@ -62,11 +62,6 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
     @Override
     public void shutdown() {
         loopGroup.shutdownGracefully();
-        try {
-            channel.channel().closeFuture().sync();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
