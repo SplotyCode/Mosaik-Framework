@@ -4,14 +4,17 @@ import com.google.common.reflect.ClassPath;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.cache.complex.resolver.CacheValueResolver;
 import io.github.splotycode.mosaik.util.cache.complex.validator.TimeValidator;
+import lombok.AccessLevel;
 import lombok.Getter;
 import io.github.splotycode.mosaik.util.cache.CacheBuilder;
 import io.github.splotycode.mosaik.util.cache.complex.ComplexCache;
 import io.github.splotycode.mosaik.util.logger.Logger;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.util.*;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ClassFinderHelper {
 
     private static Logger logger = Logger.getInstance(ClassFinderHelper.class);

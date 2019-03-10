@@ -1,11 +1,15 @@
 package io.github.splotycode.mosaik.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CodecUtil {
 
     public static final MessageDigest MD_5, SHA_1, SHA_256, SHA_512;

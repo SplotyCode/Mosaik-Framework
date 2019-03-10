@@ -4,6 +4,8 @@ import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.exception.ResourceNotFoundException;
 import io.github.splotycode.mosaik.util.logger.Logger;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.io.*;
 import java.io.ByteArrayInputStream;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IOUtil {
 
     public static final int THREAD_LOCAL_BUFFER_LENGTH = 1024 * 20;

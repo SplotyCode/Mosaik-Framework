@@ -1,10 +1,14 @@
 package io.github.splotycode.mosaik.util.collection;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ArrayUtil {
 
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];

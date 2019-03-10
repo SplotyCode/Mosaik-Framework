@@ -1,8 +1,12 @@
 package io.github.splotycode.mosaik.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExceptionUtil {
 
     public static String toString(Throwable throwable) {

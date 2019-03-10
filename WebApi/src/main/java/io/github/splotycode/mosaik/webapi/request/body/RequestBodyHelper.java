@@ -3,9 +3,12 @@ package io.github.splotycode.mosaik.webapi.request.body;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Collection;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RequestBodyHelper {
 
     public static RequestContent getRequestContent(Request request, WebServer webServer) {

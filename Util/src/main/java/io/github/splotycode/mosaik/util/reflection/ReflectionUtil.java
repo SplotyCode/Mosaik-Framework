@@ -1,6 +1,8 @@
 package io.github.splotycode.mosaik.util.reflection;
 
 import io.github.splotycode.mosaik.util.AlmostBoolean;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -8,6 +10,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ReflectionUtil {
 
     private static CallerClass callerClazz = new CallerClass();

@@ -1,11 +1,15 @@
 package io.github.splotycode.mosaik.util.io;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.nio.charset.Charset;
 
 /**
  * @deprecated use {@link java.nio.charset.StandardCharsets}
  */
 @Deprecated
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Charsets {
 
     public static final Charset UTF8 = Charset.forName("UTF-8");

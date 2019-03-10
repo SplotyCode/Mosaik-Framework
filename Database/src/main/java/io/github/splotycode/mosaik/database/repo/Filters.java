@@ -1,14 +1,12 @@
 package io.github.splotycode.mosaik.database.repo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * Builds Filters for Quarry's
  * @see TableExecutor
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Filters {
 
     public enum FilterType {

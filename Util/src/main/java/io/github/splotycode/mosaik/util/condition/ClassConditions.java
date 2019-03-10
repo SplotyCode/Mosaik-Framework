@@ -1,6 +1,8 @@
 package io.github.splotycode.mosaik.util.condition;
 
 import io.github.splotycode.mosaik.annotations.Disabled;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -8,6 +10,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ClassConditions {
 
     public static final Predicate<Class> NEED_ABSTRACT = item -> Modifier.isAbstract(item.getModifiers());

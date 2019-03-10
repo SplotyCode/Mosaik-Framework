@@ -1,7 +1,10 @@
 package io.github.splotycode.mosaik.util.cache.complex.validator;
 
 import io.github.splotycode.mosaik.util.cache.Cache;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Validators {
 
     public static final CacheValidator ALWAYS_TRUE = new CacheValidator() {

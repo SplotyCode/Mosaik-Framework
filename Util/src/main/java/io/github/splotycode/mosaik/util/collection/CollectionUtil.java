@@ -1,11 +1,14 @@
 package io.github.splotycode.mosaik.util.collection;
 
 import io.github.splotycode.mosaik.util.Pair;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CollectionUtil {
 
     public static <K, V, M extends Map<K, V>> M copyWithType(final M source) throws Exception {

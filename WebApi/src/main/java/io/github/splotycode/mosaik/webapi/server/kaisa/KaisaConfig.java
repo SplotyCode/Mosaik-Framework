@@ -1,12 +1,15 @@
 package io.github.splotycode.mosaik.webapi.server.kaisa;
 
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.nio.channels.SocketChannel;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class KaisaConfig {
 
     public static final DataKey<Supplier<Queue<SocketChannel>>> WAITING_QUEUE_SUPPLIER = new DataKey<>("wait_queue.supplier");

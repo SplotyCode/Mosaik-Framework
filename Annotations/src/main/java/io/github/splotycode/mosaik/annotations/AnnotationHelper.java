@@ -3,12 +3,15 @@ package io.github.splotycode.mosaik.annotations;
 import io.github.splotycode.mosaik.annotations.priority.First;
 import io.github.splotycode.mosaik.annotations.priority.Last;
 import io.github.splotycode.mosaik.annotations.priority.Priority;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.annotation.Annotation;
 
 /**
  * Helper Tools for Mosaik Annotations
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AnnotationHelper {
 
     /**

@@ -8,9 +8,12 @@ import io.github.splotycode.mosaik.util.info.EnvironmentInformation;
 import io.github.splotycode.mosaik.util.info.SystemInfo;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LoggingHelper {
 
     private static String currentSection;

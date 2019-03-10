@@ -5,11 +5,14 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.undertow.server.HttpServerExchange;
 import io.github.splotycode.mosaik.util.io.ByteArrayInputStream;
 import io.github.splotycode.mosaik.util.io.IOUtil;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UndertowUtils {
 
     public static void send(HttpServerExchange exchange, InputStream stream) throws IOException {

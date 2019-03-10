@@ -1,9 +1,13 @@
 package io.github.splotycode.mosaik.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringUtil {
 
     public static boolean isEmpty(CharSequence str){

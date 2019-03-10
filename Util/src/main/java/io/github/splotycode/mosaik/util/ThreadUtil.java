@@ -1,7 +1,11 @@
 package io.github.splotycode.mosaik.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.concurrent.*;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ThreadUtil {
 
     public static void sleep(long delay) {
