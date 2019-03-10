@@ -3,23 +3,26 @@ package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternCommand;
 
-public interface ResponseManipulator {
+public interface ResponseManipulator<R extends ResponseManipulator> {
 
-    ResponseManipulator variable(String str, Object obj);
-    ResponseManipulator object(Object object);
+    R setCashing(boolean cashing);
+    boolean isCashing();
 
-    ResponseManipulator pattern(String name, Object object);
-    ResponseManipulator pattern(Object object);
-    ResponseManipulator pattern(PatternCommand command);
+    R variable(String str, Object obj);
+    R object(Object object);
 
-    ResponseManipulator patternListName(String name, Iterable<?> objects);
-    ResponseManipulator patternList(Iterable<?> objects);
+    R pattern(String name, Object object);
+    R pattern(Object object);
+    R pattern(PatternCommand command);
 
-    ResponseManipulator patternArrayName(String name, Object... objects);
-    ResponseManipulator patternArray(Object... objects);
+    R patternListName(String name, Iterable<?> objects);
+    R patternList(Iterable<?> objects);
 
-    ResponseManipulator patternCostomName(String name, Pair<String, Object>... values);
-    ResponseManipulator patternCostomWithObj(String name, Object main, Pair<String, Object>... values);
-    ResponseManipulator patternCostomWithObj(Object main, Pair<String, Object>... values);
+    R patternArrayName(String name, Object... objects);
+    R patternArray(Object... objects);
+
+    R patternCostomName(String name, Pair<String, Object>... values);
+    R patternCostomWithObj(String name, Object main, Pair<String, Object>... values);
+    R patternCostomWithObj(Object main, Pair<String, Object>... values);
 
 }

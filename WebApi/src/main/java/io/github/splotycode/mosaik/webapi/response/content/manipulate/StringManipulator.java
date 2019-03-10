@@ -20,20 +20,34 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Getter
-public class StringManipulator implements ResponseManipulator {
+public class StringManipulator implements ResponseManipulator<StringManipulator> {
 
-    private ManipulateData manipulateData;
+    private ManipulateData processedData;
     private String input;
     private Set<Replacement> replacements = new HashSet<>();
 
-    public StringManipulator(String input) {
-        this.input = input;
-        manipulateData = new ManipulateData(input);
+    private boolean cashing;
+
+    public ManipulateData getManipulateData() {
+        if (processedData == null) {
+            processedData = ManipulateData.create(input, cashing);
+        }
+        return processedData;
     }
 
     @Override
-    public ResponseManipulator variable(String str, Object obj) {
-        List<ManipulateData.ManipulateVariable> variables = manipulateData.getVariables(str);
+    public StringManipulator setCashing(boolean cashing) {
+        this.cashing = cashing;
+        return this;
+    }
+
+    public StringManipulator(String input) {
+        this.input = input;
+    }
+
+    @Override
+    public StringManipulator variable(String str, Object obj) {
+        List<ManipulateData.ManipulateVariable> variables = getManipulateData().getVariables(str);
         if (variables == null) throw new VariableNotFoundException("Could not find " + str);
 
         for (ManipulateData.ManipulateVariable variable : variables) {
@@ -43,9 +57,9 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     @Override
-    public ResponseManipulator object(Object object) {
+    public StringManipulator object(Object object) {
         ManipulateObjectAnalyser.AnalysedObject data = ManipulateObjectAnalyser.getObject(object);
-        for (Map.Entry<String, List<ManipulateData.ManipulateVariable>> variable : manipulateData.getVariableMap().entrySet()) {
+        for (Map.Entry<String, List<ManipulateData.ManipulateVariable>> variable : getManipulateData().getVariableMap().entrySet()) {
             String name = variable.getKey();
             try {
                 Object rawValue = data.getValueByName(object, name);
@@ -65,7 +79,7 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     private ManipulateData.ManipulatePattern patternFromName(String name) {
-        ManipulateData.ManipulatePattern pattern = manipulateData.getPattern(name);
+        ManipulateData.ManipulatePattern pattern = getManipulateData().getPattern(name);
         if (pattern == null) throw new PatternNotFoundException("Could not find " + name);
         return pattern;
     }
@@ -99,7 +113,7 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     @Override
-    public ResponseManipulator pattern(String name, Object object) {
+    public StringManipulator pattern(String name, Object object) {
         ManipulateObjectAnalyser.AnalysedObject analysedObject = ManipulateObjectAnalyser.getObject(object);
         doPattern(name, true, varName -> {
             try {
@@ -112,13 +126,13 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     @Override
-    public ResponseManipulator pattern(Object object) {
+    public StringManipulator pattern(Object object) {
         pattern(object.getClass().getSimpleName().toLowerCase(), object);
         return this;
     }
 
     @Override
-    public ResponseManipulator pattern(PatternCommand command) {
+    public StringManipulator pattern(PatternCommand command) {
         handlePatternCommand(command, replacements);
         return this;
     }
@@ -186,32 +200,32 @@ public class StringManipulator implements ResponseManipulator {
     }
 
     @Override
-    public ResponseManipulator patternListName(String name, Iterable<?> objects) {
+    public StringManipulator patternListName(String name, Iterable<?> objects) {
         objects.forEach(o -> pattern(name, o));
         return this;
     }
 
     @Override
-    public ResponseManipulator patternList(Iterable<?> objects) {
+    public StringManipulator patternList(Iterable<?> objects) {
         objects.forEach(this::pattern);
         return this;
     }
 
     @Override
-    public ResponseManipulator patternArrayName(String name, Object... objects) {
+    public StringManipulator patternArrayName(String name, Object... objects) {
         Arrays.stream(objects).forEach(o -> pattern(name, o));
         return this;
     }
 
     @Override
-    public ResponseManipulator patternArray(Object... objects) {
+    public StringManipulator patternArray(Object... objects) {
         Arrays.stream(objects).forEach(this::pattern);
         return this;
     }
 
     @SafeVarargs
     @Override
-    public final ResponseManipulator patternCostomName(String name, Pair<String, Object>... values) {
+    public final StringManipulator patternCostomName(String name, Pair<String, Object>... values) {
         Map<String, Object> valueMap = CollectionUtil.newHashMap(values);
         doPattern(name, true, varName -> {
             Object value = valueMap.get(varName);
@@ -225,7 +239,7 @@ public class StringManipulator implements ResponseManipulator {
 
     @SafeVarargs
     @Override
-    public final ResponseManipulator patternCostomWithObj(String name, Object main, Pair<String, Object>... values) {
+    public final StringManipulator patternCostomWithObj(String name, Object main, Pair<String, Object>... values) {
         Map<String, Object> valueMap = CollectionUtil.newHashMap(values);
         ManipulateObjectAnalyser.AnalysedObject analysedObject = ManipulateObjectAnalyser.getObject(main);
         doPattern(name, true, varName -> {
@@ -246,7 +260,7 @@ public class StringManipulator implements ResponseManipulator {
 
     @SafeVarargs
     @Override
-    public final ResponseManipulator patternCostomWithObj(Object main, Pair<String, Object>... values) {
+    public final StringManipulator patternCostomWithObj(Object main, Pair<String, Object>... values) {
         return patternCostomWithObj(main.getClass().getSimpleName(), main, values);
     }
 
@@ -263,14 +277,14 @@ public class StringManipulator implements ResponseManipulator {
 
     public Collection<ManipulateData.ManipulatePattern> collectAllPatterns() {
         List<ManipulateData.ManipulatePattern> collection = new ArrayList<>();
-        for (ManipulateData.ManipulatePattern pattern : manipulateData.getPatternMap().values()) {
+        for (ManipulateData.ManipulatePattern pattern : getManipulateData().getPatternMap().values()) {
             collectAllPatterns(collection, pattern);
         }
         return collection;
     }
 
     public String getResult() {
-        for (ManipulateData.ManipulatePattern pattern : manipulateData.getPatterns()) {
+        for (ManipulateData.ManipulatePattern pattern : getManipulateData().getPatterns()) {
             replacements.add(new Replacement(pattern.getAbsoulteStart(), pattern.getAbsoulteEnd(), "", "remove pattern template"));
         }
 

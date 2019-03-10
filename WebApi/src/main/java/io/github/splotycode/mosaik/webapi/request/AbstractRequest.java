@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.request;
 
+import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.webapi.request.body.RequestBodyHelper;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContent;
 import io.github.splotycode.mosaik.webapi.response.CookieKey;
@@ -25,6 +26,8 @@ public abstract class AbstractRequest implements Request {
     private Session session = null;
     private String fullUrl;
 
+    protected DataFactory dataFactory = new DataFactory();
+
     public AbstractRequest(WebServer webServer, String fullUrl) {
         this.webServer = webServer;
         this.fullUrl = fullUrl;
@@ -42,8 +45,8 @@ public abstract class AbstractRequest implements Request {
         return getHeaders().get(name);
     }
 
-    public String getHeader(RequestHeaders header) {
-        return getHeaders().get(EnumUtil.toDisplayName(header));
+    public String getHeader(RequestHeader header) {
+        return getHeader(EnumUtil.toDisplayName(header));
     }
 
     public Collection<String> getGetParameter(String name) {

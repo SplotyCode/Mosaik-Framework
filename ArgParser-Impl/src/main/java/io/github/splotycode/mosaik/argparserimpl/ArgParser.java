@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.argparserimpl;
 import io.github.splotycode.mosaik.argparser.IArgParser;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.util.collection.CollectionUtil;
+import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 
 import java.util.HashMap;
@@ -16,12 +17,6 @@ public class ArgParser implements IArgParser {
     private Map<String[], ParsedArguments> cachedArguments = new HashMap<>();
     private Map<Object, ParsedObject> cachedObjects = new HashMap<>();
 
-    /**
-     * Parses arguments to an object wit a prefix
-     * @param obj the object you want to apply the arguments
-     * @param label the prefix
-     * @param args the arguments you want to parse
-     */
     @Override
     public void parseArgs(Object obj, String label, String[] args) {
         ParsedArguments arguments = getArguments(args);
@@ -33,17 +28,18 @@ public class ArgParser implements IArgParser {
         }
 
         for (Argument argument : object.getAll()) {
-            String name = label == null ? "" : label + ":" + argument.getName();
+            Class type = argument.getField().getType();
+            String name = (label == null ? "" : label + ":") + argument.getName();
             String rawValue = arguments.getByKey(name);
             Object result;
             if (rawValue == null || rawValue.equals("_no_value_")) {
-                if (argument.getField().getType() != Boolean.class) {
+                if (!ReflectionUtil.isAssignable(Boolean.class, type)) {
                     if (argument.getParameter().needed()) {
-                        throw new ArgParseException("Could not fill argument " + name + " because it foes not exsits in arg");
+                        throw new ArgParseException("Could not fill argument " + name + " because it does not exists in args");
                     }
                     continue;
                 } else {
-                    result = true;
+                    result = rawValue != null;
                 }
             } else {
                 result = TransformerManager.getInstance().transform(rawValue, argument.getField().getType());
@@ -52,6 +48,8 @@ public class ArgParser implements IArgParser {
                 argument.getField().set(obj, result);
             } catch (IllegalAccessException e) {
                 throw new ArgParseException("Could not access " + obj.getClass().getName() + "#" + argument.getField().getName(), e);
+            } catch (IllegalArgumentException e) {
+                throw new ArgParseException("Type mismatch " + obj.getClass().getName() + "#" + argument.getField().getName(), e);
             }
         }
     }
@@ -94,30 +92,17 @@ public class ArgParser implements IArgParser {
         return getParameters(label, LinkBase.getBootContext().getArgs());
     }
 
-    /**
-     * Parses the Boot Parameters to an Object
-     * @param obj the object you want to apply the boot parameters
-     */
+
     @Override
     public void parseArgs(Object obj) {
         parseArgs(obj, LinkBase.getBootContext().getArgs());
     }
 
-    /**
-     * Parses the Boot Parameters to an Object with a prefix
-     * @param obj the object you want to apply the boot parameters
-     * @param label the prefix
-     */
     @Override
     public void parseArgs(Object obj, String label) {
         parseArgs(obj, label, LinkBase.getBootContext().getArgs());
     }
 
-    /**
-     * Parses arguments to an object
-     * @param obj the object you want to apply the arguments
-     * @param args the arguments you want to parse
-     */
     @Override
     public void parseArgs(Object obj, String[] args) {
         parseArgs(obj, null, args);

@@ -11,9 +11,13 @@ public abstract class InitialisedOnce implements Initialisable {
     }
 
     public final void initalize() {
-        if (initialised) throw new AlreadyInitailizedException();
+        if (initialised) fail();
         init();
         initialised = true;
+    }
+
+    public void fail() {
+        throw new AlreadyInitailizedException();
     }
 
     protected abstract void init();

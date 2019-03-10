@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.request;
 
+import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.webapi.request.body.RequestBodyHelper;
 import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @Getter
 @EqualsAndHashCode
+@Deprecated
 public class DefaultRequest implements Request {
 
     private String path;
@@ -31,6 +33,8 @@ public class DefaultRequest implements Request {
     private byte[] body;
     private WebServer webServer;
     private String fullUrl;
+
+    @Getter private DataFactory dataFactory;
 
     private Response response = new Response(null);
 
@@ -55,7 +59,7 @@ public class DefaultRequest implements Request {
         return headers.get(name);
     }
 
-    public String getHeader(RequestHeaders header) {
+    public String getHeader(RequestHeader header) {
         return headers.get(EnumUtil.toDisplayName(header));
     }
 

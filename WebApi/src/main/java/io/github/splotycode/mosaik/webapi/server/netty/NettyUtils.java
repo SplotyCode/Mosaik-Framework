@@ -1,7 +1,10 @@
 package io.github.splotycode.mosaik.webapi.server.netty;
 
 import io.netty.handler.codec.http.HttpVersion;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class NettyUtils {
 
     public static HttpVersion convertHttpVersion(io.github.splotycode.mosaik.webapi.response.HttpVersion version) {

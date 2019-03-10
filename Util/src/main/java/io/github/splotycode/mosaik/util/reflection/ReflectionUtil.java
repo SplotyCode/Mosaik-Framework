@@ -1,6 +1,8 @@
 package io.github.splotycode.mosaik.util.reflection;
 
 import io.github.splotycode.mosaik.util.AlmostBoolean;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -8,6 +10,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ReflectionUtil {
 
     private static CallerClass callerClazz = new CallerClass();
@@ -101,6 +104,10 @@ public final class ReflectionUtil {
         return ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments();
     }
 
+    public static Type[] getGenerics(Class clazz, int interfaceUpper) {
+        return ((ParameterizedType) clazz.getGenericInterfaces()[interfaceUpper]).getActualTypeArguments();
+    }
+
     public static boolean isAssignable(Class<?> parent, Class<?> child) {
         return parent.isAssignableFrom(child) || samePrimitive(parent, child);
     }
@@ -111,7 +118,8 @@ public final class ReflectionUtil {
                samePrimitive(one, two, "double", "Double") ||
                samePrimitive(one, two, "char", "Character") ||
                samePrimitive(one, two, "long", "Long") ||
-               samePrimitive(one, two, "short", "Short");
+               samePrimitive(one, two, "short", "Short") ||
+               samePrimitive(one, two, "boolean", "Boolean");
     }
 
     private static boolean samePrimitive(Class one, Class two, String primiClass, String clazz) {

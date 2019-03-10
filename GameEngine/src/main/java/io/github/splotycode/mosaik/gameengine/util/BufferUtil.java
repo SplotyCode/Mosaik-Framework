@@ -1,11 +1,14 @@
 package io.github.splotycode.mosaik.gameengine.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.lwjgl.BufferUtils;
 
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BufferUtil {
 
     public static IntBuffer createBuffer(int[] data, boolean flip){

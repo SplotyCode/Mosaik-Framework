@@ -2,7 +2,7 @@ package io.github.splotycode.mosaik.spigotlib.gui;
 
 import io.github.splotycode.mosaik.spigotlib.SpigotApplicationType;
 import io.github.splotycode.mosaik.spigotlib.util.ItemStackUtil;
-import io.github.splotycode.mosaik.spigotlib.util.ColorCodes;
+import io.github.splotycode.mosaik.spigotlib.util.ColorCode;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
@@ -103,7 +103,7 @@ public class InventoryData {
 
         if (closeable.isCloseButton()) {
             InventoryData last = SpigotApplicationType.GUI_MANAGER.getLastInventory(player);
-            inv[size - 1] = ItemStackUtil.createColoredWoolLohre(last == null ? "Exit" : "Zurück", 1, ColorCodes.RED.getId(), last == null ? "Schliessen" : "Zurück zu '" + last.getDisplayName() + "'");
+            inv[size - 1] = ItemStackUtil.createColoredWoolLohre(last == null ? "Exit" : "Zurück", 1, ColorCode.RED.getId(), last == null ? "Schliessen" : "Zurück zu '" + last.getDisplayName() + "'");
         }
 
         return inv;

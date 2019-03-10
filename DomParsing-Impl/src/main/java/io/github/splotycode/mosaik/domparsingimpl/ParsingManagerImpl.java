@@ -7,6 +7,7 @@ import io.github.splotycode.mosaik.domparsing.parsing.input.DomFileInput;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomStreamInput;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomUrlInput;
+import io.github.splotycode.mosaik.domparsing.parsing.output.DomOutput;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.io.FileUtil;
@@ -35,6 +36,22 @@ public class ParsingManagerImpl implements ParsingManager {
     }
 
     @Override
+    public ParsingHandle getHandle(File file) {
+        return handles.stream().filter(cHandle -> PathUtil.extensionEquals(file.getName(), cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFoundException::new);
+    }
+
+    @Override
+    public ParsingHandle getHandle(DomUrlInput input) {
+        String contentType;
+        try {
+            contentType = input.getConnection().getContentType();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to receive content type");
+        }
+       return handles.stream().filter(cHandle -> ArrayUtil.contains(cHandle.getMimeTypes(), contentType)).findFirst().orElseThrow(NoHandleFoundException::new);
+    }
+
+    @Override
     public <P extends Document> P parseDocument(DomInput input, ParsingHandle<P> handle) {
         return handle.getParser(input).parse(input);
     }
@@ -47,8 +64,7 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public Document parseDocument(File file) {
         DomInput input = new DomFileInput(file);
-        ParsingHandle handle = handles.stream().filter(cHandle -> PathUtil.extensionEquals(file.getName(), cHandle.getFileTypes())).findFirst().orElseThrow(NoHandleFoundException::new);
-        return parseDocument(input, handle);
+        return parseDocument(input, getHandle(file));
     }
 
     @Override
@@ -64,14 +80,7 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public Document parseDocument(URL url) {
         DomUrlInput input = new DomUrlInput(url);
-        String contentType;
-        try {
-            contentType = input.getConnection().getContentType();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to receive content type");
-        }
-        ParsingHandle handle = handles.stream().filter(cHandle -> ArrayUtil.contains(cHandle.getMimeTypes(), contentType)).findFirst().orElseThrow(NoHandleFoundException::new);
-        return parseDocument(input, handle);
+        return parseDocument(input, getHandle(input));
     }
 
     @Override
@@ -124,6 +133,23 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public <D extends Document> void writeToFile(D document, File file) throws IOException {
         writeToFile(document, file, document.getHandle());
+    }
+
+    @Override
+    public <C extends Document, L extends Document> DomOutput convert(DomInput domInput, ParsingHandle<C> current, ParsingHandle<L> later) {
+        C document = current.getParser(domInput).parse(domInput);
+        return later.getWriter().write(document);
+    }
+
+    @Override
+    public <C extends Document, L extends Document> void convert(File file, ParsingHandle<C> current, ParsingHandle<L> later) {
+        DomOutput result = convert(new DomFileInput(file), current, later);
+        result.writeFile(file);
+    }
+
+    @Override
+    public void convert(File file, ParsingHandle later) {
+        convert(file, getHandle(file), later);
     }
 
     @Override

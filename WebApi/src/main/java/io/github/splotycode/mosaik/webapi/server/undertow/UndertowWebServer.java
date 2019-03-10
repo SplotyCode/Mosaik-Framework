@@ -25,7 +25,6 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
         super(application);
     }
 
-
     @Override
     public void listen(int port, boolean ssl) {
         super.listen(port, ssl);
@@ -55,8 +54,8 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
                             addTotalTime(System.currentTimeMillis() - start);
 
                             exchange.setStatusCode(response.getResponseCode());
-                            for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
-                                exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey()), pair.getValue());
+                            for (Map.Entry<CharSequence, CharSequence> pair : response.getHeaders().entrySet()) {
+                                exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey().toString()), pair.getValue().toString());
                             }
                             for (Map.Entry<CookieKey, String> cookie : response.getSetCookies().entrySet()) {
                                 exchange.getResponseHeaders().add(HttpString.tryFromString("set-cookie"), cookie.getKey().toHeaderString(cookie.getValue()));
@@ -66,8 +65,8 @@ public class UndertowWebServer extends AbstractWebServer implements WebServer {
                             Response response = handleError(cause);
                             response.finish(null, this);
                             exchange.setStatusCode(response.getResponseCode());
-                            for (Map.Entry<String, String> pair : response.getHeaders().entrySet()) {
-                                exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey()), pair.getValue());
+                            for (Map.Entry<CharSequence, CharSequence> pair : response.getHeaders().entrySet()) {
+                                exchange.getResponseHeaders().put(HttpString.tryFromString(pair.getKey().toString()), pair.getValue().toString());
                             }
                             for (Map.Entry<CookieKey, String> cookie : response.getSetCookies().entrySet()) {
                                 exchange.getResponseHeaders().add(HttpString.tryFromString("set-cookie"), cookie.getKey().toHeaderString(cookie.getValue()));

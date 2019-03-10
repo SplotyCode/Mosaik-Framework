@@ -5,7 +5,7 @@ import com.google.common.collect.TreeMultimap;
 import com.google.common.reflect.ClassPath;
 import io.github.splotycode.mosaik.annotations.AnnotationHelper;
 import io.github.splotycode.mosaik.runtime.startup.StartupTask;
-import io.github.splotycode.mosaik.runtime.startup.envirement.StartUpEnvironmentChanger;
+import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
 import io.github.splotycode.mosaik.startup.exception.FrameworkStartException;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.io.IOUtil;

@@ -29,8 +29,8 @@ public class DataFactory {
     }
 
     public <T> T getDataDefault(String name, DataKey<T> key, T def) {
-        T result = (T) data.get(name);
-        return result == null ? def : result;
+        Object result = data.get(name);
+        return result == null ? def : (T) result;
     }
 
     public <T> T getDataDefault(String name, DataKey<T> key) {
@@ -56,11 +56,11 @@ public class DataFactory {
 
     @SuppressWarnings("unused")
     public <T> void putData(String name, DataKey<T> key, T obj) {
-        data.putIfAbsent(name, obj);
+        data.put(name, obj);
     }
 
     public Map<String, Object> getMap() {
-        return data;
+        return getRawMap();
     }
 
     public Map<String, Object> getRawMap() {
@@ -81,5 +81,9 @@ public class DataFactory {
 
     public int getDataSize() {
         return getMap().size();
+    }
+
+    public boolean isEmpty() {
+        return getDataSize() == 0;
     }
 }

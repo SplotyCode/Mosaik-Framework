@@ -2,9 +2,12 @@ package io.github.splotycode.mosaik.util.info;
 
 import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.DefaultCaches;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.io.File;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SystemProperties {
 
     private static Cache<File> userHome = DefaultCaches.getNormalValueResolverCache(cache -> getUserHome0());

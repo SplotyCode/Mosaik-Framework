@@ -11,6 +11,8 @@ import java.util.*;
 
 public class ManipulateData {
 
+    private static Map<String, ManipulateData> cache = new HashMap<>();
+
     private HashMap<String, List<ManipulateVariable>> variables = new HashMap<>();
     private HashMap<String, ManipulatePattern> patterns = new HashMap<>();
 
@@ -33,7 +35,17 @@ public class ManipulateData {
         return patterns.get(name);
     }
 
-    public ManipulateData(String input) {
+    public static ManipulateData create(String content, boolean caching) {
+        if (caching) {
+            ManipulateData data = cache.get(content);
+            if (data != null) return data;
+        }
+        ManipulateData data = new ManipulateData(content);
+        if (caching) cache.put(content, data);
+        return data;
+    }
+
+    private ManipulateData(String input) {
         int state = 0;
         String stack = "";
         int start = -1;

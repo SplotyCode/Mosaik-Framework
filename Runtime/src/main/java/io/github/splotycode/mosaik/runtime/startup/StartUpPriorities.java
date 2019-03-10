@@ -1,5 +1,9 @@
 package io.github.splotycode.mosaik.runtime.startup;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StartUpPriorities {
 
     public static final int INDEPENDENT_SETUP = Integer.MAX_VALUE - 100;

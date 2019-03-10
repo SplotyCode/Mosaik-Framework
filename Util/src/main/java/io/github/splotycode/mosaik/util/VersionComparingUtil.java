@@ -1,5 +1,9 @@
 package io.github.splotycode.mosaik.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class VersionComparingUtil {
 
     public static int compare(String v1, String v2) {

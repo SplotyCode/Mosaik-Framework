@@ -1,11 +1,13 @@
 package io.github.splotycode.mosaik.util.cache.complex.validator;
 
 import io.github.splotycode.mosaik.util.cache.Cache;
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Validators {
 
-    @Getter private static final CacheValidator ALWAYS_TRUE = new CacheValidator() {
+    public static final CacheValidator ALWAYS_TRUE = new CacheValidator() {
         @Override
         public boolean isValid(Cache cache, Object value) {
             return true;
@@ -14,7 +16,7 @@ public final class Validators {
         @Override public void valueChange(Object value) {}
     };
 
-    @Getter private static final CacheValidator ALWAYS_FALSE = new CacheValidator() {
+    public static final CacheValidator ALWAYS_FALSE = new CacheValidator() {
         @Override
         public boolean isValid(Cache cache, Object value) {
             return false;
@@ -22,5 +24,13 @@ public final class Validators {
 
         @Override public void valueChange(Object value) {}
     };
+
+    public static <T> CacheValidator<T> alwaysTrue() {
+        return ALWAYS_TRUE;
+    }
+
+    public static <T> CacheValidator<T> alwaysFalse() {
+        return ALWAYS_FALSE;
+    }
 
 }

@@ -1,12 +1,12 @@
 package io.github.splotycode.mosaik.startup.envirementchanger;
 
-import io.github.splotycode.mosaik.startup.exception.EnvironmentChangeExcpetion;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.application.Application;
 import io.github.splotycode.mosaik.runtime.application.ApplicationState;
-import io.github.splotycode.mosaik.runtime.startup.envirement.ConfiguriseEnvironmentChanger;
+import io.github.splotycode.mosaik.runtime.startup.environment.ConfiguriseEnvironmentChanger;
+import io.github.splotycode.mosaik.startup.exception.EnvironmentChangeExcpetion;
 
-public class ConfigureEnvironmentChangerImpl implements ConfiguriseEnvironmentChanger {
+public class ConfigureEnvironmentChangerImpl extends AbstractEnvironmentChanger implements ConfiguriseEnvironmentChanger {
 
     @Override
     public void stopApplicationStart(Class<? extends Application> application) {
@@ -24,4 +24,5 @@ public class ConfigureEnvironmentChangerImpl implements ConfiguriseEnvironmentCh
         }
         application.setState(ApplicationState.SKIPPED);
     }
+
 }

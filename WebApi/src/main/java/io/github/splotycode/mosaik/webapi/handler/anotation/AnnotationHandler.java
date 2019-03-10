@@ -31,8 +31,11 @@ public class AnnotationHandler implements HttpHandler {
         for (Method method : handlerObj.getClass().getMethods()) {
             for (Class<Annotation> annotation : AnnotationHandlerFinder.getHandlerAnnotation()) {
                 if (method.isAnnotationPresent(annotation)) {
-                    AnnotationHandlerData.SupAnnotationHandlerData data = new AnnotationHandlerData.SupAnnotationHandlerData(method.getDeclaredAnnotations(), method, server);
-                    subs.add(data);
+                    subs.add(
+                            new AnnotationHandlerData.SupAnnotationHandlerData(
+                                method.getDeclaredAnnotations(), method, server
+                            )
+                    );
                     break;
                 }
             }
@@ -49,20 +52,27 @@ public class AnnotationHandler implements HttpHandler {
         if (global.getLoadingError() != null) {
             throw new HandleRequestException("Trying to work with crashed Handler: " + handlerObj.getClass().getSimpleName(), global.getLoadingError());
         }
+        global.applyCashingConfiguration(request.getResponse());
+
         for (AnnotationHandlerData.SupAnnotationHandlerData sup : subs.stream().filter(sub -> sub.valid(request)).sorted(Comparator.comparingInt(AnnotationHandlerData::getPriority)).collect(Collectors.toList())) {
             if (sup.getLoadingError() != null) {
                 throw new HandleRequestException("Count not use Handler Method: " + sup.getDisplayName() + " because it fails loading on startup", sup.getLoadingError());
             }
             Object[] objects = new Object[sup.getParameters().size()];
-            int i = 0;
-            for (Pair<ParameterResolver, Parameter> pair : sup.getParameters()) {
-                try {
-                    objects[i] = pair.getOne().transform(pair.getTwo(), request, global, sup);
-                } catch (ParameterResolveException ex) {
-                    throw new HandleRequestException("Failed to transform parameter", ex);
+            try {
+                int i = 0;
+                for (Pair<ParameterResolver, Parameter> pair : sup.getParameters()) {
+                    try {
+                        objects[i] = pair.getOne().transform(pair.getTwo(), request, global, sup);
+                    } catch (ParameterResolveException ex) {
+                        throw new HandleRequestException("Failed to transform parameter", ex);
+                    }
+                    i++;
                 }
-                i++;
+            } catch (Throwable ex) {
+                throw new HandleRequestException("Could not prepare parameters for Method: " + sup.getTargetMethod().getName(), ex);
             }
+            sup.applyCashingConfiguration(request.getResponse());
             try {
                 Object result = sup.getTargetMethod().invoke(handlerObj, objects);
                 if (sup.isReturnContext()) {

@@ -7,7 +7,7 @@
     <groupId>io.github.splotycode.mosaik</groupId>
     <artifactId>Mosaik-Framework</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.8-PreRelease</version>
+    <version>2.2.8-PreRelease2</version>
     <modules>
         <module>Console</module>
         <module>Netty</module>
@@ -45,7 +45,7 @@
         <mosaik.lombok.version>1.16.20</mosaik.lombok.version>
         <mosaik.typetools.version>0.6.0</mosaik.typetools.version>
         <mosaik.guava.version>21.0</mosaik.guava.version>
-        <mosaik.netty.version>4.1.24.Final</mosaik.netty.version>
+        <mosaik.netty.version>4.1.32.Final</mosaik.netty.version>
         <mosaik.undertow.version>2.0.1.Final</mosaik.undertow.version>
         <mosaik.mongo.version>3.4.0</mosaik.mongo.version>
         <mosaik.reflections.version>0.9.11</mosaik.reflections.version>

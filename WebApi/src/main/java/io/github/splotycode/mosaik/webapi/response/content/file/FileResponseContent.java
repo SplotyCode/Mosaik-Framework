@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 
 @AllArgsConstructor
-public class FileResponseContent implements ManipulateableContent {
+public class FileResponseContent implements ManipulateableContent<FileResponseContent> {
 
     private File file;
     private StringManipulator manipulator;
@@ -53,7 +53,17 @@ public class FileResponseContent implements ManipulateableContent {
     }
 
     @Override
+    public long lastModified() throws IOException {
+        return file.lastModified();
+    }
+
+    @Override
     public ResponseManipulator manipulate() {
         return manipulator;
+    }
+
+    @Override
+    public FileResponseContent self() {
+        return this;
     }
 }

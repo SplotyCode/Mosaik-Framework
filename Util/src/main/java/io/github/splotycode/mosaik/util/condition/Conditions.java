@@ -1,10 +1,14 @@
 package io.github.splotycode.mosaik.util.condition;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Conditions {
 
     public static final Predicate TRUE = item -> true;

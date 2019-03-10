@@ -28,6 +28,7 @@ jobs:
           - Console/target/Console-$project_version.jar
           - Database/target/Database-$project_version.jar
           - DomParsing/target/DomParsing-$project_version.jar
+          - DomParsing-Impl/target/DomParsing-Impl-$project_version.jar
           - Netty/target/Netty-$project_version.jar
           - Runtime/target/Runtime-$project_version.jar
           - Util/target/Util-$project_version.jar

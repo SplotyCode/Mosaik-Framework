@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
-import io.github.splotycode.mosaik.InvokeStartUp;
+import io.github.splotycode.mosaik.runtime.startup.StartUpInvoke;
 import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternCommand;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ class StringManipulatorTest {
 
     @Test
     void testGetResult() {
-        InvokeStartUp.start();
+        StartUpInvoke.invokeTestSuite();
         StringManipulator manipulator = new StringManipulator("Hallo my friend $name$");
         manipulator.getReplacements().add(new StringManipulator.Replacement(2, 3, "no"));
         assertEquals("Hanolo my friend $name$",manipulator.getResult());
@@ -30,7 +30,7 @@ class StringManipulatorTest {
 
     @Test
     void testVariables() {
-        InvokeStartUp.start();
+        StartUpInvoke.invokeTestSuite();
         StringManipulator manipulator = new StringManipulator("Hallo my friend $name$");
         manipulator.variable("name", 33);
         assertEquals(manipulator.getResult(), "Hallo my friend 33");
@@ -38,7 +38,7 @@ class StringManipulatorTest {
 
     @Test
     void testMultipleVariables() {
-        InvokeStartUp.start();
+        StartUpInvoke.invokeTestSuite();
         StringManipulator manipulator = new StringManipulator("Hallo my friend $name$, $name1$, $name2$ and $name3$");
         manipulator.variable("name", "hallo");
         manipulator.variable("name1", "duuu222222");
@@ -56,7 +56,7 @@ class StringManipulatorTest {
 
     @Test
     void testPatterns() {
-        InvokeStartUp.start();
+        StartUpInvoke.invokeTestSuite();
         StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $name$ 333 $age$ $@@$hasdasdas");
         manipulator.pattern(new Pat());
         assertEquals("hallo dasd david 333 14 hasdasdas", manipulator.getResult());
@@ -64,7 +64,7 @@ class StringManipulatorTest {
 
     @Test
     void testPatternList() {
-        InvokeStartUp.start();
+        StartUpInvoke.invokeTestSuite();
         StringManipulator manipulator = new StringManipulator("hallo$@pat$ Name: $name$ <br> Age: $age$ <br><br> $@@$hasdasdas");
         List<Pat> data = new ArrayList<>();
         for (int i = 0; i < 12; i++) {
@@ -96,7 +96,7 @@ class StringManipulatorTest {
 
     @Test
     void testPatternInPattern() {
-        InvokeStartUp.start();
+        StartUpInvoke.invokeTestSuite();
 
         List<Computer> computers = new ArrayList<>();
         for (int i = 0; i < 4 * 3; i+=3) {

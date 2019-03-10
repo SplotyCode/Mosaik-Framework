@@ -1,11 +1,14 @@
 package io.github.splotycode.mosaik.util.collection;
 
 import io.github.splotycode.mosaik.util.Pair;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CollectionUtil {
 
     public static <K, V, M extends Map<K, V>> M copyWithType(final M source) throws Exception {
@@ -78,9 +81,13 @@ public final class CollectionUtil {
     public static <T> HashSet<T> newHashSet(Iterable<? extends T> elements) {
         if (elements instanceof Collection) {
             Collection<? extends T> collection = (Collection<? extends T>)elements;
-            return new java.util.HashSet<>(collection);
+            return new HashSet<>(collection);
         }
         return newHashSet(elements.iterator());
+    }
+
+    public static <T> HashSet<T> newHashSet(T[] elements) {
+        return new HashSet<>(Arrays.asList(elements));
     }
 
     public static <T> HashSet<T> newHashSet(Iterator<? extends T> iterator) {

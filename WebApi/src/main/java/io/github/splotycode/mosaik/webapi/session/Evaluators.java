@@ -1,7 +1,11 @@
 package io.github.splotycode.mosaik.webapi.session;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Arrays;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Evaluators {
 
     public static SessionEvaluator getTimeEvaluator(long maxDelay) {

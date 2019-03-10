@@ -4,6 +4,8 @@ import io.github.splotycode.mosaik.database.table.ColumnNameResolver;
 import io.github.splotycode.mosaik.database.Database;
 import io.github.splotycode.mosaik.database.connection.Connection;
 
+import java.util.Arrays;
+
 /**
  * Uses to execute commands on a repo
  * @param <T> the repo
@@ -42,7 +44,9 @@ public interface TableExecutor<T, C extends Connection> {
      * @param connection the connection that will be used
      * @param fields the fields you want so save
      */
-    void save(C connection, T entry, String... fields);
+    default void save(C connection, T entry, String... fields) {
+        save(connection, entry, (ColumnNameResolver[]) Arrays.stream(fields).map(s -> (ColumnNameResolver) () -> s).toArray());
+    }
 
     /**
      * Saves some fields of a Repo entry
@@ -79,18 +83,42 @@ public interface TableExecutor<T, C extends Connection> {
      */
     boolean exists(C connection, Filters.Filter filter);
 
-    Iterable<T> selectAll(C connection, String... fields);
-    Iterable<T> select(C connection, Filters.Filter filter, String... fields);
-    T selectFirst(C connection, Filters.Filter filter, String... fields);
+    default Iterable<T> selectAll(C connection, String... fields) {
+        return selectAll(connection, (ColumnNameResolver[]) Arrays.stream(fields).map(s -> (ColumnNameResolver) () -> s).toArray());
+    }
+
+    default Iterable<T> select(C connection, Filters.Filter filter, String... fields) {
+        return select(connection, filter, (ColumnNameResolver[]) Arrays.stream(fields).map(s -> (ColumnNameResolver) () -> s).toArray());
+    }
+
+    default T selectFirst(C connection, Filters.Filter filter, String... fields) {
+        return selectFirst(connection, filter, (ColumnNameResolver[]) Arrays.stream(fields).map(s -> (ColumnNameResolver) () -> s).toArray());
+    }
+
+    Iterable<T> selectAll(C connection, ColumnNameResolver... fields);
+    Iterable<T> selectAll(C connection);
+    Iterable<T> select(C connection, Filters.Filter filter, ColumnNameResolver... fields);
+    Iterable<T> select(C connection, Filters.Filter filter);
+    T selectFirst(C connection, Filters.Filter filter, ColumnNameResolver... fields);
+    T selectFirst(C connection, Filters.Filter filter);
 
     long count(C connection);
     long count(C connection, Filters.Filter filter);
 
     //void update(C connection, T entity, Object object);
     void update(C connection, T entity, Filters.Filter filter);
-    void update(C connection, T entity, String... fields);
+    default void update(C connection, T entity, String... fields) {
+        update(connection, entity, (ColumnNameResolver[]) Arrays.stream(fields).map(s -> (ColumnNameResolver) () -> s).toArray());
+    }
     //void update(C connection, T entity, Object object, String... fields);
-    void update(C connection, T entity, Filters.Filter filter, String... fields);
+
+    default void update(C connection, T entity, Filters.Filter filter, String... fields) {
+        update(connection, entity, filter, (ColumnNameResolver[]) Arrays.stream(fields).map(s -> (ColumnNameResolver) () -> s).toArray());
+    }
+
+    void update(C connection, T entity, ColumnNameResolver... fields);
+
+    void update(C connection, T entity, Filters.Filter filter, ColumnNameResolver... fields);
 
 
     default void drop() {
@@ -169,10 +197,6 @@ public interface TableExecutor<T, C extends Connection> {
         return count((C) Database.getInstance().getDefaultConnection(), filter);
     }
 
-    default void update(T entity) {
-        update((C) Database.getInstance().getDefaultConnection(), entity);
-    }
-
     /*default void update(T entity, Object object) {
         update((C) Database.getInstance().getDefaultConnection(), entity, object);
     }*/
@@ -191,6 +215,38 @@ public interface TableExecutor<T, C extends Connection> {
 
     default void update(T entity, Filters.Filter filter, String... fields) {
         update((C) Database.getInstance().getDefaultConnection(), entity, filter, fields);
+    }
+
+    default void update(T entity, ColumnNameResolver... fields) {
+        update((C) Database.getInstance().getDefaultConnection(), entity, fields);
+    }
+
+    default void update(T entity, Filters.Filter filter, ColumnNameResolver... fields) {
+        update((C) Database.getInstance().getDefaultConnection(), entity, filter, fields);
+    }
+
+    default Iterable<T> selectAll(ColumnNameResolver... fields) {
+        return selectAll((C) Database.getInstance().getDefaultConnection(), fields);
+    }
+
+    default Iterable<T> select(Filters.Filter filter, ColumnNameResolver... fields) {
+        return select((C) Database.getInstance().getDefaultConnection(), filter, fields);
+    }
+
+    default T selectFirst(Filters.Filter filter, ColumnNameResolver... fields) {
+        return selectFirst((C) Database.getInstance().getDefaultConnection(), filter, fields);
+    }
+
+    default Iterable<T> selectAll() {
+        return selectAll((C) Database.getInstance().getDefaultConnection());
+    }
+
+    default Iterable<T> select(Filters.Filter filter) {
+        return select((C) Database.getInstance().getDefaultConnection(), filter);
+    }
+
+    default T selectFirst(Filters.Filter filter) {
+        return selectFirst((C) Database.getInstance().getDefaultConnection(), filter);
     }
 
 }

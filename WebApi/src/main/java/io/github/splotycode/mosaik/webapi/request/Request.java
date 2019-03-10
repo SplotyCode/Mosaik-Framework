@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.request;
 
+import io.github.splotycode.mosaik.util.datafactory.DataFactoryComponent;
 import io.github.splotycode.mosaik.webapi.handler.UrlPattern;
 import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
@@ -11,7 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public interface Request {
+public interface Request extends DataFactoryComponent {
 
     WebServer getWebServer();
 
@@ -34,7 +35,7 @@ public interface Request {
     boolean isKeepAlive();
 
     String getHeader(String name);
-    String getHeader(RequestHeaders header);
+    String getHeader(RequestHeader header);
     HashMap<String, String> getHeaders();
 
     Collection<String> getGetParameter(String name);

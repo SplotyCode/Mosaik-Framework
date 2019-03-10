@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.runtime.startup;
 
-import io.github.splotycode.mosaik.runtime.startup.envirement.StartUpEnvironmentChanger;
+import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
 
 public interface StartupTask extends Comparable<StartupTask> {
 

@@ -5,7 +5,7 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import io.github.splotycode.mosaik.webapi.request.RequestHeaders;
+import io.github.splotycode.mosaik.webapi.request.RequestHeader;
 
 /* ClassRegister needs a No Args Constructor */
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -18,7 +18,7 @@ public class PostRequestContent implements RequestContent, RequestContentHandler
 
     @Override
     public boolean valid(Request request) {
-        String contentType = request.getHeader(RequestHeaders.CONTENT_TYPE);
+        String contentType = request.getHeader(RequestHeader.CONTENT_TYPE);
         return contentType != null && HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.contentEqualsIgnoreCase(contentType);
     }
 

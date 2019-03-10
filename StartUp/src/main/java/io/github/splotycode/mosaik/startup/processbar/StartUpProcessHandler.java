@@ -23,7 +23,7 @@ public class StartUpProcessHandler {
 
     public void newProcess(String name, int subSize) {
         if (processBar != null) processBar.stop();
-        processBar = new ProcessBar(subSize, logger, name, 1);
+        processBar = new ProcessBar(subSize, logger, name, 0);
     }
 
     public void end() {

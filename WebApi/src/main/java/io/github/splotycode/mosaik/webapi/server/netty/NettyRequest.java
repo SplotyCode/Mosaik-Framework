@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.server.netty;
 
+import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -18,6 +19,8 @@ import java.util.Set;
 
 public class NettyRequest extends AbstractRequest {
 
+    public static final DataKey<ChannelHandlerContext> CTX_KEY = new DataKey<>("netty.ctx");
+
     private FullHttpRequest request;
     private ChannelHandlerContext ctx;
 
@@ -34,6 +37,7 @@ public class NettyRequest extends AbstractRequest {
         super(server, request.uri());
         this.request = request;
         this.ctx = ctx;
+        dataFactory.putData(CTX_KEY, ctx);
     }
 
     @Override

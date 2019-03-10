@@ -5,7 +5,7 @@ import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import io.github.splotycode.mosaik.runtime.startup.StartUpPriorities;
 import io.github.splotycode.mosaik.runtime.startup.StartupTask;
-import io.github.splotycode.mosaik.runtime.startup.envirement.StartUpEnvironmentChanger;
+import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
 import io.github.splotycode.mosaik.spigotlib.paths.SpigotPathManager;
 
 @Priority(priority = StartUpPriorities.MANIPULATE_PRE_LINKBASE)

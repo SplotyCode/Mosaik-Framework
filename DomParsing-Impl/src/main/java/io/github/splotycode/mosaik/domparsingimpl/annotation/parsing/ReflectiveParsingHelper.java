@@ -7,17 +7,20 @@ import io.github.splotycode.mosaik.domparsing.dom.Document;
 import io.github.splotycode.mosaik.domparsing.dom.Node;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomStreamInput;
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.KeyValueHandle;
-import io.github.splotycode.mosaik.domparsingimpl.readers.keyvalue.dom.KeyValueDocument;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.KeyValueHandle;
+import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyValueDocument;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ReflectiveParsingHelper {
 
     private static Map<String, ReflectiveEntryData> data = new HashMap<>();

@@ -1,9 +1,11 @@
 package io.github.splotycode.mosaik.util.io;
 
 import io.github.splotycode.mosaik.util.info.SystemInfo;
+import lombok.AccessLevel;
 import lombok.Getter;
 import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.DefaultCaches;
+import lombok.NoArgsConstructor;
 
 import java.io.File;
 import java.net.URI;
@@ -13,6 +15,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PathUtil {
 
     public static String getFileNameWithoutEx(File file) {

@@ -4,7 +4,7 @@ import io.github.splotycode.mosaik.annotations.priority.Priority;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.startup.StartUpPriorities;
 import io.github.splotycode.mosaik.runtime.startup.StartupTask;
-import io.github.splotycode.mosaik.runtime.startup.envirement.StartUpEnvironmentChanger;
+import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
 import io.github.splotycode.mosaik.util.reflection.ClassCollector;
 

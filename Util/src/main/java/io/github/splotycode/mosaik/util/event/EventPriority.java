@@ -1,5 +1,10 @@
 package io.github.splotycode.mosaik.util.event;
 
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EventPriority {
 
     public static final int HIGHEST = Integer.MAX_VALUE;

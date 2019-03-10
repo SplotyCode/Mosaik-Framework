@@ -1,10 +1,13 @@
 package io.github.splotycode.mosaik.util.info;
 
 import io.github.splotycode.mosaik.util.StringUtil;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.management.ManagementFactory;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EnvironmentInformation {
 
     public static String getJDKInfo() {

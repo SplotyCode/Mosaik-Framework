@@ -4,7 +4,8 @@ import io.github.splotycode.mosaik.annotations.Disabled;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
-import io.github.splotycode.mosaik.webapi.response.content.file.CachedStaticFileContent;
+import io.github.splotycode.mosaik.webapi.response.HttpCashingConfiguration;
+import io.github.splotycode.mosaik.webapi.response.content.file.StaticFileContent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -39,7 +40,8 @@ public class StaticFileSystemHandler implements HttpHandler {
 
         File file = new File(root, path.substring(prefix.length()));
         if (!noError || file.exists()) {
-            request.getResponse().setContent(new CachedStaticFileContent(file));
+            request.getResponse().applyCashingConfiguration(HttpCashingConfiguration.ASSET_CASHING);
+            request.getResponse().setContent(new StaticFileContent(file));
         }
         return false;
     }

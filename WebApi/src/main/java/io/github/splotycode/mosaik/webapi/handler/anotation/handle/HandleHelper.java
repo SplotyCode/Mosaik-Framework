@@ -4,9 +4,12 @@ import io.github.splotycode.mosaik.valuetransformer.TransformException;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 import io.github.splotycode.mosaik.valuetransformer.ValueTransformer;
 import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolveException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Parameter;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HandleHelper {
 
     public static Object transformParameter(Parameter parameter, String input) {

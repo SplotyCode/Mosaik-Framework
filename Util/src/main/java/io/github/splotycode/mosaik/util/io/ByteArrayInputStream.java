@@ -4,14 +4,17 @@ import lombok.Getter;
 
 public class ByteArrayInputStream extends java.io.ByteArrayInputStream {
 
-    @Getter private boolean original = true;
+    @Getter private boolean isOriginal = true;
+    @Getter private byte[] original;
 
     public ByteArrayInputStream(byte[] bytes) {
         super(bytes);
+        original = bytes;
     }
 
     public ByteArrayInputStream(byte[] bytes, int i, int i1) {
         super(bytes, i, i1);
+        original = bytes;
     }
 
     public byte[] getBuf() {
@@ -20,7 +23,7 @@ public class ByteArrayInputStream extends java.io.ByteArrayInputStream {
 
     @Override
     public synchronized int read(byte[] bytes, int i, int i1) {
-        original = false;
+        isOriginal = false;
         return super.read(bytes, i, i1);
     }
 }

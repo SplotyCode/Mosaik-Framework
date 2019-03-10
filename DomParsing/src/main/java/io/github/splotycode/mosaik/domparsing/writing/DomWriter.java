@@ -1,9 +1,14 @@
 package io.github.splotycode.mosaik.domparsing.writing;
 
 import io.github.splotycode.mosaik.domparsing.dom.Document;
+import io.github.splotycode.mosaik.domparsing.parsing.output.DomOutput;
 
-public interface DomWriter<D extends Document> {
+public interface DomWriter {
 
-    String toText(D document);
+    default String toText(Document document) {
+        return write(document).getString();
+    }
+
+    DomOutput write(Document document);
 
 }

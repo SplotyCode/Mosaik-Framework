@@ -16,7 +16,7 @@ public class Example {
     public void exaple() {
         new MySQLConnection().connect("localhost", "database").makeDefault();
 
-        TableExecutor<User, SQLDriverConnection> executor = new SQLExecutor<>();
+        TableExecutor<User, SQLDriverConnection> executor = new SQLExecutor<>(User.class);
 
         User user = executor.selectFirst(Filters.and(Filters.eq("a", "ads"), Filters.eq("a", "a")));
         executor.save(user);

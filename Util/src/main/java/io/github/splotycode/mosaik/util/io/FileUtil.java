@@ -5,6 +5,8 @@ import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.info.SystemInfo;
 import io.github.splotycode.mosaik.util.logger.Logger;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +16,7 @@ import java.nio.file.attribute.DosFileAttributes;
 import java.util.*;
 import java.util.function.Predicate;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FileUtil {
 
     private static File tempDirectory;

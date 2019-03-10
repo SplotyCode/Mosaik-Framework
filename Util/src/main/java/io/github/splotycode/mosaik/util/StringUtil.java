@@ -1,12 +1,16 @@
 package io.github.splotycode.mosaik.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringUtil {
 
-    public static boolean isEmpty(String str){
+    public static boolean isEmpty(CharSequence str){
         return str == null || str.length() == 0;
     }
 
@@ -229,13 +233,22 @@ public final class StringUtil {
     }
 
     public static String camelCase(String s) {
+        return camelCase(s, " ");
+    }
+
+    public static String camelCase(String s, String separator) {
         if (s == null)  return null;
 
         StringBuilder b = new StringBuilder();
-        String[] split = s.split(" ");
+        String[] split = s.split(separator);
+        int i = 0;
         for (String srt : split) {
+            i++;
             if (srt.length() > 0) {
-                b.append(srt.substring(0, 1).toUpperCase()).append(srt.substring(1).toLowerCase()).append(" ");
+                b.append(srt.substring(0, 1).toUpperCase()).append(srt.substring(1).toLowerCase());
+                if (split.length != i) {
+                    b.append(separator);
+                }
             }
         }
         return b.toString().trim();

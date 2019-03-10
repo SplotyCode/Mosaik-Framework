@@ -53,6 +53,8 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
             } catch (CertificateException | SSLException e) {
                 ExceptionUtil.throwRuntime(e);
             }
+        } else {
+            sslContext = null;
         }
         thread.start();
     }
@@ -60,11 +62,6 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
     @Override
     public void shutdown() {
         loopGroup.shutdownGracefully();
-        try {
-            channel.channel().closeFuture().sync();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
