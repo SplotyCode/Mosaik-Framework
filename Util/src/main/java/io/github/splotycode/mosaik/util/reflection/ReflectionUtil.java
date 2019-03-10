@@ -104,6 +104,10 @@ public final class ReflectionUtil {
         return ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments();
     }
 
+    public static Type[] getGenerics(Class clazz, int interfaceUpper) {
+        return ((ParameterizedType) clazz.getGenericInterfaces()[interfaceUpper]).getActualTypeArguments();
+    }
+
     public static boolean isAssignable(Class<?> parent, Class<?> child) {
         return parent.isAssignableFrom(child) || samePrimitive(parent, child);
     }
