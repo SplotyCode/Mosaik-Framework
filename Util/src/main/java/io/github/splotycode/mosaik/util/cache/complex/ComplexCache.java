@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.util.cache.complex;
 
 import io.github.splotycode.mosaik.util.cache.complex.validator.CacheValidator;
+import io.github.splotycode.mosaik.util.listener.DefaultListenerHandler;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import io.github.splotycode.mosaik.util.cache.complex.resolver.CacheResolver;
 
 public class ComplexCache<T> implements Cache<T> {
 
-    @Setter @Getter private ListenerHandler<CacheListener<T>> handler = new ListenerHandler<>();
+    @Setter @Getter private ListenerHandler<CacheListener<T>> handler = new DefaultListenerHandler<>();
 
     @Getter private CacheResolver<T> resolver;
     @Getter private CacheValidator<T> validator;
