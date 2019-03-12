@@ -34,7 +34,7 @@ public abstract class AbstractExecutor<T, C extends Connection> implements Table
     public void setValue(String fieldName, Object value, T instance) throws IllegalAccessException {
         Field field = fields.get(fieldName).getField();
         field.setAccessible(true);
-        field.set(instance, TransformerManager.getInstance().transform(value, String.class));
+        field.set(instance, TransformerManager.getInstance().transform(value, field.getType()));
     }
 
     public AbstractExecutor(Class<?> clazz) {
