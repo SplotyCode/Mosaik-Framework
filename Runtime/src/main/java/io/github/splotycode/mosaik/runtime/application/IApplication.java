@@ -26,6 +26,10 @@ public interface IApplication extends DataFactoryComponent {
         return getDataFactory().getDataDefault(key);
     }
 
+    default <T> void putData(DataKey<T> key, T value) {
+        getDataFactory().putData(key, value);
+    }
+
     DataFactory getConfig();
     default <T> T getConfig(DataKey<T> key) {
         return getConfig().getDataDefault(key);
