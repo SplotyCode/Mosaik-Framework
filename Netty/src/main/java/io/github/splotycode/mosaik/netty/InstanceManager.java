@@ -1,13 +1,13 @@
 package io.github.splotycode.mosaik.netty;
 
+import io.github.splotycode.mosaik.netty.server.INetServer;
+import io.github.splotycode.mosaik.util.listener.DefaultListenerHandler;
 import lombok.Getter;
 import lombok.Setter;
-import io.github.splotycode.mosaik.netty.server.INetServer;
-import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 
 import java.util.*;
 
-public class InstanceManager<T extends INetServer> extends ListenerHandler<InstanceListener> {
+public class InstanceManager<T extends INetServer> extends DefaultListenerHandler<InstanceListener> {
 
     @Getter @Setter private HashMap<Integer, T> servers = new HashMap<>();
     @Getter @Setter private int minPort, maxPort, maxInstances, startInstances;

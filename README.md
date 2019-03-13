@@ -9,7 +9,7 @@ Mosaik is on the Maven central.
 <dependency>
   <groupId>io.github.splotycode.mosaik</groupId>
   <artifactId>Mosaik-All</artifactId>
-  <version>2.2.8</version>
+  <version>2.2.9</version>
 </dependency>
 ```
 Note: GameEngine and SpigotLib are not part of Mosaik-All

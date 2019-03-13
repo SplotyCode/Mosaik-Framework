@@ -1,15 +1,15 @@
 package io.github.splotycode.mosaik.util;
 
+import io.github.splotycode.mosaik.util.listener.DefaultListenerHandler;
+import io.github.splotycode.mosaik.util.listener.ValueChangeListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import io.github.splotycode.mosaik.util.listener.ListenerHandler;
-import io.github.splotycode.mosaik.util.listener.ValueChangeListener;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Referece<T> extends ListenerHandler<ValueChangeListener<T>> {
+public class Referece<T> extends DefaultListenerHandler<ValueChangeListener<T>> {
 
     T value;
 

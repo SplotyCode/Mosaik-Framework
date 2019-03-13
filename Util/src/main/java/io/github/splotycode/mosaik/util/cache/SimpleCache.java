@@ -1,11 +1,12 @@
 package io.github.splotycode.mosaik.util.cache;
 
+import io.github.splotycode.mosaik.util.listener.DefaultListenerHandler;
 import lombok.Getter;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 
 public class SimpleCache<T> implements Cache<T> {
 
-    private ListenerHandler<CacheListener<T>> handler = new ListenerHandler<>();
+    private ListenerHandler<CacheListener<T>> handler = new DefaultListenerHandler<>();
 
     @Getter private T value;
 

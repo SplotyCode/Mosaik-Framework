@@ -36,6 +36,10 @@ public final class ClassConditions {
         return clazz::isAssignableFrom;
     }
 
+    public static <S> Predicate<S> assignableClass(Class<? extends S> clazz) {
+        return s -> clazz.isAssignableFrom(s.getClass());
+    }
+
     public static Predicate<Class> needAnnotation(Class<? extends Annotation> annotation) {
         return item -> item.isAnnotationPresent(annotation);
     }

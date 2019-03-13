@@ -8,6 +8,7 @@ import io.github.splotycode.mosaik.runtime.startup.StartUpInvoke;
 import io.github.splotycode.mosaik.util.prettyprint.PrettyPrint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 public class MySQlTest {
@@ -29,6 +30,9 @@ public class MySQlTest {
 
         TableExecutor<Person, SQLDriverConnection> repo = new SQLExecutor<>(Person.class);
         repo.createIfNotExists();
+        repo.save(new Person("aa", "bbb", 2, "dasd@asd.ed"), Access.FIRST_NAME, Access.LAST_NAME);
+        repo.save(new Person("aaa", "bbasb", 3, "dasd@asd.ed"));
+        repo.save(new Person("aadsad", "bbbsdfd", 8, "dasd@asfdddd.ed"));
         System.out.println(new PrettyPrint(repo.selectAll()).prettyPrintType());
     }
 
@@ -53,12 +57,13 @@ public class MySQlTest {
     @Table
     @Data
     @AllArgsConstructor
-    public class Person {
+    @NoArgsConstructor
+    public static class Person {
 
         @Column(typeParameters = 30)
         private String firstName, lastName;
 
-        @Column()
+        @Column
         @AutoIncrement
         @Primary
         @NotNull

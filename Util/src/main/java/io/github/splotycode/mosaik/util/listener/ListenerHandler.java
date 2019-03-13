@@ -1,43 +1,20 @@
 package io.github.splotycode.mosaik.util.listener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ListenerHandler<L extends Listener> {
+public interface ListenerHandler<L extends Listener> {
 
-    private List<L> listeners;
+    List<L> getListeners();
+    void call(Consumer<L> consumer);
 
-    public ListenerHandler(){
-        listeners = new ArrayList<>();
+    default void addListener(L listener) {
+        if(!getListeners().contains(listener))
+            getListeners().add(listener);
     }
 
-    public ListenerHandler(List<L> listeners) {
-        this.listeners = listeners;
+    default void removeListener(L listener) {
+        getListeners().remove(listener);
     }
 
-    @SafeVarargs
-    public ListenerHandler(L... listeners){
-        this();
-        this.listeners.addAll(new ArrayList<>(Arrays.asList(listeners)));
-    }
-
-    public void addListener(L listener){
-        if(!listeners.contains(listener))
-            listeners.add(listener);
-    }
-
-    public void removeListener(L listener){
-        if(listeners.contains(listener))
-            listeners.remove(listener);
-    }
-
-    public void call(Consumer<L> consumer){
-        listeners.forEach(consumer);
-    }
-
-    public List<L> getListeners() {
-        return listeners;
-    }
 }

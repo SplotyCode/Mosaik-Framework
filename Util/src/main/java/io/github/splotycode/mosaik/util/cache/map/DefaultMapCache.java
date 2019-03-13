@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.util.cache.map;
 import io.github.splotycode.mosaik.util.Destroyable;
 import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.CacheListener;
+import io.github.splotycode.mosaik.util.listener.DefaultListenerHandler;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,7 @@ import java.util.function.Function;
 public class DefaultMapCache<K, V> implements MapCache<K, V>, CacheListener<V> {
 
     protected Map<K, Cache<V>> caches = new HashMap<>();
-    protected ListenerHandler<CacheListener<V>> globalHandler = new ListenerHandler<>();
+    protected ListenerHandler<CacheListener<V>> globalHandler = new DefaultListenerHandler<>();
     @Getter @Setter protected Function<K, Cache<V>> cacheFactory;
 
     @Override

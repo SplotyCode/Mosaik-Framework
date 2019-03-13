@@ -78,10 +78,16 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
                 return ColumnType.INT;
             }
             if (ReflectionUtil.isAssignable(Long.class, clazz)) {
-                return ColumnType.DOUBLE;
+                return ColumnType.BIGINT;
             }
             if (String.class.isAssignableFrom(clazz)) {
                 return ColumnType.VARCHAR;
+            }
+            if (String.class.isAssignableFrom(clazz)) {
+                return ColumnType.VARCHAR;
+            }
+            if (Short.class.isAssignableFrom(clazz)) {
+                return ColumnType.SMALLINT;
             }
         }
         return type;
@@ -251,7 +257,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
 
     @Override
     public Iterable<T> selectAll(SQLDriverConnection connection) {
-        return select(connection, false, null);
+        return select(connection, false, null, (ColumnNameResolver[]) fields.values().stream().map(obj -> (ColumnNameResolver) obj::getName).toArray(ColumnNameResolver[]::new));
     }
 
     @Override
@@ -267,8 +273,9 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     private Iterable<T> select(SQLDriverConnection connection, boolean onlyOne, Filters.Filter filter, ColumnNameResolver... fields) {
         StringBuilder builder = new StringBuilder("SELECT ");
         builder.append(StringUtil.join(fields, ColumnNameResolver::getColumnName));
-        builder.append(" FROM ").append(table);
+        builder.append(" FROM ").append(name);
         if (filter != null) builder.append(generateWhere(filter));
+        System.out.println(builder.toString());
 
         try {
             Statement statement = connection.getConnection().createStatement();
