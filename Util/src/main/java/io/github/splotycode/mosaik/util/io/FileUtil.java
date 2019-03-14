@@ -77,6 +77,10 @@ public final class FileUtil {
         }
     }
 
+    public static void resourceToFile(final String name, final File file) throws IOException {
+        writeToFile(file, IOUtil.resourceToURL(name).openStream());
+    }
+
     public static String loadFile(File file) throws IOException {
         return loadFile(file, null);
     }
