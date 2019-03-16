@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.splotycode.mosaik</groupId>
-    <artifactId>Examle-Papa</artifactId>
+    <artifactId>Example-Papa</artifactId>
     <version>1.0</version>
+
     <build>
         <plugins>
             <plugin>
@@ -23,108 +24,9 @@
     <dependencies>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>Annotations</artifactId>
-            <version>2.0.0</version>
+            <artifactId>Mosaik-All</artifactId>
+            <version>2.2.10-Dev</version>
             <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>Util</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>AnnotationProcessing</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>Runtime</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>ArgParser</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>Automatisation</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>Console</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>Database</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>DomParsing</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>IUI</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>Netty</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>StartUp</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>ValueTransformer</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>WebApi</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.github.splotycode.mosaik</groupId>
-            <artifactId>ArgParser-Impl</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 

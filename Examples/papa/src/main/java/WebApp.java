@@ -1,11 +1,4 @@
-package papa;
-
-import io.github.splotycode.mosaik.startup.Main;
-import io.github.splotycode.mosaik.annotations.Disabled;
-import io.github.splotycode.mosaik.runtime.application.Application;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
-import io.github.splotycode.mosaik.webapi.WebApplicationType;
-import io.github.splotycode.mosaik.webapi.server.netty.NettyWebServer;
 
 @Disabled
 public class WebApp extends Application implements WebApplicationType {

@@ -8,7 +8,7 @@ import io.github.splotycode.mosaik.webapi.response.content.file.FileResponseCont
 import io.github.splotycode.mosaik.webapi.response.content.ResponseContent;
 import io.github.splotycode.mosaik.webapi.request.Request;
 
-@Handler
+
 public class MyHandler {
 
     private Logger logger = Logger.getInstance(getClass());
