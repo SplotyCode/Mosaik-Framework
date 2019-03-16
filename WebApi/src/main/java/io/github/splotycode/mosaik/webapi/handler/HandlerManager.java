@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.webapi.handler;
 
-import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.response.Response;

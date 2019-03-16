@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.webapi.server;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.LinkedDataFactory;
 import io.github.splotycode.mosaik.util.init.InitialisedOnce;
+import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
 import io.github.splotycode.mosaik.webapi.WebApplicationType;
@@ -10,7 +11,7 @@ import io.github.splotycode.mosaik.webapi.handler.HandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.StaticHandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.anotation.AnnotationHandlerFinder;
-import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContentHandler;
@@ -29,6 +30,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class AbstractWebServer extends InitialisedOnce implements WebServer {
+
+    private Logger logger = Logger.getInstance(getClass());
 
     @Getter protected InetSocketAddress address;
     @Getter protected boolean ssl;
@@ -87,7 +90,9 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
 
     public void addFinder(HandlerFinder finder) {
         if (initialised) throw new IllegalStateException("Can not add finder if WebServer is already initialised");
-        allHandlers.addAll(finder.search());
+        Collection<? extends HttpHandler> handlers = finder.search();
+        logger.info(finder.getClass().getName() + " has registered " + handlers.size() + " handlers");
+        allHandlers.addAll(handlers);
     }
 
     @Override

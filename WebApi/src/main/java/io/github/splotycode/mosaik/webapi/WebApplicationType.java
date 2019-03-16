@@ -10,7 +10,7 @@ import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContentHandler;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
-import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.webapi.response.error.ErrorHandler;
 
 import java.util.ArrayList;

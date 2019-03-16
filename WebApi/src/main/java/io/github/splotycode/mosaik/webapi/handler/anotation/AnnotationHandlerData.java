@@ -3,12 +3,13 @@ package io.github.splotycode.mosaik.webapi.handler.anotation;
 import io.github.splotycode.mosaik.annotations.AnnotationHelper;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.collection.CollectionUtil;
+import io.github.splotycode.mosaik.util.reflection.annotation.AnnotationData;
+import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.util.reflection.annotation.parameter.UseResolver;
 import io.github.splotycode.mosaik.webapi.handler.UrlPattern;
 import io.github.splotycode.mosaik.webapi.handler.anotation.check.*;
-import io.github.splotycode.mosaik.webapi.handler.anotation.handle.UseResolver;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.Cache;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.CacheDefaultProvider;
-import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.request.RequestHeader;
@@ -22,14 +23,13 @@ import lombok.Setter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
 @EqualsAndHashCode
 @Getter
 @Setter
-public class AnnotationHandlerData {
+public class AnnotationHandlerData extends AnnotationData {
 
     private UrlPattern mapping = null;
     private int priority;
@@ -38,12 +38,12 @@ public class AnnotationHandlerData {
     private String host;
     private List<String> neededGet = new ArrayList<>(), neededPost = new ArrayList<>();
     private HashMap<String, String> getMustBe = new HashMap<>(), postMustBe = new HashMap<>();
-    private Throwable loadingError = null;
     private HttpCashingConfiguration cashingConfiguration;
 
     protected List<ParameterResolver> costomParameterResolvers = new ArrayList<>();
 
-    public AnnotationHandlerData(Annotation[] annotations) {
+    @Override
+    public void buildData(Annotation[] annotations) {
         priority = AnnotationHelper.getPriority(annotations);
         for (Annotation annotation : annotations) {
             if (annotation instanceof Mapping) {
@@ -69,14 +69,6 @@ public class AnnotationHandlerData {
                 setMethod("POST");
                 PostMustBe mustBeAnnotation = (PostMustBe) annotation;
                 postMustBe.put(mustBeAnnotation.parameter(), mustBeAnnotation.value());
-            } else if (annotation instanceof AddTransformer) {
-                for (Class<? extends ParameterResolver> transformer : ((AddTransformer) annotation).value()) {
-                    try {
-                        costomParameterResolvers.add(transformer.newInstance());
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        loadingError = e;
-                    }
-                }
             } else if (annotation instanceof Host) {
                 host = (((Host) annotation).value()).trim().toLowerCase(Locale.ENGLISH);
             } else if (annotation instanceof CacheDefaultProvider) {
@@ -155,13 +147,11 @@ public class AnnotationHandlerData {
         private boolean returnContext;
         private String displayName;
 
-        public SupAnnotationHandlerData(Annotation[] annotations, Method method, AbstractWebServer server) {
-            super(annotations);
+        public void postHandle(AbstractWebServer server, AnnotationHandlerData global) {
             try {
+                Method method = (Method) element;
                 displayName = method.getDeclaringClass().getSimpleName() + "#" + method.getName();
                 this.targetMethod = method;
-                if (Modifier.isAbstract(method.getModifiers()))
-                    throw new IllegalHandlerException("Handler might not be abstract" + method.getDeclaringClass().getSimpleName() + "#" + method.getName());
                 boolean found;
                 for (Parameter parameter : method.getParameters()) {
                     if (parameter.isAnnotationPresent(UseResolver.class)) {
@@ -170,6 +160,13 @@ public class AnnotationHandlerData {
                     }
                     found = false;
                     for (ParameterResolver parameterResolver : costomParameterResolvers) {
+                        if (parameterResolver.transformable(parameter)) {
+                            parameters.add(new Pair<>(parameterResolver, parameter));
+                            found = true;
+                            break;
+                        }
+                    }
+                    for (ParameterResolver parameterResolver : global.costomParameterResolvers) {
                         if (parameterResolver.transformable(parameter)) {
                             parameters.add(new Pair<>(parameterResolver, parameter));
                             found = true;
@@ -194,11 +191,10 @@ public class AnnotationHandlerData {
                     throw new IllegalHandlerException("Invalid method type of handler " + displayName);
                 }
             } catch (IllegalHandlerException ex) {
-                setLoadingError(ex);
+                loadError = ex;
             } catch (Throwable ex) {
-                setLoadingError(new IllegalHandlerException("Exception while parsing handler", ex));
+                loadError = new IllegalHandlerException("Exception while parsing handler", ex);
             }
-
         }
     }
 

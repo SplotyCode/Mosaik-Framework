@@ -1,9 +1,10 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation.handle;
 
+import io.github.splotycode.mosaik.util.ValueTransformer;
+import io.github.splotycode.mosaik.util.reflection.annotation.exception.ParameterResolveException;
+import io.github.splotycode.mosaik.util.reflection.annotation.parameter.UseTransformer;
 import io.github.splotycode.mosaik.valuetransformer.TransformException;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
-import io.github.splotycode.mosaik.valuetransformer.ValueTransformer;
-import io.github.splotycode.mosaik.webapi.handler.anotation.parameter.ParameterResolveException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +22,7 @@ public final class HandleHelper {
                 }
             } catch (IllegalAccessException | InstantiationException ex) {
                 throw new ParameterResolveException("Failed to create instance", ex);
-            } catch (TransformException ex) {
+            } catch (Exception ex) {
                 throw new ParameterResolveException("Failed to Transform Value", ex);
             }
         }
