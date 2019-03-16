@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ClassCollector implements Predicate<Class> {
 
-    private Map<Integer, Predicate<Class>> conditions = new HashMap<>();
+    private Map<Integer, Predicate<? super Class>> conditions = new HashMap<>();
     private Predicate<Class> lastCondition = null;
     private Collection<Class> lastFetchedClasses = null;
     private Collection<Object> lastFetchedInstances = null;

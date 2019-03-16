@@ -18,7 +18,7 @@ public enum MosaikModule implements IModule {
             UTIL, RUNTIME),
     CONSOLE("io.github.splotycode.mosaik.console.ConsoleApplicationType", RUNTIME),
     DATABASE("io.github.splotycode.mosaik.database.connection.Connection", UTIL),
-    VALUE_TRANSFORMER("io.github.splotycode.mosaik.valuetransformer.ValueTransformer", RUNTIME),
+    VALUE_TRANSFORMER("io.github.splotycode.mosaik.valuetransformer.TransformerManager", RUNTIME),
     DOM_PARSING_IMPL("io.github.splotycode.mosaik.domparsingimpl.ParsingManagerImpl",
             VALUE_TRANSFORMER, RUNTIME),
     GAME_ENGINE("io.github.splotycode.mosaik.gameengine.gameloop.GameLoop", UTIL),
