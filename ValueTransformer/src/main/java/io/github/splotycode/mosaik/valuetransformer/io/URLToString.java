@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.valuetransformer.io;
 
+import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.valuetransformer.TransformException;
-import io.github.splotycode.mosaik.valuetransformer.ValueTransformer;
 
 import java.net.URL;
 

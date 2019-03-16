@@ -1,9 +1,9 @@
 package io.github.splotycode.mosaik.valuetransformer.stringtoprimary;
 
+import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.valuetransformer.TransformException;
-import io.github.splotycode.mosaik.valuetransformer.ValueTransformer;
 
-public class StringToBoolen extends ValueTransformer<String, Boolean> {
+public class StringToBoolean extends ValueTransformer<String, Boolean> {
 
     @Override
     public Boolean transform(String input) throws TransformException {

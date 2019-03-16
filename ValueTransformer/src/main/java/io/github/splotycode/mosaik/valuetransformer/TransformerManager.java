@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.valuetransformer;
 
 import io.github.splotycode.mosaik.runtime.LinkBase;
+import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 
@@ -27,7 +28,11 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
         //List<Class<?>> possibleResults = getPossibleResults(input.getClass());
         for (ValueTransformer transformer : transformers) {
             if (transformer.valid(input, result)) {
-                return (T) transformer.transform(input);
+                try {
+                    return (T) transformer.transform(input);
+                } catch (Throwable throwable) {
+                    throw new TransformException("Failed to transform with " + transformer.getClass().getName(), throwable);
+                }
             }
         }
         if (String.class.isAssignableFrom(result)) {

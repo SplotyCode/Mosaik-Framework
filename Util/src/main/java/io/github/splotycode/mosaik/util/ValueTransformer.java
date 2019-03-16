@@ -1,7 +1,7 @@
-package io.github.splotycode.mosaik.valuetransformer;
+package io.github.splotycode.mosaik.util;
 
-import lombok.Getter;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
+import lombok.Getter;
 
 import java.lang.reflect.Type;
 
@@ -10,7 +10,7 @@ public abstract class ValueTransformer<I, O> {
     @Getter private Class<I> inputClass;
     @Getter private Class<O> outputClass;
 
-    public abstract O transform(I input) throws TransformException;
+    public abstract O transform(I input) throws Exception;
 
     public ValueTransformer() {
         Type[] generics = ReflectionUtil.getGenerics(getClass());
