@@ -1,6 +1,6 @@
-package io.github.splotycode.mosaik.webapi.handler.anotation.handle;
+package io.github.splotycode.mosaik.util.reflection.annotation.parameter;
 
-import io.github.splotycode.mosaik.valuetransformer.ValueTransformer;
+import io.github.splotycode.mosaik.util.ValueTransformer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

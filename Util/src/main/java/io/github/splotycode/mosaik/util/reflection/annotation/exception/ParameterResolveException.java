@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.webapi.handler.anotation.parameter;
+package io.github.splotycode.mosaik.util.reflection.annotation.exception;
 
 public class ParameterResolveException extends RuntimeException {
 
