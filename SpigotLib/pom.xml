@@ -11,50 +11,6 @@
 
     <artifactId>SpigotLib</artifactId>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${mosaik.plugin.jar}</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>io.github.splotycode.mosaik.startup.Main</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${mosaik.plugin.compile}</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <configuration>
-                            <compilerArgument>-proc:none</compilerArgument>
-                            <includes>
-                                <include>io/github/splotycode/mosaik/spigotlib/pluginyml/YamlProcessor.java</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compile-project</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
     <repositories>
         <repository>
             <id>spigot-repo</id>
@@ -79,6 +35,11 @@
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Runtime</artifactId>
             <version>2.2.10-Dev</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${mosaik.lombok.version}</version>
         </dependency>
     </dependencies>
 

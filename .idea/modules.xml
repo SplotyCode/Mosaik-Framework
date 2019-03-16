@@ -20,6 +20,7 @@
       <module fileurl="file://$PROJECT_DIR$/Netty/Netty.iml" filepath="$PROJECT_DIR$/Netty/Netty.iml" />
       <module fileurl="file://$PROJECT_DIR$/Runtime/Runtime.iml" filepath="$PROJECT_DIR$/Runtime/Runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/SpigotLib/SpigotLib.iml" filepath="$PROJECT_DIR$/SpigotLib/SpigotLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SpigotLib-Annotation/SpigotLib-Annotation.iml" filepath="$PROJECT_DIR$/SpigotLib-Annotation/SpigotLib-Annotation.iml" />
       <module fileurl="file://$PROJECT_DIR$/StartUp/StartUp.iml" filepath="$PROJECT_DIR$/StartUp/StartUp.iml" />
       <module fileurl="file://$PROJECT_DIR$/Util/Util.iml" filepath="$PROJECT_DIR$/Util/Util.iml" />
       <module fileurl="file://$PROJECT_DIR$/ValueTransformer/ValueTransformer.iml" filepath="$PROJECT_DIR$/ValueTransformer/ValueTransformer.iml" />

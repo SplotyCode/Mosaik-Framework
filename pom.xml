@@ -28,6 +28,7 @@
         <module>Mosaik-All</module>
         <module>ArgParser-Impl</module>
         <module>DomParsing-Impl</module>
+        <module>SpigotLib-Annotation</module>
     </modules>
 
     <properties>
@@ -52,7 +53,7 @@
 
         <!-- Plugin Utils -->
         <mosaik.plugin.jar>2.4</mosaik.plugin.jar>
-        <mosaik.plugin.compile>3.5.1</mosaik.plugin.compile>
+        <mosaik.plugin.compile>3.8.0</mosaik.plugin.compile>
         <mosaik.plugin.assembly>3.1.1</mosaik.plugin.assembly>
         <mosaik.plugin.gpg>1.5</mosaik.plugin.gpg>
         <mosaik.plugin.nexus-staging>1.6.7</mosaik.plugin.nexus-staging>
@@ -159,31 +160,14 @@
         </profile>
     </profiles>
 
-
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${mosaik.plugin.compile}</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${mosaik.lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -201,7 +185,6 @@
             <version>${mosaik.log4j.version}</version>
         </dependency>
     </dependencies>
-
     <distributionManagement>
         <site>
             <id>api.wiki</id>
