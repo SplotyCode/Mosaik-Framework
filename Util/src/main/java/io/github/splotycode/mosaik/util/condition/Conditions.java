@@ -41,7 +41,7 @@ public final class Conditions {
         return item -> Arrays.stream(conditions).allMatch(condition -> condition.test(item));
     }
 
-    public static <T> Predicate<T> and(Collection<Predicate<T>> conditions) {
+    public static <T> Predicate<T> and(Collection<Predicate<? super T>> conditions) {
         return item -> conditions.stream().allMatch(condition -> condition.test(item));
     }
 

@@ -5,9 +5,11 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.function.Predicate;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,7 +18,7 @@ public final class ClassConditions {
     public static final Predicate<Class> NEED_ABSTRACT = item -> Modifier.isAbstract(item.getModifiers());
     public static final Predicate<Class> NOT_ABSTRACT = Conditions.reverse(NEED_ABSTRACT);
 
-    public static final Predicate<Class> NO_DISABLE_ANNOTATION = unallowedAnnotation(Disabled.class);
+    public static final Predicate<AnnotatedElement> NO_DISABLE_ANNOTATION = unallowedAnnotation(Disabled.class);
 
     public static final Predicate<Class> MUST_BE_CLASS = item -> !item.isEnum() && !item.isInterface();
 
@@ -40,11 +42,27 @@ public final class ClassConditions {
         return s -> clazz.isAssignableFrom(s.getClass());
     }
 
-    public static Predicate<Class> needAnnotation(Class<? extends Annotation> annotation) {
+    public static Predicate<AnnotatedElement> needAnnotation(Class<? extends Annotation> annotation) {
         return item -> item.isAnnotationPresent(annotation);
     }
 
-    public static Predicate<Class> unallowedAnnotation(Class<? extends Annotation> annotation) {
+    public static Predicate<AnnotatedElement> needOneAnnotation(Class<? extends Annotation>... annotations) {
+        return item -> Arrays.stream(annotations).anyMatch(item::isAnnotationPresent);
+    }
+
+    public static Predicate<AnnotatedElement> needOneAnnotation(Collection<? extends Class<? extends Annotation>> annotations) {
+        return item -> annotations.stream().anyMatch(item::isAnnotationPresent);
+    }
+
+    public static Predicate<AnnotatedElement> needAnnotations(Class<? extends Annotation>... annotations) {
+        return item -> Arrays.stream(annotations).allMatch(item::isAnnotationPresent);
+    }
+
+    public static Predicate<AnnotatedElement> needAnnotations(Collection<? extends Class<? extends Annotation>> annotations) {
+        return item -> annotations.stream().allMatch(item::isAnnotationPresent);
+    }
+
+    public static Predicate<AnnotatedElement> unallowedAnnotation(Class<? extends Annotation> annotation) {
         return item -> !item.isAnnotationPresent(annotation);
     }
 

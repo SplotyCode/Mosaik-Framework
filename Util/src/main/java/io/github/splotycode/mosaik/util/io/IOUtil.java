@@ -162,8 +162,14 @@ public final class IOUtil {
         return loadText(resourceToURL(name, classLoader), encoding);
     }
 
+    public static URL resourceToURL(final String name) throws IOException {
+        return resourceToURL(name, null);
+    }
+
     public static URL resourceToURL(final String name, final ClassLoader classLoader) throws IOException {
-        final URL resource = classLoader == null ? IOUtil.class.getResource(name) : classLoader.getResource(name);
+        final URL resource = classLoader == null ?
+                IOUtil.class.getResource(name) :
+                classLoader.getResource(name);
         if (resource == null) throw new IOException("Resource not found: " + name);
         return resource;
     }
