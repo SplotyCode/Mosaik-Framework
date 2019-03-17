@@ -15,6 +15,9 @@ import io.github.splotycode.mosaik.webapi.response.error.ErrorHandler;
 
 import java.util.ArrayList;
 
+/**
+ * Application type for Web Applications
+ */
 public interface WebApplicationType extends ApplicationType {
 
     DataKey<WebServer> WEB_SERVER = new DataKey<>("web.webserver");

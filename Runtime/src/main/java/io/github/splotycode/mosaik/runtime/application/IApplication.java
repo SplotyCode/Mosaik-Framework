@@ -7,6 +7,9 @@ import io.github.splotycode.mosaik.util.logger.Logger;
 
 import java.util.Collection;
 
+/**
+ * IApplication is a class that is used to have a few function of Applications in ApplicationType
+ */
 public interface IApplication extends DataFactoryComponent {
 
     String getName();

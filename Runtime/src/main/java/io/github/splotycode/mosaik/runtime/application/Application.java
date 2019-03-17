@@ -9,6 +9,11 @@ import io.github.splotycode.mosaik.util.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Avery Application needs to extend Application.
+ * Applications are found and executed automatically on startup.
+ * You can add application types to the Application for example WebApplicationType.
+ */
 public abstract class Application implements IApplication {
 
     @Getter private ShutdownManager localShutdownManager = new ShutdownManager();
