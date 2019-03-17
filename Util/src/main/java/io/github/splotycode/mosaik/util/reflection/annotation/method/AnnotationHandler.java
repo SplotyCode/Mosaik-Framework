@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.util.reflection.annotation.method;
 
 import io.github.splotycode.mosaik.util.reflection.annotation.AnnotationContext;
-import io.github.splotycode.mosaik.util.reflection.annotation.AnnotationData;
+import io.github.splotycode.mosaik.util.reflection.annotation.data.AnnotationData;
 
 import java.lang.annotation.Annotation;
 

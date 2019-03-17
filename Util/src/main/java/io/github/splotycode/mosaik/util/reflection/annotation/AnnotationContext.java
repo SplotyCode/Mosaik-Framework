@@ -1,5 +1,7 @@
 package io.github.splotycode.mosaik.util.reflection.annotation;
 
+import io.github.splotycode.mosaik.util.datafactory.DataFactory;
+import io.github.splotycode.mosaik.util.reflection.annotation.data.AnnotationData;
 import io.github.splotycode.mosaik.util.reflection.annotation.method.AnnotationHandler;
 
 import java.lang.annotation.Annotation;
@@ -12,6 +14,8 @@ public interface AnnotationContext<M extends AnnotationContext, D extends Annota
     AnnotationData globalData();
 
     void feed(T input);
+
+    Object callmethod(D data, DataFactory additionalInfo);
 
     M self();
 
