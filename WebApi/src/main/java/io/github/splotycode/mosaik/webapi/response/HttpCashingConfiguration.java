@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 
 @Getter
@@ -45,8 +45,7 @@ public class HttpCashingConfiguration {
     public void apply(Response response) {
         response.cashingConfiguration = this;
         if (expires != -1) {
-            Date date = new Date(expires * 1000L + System.currentTimeMillis());
-            response.setHeader(ResponseHeader.EXPIRES, Response.DATE_FORMAT.format(date));
+            response.setHeader(ResponseHeader.EXPIRES, LocalDateTime.now(Response.ZONE_ID).plusNanos(expires * 1000 * 1000).format(Response.DATE_FORMAT));
         }
         StringBuilder sb = new StringBuilder();
         appendBoolean(sb, noCache, "no-cache");

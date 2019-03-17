@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -54,8 +54,7 @@ public class CookieKey {
         builder.append("=\"").append(value).append("\"; ");
         if (maxAge != -1) {
             builder.append("Max-Age=").append(maxAge).append("; ");
-            Date expires = new Date(maxAge * 1000L + System.currentTimeMillis());
-            builder.append("Expires=").append(Response.DATE_FORMAT.format(expires)).append("; ");
+            builder.append("Expires=").append(LocalDateTime.now(Response.ZONE_ID).plusNanos(maxAge * 1000 * 1000).format(Response.DATE_FORMAT)).append("; ");
         }
         if (path != null) {
             builder.append("Path=").append(path).append("; ");
