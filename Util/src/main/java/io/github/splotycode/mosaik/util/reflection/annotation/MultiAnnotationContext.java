@@ -155,7 +155,10 @@ public abstract class MultiAnnotationContext<M extends MultiAnnotationContext, D
             D data = methodDataClass().newInstance();
             sub.add(data);
             data.setElement(method);
+            ((IMethodData) data).setMethod(method);
             return data;
+        } catch (ClassCastException ex) {
+            throw new InvalidAnnotationDataExcpetion("Data needs to implements IMethodData", ex);
         } catch (Throwable ex) {
             throw new InvalidAnnotationDataExcpetion("Failed to build data for " + method.getName(), ex);
         }

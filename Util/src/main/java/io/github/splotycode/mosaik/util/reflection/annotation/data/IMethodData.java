@@ -14,5 +14,6 @@ public interface IMethodData extends IAnnotationData {
     Collection<Pair<ParameterResolver, Parameter>> getAllPrameters();
 
     Method getMethod();
+    void setMethod(Method method);
 
 }
