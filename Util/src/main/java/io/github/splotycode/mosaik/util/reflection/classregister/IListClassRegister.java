@@ -22,11 +22,13 @@ public interface IListClassRegister<T> extends ClassRegister<T> {
         getList().remove(obj);
     }
 
-    default ArrayList<T> combind(IListClassRegister<T> register) {
+    default Collection<T> combind(IListClassRegister<T> register) {
+        if (register == null) return getList();
         return combind(register.getList());
     }
 
-    default ArrayList<T> combind(Collection<T> collection) {
+    default Collection<T> combind(Collection<T> collection) {
+        if (collection == null) return getList();
         ArrayList<T> list = new ArrayList<>(collection);
         list.addAll(getList());
         return list;
