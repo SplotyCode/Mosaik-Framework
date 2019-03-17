@@ -100,7 +100,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
 
     @Override
     public void save(SQLDriverConnection connection, T entry) {
-        save(connection, entry, (ColumnNameResolver[]) fields.values().stream().map(obj -> (ColumnNameResolver) obj::getName).toArray(ColumnNameResolver[]::new));
+        save(connection, entry, allResolvers);
     }
 
     @Override
@@ -132,7 +132,6 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     private void exec(SQLDriverConnection connection, StringBuilder builder, String action) {
-        System.out.println("excuting " + builder.toString());
         try {
             Statement statement = connection.getConnection().createStatement();
             statement.execute(builder.toString());
@@ -257,7 +256,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
 
     @Override
     public Iterable<T> selectAll(SQLDriverConnection connection) {
-        return select(connection, false, null, (ColumnNameResolver[]) fields.values().stream().map(obj -> (ColumnNameResolver) obj::getName).toArray(ColumnNameResolver[]::new));
+        return select(connection, false, null, allResolvers);
     }
 
     @Override
@@ -275,7 +274,6 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
         builder.append(StringUtil.join(fields, ColumnNameResolver::getColumnName));
         builder.append(" FROM ").append(name);
         if (filter != null) builder.append(generateWhere(filter));
-        System.out.println(builder.toString());
 
         try {
             Statement statement = connection.getConnection().createStatement();

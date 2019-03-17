@@ -1,10 +1,7 @@
 package io.github.splotycode.mosaik.database.repo;
 
 import io.github.splotycode.mosaik.database.connection.Connection;
-import io.github.splotycode.mosaik.database.table.Column;
-import io.github.splotycode.mosaik.database.table.FieldObject;
-import io.github.splotycode.mosaik.database.table.Primary;
-import io.github.splotycode.mosaik.database.table.Table;
+import io.github.splotycode.mosaik.database.table.*;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 
@@ -20,6 +17,10 @@ public abstract class AbstractExecutor<T, C extends Connection> implements Table
 
     protected HashMap<String, FieldObject> fields = new HashMap<>();
     protected FieldObject primary = null;
+
+    protected ColumnNameResolver[] allResolvers = fields.values().stream()
+            .map(obj -> (ColumnNameResolver) obj::getName)
+            .toArray(ColumnNameResolver[]::new);
 
     protected String getValue(String field, T instance) throws IllegalAccessException {
         return getValue(fields.get(field), instance);
