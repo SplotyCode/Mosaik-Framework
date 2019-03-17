@@ -85,6 +85,7 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
         return contentHandlerRegister.combind(application == null ? null : application.getContentHandlerRegister());
     }
 
+    @Override
     public Collection<ParameterResolver> getParameterResolvers() {
         return parameterResolverRegister.combind(application == null ? null : application.getParameterResolveRegister());
     }
