@@ -1,11 +1,10 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation;
 
-import io.github.splotycode.mosaik.annotations.AnnotationHelper;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.collection.CollectionUtil;
-import io.github.splotycode.mosaik.util.reflection.annotation.AnnotationData;
+import io.github.splotycode.mosaik.util.reflection.annotation.data.AnnotationData;
+import io.github.splotycode.mosaik.util.reflection.annotation.data.IMethodData;
 import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
-import io.github.splotycode.mosaik.util.reflection.annotation.parameter.UseResolver;
 import io.github.splotycode.mosaik.webapi.handler.UrlPattern;
 import io.github.splotycode.mosaik.webapi.handler.anotation.check.*;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.Cache;
@@ -16,7 +15,6 @@ import io.github.splotycode.mosaik.webapi.request.RequestHeader;
 import io.github.splotycode.mosaik.webapi.response.HttpCashingConfiguration;
 import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.response.content.ResponseContent;
-import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,47 +24,44 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
 public class AnnotationHandlerData extends AnnotationData {
 
     private UrlPattern mapping = null;
-    private int priority;
-    private String method = null;
+    private String httpMethod = null;
     private boolean costomMethod = false;
     private String host;
     private List<String> neededGet = new ArrayList<>(), neededPost = new ArrayList<>();
     private HashMap<String, String> getMustBe = new HashMap<>(), postMustBe = new HashMap<>();
     private HttpCashingConfiguration cashingConfiguration;
 
-    protected List<ParameterResolver> costomParameterResolvers = new ArrayList<>();
-
     @Override
     public void buildData(Annotation[] annotations) {
-        priority = AnnotationHelper.getPriority(annotations);
+        super.buildData(annotations);
         for (Annotation annotation : annotations) {
             if (annotation instanceof Mapping) {
                 mapping = new UrlPattern(((Mapping) annotation).value());
             } else if (annotation instanceof NeedGetMethod) {
-                setMethod("GET");
+                setHttpMethod("GET");
             } else if (annotation instanceof NeedPostMethod) {
-                setMethod("POST");
+                setHttpMethod("POST");
             } else if (annotation instanceof NeedMethod) {
-                setMethod(((NeedMethod) annotation).method().toUpperCase());
+                setHttpMethod(((NeedMethod) annotation).method().toUpperCase());
                 costomMethod = true;
             } else if (annotation instanceof NeedGetParameter) {
-                setMethod("GET");
+                setHttpMethod("GET");
                 Collections.addAll(neededGet, ((NeedGetParameter) annotation).parameters());
             } else if (annotation instanceof NeedPostParameter) {
-                setMethod("POST");
+                setHttpMethod("POST");
                 Collections.addAll(neededPost, ((NeedPostParameter) annotation).parameters());
             } else if (annotation instanceof GetMustBe) {
-                setMethod("GET");
+                setHttpMethod("GET");
                 GetMustBe mustBeAnnotation = (GetMustBe) annotation;
                 getMustBe.put(mustBeAnnotation.parameter(), mustBeAnnotation.value());
             } else if (annotation instanceof PostMustBe) {
-                setMethod("POST");
+                setHttpMethod("POST");
                 PostMustBe mustBeAnnotation = (PostMustBe) annotation;
                 postMustBe.put(mustBeAnnotation.parameter(), mustBeAnnotation.value());
             } else if (annotation instanceof Host) {
@@ -94,10 +89,10 @@ public class AnnotationHandlerData extends AnnotationData {
         }
     }
 
-    private void setMethod(String method) {
-        if (this.method != null && !method.equals(this.method))
-            throw new IllegalStateException("Can not force two different methods (" + method + " and " + this.method);
-        this.method = method;
+    private void setHttpMethod(String method) {
+        if (this.httpMethod != null && !method.equals(this.httpMethod))
+            throw new IllegalStateException("Can not force two different methods (" + method + " and " + this.httpMethod);
+        this.httpMethod = method;
     }
 
     void applyCashingConfiguration(Response response) {
@@ -118,7 +113,7 @@ public class AnnotationHandlerData extends AnnotationData {
              return false;
         }
         if (mapping != null && !mapping.match(request.getPath()).isMatch()) return false;
-        if (method != null && (costomMethod ? request.getMethod().getMethod().matches(method) : request.getMethod().getMethod().equals(method))) return false;
+        if (httpMethod != null && (costomMethod ? request.getMethod().getMethod().matches(httpMethod) : request.getMethod().getMethod().equals(httpMethod))) return false;
         for (String get : neededGet)
             if (!request.getGet().containsKey(get))
                 return false;
@@ -140,61 +135,32 @@ public class AnnotationHandlerData extends AnnotationData {
     }
 
     @Getter
-    public static class SupAnnotationHandlerData extends AnnotationHandlerData {
+    public static class SupAnnotationHandlerData extends AnnotationHandlerData implements IMethodData {
 
-        private Method targetMethod;
         private List<Pair<ParameterResolver, Parameter>> parameters = new ArrayList<>();
         private boolean returnContext;
-        private String displayName;
+        @Setter private Method method;
 
-        public void postHandle(AbstractWebServer server, AnnotationHandlerData global) {
-            try {
-                Method method = (Method) element;
-                displayName = method.getDeclaringClass().getSimpleName() + "#" + method.getName();
-                this.targetMethod = method;
-                boolean found;
-                for (Parameter parameter : method.getParameters()) {
-                    if (parameter.isAnnotationPresent(UseResolver.class)) {
-                        parameters.add(new Pair<>(parameter.getAnnotation(UseResolver.class).value().newInstance(), parameter));
-                        break;
-                    }
-                    found = false;
-                    for (ParameterResolver parameterResolver : costomParameterResolvers) {
-                        if (parameterResolver.transformable(parameter)) {
-                            parameters.add(new Pair<>(parameterResolver, parameter));
-                            found = true;
-                            break;
-                        }
-                    }
-                    for (ParameterResolver parameterResolver : global.costomParameterResolvers) {
-                        if (parameterResolver.transformable(parameter)) {
-                            parameters.add(new Pair<>(parameterResolver, parameter));
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found) continue;
-                    for (ParameterResolver parameterResolver : server.getParameterResolvers()) {
-                        if (parameterResolver.transformable(parameter)) {
-                            parameters.add(new Pair<>(parameterResolver, parameter));
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) throw new IllegalHandlerException("Could not find transformer for " + parameter.getName() + " in " + displayName);
-                }
-                Class<?> returnType = method.getReturnType();
-                returnContext = ResponseContent.class.isAssignableFrom(returnType);
-                if (!returnContext && returnType != boolean.class &&
-                        returnType != Boolean.class &&
-                        returnType != void.class) {
-                    throw new IllegalHandlerException("Invalid method type of handler " + displayName);
-                }
-            } catch (IllegalHandlerException ex) {
-                loadError = ex;
-            } catch (Throwable ex) {
-                loadError = new IllegalHandlerException("Exception while parsing handler", ex);
+        @Override
+        public void buildData(Annotation[] annotations) {
+            super.buildData(annotations);
+            Class<?> returnType = method.getReturnType();
+            returnContext = ResponseContent.class.isAssignableFrom(returnType);
+            if (!returnContext && returnType != boolean.class &&
+                    returnType != Boolean.class &&
+                    returnType != void.class) {
+                throw new IllegalHandlerException("Invalid httpMethod type of handler " + displayName);
             }
+        }
+
+        @Override
+        public void registerParameter(Parameter parameter, ParameterResolver parameterResolver) {
+            parameters.add(new Pair<>(parameterResolver, parameter));
+        }
+
+        @Override
+        public Collection<Pair<ParameterResolver, Parameter>> getAllPrameters() {
+            return parameters;
         }
     }
 
