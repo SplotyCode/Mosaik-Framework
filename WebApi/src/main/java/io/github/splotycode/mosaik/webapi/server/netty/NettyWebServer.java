@@ -43,6 +43,11 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
         super(application);
     }
 
+
+    public NettyWebServer() {
+        super();
+    }
+
     @Override
     public void listen(int port, boolean ssl) {
         super.listen(port, ssl);

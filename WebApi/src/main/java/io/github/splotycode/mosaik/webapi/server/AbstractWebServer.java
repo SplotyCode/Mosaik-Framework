@@ -4,6 +4,7 @@ import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.LinkedDataFactory;
 import io.github.splotycode.mosaik.util.init.InitialisedOnce;
 import io.github.splotycode.mosaik.util.logger.Logger;
+import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
 import io.github.splotycode.mosaik.webapi.WebApplicationType;
@@ -11,7 +12,6 @@ import io.github.splotycode.mosaik.webapi.handler.HandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.StaticHandlerFinder;
 import io.github.splotycode.mosaik.webapi.handler.anotation.AnnotationHandlerFinder;
-import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContentHandler;
@@ -43,9 +43,20 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     @Setter @Getter protected ErrorHandler errorHandler = new ErrorHandler();
     @Getter private DataFactory config;
 
+    public AbstractWebServer() {
+        this(null);
+    }
+
     public AbstractWebServer(WebApplicationType application) {
         this.application = application;
-        config = new LinkedDataFactory(application.getConfig());
+        if (application == null) {
+            config = new DataFactory();
+            WebApplicationType.setDefaults(config);
+            contentHandlerRegister.registerAll(WebApplicationType.CONTENT_HANDLER_COLLECTOR);
+            parameterResolverRegister.registerAll(WebApplicationType.PARAMETER_RESOLVER_COLLECTOR);
+        } else {
+            config = new LinkedDataFactory(application.getConfig());
+        }
     }
 
     @Getter private List<HttpHandler> allHandlers = new ArrayList<>();
@@ -53,12 +64,12 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     @Getter private AnnotationHandlerFinder annotationHandlerFinder = new AnnotationHandlerFinder(this);
 
     private List<ParameterResolver> parameterResolvers = new ArrayList<>();
-    @Getter private ListClassRegister<ParameterResolver> parameterResolverRegister = new ListClassRegister<>(parameterResolvers);
+    @Getter private ListClassRegister<ParameterResolver> parameterResolverRegister = new ListClassRegister<>(parameterResolvers, ParameterResolver.class);
 
     private List<RequestContentHandler> contentHandlers = new ArrayList<>();
-    @Getter private ListClassRegister<RequestContentHandler> contentHandlerRegister = new ListClassRegister<>(contentHandlers);
+    @Getter private ListClassRegister<RequestContentHandler> contentHandlerRegister = new ListClassRegister<>(contentHandlers, RequestContentHandler.class);
 
-    private ListClassRegister<SessionSystem> sessionSystems = new ListClassRegister<>(new ArrayList<>());
+    private ListClassRegister<SessionSystem> sessionSystems = new ListClassRegister<>(new ArrayList<>(), SessionSystem.class);
 
     @Override
     public IListClassRegister<SessionSystem> getSessionLoader() {
@@ -70,12 +81,12 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
         return sessionSystems.getList();
     }
 
-    public List<RequestContentHandler> getContentHandlers() {
-        return contentHandlerRegister.combind(application.getContentHandlerRegister());
+    public Collection<RequestContentHandler> getContentHandlers() {
+        return contentHandlerRegister.combind(application == null ? null : application.getContentHandlerRegister());
     }
 
-    public List<ParameterResolver> getParameterResolvers() {
-        return parameterResolverRegister.combind(application.getParameterResolveRegister());
+    public Collection<ParameterResolver> getParameterResolvers() {
+        return parameterResolverRegister.combind(application == null ? null : application.getParameterResolveRegister());
     }
 
     public List<ParameterResolver> getLocalParameterResolvers() {
@@ -126,7 +137,7 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     }
 
     public Response handleError(Throwable throwable) {
-        return errorHandler.handleError(throwable, application.getErrorHandler());
+        return errorHandler.handleError(throwable, application == null ? null : application.getErrorHandler());
     }
 
     public void addTotalTime(long time) {

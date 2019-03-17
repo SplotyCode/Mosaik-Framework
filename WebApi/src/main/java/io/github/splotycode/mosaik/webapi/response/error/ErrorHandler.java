@@ -3,8 +3,8 @@ package io.github.splotycode.mosaik.webapi.response.error;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
 import io.github.splotycode.mosaik.webapi.response.Response;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ErrorHandler extends ListClassRegister<ErrorFactory> {
@@ -21,7 +21,7 @@ public class ErrorHandler extends ListClassRegister<ErrorFactory> {
     }
 
     public Response handleError(Throwable throwable, ErrorHandler fallback) {
-        List<ErrorFactory> list = combind(fallback);
+        Collection<ErrorFactory> list = combind(fallback);
         ErrorFactory factory = list.stream().filter(errorFactory -> errorFactory.valid(throwable)).findFirst().orElse(new DefaultErrorFactory());
         return factory.generatePage(throwable);
     }

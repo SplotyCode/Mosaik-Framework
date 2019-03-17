@@ -2,16 +2,17 @@ package io.github.splotycode.mosaik.webapi;
 
 import io.github.splotycode.mosaik.runtime.application.ApplicationType;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
+import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import io.github.splotycode.mosaik.util.reflection.ClassCollector;
+import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
 import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContentHandler;
-import io.github.splotycode.mosaik.webapi.server.WebServer;
-import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.webapi.response.error.ErrorHandler;
+import io.github.splotycode.mosaik.webapi.server.WebServer;
 
 import java.util.ArrayList;
 
@@ -36,10 +37,14 @@ public interface WebApplicationType extends ApplicationType {
                                                     .setNeedAssignable(RequestContentHandler.class)
                                                     .setOnlyClasses(true);
 
+    static void setDefaults(DataFactory dataFactory) {
+        dataFactory.putData(WebConfig.SEARCH_ANNOTATION_HANDLERS, true);
+        dataFactory.putData(WebConfig.SEARCH_HANDLERS, false);
+        dataFactory.putData(WebConfig.FORCE_HTTPS, true);
+    }
+
     default void initType(BootContext context, WebApplicationType dummy) {
-        putConfig(WebConfig.SEARCH_ANNOTATION_HANDLERS, true);
-        putConfig(WebConfig.SEARCH_HANDLERS, false);
-        putConfig(WebConfig.FORCE_HTTPS, true);
+        setDefaults(getConfig());
         getLocalShutdownManager().addShutdownTask(() -> {
             WebServer server = getWebServer();
             if (server != null && server.isRunning())
