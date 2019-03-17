@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @EqualsAndHashCode
-public class DataFactory {
+public class DataFactory implements DataFactoryComponent {
 
     private Map<String, Object> data = new HashMap<>();
 
@@ -86,4 +86,10 @@ public class DataFactory {
     public boolean isEmpty() {
         return getDataSize() == 0;
     }
+
+    @Override
+    public DataFactory getDataFactory() {
+        return this;
+    }
+
 }
