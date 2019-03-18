@@ -193,11 +193,31 @@ public abstract class MultiAnnotationContext<M extends MultiAnnotationContext, D
         }
         Method method = methodData.getMethod();
         method.setAccessible(true);
+
+        callAnnotationHandler(true, data, method);
+
         try {
             return method.invoke(object, parameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new MethodCallExcepetion("Failed to call " + data.getDisplayName(), e);
+        } finally {
+            callAnnotationHandler(false, data, method);
         }
+    }
+
+    private void callAnnotationHandler(boolean pre, D data, Method method) {
+        getAnnotationHandlers().forEach(handler -> {
+            try {
+                Annotation annotation = method.getAnnotation(handler.annotation());
+                if (pre) {
+                    handler.preCall(self(), annotation, data);
+                } else {
+                    handler.postCall(self(), annotation, data);
+                }
+            } catch (Throwable e) {
+                throw new AnnotationHandlerExcpetion("Error in " + handler.getClass().getName() + (pre ? "#preCall" : "#postCall"), e);
+            }
+        });
     }
 
     public static Predicate<Class> buildPredicate(boolean needClass, Collection<AnnotationHandler> handlers, Collection<AnnotationHandler> subHandlers) {
