@@ -1,24 +1,26 @@
 package io.github.splotycode.mosaik.util.reflection.annotation;
 
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
-import io.github.splotycode.mosaik.util.reflection.annotation.data.AnnotationData;
+import io.github.splotycode.mosaik.util.reflection.annotation.data.IAnnotationData;
 import io.github.splotycode.mosaik.util.reflection.annotation.method.AnnotationHandler;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-public interface AnnotationContext<M extends AnnotationContext, D extends AnnotationData, T> {
+public interface AnnotationContext<C extends AnnotationContext, D extends IAnnotationData, T> {
 
     Class getClazz();
     Object getObject();
-    AnnotationData globalData();
+    D data();
 
     void feed(T input);
 
     Object callmethod(D data, DataFactory additionalInfo);
 
-    M self();
+    C self();
 
-    Collection<AnnotationHandler<M, Annotation, D>> getAnnotationHandlers();
+    Collection<AnnotationHandler<C, Annotation, D>> getAnnotationHandlers();
+
+    Class<? extends D> elementClass();
 
 }

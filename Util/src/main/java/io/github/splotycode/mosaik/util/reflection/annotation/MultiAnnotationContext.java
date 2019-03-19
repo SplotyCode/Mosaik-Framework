@@ -1,20 +1,21 @@
 package io.github.splotycode.mosaik.util.reflection.annotation;
 
-import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.condition.ClassConditions;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
-import io.github.splotycode.mosaik.util.reflection.annotation.data.AnnotationData;
+import io.github.splotycode.mosaik.util.reflection.annotation.data.IAnnotationData;
 import io.github.splotycode.mosaik.util.reflection.annotation.data.IMethodData;
-import io.github.splotycode.mosaik.util.reflection.annotation.exception.*;
+import io.github.splotycode.mosaik.util.reflection.annotation.exception.AnnotationLoadError;
+import io.github.splotycode.mosaik.util.reflection.annotation.exception.DataUnavailableException;
+import io.github.splotycode.mosaik.util.reflection.annotation.exception.InvalidAnnotationDataExcpetion;
+import io.github.splotycode.mosaik.util.reflection.annotation.exception.ParameterInitExcepeion;
 import io.github.splotycode.mosaik.util.reflection.annotation.method.AnnotationHandler;
 import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
-import io.github.splotycode.mosaik.util.reflection.annotation.parameter.UseResolver;
 import lombok.Getter;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,54 +23,31 @@ import java.util.function.Predicate;
 
 @Getter
 @SuppressWarnings("WeakerAccess")
-public abstract class MultiAnnotationContext<M extends MultiAnnotationContext, D extends AnnotationData> implements AnnotationContext<M, D, Class> {
+public abstract class MultiAnnotationContext<C extends MultiAnnotationContext, D extends IAnnotationData> extends AbstractAnnotationContext<C, D, Class> {
 
-    public static DataKey<AnnotationData> GLOBAL = new DataKey<>("base.global");
-    public static DataKey<AnnotationData> SUP = new DataKey<>("base.sup");
+    //TODO more specific data keys with genetics
+    public static DataKey<IAnnotationData> GLOBAL = new DataKey<>("base.global");
+    public static DataKey<IAnnotationData> SUP = new DataKey<>("base.sup");
 
-    protected Class clazz;
-    protected Object object;
-    protected D global;
     protected Collection<D> sub = new ArrayList<>();
 
     @Override
     public void feed(Class clazz) {
-         try {
-            object = clazz.newInstance();
-        } catch (ReflectiveOperationException ex) {
-            throw new AnnotationFeedExcpetion("Failed to create " + clazz.getName(), ex);
-        }
+        createObject(clazz);
         feedObject(object);
     }
 
     protected void constructGlobal() {
-        try {
-            global = globalDataClass().newInstance();
-        } catch (Throwable ex) {
-            throw new AnnotationDataExcpetion("failed to construct Global Class Data: " + globalDataClass().getName(), ex);
-        }
+        data = construct(elementClass(), "Global");
     }
 
-    protected void prePairGlobal() {
-        global.setElement(clazz);
-        global.setDisplayName("Global: " + clazz.getName());
+    protected void prepareGlobal() {
+        data.setElement(clazz);
+        data.setDisplayName("Global: " + clazz.getName());
         try {
-            global.buildData(clazz.getAnnotations());
+            data.buildData(clazz.getAnnotations());
         } catch (Throwable ex) {
             throw new InvalidAnnotationDataExcpetion("Failed to build global data for " + clazz.getName(), ex);
-        }
-    }
-
-    protected void initHandlers(D data, AnnotatedElement object) {
-        for (AnnotationHandler<M, Annotation, D> handler : getAnnotationHandlers()) {
-            if (object.isAnnotationPresent(handler.annotation())) {
-                Annotation annotation = object.getAnnotation(handler.annotation());
-                try {
-                    handler.init(self(), annotation, data);
-                } catch (Throwable throwable) {
-                    throw new AnnotationHandlerExcpetion("Error calling init on " + handler.getClass().getName(), throwable);
-                }
-            }
         }
     }
 
@@ -77,147 +55,56 @@ public abstract class MultiAnnotationContext<M extends MultiAnnotationContext, D
         this.clazz = object.getClass();
         constructGlobal();
         try {
-            prePairGlobal();
-            initHandlers(global, clazz);
+            prepareGlobal();
+            initHandlers(data, clazz);
         } catch (Throwable throwable) {
-            global.setLoadError(new AnnotationLoadError("Failed to load global", throwable));
+            data.setLoadError(new AnnotationLoadError("Failed to load global", throwable));
         }
+
         for (Method method : clazz.getMethods()) {
             if (!methodPredicate().test(method)) continue;
-            D data = constructData(method);
-            try {
-                prepairData(data, method);
+            D data = construct(methodDataClass(), "Method");
+            dataError(data, () -> {
+                prepareMethodData(data, method);
                 initHandlers(data, method);
                 initParameters(data, method);
-            } catch (Throwable throwable) {
-                data.setLoadError(throwable);
-            }
-        }
-    }
-
-    protected void initParameters(D data, Method method) {
-        IMethodData methodData;
-        try {
-            methodData = (IMethodData) data;
-        } catch (ClassCastException ex) {
-            throw new ParameterInitExcepeion(data.getClass().getName() + " needs to implement IMethodData");
-        }
-        for (Parameter parameter : method.getParameters()) {
-            try {
-                if (parameter.isAnnotationPresent(UseResolver.class)) {
-                    Class<? extends ParameterResolver> resolverClazz = parameter.getAnnotation(UseResolver.class).value();
-                    ParameterResolver resolver;
-                    try {
-                        resolver = resolverClazz.newInstance();
-                    } catch (ReflectiveOperationException ex) {
-                        throw new ParameterInitExcepeion("Failed to construct " + resolverClazz.getName(), ex);
-                    }
-                    methodData.registerParameter(parameter, resolver);
-                    continue;
-                }
-
-                boolean found = false;
-                for (ParameterResolver parameterResolver : getAllResolvers(data)) {
-                    if (parameterResolver.transformable(parameter)) {
-                        methodData.registerParameter(parameter, parameterResolver);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) throw new ParameterInitExcepeion("Could not find transformer");
-            } catch (Throwable throwable) {
-                throw new ParameterInitExcepeion("Failed to initialize " + parameter.getName() + " of " + data.getDisplayName(), throwable);
-            }
-        }
-    }
-
-    private Collection<ParameterResolver> getAllResolvers(D data) {
-        List<ParameterResolver> allResolvers = new ArrayList<>(data.getCostomParameterResolvers());
-        allResolvers.addAll(global.getCostomParameterResolvers());
-        allResolvers.addAll(additionalParameterResolver());
-        return allResolvers;
-    }
-
-    protected void prepairData(D data, Method method) {
-        if (Modifier.isAbstract(method.getModifiers())) {
-            throw new IllegalStateException("Handler might not be abstract" + method.getDeclaringClass().getSimpleName() + "#" + method.getName());
-        }
-        data.setDisplayName(method.getDeclaringClass().getName() + "#" + method.getName());
-        try {
-            data.buildData(method.getAnnotations());
-        } catch (Throwable ex) {
-            throw new InvalidAnnotationDataExcpetion("Failed to build data for " + method.getName(), ex);
-        }
-    }
-
-    protected D constructData(Method method) {
-        try {
-            D data = methodDataClass().newInstance();
-            sub.add(data);
-            data.setElement(method);
-            ((IMethodData) data).setMethod(method);
-            return data;
-        } catch (ClassCastException ex) {
-            throw new InvalidAnnotationDataExcpetion("Data needs to implements IMethodData", ex);
-        } catch (Throwable ex) {
-            throw new InvalidAnnotationDataExcpetion("Failed to build data for " + method.getName(), ex);
+            });
         }
     }
 
     @Override
-    public Object callmethod(D data, DataFactory additionalInfo) {
-        if (data.getLoadError() != null) {
-            throw new DataUnavailableException("Count not use Handler Method: " + data.getDisplayName() + " because it fails loading on startup", data.getLoadError());
-        }
-        IMethodData methodData;
+    protected Collection<ParameterResolver> getAllResolvers(D data) {
+        List<ParameterResolver> allResolvers = new ArrayList<>(data.getCostomParameterResolvers());
+        allResolvers.addAll(data.getCostomParameterResolvers());
+        allResolvers.addAll(additionalParameterResolver());
+        return allResolvers;
+    }
+
+    @Override
+    public Object callmethod(D mData, DataFactory additionalInfo) {
+        checkError(mData);
+
+        additionalInfo.putData(GLOBAL, data);
+        additionalInfo.putData(SUP, mData);
+
+        return callMethod0(mData, additionalInfo);
+    }
+
+    @Override
+    protected IMethodData toMethodData(D mData) {
         try {
-            methodData = (IMethodData) data;
+            return  (IMethodData) mData;
         } catch (ClassCastException ex) {
-            throw new ParameterInitExcepeion(data.getClass().getName() + " needs to implement IMethodData");
-        }
-        Object[] parameters = new Object[methodData.getAllPrameters().size()];
-        try {
-            int i = 0;
-            for (Pair<ParameterResolver, Parameter> pair : methodData.getAllPrameters()) {
-                try {
-                    additionalInfo.putData(GLOBAL, global);
-                    additionalInfo.putData(SUP, data);
-                    parameters[i] = pair.getOne().transform(pair.getTwo(), additionalInfo);
-                } catch (ParameterResolveException ex) {
-                    throw new ParameterTransformExcpetion("Failed to transform parameter", ex);
-                }
-                i++;
-            }
-        } catch (Throwable ex) {
-            throw new MethodPrepareExcepetion("Could not prepare parameters for Method: " + methodData.getMethod().getName(), ex);
-        }
-        Method method = methodData.getMethod();
-        method.setAccessible(true);
-
-        callAnnotationHandler(true, data, method);
-
-        try {
-            return method.invoke(object, parameters);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new MethodCallExcepetion("Failed to call " + data.getDisplayName(), e);
-        } finally {
-            callAnnotationHandler(false, data, method);
+            throw new ParameterInitExcepeion(mData.getClass().getName() + " needs to implement IMethodData");
         }
     }
 
-    private void callAnnotationHandler(boolean pre, D data, Method method) {
-        getAnnotationHandlers().forEach(handler -> {
-            try {
-                Annotation annotation = method.getAnnotation(handler.annotation());
-                if (pre) {
-                    handler.preCall(self(), annotation, data);
-                } else {
-                    handler.postCall(self(), annotation, data);
-                }
-            } catch (Throwable e) {
-                throw new AnnotationHandlerExcpetion("Error in " + handler.getClass().getName() + (pre ? "#preCall" : "#postCall"), e);
-            }
-        });
+    @Override
+    protected void checkError(D currentData) {
+        if (data.getLoadError() != null) {
+            throw new DataUnavailableException("Count not use Handler Method: " + currentData.getDisplayName() + " because global fails loading on startup", data.getLoadError());
+        }
+        super.checkError(currentData);
     }
 
     public static Predicate<Class> buildPredicate(boolean needClass, Collection<AnnotationHandler> handlers, Collection<AnnotationHandler> subHandlers) {
@@ -237,13 +124,6 @@ public abstract class MultiAnnotationContext<M extends MultiAnnotationContext, D
         return Conditions.or(classPredicate, methodPredicate);
     }
 
-    @Override
-    public AnnotationData globalData() {
-        return global;
-    }
-
-    protected abstract Collection<ParameterResolver> additionalParameterResolver();
-    protected abstract Class<? extends D> globalDataClass();
     protected abstract Predicate<? super AnnotatedElement> methodPredicate();
     protected abstract Class<? extends D> methodDataClass();
 

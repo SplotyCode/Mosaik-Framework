@@ -1,11 +1,11 @@
 package io.github.splotycode.mosaik.util.reflection.annotation.method;
 
 import io.github.splotycode.mosaik.util.reflection.annotation.AnnotationContext;
-import io.github.splotycode.mosaik.util.reflection.annotation.data.AnnotationData;
+import io.github.splotycode.mosaik.util.reflection.annotation.data.IAnnotationData;
 
 import java.lang.annotation.Annotation;
 
-public interface AnnotationHandler<M extends AnnotationContext, A extends Annotation, D extends AnnotationData> {
+public interface AnnotationHandler<M extends AnnotationContext, A extends Annotation, D extends IAnnotationData> {
 
     Class<? extends A> annotation();
 

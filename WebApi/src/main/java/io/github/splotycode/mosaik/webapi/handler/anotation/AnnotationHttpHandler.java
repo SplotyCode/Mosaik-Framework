@@ -48,15 +48,15 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
 
     @Override
     public boolean valid(Request request) {
-        return global.valid(request) && sub.stream().anyMatch(sub -> sub.valid(request));
+        return data.valid(request) && sub.stream().anyMatch(sub -> sub.valid(request));
     }
 
     @Override
     public boolean handle(Request request) throws HandleRequestException {
-        if (global.getLoadError() != null) {
-            throw new HandleRequestException("Trying to work with crashed Handler: " + clazz.getSimpleName(), global.getLoadError());
+        if (data.getLoadError() != null) {
+            throw new HandleRequestException("Trying to work with crashed Handler: " + clazz.getSimpleName(), data.getLoadError());
         }
-        global.applyCashingConfiguration(request.getResponse());
+        data.applyCashingConfiguration(request.getResponse());
 
         for (AnnotationHandlerData data : sub.stream().filter(sub -> sub.valid(request)).sorted(Comparator.comparingInt(AnnotationHandlerData::getPriority)).collect(Collectors.toList())) {
             AnnotationHandlerData.SupAnnotationHandlerData sup = (AnnotationHandlerData.SupAnnotationHandlerData) data;
@@ -65,7 +65,7 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
             try {
                 DataFactory info = new DataFactory();
                 info.putData(REQUEST, request);
-                info.putData(GLOBAL, global);
+                info.putData(GLOBAL, data);
                 info.putData(SUP, sup);
 
                 Object result = callmethod(sup, info);
@@ -84,7 +84,7 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
 
     @Override
     public int priority() {
-        return global.getPriority();
+        return data.getPriority();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
     }
 
     @Override
-    protected Class<? extends AnnotationHandlerData> globalDataClass() {
+    public Class<? extends AnnotationHandlerData> elementClass() {
         return AnnotationHandlerData.class;
     }
 

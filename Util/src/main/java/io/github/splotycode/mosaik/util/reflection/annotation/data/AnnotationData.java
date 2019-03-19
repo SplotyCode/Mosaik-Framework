@@ -22,6 +22,7 @@ public class AnnotationData implements IAnnotationData {
 
     @Getter protected List<ParameterResolver> costomParameterResolvers = new ArrayList<>();
 
+    @Override
     public void buildData(Annotation[] annotations) {
         priority = AnnotationHelper.getPriority(annotations);
     }
