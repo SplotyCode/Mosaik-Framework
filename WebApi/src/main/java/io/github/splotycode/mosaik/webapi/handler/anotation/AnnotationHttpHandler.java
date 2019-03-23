@@ -1,11 +1,13 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation;
 
+import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.util.condition.ClassConditions;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import io.github.splotycode.mosaik.util.reflection.annotation.MultiAnnotationContext;
 import io.github.splotycode.mosaik.util.reflection.annotation.method.AnnotationHandler;
 import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
@@ -105,6 +107,11 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
     @Override
     protected Class<? extends AnnotationHandlerData.SupAnnotationHandlerData> methodDataClass() {
         return AnnotationHandlerData.SupAnnotationHandlerData.class;
+    }
+
+    @Override
+    public Object rawTransform(String input, Class<?> clazz, Collection<ValueTransformer> transformers) {
+        return TransformerManager.getInstance().transform(input, clazz, transformers);
     }
 
     @Override
