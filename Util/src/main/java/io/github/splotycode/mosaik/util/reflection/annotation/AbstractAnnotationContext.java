@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.util.reflection.annotation;
 
 import io.github.splotycode.mosaik.util.Pair;
+import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.reflection.annotation.data.IAnnotationData;
 import io.github.splotycode.mosaik.util.reflection.annotation.data.IMethodData;
@@ -8,11 +9,15 @@ import io.github.splotycode.mosaik.util.reflection.annotation.exception.*;
 import io.github.splotycode.mosaik.util.reflection.annotation.method.AnnotationHandler;
 import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.util.reflection.annotation.parameter.UseResolver;
+import io.github.splotycode.mosaik.util.reflection.annotation.parameter.UseTransformer;
 import lombok.Getter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Getter
 public abstract class AbstractAnnotationContext<C extends AnnotationContext, D extends IAnnotationData, T extends AnnotatedElement> implements AnnotationContext<C, D, T> {
@@ -21,7 +26,43 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
     protected Object object;
     protected D data;
 
-    protected abstract Collection<ParameterResolver> getAllResolvers(D data);
+    @Override
+    public Object parameterValue(D data, Parameter parameter, String input) {
+        if (parameter.isAnnotationPresent(UseTransformer.class)) {
+            try {
+                ValueTransformer transformer = parameter.getAnnotation(UseTransformer.class).value().newInstance();
+                if (transformer.valid(input, parameter.getType())) {
+                    return transformer.transform(input);
+                }
+            } catch (IllegalAccessException | InstantiationException ex) {
+                throw new ParameterResolveException("Failed to create instance", ex);
+            } catch (Throwable throwable) {
+                throw new ParameterResolveException("Failed to Transform Value", throwable);
+            }
+        }
+        try {
+            return rawTransform(input, parameter.getType(), getAllTransformers(data));
+        } catch (Throwable throwable) {
+            throw new ParameterResolveException("Failed to transform Parameter " + parameter.getName(), throwable);
+        }
+    }
+
+    protected Collection<ParameterResolver> getAllResolvers(D data) {
+        List<ParameterResolver> allResolvers = new ArrayList<>(data.getCostomParameterResolvers());
+        allResolvers.addAll(additionalParameterResolver());
+        return allResolvers;
+    }
+
+    protected Collection<ValueTransformer> additionalTransformers() {
+        return Collections.emptyList();
+    }
+
+    protected Collection<ValueTransformer> getAllTransformers(D data) {
+        List<ValueTransformer> allResolvers = new ArrayList<>(data.getCostomTransformers());
+        allResolvers.addAll(additionalTransformers());
+        return allResolvers;
+    }
+
     protected abstract Collection<ParameterResolver> additionalParameterResolver();
 
     protected void callAnnotationHandler(boolean pre, D data, Method method) {
@@ -62,7 +103,7 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
 
                 boolean found = false;
                 for (ParameterResolver parameterResolver : getAllResolvers(data)) {
-                    if (parameterResolver.transformable(parameter)) {
+                    if (parameterResolver.transformable(self(), parameter)) {
                         methodData.registerParameter(parameter, parameterResolver);
                         found = true;
                         break;
@@ -141,7 +182,7 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
             int i = 0;
             for (Pair<ParameterResolver, Parameter> pair : mData.getAllPrameters()) {
                 try {
-                    parameters[i] = pair.getOne().transform(pair.getTwo(), additionalInfo);
+                    parameters[i] = pair.getOne().transform(self(), pair.getTwo(), additionalInfo);
                 } catch (ParameterResolveException ex) {
                     throw new ParameterTransformExcpetion("Failed to transform parameter", ex);
                 }

@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.reflection.annotation;
 
+import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.util.condition.ClassConditions;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
@@ -74,10 +75,18 @@ public abstract class MultiAnnotationContext<C extends MultiAnnotationContext, D
 
     @Override
     protected Collection<ParameterResolver> getAllResolvers(D data) {
-        List<ParameterResolver> allResolvers = new ArrayList<>(data.getCostomParameterResolvers());
+        List<ParameterResolver> allResolvers = new ArrayList<>(this.data.getCostomParameterResolvers());
         allResolvers.addAll(data.getCostomParameterResolvers());
         allResolvers.addAll(additionalParameterResolver());
         return allResolvers;
+    }
+
+    @Override
+    protected Collection<ValueTransformer> getAllTransformers(D data) {
+        List<ValueTransformer> allTransformers = new ArrayList<>(this.data.getCostomTransformers());
+        allTransformers.addAll(data.getCostomTransformers());
+        allTransformers.addAll(additionalTransformers());
+        return allTransformers;
     }
 
     @Override

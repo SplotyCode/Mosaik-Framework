@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.util.reflection.annotation.data;
 
 import io.github.splotycode.mosaik.annotations.AnnotationHelper;
+import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class AnnotationData implements IAnnotationData {
 
 
     @Getter protected List<ParameterResolver> costomParameterResolvers = new ArrayList<>();
+    @Getter protected List<ValueTransformer> costomTransformers = new ArrayList<>();
 
     @Override
     public void buildData(Annotation[] annotations) {

@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.reflection.annotation.data;
 
+import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
 
 import java.lang.annotation.Annotation;
@@ -22,5 +23,7 @@ public interface IAnnotationData {
     void setDisplayName(String name);
 
     List<ParameterResolver> getCostomParameterResolvers();
+
+    List<ValueTransformer> getCostomTransformers();
 
 }
