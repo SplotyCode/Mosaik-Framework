@@ -5,8 +5,8 @@ import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyNode;
 import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.ValueNode;
 import io.github.splotycode.mosaik.domparsing.parsing.DomParseException;
 import io.github.splotycode.mosaik.domparsing.parsing.DomReader;
-import io.github.splotycode.mosaik.domparsing.dom.Node;
 import io.github.splotycode.mosaik.util.StringUtil;
+import io.github.splotycode.mosaik.util.node.NameableNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class KeyReader implements DomReader<KeyValueParser> {
                 break;
             case VALUE:
                 if (whiteSpace) {
-                    List<Node> nodes = new ArrayList<>();
+                    List<NameableNode> nodes = new ArrayList<>();
                     KeyNode key = new KeyNode(name, nodes);
                     nodes.add(new ValueNode(key, value));
 

@@ -1,4 +1,7 @@
 package io.github.splotycode.mosaik.domparsing.dom;
 
-public interface TextNode extends Node {
+import io.github.splotycode.mosaik.util.node.NameableNode;
+
+public interface TextNode extends NameableNode {
+
 }

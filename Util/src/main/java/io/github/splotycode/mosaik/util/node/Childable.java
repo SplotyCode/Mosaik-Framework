@@ -3,9 +3,13 @@ package io.github.splotycode.mosaik.util.node;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public interface Childable<I extends Childable<I>> {
+public interface Childable<I> {
 
     Collection<I> getChildes();
+
+    default void addChild(I child) {
+        getChildes().add(child);
+    }
 
     default Collection<I> getAllChilds() {
         Collection<I> childes = new ArrayList<>();
@@ -17,8 +21,12 @@ public interface Childable<I extends Childable<I>> {
 
     default void getAllChildes0(Collection<I> list, I next) {
         list.add(next);
-        for (I child : next.getChildes()) {
-            getAllChildes0(list, child);
+        if (next instanceof Childable) {
+            for (Object child : ((Childable) next).getChildes()) {
+                try {
+                    getAllChildes0(list, (I) child);
+                } catch (ClassCastException ignore) {}
+            }
         }
     }
 

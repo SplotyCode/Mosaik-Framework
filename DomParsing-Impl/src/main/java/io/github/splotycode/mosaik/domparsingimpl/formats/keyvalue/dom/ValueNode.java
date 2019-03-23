@@ -1,17 +1,12 @@
 package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom;
 
 import io.github.splotycode.mosaik.domparsing.dom.TextNode;
-import io.github.splotycode.mosaik.domparsing.dom.attribute.Attribute;
-import io.github.splotycode.mosaik.domparsing.dom.Node;
-import io.github.splotycode.mosaik.util.exception.MethodNotSupportedExcpetion;
+import io.github.splotycode.mosaik.util.node.Parentable;
+import lombok.Getter;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+public class ValueNode implements TextNode, Parentable<KeyNode> {
 
-public class ValueNode implements TextNode {
-
-    private KeyNode parent;
+    @Getter private KeyNode parent;
     private String value;
 
     public ValueNode(KeyNode parent, String value) {
@@ -24,23 +19,4 @@ public class ValueNode implements TextNode {
         return value;
     }
 
-    @Override
-    public Map<String, Attribute> attributes() {
-        return Collections.EMPTY_MAP;
-    }
-
-    @Override
-    public Node parent() {
-        return parent;
-    }
-
-    @Override
-    public Collection<Node> childs() {
-        return Collections.EMPTY_SET;
-    }
-
-    @Override
-    public void addChild(Node node) {
-        throw new MethodNotSupportedExcpetion();
-    }
 }

@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.util;
+package io.github.splotycode.mosaik.util.commoni;
 
 /**
  * This interface Represents an Object that can be destroyed
