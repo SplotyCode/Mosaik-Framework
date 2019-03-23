@@ -1,12 +1,12 @@
-package io.github.splotycode.mosaik.netty.encoder;
+package io.github.splotycode.mosaik.netty.packet.encoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.AllArgsConstructor;
-import io.github.splotycode.mosaik.netty.packets.BufPacket;
-import io.github.splotycode.mosaik.netty.PacketRegistry;
+import io.github.splotycode.mosaik.netty.packet.packets.BufPacket;
+import io.github.splotycode.mosaik.netty.packet.PacketRegistry;
 
 @AllArgsConstructor
 public class BufPacketEncoder extends MessageToByteEncoder<BufPacket> {

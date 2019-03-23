@@ -1,11 +1,11 @@
-package io.github.splotycode.mosaik.netty;
+package io.github.splotycode.mosaik.netty.packet;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.codec.DecoderException;
 import io.netty.util.ByteProcessor;
 import io.netty.util.CharsetUtil;
-import io.github.splotycode.mosaik.netty.packets.SerializePacket;
+import io.github.splotycode.mosaik.netty.packet.packets.SerializePacket;
 
 import java.io.IOException;
 import java.io.InputStream;

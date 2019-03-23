@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.netty.packets;
+package io.github.splotycode.mosaik.netty.packet.packets;
 
 import java.io.IOException;
 

@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.netty.server;
 
-import io.github.splotycode.mosaik.netty.packets.Packet;
+import io.github.splotycode.mosaik.netty.packet.packets.Packet;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
@@ -10,8 +10,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.Getter;
 import lombok.Setter;
-import io.github.splotycode.mosaik.netty.packets.SerializePacket;
-import io.github.splotycode.mosaik.netty.PacketRegistry;
+import io.github.splotycode.mosaik.netty.packet.packets.SerializePacket;
+import io.github.splotycode.mosaik.netty.packet.PacketRegistry;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;

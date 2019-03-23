@@ -1,12 +1,12 @@
-package io.github.splotycode.mosaik.netty.decoder;
+package io.github.splotycode.mosaik.netty.packet.decoder;
 
+import io.github.splotycode.mosaik.netty.packet.packets.BufPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import lombok.AllArgsConstructor;
-import io.github.splotycode.mosaik.netty.PacketRegistry;
-import io.github.splotycode.mosaik.netty.packets.BufPacket;
+import io.github.splotycode.mosaik.netty.packet.PacketRegistry;
 
 import java.util.List;
 

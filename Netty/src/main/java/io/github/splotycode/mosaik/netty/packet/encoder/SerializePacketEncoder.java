@@ -1,12 +1,12 @@
-package io.github.splotycode.mosaik.netty.encoder;
+package io.github.splotycode.mosaik.netty.packet.encoder;
 
-import io.github.splotycode.mosaik.netty.PacketSerializer;
+import io.github.splotycode.mosaik.netty.packet.PacketSerializer;
+import io.github.splotycode.mosaik.netty.packet.packets.SerializePacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.AllArgsConstructor;
-import io.github.splotycode.mosaik.netty.PacketRegistry;
-import io.github.splotycode.mosaik.netty.packets.SerializePacket;
+import io.github.splotycode.mosaik.netty.packet.PacketRegistry;
 
 @AllArgsConstructor
 public class SerializePacketEncoder extends MessageToByteEncoder<SerializePacket> {

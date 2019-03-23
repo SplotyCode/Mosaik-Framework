@@ -11,8 +11,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.Getter;
 import lombok.Setter;
 import io.github.splotycode.mosaik.util.logger.Logger;
-import io.github.splotycode.mosaik.netty.packets.SerializePacket;
-import io.github.splotycode.mosaik.netty.PacketRegistry;
+import io.github.splotycode.mosaik.netty.packet.packets.SerializePacket;
+import io.github.splotycode.mosaik.netty.packet.PacketRegistry;
 
 import java.net.SocketAddress;
 import java.util.function.Consumer;

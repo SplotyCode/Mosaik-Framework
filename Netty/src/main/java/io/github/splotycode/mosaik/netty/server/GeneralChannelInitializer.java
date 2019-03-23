@@ -5,10 +5,10 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
-import io.github.splotycode.mosaik.netty.encoder.SerializePacketEncoder;
-import io.github.splotycode.mosaik.netty.packets.SerializePacket;
-import io.github.splotycode.mosaik.netty.PacketRegistry;
-import io.github.splotycode.mosaik.netty.decoder.SerializePacketDecoder;
+import io.github.splotycode.mosaik.netty.packet.encoder.SerializePacketEncoder;
+import io.github.splotycode.mosaik.netty.packet.packets.SerializePacket;
+import io.github.splotycode.mosaik.netty.packet.PacketRegistry;
+import io.github.splotycode.mosaik.netty.packet.decoder.SerializePacketDecoder;
 
 import java.util.function.Consumer;
 

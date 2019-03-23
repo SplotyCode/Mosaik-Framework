@@ -1,6 +1,6 @@
-package io.github.splotycode.mosaik.netty;
+package io.github.splotycode.mosaik.netty.packet;
 
-import io.github.splotycode.mosaik.netty.packets.Packet;
+import io.github.splotycode.mosaik.netty.packet.packets.Packet;
 
 import java.util.HashMap;
 import java.util.Map;
