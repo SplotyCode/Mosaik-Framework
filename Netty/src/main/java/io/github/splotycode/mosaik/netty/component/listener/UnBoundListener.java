@@ -1,12 +1,11 @@
 package io.github.splotycode.mosaik.netty.component.listener;
 
+import io.github.splotycode.mosaik.netty.component.NetworkComponent;
 import io.github.splotycode.mosaik.util.listener.Listener;
-
-import java.util.concurrent.Future;
+import io.netty.channel.ChannelFuture;
 
 public interface UnBoundListener extends Listener {
 
-
-    void unBound(Future channel);
+    void unBound(NetworkComponent component, ChannelFuture future);
 
 }
