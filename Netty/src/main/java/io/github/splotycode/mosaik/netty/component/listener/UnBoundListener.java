@@ -4,7 +4,7 @@ import io.github.splotycode.mosaik.util.listener.Listener;
 
 import java.util.concurrent.Future;
 
-public interface UnBoundHandler extends Listener {
+public interface UnBoundListener extends Listener {
 
 
     void unBound(Future channel);

@@ -17,17 +17,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 
 public enum ChannelSystem {
 
-    EPOLL(EpollSocketChannel.class, EpollServerSocketChannel.class) {
-        @Override
-        public EventLoopGroup newLoopGroup() {
-            return new EpollEventLoopGroup();
-        }
-
-        @Override
-        public boolean isAvailable() {
-            return Epoll.isAvailable();
-        }
-    },
     NIO(NioSocketChannel.class, NioServerSocketChannel.class) {
         @Override
         public EventLoopGroup newLoopGroup() {
@@ -35,14 +24,40 @@ public enum ChannelSystem {
         }
 
         @Override
+        public EventLoopGroup newLoopGroup(int nThreads) {
+            return new NioEventLoopGroup(nThreads);
+        }
+
+        @Override
         public boolean isAvailable() {
             return true;
+        }
+    },
+    EPOLL(EpollSocketChannel.class, EpollServerSocketChannel.class) {
+        @Override
+        public EventLoopGroup newLoopGroup() {
+            return new EpollEventLoopGroup();
+        }
+
+        @Override
+        public EventLoopGroup newLoopGroup(int nThreads) {
+            return new EpollEventLoopGroup(nThreads);
+        }
+
+        @Override
+        public boolean isAvailable() {
+            return Epoll.isAvailable();
         }
     },
     K_QUEUNE(KQueueSocketChannel.class, KQueueServerSocketChannel.class) {
         @Override
         public EventLoopGroup newLoopGroup() {
             return new KQueueEventLoopGroup();
+        }
+
+        @Override
+        public EventLoopGroup newLoopGroup(int nThreads) {
+            return new KQueueEventLoopGroup(nThreads);
         }
 
         @Override
@@ -60,6 +75,8 @@ public enum ChannelSystem {
     }
 
     public abstract EventLoopGroup newLoopGroup();
+    public abstract EventLoopGroup newLoopGroup(int nThreads);
+
     public abstract boolean isAvailable();
 
     public Class<? extends Channel> getChannelClass() {
