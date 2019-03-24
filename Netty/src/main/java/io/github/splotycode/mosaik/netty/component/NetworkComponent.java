@@ -4,6 +4,7 @@ import io.github.splotycode.mosaik.netty.component.listener.BindListener;
 import io.github.splotycode.mosaik.netty.component.listener.BoundListener;
 import io.github.splotycode.mosaik.netty.component.listener.ChannelListener;
 import io.github.splotycode.mosaik.netty.component.listener.UnBoundListener;
+import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
 import io.netty.bootstrap.AbstractBootstrap;
@@ -32,6 +33,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     protected Supplier<Integer> port;
     protected String host;
     protected SocketAddress address;
+    protected int usedPort = -1;
 
     protected int nThreads = -1;
 
@@ -53,12 +55,12 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
 
     protected MultipleListenerHandler handler = new MultipleListenerHandler();
 
-    protected ChannelFuture channel;
+    protected ChannelFuture channelFuture;
     protected AtomicBoolean running = new AtomicBoolean(false);
     protected ReentrantLock bindLock = new ReentrantLock();
 
     protected Map<ChannelOption, Object> channelOptions;
-    protected ChannelHandler costomHandler;
+    protected HashMap<Class, Pair<String, ChannelHandler>> costomHandlers = new HashMap<>();
 
     protected void prepareValues() {
         if (channelSystem == null) {
@@ -83,13 +85,13 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
             if (port == null) {
                 throw new NullPointerException("port");
             }
-            int rawPort = port.get();
-            if (rawPort < 0) throw new IllegalArgumentException("Negative Port");
+            usedPort = port.get();
+            if (usedPort < 0) throw new IllegalArgumentException("Negative Port");
 
             if (StringUtil.isEmpty(host)) {
-                address = new InetSocketAddress(rawPort);
+                address = new InetSocketAddress(usedPort);
             } else {
-                address = new InetSocketAddress(host, rawPort);
+                address = new InetSocketAddress(host, usedPort);
             }
         }
 
@@ -110,6 +112,10 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     public S bootstrap(B bootstrap) {
         this.bootstrap = bootstrap;
         return self();
+    }
+
+    public int port() {
+        return usedPort;
     }
 
     public S noSSL() {
@@ -218,9 +224,21 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
-    public S handler(ChannelHandler handler) {
-        costomHandler = handler;
+    public S handler(String name, ChannelHandler handler) {
+        costomHandlers.put(handler.getClass(), new Pair<>(name, handler));
         return self();
+    }
+
+    public <H extends ChannelHandler> H getHandler(Class<H> clazz) {
+        Pair<String, ChannelHandler> handler = costomHandlers.get(clazz);
+        if (handler == null) return null;
+        return (H) handler.getTwo();
+    }
+
+    public String getHandlerName(Class<? extends ChannelHandler> clazz) {
+        Pair<String, ChannelHandler> handler = costomHandlers.get(clazz);
+        if (handler == null) return null;
+        return handler.getOne();
     }
 
     public <O> S option(ChannelOption<O> option, O value) {
@@ -240,7 +258,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
 
     public void block() throws InterruptedException {
         try {
-            channel.channel().closeFuture().sync();
+            channelFuture.channel().closeFuture().sync();
         } finally {
             shutdown();
         }
@@ -256,7 +274,11 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return null;
     }
 
-    public final S bind() throws InterruptedException {
+    public final S bind() {
+        return bind(true);
+    }
+
+    public final S bind(boolean blockOpen) {
         try {
             if (!bindLock.tryLock()) throw new IllegalStateException("Server already binding");
             if (running.get()) throw new IllegalStateException("Server is already running");
@@ -275,17 +297,17 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
 
             handler.call(BindListener.class, (Consumer<BindListener>) h -> h.bind(bootstrap));
 
-            channel = doBind();
+            channelFuture = doBind();
 
             running.set(true);
 
-            channel.channel().closeFuture().addListener(future -> {
+            channelFuture.channel().closeFuture().addListener((ChannelFuture future)  -> {
                 running.set(false);
-                handler.call(UnBoundListener.class, (Consumer<UnBoundListener>) h -> h.unBound(future));
+                handler.call(UnBoundListener.class, (Consumer<UnBoundListener>) h -> h.unBound(this, future));
             });
 
-            channel.sync();
-            handler.call(BoundListener.class, (Consumer<BoundListener>) h -> h.bound(channel));
+            channelFuture.addListener(future -> handler.call(BoundListener.class, (Consumer<BoundListener>) h -> h.bound(channelFuture)));
+            channelFuture.syncUninterruptibly();
             return self();
         } finally {
             shutdown();
@@ -312,8 +334,8 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
                     pipeline.addLast(new LoggingHandler(logCategory, logLevel));
                 }
                 doHandlers(pipeline);
-                if (costomHandler != null) {
-                    pipeline.addLast("costom", costomHandler);
+                for (Map.Entry<Class, Pair<String, ChannelHandler>> handler : costomHandlers.entrySet()) {
+                    pipeline.addLast(handler.getValue().getOne(), handler.getValue().getTwo());
                 }
             }
         });
@@ -324,7 +346,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     }
 
     public S bindAndBlock() throws InterruptedException {
-        bind();
+        bind(true);
         block();
         return self();
     }
