@@ -1,10 +1,10 @@
 package io.github.splotycode.mosaik.netty.component.listener;
 
 import io.github.splotycode.mosaik.util.listener.Listener;
-import io.netty.bootstrap.ServerBootstrap;
+import io.netty.bootstrap.AbstractBootstrap;
 
-public interface BindListener extends Listener {
+public interface BindListener<B extends AbstractBootstrap> extends Listener {
 
-    void bind(ServerBootstrap bootstrap);
+    void bind(B bootstrap);
 
 }

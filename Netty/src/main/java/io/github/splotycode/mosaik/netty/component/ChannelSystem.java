@@ -3,21 +3,18 @@ package io.github.splotycode.mosaik.netty.component;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.ServerChannel;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.epoll.EpollSocketChannel;
-import io.netty.channel.kqueue.KQueue;
-import io.netty.channel.kqueue.KQueueEventLoopGroup;
-import io.netty.channel.kqueue.KQueueServerSocketChannel;
-import io.netty.channel.kqueue.KQueueSocketChannel;
+import io.netty.channel.epoll.*;
+import io.netty.channel.kqueue.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.DatagramChannel;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.Getter;
 
 public enum ChannelSystem {
 
-    NIO(NioSocketChannel.class, NioServerSocketChannel.class) {
+    NIO(NioSocketChannel.class, NioServerSocketChannel.class, NioDatagramChannel.class) {
         @Override
         public EventLoopGroup newLoopGroup() {
             return new NioEventLoopGroup();
@@ -33,7 +30,7 @@ public enum ChannelSystem {
             return true;
         }
     },
-    EPOLL(EpollSocketChannel.class, EpollServerSocketChannel.class) {
+    EPOLL(EpollSocketChannel.class, EpollServerSocketChannel.class, EpollDatagramChannel.class) {
         @Override
         public EventLoopGroup newLoopGroup() {
             return new EpollEventLoopGroup();
@@ -49,7 +46,7 @@ public enum ChannelSystem {
             return Epoll.isAvailable();
         }
     },
-    K_QUEUNE(KQueueSocketChannel.class, KQueueServerSocketChannel.class) {
+    K_QUEUNE(KQueueSocketChannel.class, KQueueServerSocketChannel.class, KQueueDatagramChannel.class) {
         @Override
         public EventLoopGroup newLoopGroup() {
             return new KQueueEventLoopGroup();
@@ -66,26 +63,20 @@ public enum ChannelSystem {
         }
     };
 
-    private Class<? extends Channel> channelClass;
-    private Class<? extends ServerChannel> serverChannelClass;
+    @Getter private Class<? extends Channel> channelClass;
+    @Getter private Class<? extends ServerChannel> serverChannelClass;
+    @Getter private Class<? extends DatagramChannel> datagramChannelClass;
 
-    ChannelSystem(Class<? extends Channel> channelClass, Class<? extends ServerChannel> serverChannelClass) {
+    ChannelSystem(Class<? extends Channel> channelClass, Class<? extends ServerChannel> serverChannelClass, Class<? extends DatagramChannel> datagramChannelClass) {
         this.channelClass = channelClass;
         this.serverChannelClass = serverChannelClass;
+        this.datagramChannelClass = datagramChannelClass;
     }
 
     public abstract EventLoopGroup newLoopGroup();
     public abstract EventLoopGroup newLoopGroup(int nThreads);
 
     public abstract boolean isAvailable();
-
-    public Class<? extends Channel> getChannelClass() {
-        return channelClass;
-    }
-
-    public Class<? extends ServerChannel> getServerChannelClass() {
-        return serverChannelClass;
-    }
 
     private static ChannelSystem optimal;
 
