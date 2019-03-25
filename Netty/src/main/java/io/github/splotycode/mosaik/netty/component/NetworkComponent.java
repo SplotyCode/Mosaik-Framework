@@ -2,11 +2,12 @@ package io.github.splotycode.mosaik.netty.component;
 
 import io.github.splotycode.mosaik.netty.component.listener.BindListener;
 import io.github.splotycode.mosaik.netty.component.listener.BoundListener;
-import io.github.splotycode.mosaik.netty.component.listener.ChannelListener;
+import io.github.splotycode.mosaik.netty.component.listener.StatusListener;
 import io.github.splotycode.mosaik.netty.component.listener.UnBoundListener;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
+import io.github.splotycode.mosaik.util.logger.Logger;
 import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
@@ -22,6 +23,7 @@ import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -29,6 +31,8 @@ import java.util.function.Supplier;
 @SuppressWarnings({"unused", "WeakerAccess"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends Channel>, C extends Channel, S extends NetworkComponent<B, C, S>> {
+
+    protected Logger logger = Logger.getInstance(getClass());
 
     protected Supplier<Integer> port;
     protected String host;
@@ -57,10 +61,16 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
 
     protected ChannelFuture channelFuture;
     protected AtomicBoolean running = new AtomicBoolean(false);
-    protected ReentrantLock bindLock = new ReentrantLock();
+    protected AtomicBoolean ranOnce = new AtomicBoolean(false);
+
+    protected Lock bindLock = new ReentrantLock();
 
     protected Map<ChannelOption, Object> channelOptions;
     protected HashMap<Class, Pair<String, ChannelHandler>> costomHandlers = new HashMap<>();
+
+    protected void newLoop() {
+        loopGroup = nThreads == -1 ? channelSystem.newLoopGroup() : channelSystem.newLoopGroup(nThreads);
+    }
 
     protected void prepareValues() {
         if (channelSystem == null) {
@@ -68,7 +78,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         }
 
         if (loopGroup == null) {
-            loopGroup = nThreads == -1 ? channelSystem.newLoopGroup() : channelSystem.newLoopGroup(nThreads);
+            newLoop();
         }
 
         if (sslMode == null) {
@@ -105,13 +115,16 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         }
     }
 
-    protected S self() {
-        return (S) this;
+    public EventLoopGroup loopGroup() {
+        return loopGroup;
     }
 
-    public S bootstrap(B bootstrap) {
-        this.bootstrap = bootstrap;
-        return self();
+    public ChannelFuture nettyFuture() {
+        return channelFuture;
+    }
+
+    protected S self() {
+        return (S) this;
     }
 
     public int port() {
@@ -219,7 +232,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
-    public S onChannelStatus(ChannelListener listener) {
+    public S onChannelStatus(StatusListener listener) {
         handler.addListener(listener);
         return self();
     }
@@ -275,13 +288,21 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     }
 
     public final S bind() {
-        return bind(true);
+        return bind(false);
     }
 
     public final S bind(boolean blockOpen) {
+        bindLock.lock();
+        SocketAddress pastAddress = address;
         try {
-            if (!bindLock.tryLock()) throw new IllegalStateException("Server already binding");
-            if (running.get()) throw new IllegalStateException("Server is already running");
+            if (channelFuture != null &&
+                    (!channelFuture.isDone() || !channelFuture.channel().closeFuture().isDone())) {
+                throw new IllegalStateException("Server already running");
+            }
+
+            if (bootstrap != null) {
+                bootstrap = null;
+            }
 
             prepareValues();
             bootstrap.group(loopGroup);
@@ -293,26 +314,35 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
                 configureDefaults();
             }
 
+            final SocketAddress address = this.address;
+
             optionLogic();
 
-            handler.call(BindListener.class, (Consumer<BindListener>) h -> h.bind(bootstrap));
+            logger.info("Binding " + getClass().getSimpleName() + " on " + address.toString());
+            handler.call(BindListener.class, (Consumer<BindListener>) h -> {
+                h.bind(this, bootstrap);
+            });
 
             channelFuture = doBind();
 
             running.set(true);
 
-            channelFuture.channel().closeFuture().addListener((ChannelFuture future)  -> {
+            channelFuture.channel().closeFuture().addListener((ChannelFutureListener) future -> {
+                logger.info("UnBound " + getClass().getSimpleName() + (future.isSuccess() ? "" : " (Failed)"));
                 running.set(false);
-                handler.call(UnBoundListener.class, (Consumer<UnBoundListener>) h -> h.unBound(this, future));
+                handler.call(UnBoundListener.class, (Consumer<UnBoundListener>) h -> h.unBound(NetworkComponent.this, future));
             });
 
-            channelFuture.addListener(future -> handler.call(BoundListener.class, (Consumer<BoundListener>) h -> h.bound(channelFuture)));
-            channelFuture.syncUninterruptibly();
-            return self();
+            channelFuture.addListener(future -> {
+                logger.info("Bound " + getClass().getSimpleName() + " on " + address.toString() + (future.isSuccess() ? "" : " (Failed)"));
+                handler.call(BoundListener.class, (Consumer<BoundListener>) h -> h.bound(this, channelFuture));
+            });
         } finally {
-            shutdown();
+            address = pastAddress;
             bindLock.unlock();
         }
+        if (blockOpen) channelFuture.syncUninterruptibly();
+        return self();
     }
 
     protected abstract void applyChannel();
@@ -320,6 +350,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     protected abstract void doHandlers(ChannelPipeline pipeline);
 
     protected void optionLogic() {
+        if (channelOptions == null) return;
         for (Map.Entry<ChannelOption, Object> entry : channelOptions.entrySet()) {
             bootstrap.option(entry.getKey(), entry.getValue());
         }
@@ -337,6 +368,11 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
                 for (Map.Entry<Class, Pair<String, ChannelHandler>> handler : costomHandlers.entrySet()) {
                     pipeline.addLast(handler.getValue().getOne(), handler.getValue().getTwo());
                 }
+            }
+
+            @Override
+            public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                ctx.fireExceptionCaught(cause);
             }
         });
     }

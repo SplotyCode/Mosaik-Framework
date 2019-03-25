@@ -72,12 +72,18 @@ public abstract class AbstractServer<S extends AbstractServer<S>> extends Networ
                     pipeline.addLast("costom", childHandler);
                 }
             }
+
+            @Override
+            public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                ctx.fireExceptionCaught(cause);
+            }
         });
     }
 
     @Override
     protected void optionLogic() {
         super.optionLogic();
+        if (childOptions == null) return;
         for (Map.Entry<ChannelOption, Object> entry : childOptions.entrySet()) {
             bootstrap.childOption(entry.getKey(), entry.getValue());
         }
