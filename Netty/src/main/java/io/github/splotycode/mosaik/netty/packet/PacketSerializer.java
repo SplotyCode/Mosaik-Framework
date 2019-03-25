@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.netty.packet;
 
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.codec.DecoderException;
@@ -71,7 +72,7 @@ public class PacketSerializer extends ByteBuf {
         try {
             packet.read(this);
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtil.throwRuntime(e);
         }
         return packet;
     }
@@ -80,7 +81,7 @@ public class PacketSerializer extends ByteBuf {
         try {
             packet.write(this);
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtil.throwRuntime(e);
         }
     }
 
