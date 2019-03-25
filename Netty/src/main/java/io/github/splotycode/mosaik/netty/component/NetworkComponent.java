@@ -6,6 +6,7 @@ import io.github.splotycode.mosaik.netty.component.listener.StatusListener;
 import io.github.splotycode.mosaik.netty.component.listener.UnBoundListener;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.StringUtil;
+import io.github.splotycode.mosaik.util.listener.Listener;
 import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.netty.bootstrap.AbstractBootstrap;
@@ -229,6 +230,16 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
 
     public S onUnBound(UnBoundListener listener) {
         handler.addListener(listener);
+        return self();
+    }
+
+    public S addListener(Listener listener) {
+        handler.addListener(listener);
+        return self();
+    }
+
+    public S removeListener(Listener listener) {
+        handler.removeListener(listener);
         return self();
     }
 
