@@ -8,8 +8,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuppressWarnings({"unused", "WeakerAccess"})
-public class UDPClient<S extends UDPClient<S>> extends AbstractClient<S> {
+@SuppressWarnings({"unused"})
+public class UDPClient extends AbstractClient<UDPClient> {
 
     {
         udp = true;

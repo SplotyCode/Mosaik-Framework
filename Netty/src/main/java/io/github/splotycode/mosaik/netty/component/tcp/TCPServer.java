@@ -9,8 +9,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuppressWarnings({"unused", "WeakerAccess"})
-public class TCPServer<S extends TCPServer<S>> extends AbstractServer<S> {
+@SuppressWarnings({"unused"})
+public class TCPServer extends AbstractServer<TCPServer> {
 
     public static TCPServer create() {
         return new TCPServer();

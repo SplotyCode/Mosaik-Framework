@@ -6,9 +6,9 @@ import io.netty.channel.ChannelOption;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
+@SuppressWarnings({"unused"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TCPClient<S extends TCPClient<S>> extends AbstractClient<S> {
+public class TCPClient extends AbstractClient<TCPClient> {
 
     public static TCPClient create() {
         return new TCPClient();
