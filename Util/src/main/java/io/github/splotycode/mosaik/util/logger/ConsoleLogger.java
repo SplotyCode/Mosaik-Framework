@@ -1,12 +1,18 @@
 package io.github.splotycode.mosaik.util.logger;
 
+import io.github.splotycode.mosaik.util.StringUtil;
 import lombok.AllArgsConstructor;
 import org.apache.log4j.Level;
 
 @AllArgsConstructor
 public class ConsoleLogger extends Logger {
 
-    private static final boolean debug = System.getenv("mosaik-console-debug").equalsIgnoreCase("true");
+    private static final boolean debug;
+
+    static {
+        String debugStr = System.getenv("mosaik-console-debug");
+        debug = !StringUtil.isEmpty(debugStr) && debugStr.equalsIgnoreCase("true");
+    }
 
     private String name;
 
