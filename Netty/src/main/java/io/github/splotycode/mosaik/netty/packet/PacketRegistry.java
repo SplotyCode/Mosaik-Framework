@@ -1,49 +1,21 @@
 package io.github.splotycode.mosaik.netty.packet;
 
-import io.github.splotycode.mosaik.netty.packet.packets.Packet;
+import com.google.common.collect.HashBiMap;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+public class PacketRegistry<P extends Packet> {
 
-public class PacketRegistry<T extends Packet> {
+    private HashBiMap<Class<? extends P>, Integer> packetClasses = HashBiMap.create();
 
-    private HashMap<Integer, Class<? extends T>> packets = new HashMap<>();
-
-    private int id = -1;
-
-    public PacketRegistry add(Class<? extends T> clazz) {
-        id++;
-        return add(id, clazz);
+    public void register(Class<? extends P> clazz) {
+        packetClasses.put(clazz, packetClasses.size());
     }
 
-    public PacketRegistry add(int id, Class<? extends T> clazz) {
-        packets.put(id, clazz);
-        return this;
+    public int getIdByPacket(Class<? extends P> clazz) {
+        return packetClasses.get(clazz);
     }
 
-    public int getIdByPacket(T packet) {
-        Optional<Map.Entry<Integer, Class<? extends T>>> optional =  packets.entrySet()
-                .stream()
-                .filter(entry -> Objects.equals(entry.getValue(), packet.getClass()))
-                .findFirst();
-        return optional.map(Map.Entry::getKey).orElse(-1);
-    }
-
-    public Class<? extends T> getPacketById(int id) {
-        return packets.get(id);
-    }
-
-    public T createPacket(int id) throws ReflectiveOperationException {
-        Class<? extends T> clazz = this.getPacketById(id);
-        if(clazz != null)
-            return clazz.newInstance();
-        return null;
-    }
-
-    public boolean exists(int id) {
-        return packets.containsKey(id);
+    public Class<? extends P> getPacketById(int id) {
+        return packetClasses.inverse().get(id);
     }
 
 }
