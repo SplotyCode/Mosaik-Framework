@@ -254,4 +254,8 @@ public final class StringUtil {
         return b.toString().trim();
     }
 
+    public static String getLastSplit(String str, String seperator) {
+        return str.substring(str.lastIndexOf(seperator) + 1);
+    }
+
 }
