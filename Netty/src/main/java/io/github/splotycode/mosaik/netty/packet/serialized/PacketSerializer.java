@@ -67,15 +67,6 @@ public class PacketSerializer extends ByteBuf {
         this.buf.writeLong(uuid.getLeastSignificantBits());
     }
 
-    public SerializedPacket readPacket(SerializedPacket packet) {
-        packet.read(this);
-        return packet;
-    }
-
-    public void writePacket(SerializedPacket packet) {
-        packet.write(this);
-    }
-
     public String readString() {
         byte[] b = new byte[readVarInt()];
         readBytes(b);
