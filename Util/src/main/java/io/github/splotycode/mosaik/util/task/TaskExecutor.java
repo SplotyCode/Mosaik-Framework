@@ -15,10 +15,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class TaskExecutor extends Thread {
 
-    private ConcurrentHashMap<Long, Task> runningTasks = new ConcurrentHashMap<>();
+    private volatile ConcurrentHashMap<Long, Task> runningTasks = new ConcurrentHashMap<>();
     @Getter private ExecutorService service;
-    private AtomicLong currentID = new AtomicLong();
-    private boolean interupt = false;
+    private volatile AtomicLong currentID = new AtomicLong();
+    private boolean interrupt = false;
     private ConcurrentHashMap<Future, Task> futures = new ConcurrentHashMap<>();
 
     public TaskExecutor(ExecutorService service) {
@@ -29,7 +29,7 @@ public class TaskExecutor extends Thread {
     @Override
     public void run() {
         while (true) {
-            if (interupt) break;
+            if (interrupt) break;
             for (Map.Entry<Future, Task> pair : futures.entrySet()) {
                 Future future = pair.getKey();
                 if (future.isCancelled() || future.isDone()) {
@@ -103,7 +103,7 @@ public class TaskExecutor extends Thread {
     }
 
     public void interruptQueue() {
-        interupt = true;
+        interrupt = true;
     }
 
     public Collection<Task> getRunningTasks() {
@@ -118,11 +118,16 @@ public class TaskExecutor extends Thread {
         }
     }
 
-    public void runTask(Task task) {
+    public long runTask(Task task) {
         task.onInstall(this);
         long id = currentID.getAndIncrement();
         runningTasks.put(id, task);
         notify();
+        return id;
+    }
+
+    public void stopTask(long id) {
+        runningTasks.remove(id);
     }
 
     public void runTask(Class<? extends Task> taskClazz) {
