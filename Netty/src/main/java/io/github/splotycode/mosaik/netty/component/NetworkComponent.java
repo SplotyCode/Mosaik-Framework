@@ -2,7 +2,6 @@ package io.github.splotycode.mosaik.netty.component;
 
 import io.github.splotycode.mosaik.netty.component.listener.BindListener;
 import io.github.splotycode.mosaik.netty.component.listener.BoundListener;
-import io.github.splotycode.mosaik.netty.component.listener.StatusListener;
 import io.github.splotycode.mosaik.netty.component.listener.UnBoundListener;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.StringUtil;
@@ -31,7 +30,7 @@ import java.util.function.Supplier;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends Channel>, C extends Channel, S extends NetworkComponent<B, C, S>> {
+public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends Channel>, C extends Channel, S extends NetworkComponent<B, C, S>> implements INetworkComponent<S> {
 
     protected Logger logger = Logger.getInstance(getClass());
 
@@ -124,7 +123,8 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return channelFuture;
     }
 
-    protected S self() {
+    @Override
+    public S self() {
         return (S) this;
     }
 
@@ -132,12 +132,14 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return usedPort;
     }
 
+    @Override
     public S noSSL() {
         sslMode = SSLMode.NONE;
         sslContext = null;
         return self();
     }
 
+    @Override
     public S ssl(SSLMode sslMode) {
         this.sslMode = sslMode;
         return self();
@@ -151,10 +153,12 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return sslContext;
     }
 
+    @Override
     public S logging() {
         return logging(true);
     }
 
+    @Override
     public S logging(boolean logging) {
         this.logging = logging;
         return self();
@@ -166,12 +170,14 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
+    @Override
     public S logging(String category, LogLevel logLevel) {
         logging();
         this.logLevel = logLevel;
         return self();
     }
 
+    @Override
     public S noLogging() {
         this.logging = false;
         logCategory = null;
@@ -179,6 +185,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
+    @Override
     public S nThreads(int nThreads) {
         this.nThreads = nThreads;
         return self();
@@ -188,6 +195,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return port(() -> port);
     }
 
+    @Override
     public S applyDefaults(boolean apply) {
         applyDefault = apply;
         return self();
@@ -203,6 +211,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
+    @Override
     public S channelSystem(ChannelSystem channelSystem) {
         this.channelSystem = channelSystem;
         return self();
@@ -218,36 +227,37 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
+    @Override
     public S onBind(BindListener listener) {
         handler.addListener(listener);
         return self();
     }
 
+    @Override
     public S onBound(BoundListener listener) {
         handler.addListener(listener);
         return self();
     }
 
+    @Override
     public S onUnBound(UnBoundListener listener) {
         handler.addListener(listener);
         return self();
     }
 
+    @Override
     public S addListener(Listener listener) {
         handler.addListener(listener);
         return self();
     }
 
+    @Override
     public S removeListener(Listener listener) {
         handler.removeListener(listener);
         return self();
     }
 
-    public S onChannelStatus(StatusListener listener) {
-        handler.addListener(listener);
-        return self();
-    }
-
+    @Override
     public S handler(String name, ChannelHandler handler) {
         costomHandlers.put(handler.getClass(), new Pair<>(name, handler));
         return self();
@@ -265,12 +275,14 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return handler.getOne();
     }
 
+    @Override
     public <O> S option(ChannelOption<O> option, O value) {
         if (channelOptions == null) channelOptions = new HashMap<>();
         channelOptions.put(option, value);
         return self();
     }
 
+    @Override
     public S option(Map<ChannelOption, Object> options) {
         channelOptions = options;
         return self();
@@ -370,7 +382,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     protected void handlerLogic() {
         bootstrap.handler(new ChannelInitializer<Channel>() {
             @Override
-            protected void initChannel(Channel channel) throws Exception {
+            protected void initChannel(Channel channel) {
                 ChannelPipeline pipeline = channel.pipeline();
                 if (logging) {
                     pipeline.addLast(new LoggingHandler(logCategory, logLevel));

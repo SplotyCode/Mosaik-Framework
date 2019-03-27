@@ -94,7 +94,7 @@ public abstract class AbstractServer<S extends AbstractServer<S>> extends Networ
         return self();
     }
 
-    public <O> S childOption(Map<ChannelOption, Object> options) {
+    public S childOption(Map<ChannelOption, Object> options) {
         childOptions = options;
         return self();
     }
