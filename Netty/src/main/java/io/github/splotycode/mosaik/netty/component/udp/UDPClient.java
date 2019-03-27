@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.netty.component.udp;
 
 import io.github.splotycode.mosaik.netty.component.AbstractClient;
+import io.github.splotycode.mosaik.netty.component.IClient;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuppressWarnings({"unused"})
-public class UDPClient extends AbstractClient<UDPClient> {
+public class UDPClient extends AbstractClient<UDPClient> implements IClient {
 
     {
         udp = true;

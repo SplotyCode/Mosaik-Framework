@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.netty.component.tcp;
 
 import io.github.splotycode.mosaik.netty.component.AbstractServer;
+import io.github.splotycode.mosaik.netty.component.IServer;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuppressWarnings({"unused"})
-public class TCPServer extends AbstractServer<TCPServer> {
+public class TCPServer extends AbstractServer<TCPServer> implements IServer {
 
     public static TCPServer create() {
         return new TCPServer();

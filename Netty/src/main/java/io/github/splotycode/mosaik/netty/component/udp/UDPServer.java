@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.netty.component.udp;
 
 import io.github.splotycode.mosaik.netty.component.AbstractClient;
+import io.github.splotycode.mosaik.netty.component.IServer;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
@@ -8,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UDPServer extends AbstractClient<UDPServer> {
+public class UDPServer extends AbstractClient<UDPServer> implements IServer {
 
     public static UDPServer create() {
         return new UDPServer();

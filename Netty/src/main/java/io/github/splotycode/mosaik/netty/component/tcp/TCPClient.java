@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.netty.component.tcp;
 
 import io.github.splotycode.mosaik.netty.component.AbstractClient;
+import io.github.splotycode.mosaik.netty.component.IClient;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import lombok.AccessLevel;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @SuppressWarnings({"unused"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TCPClient extends AbstractClient<TCPClient> {
+public class TCPClient extends AbstractClient<TCPClient> implements IClient {
 
     public static TCPClient create() {
         return new TCPClient();
