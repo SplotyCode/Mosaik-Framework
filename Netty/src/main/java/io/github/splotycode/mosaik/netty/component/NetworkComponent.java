@@ -132,6 +132,11 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return usedPort;
     }
 
+    public S address(SocketAddress address) {
+        this.address = address;
+        return self();
+    }
+
     @Override
     public S noSSL() {
         sslMode = SSLMode.NONE;
