@@ -9,7 +9,7 @@ import io.netty.channel.ChannelOption;
 import java.io.File;
 import java.util.Map;
 
-public abstract class ServerTemplate<S extends ServerTemplate<S, I>, I extends AbstractServer> extends ComponentTemplate<S, I> {
+public abstract class ServerTemplate<S extends ServerTemplate<S, I>, I extends AbstractServer<I>> extends ComponentTemplate<S, I> {
 
     private static class TCPServerTemplate extends ServerTemplate<TCPServerTemplate, TCPServer> {
 
