@@ -1,23 +1,20 @@
 package io.github.splotycode.mosaik.netty.reverseproxy;
 
-import io.github.splotycode.mosaik.netty.component.tcp.TCPServer;
+import io.github.splotycode.mosaik.netty.component.template.ServerTemplate;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.FullHttpMessage;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 
-import java.net.SocketAddress;
-import java.util.function.Supplier;
-
 
 public class ClientProxyHandler extends SimpleChannelInboundHandler<FullHttpMessage> {
 
     private Channel server;
-    private Supplier<SocketAddress> connectTo;
+    private ServerTemplate template;
 
-    public ClientProxyHandler(Supplier<SocketAddress> connectTo) {
-        this.connectTo = connectTo;
+    public ClientProxyHandler(ServerTemplate template) {
+        this.template = template;
     }
 
     @Override
@@ -30,7 +27,7 @@ public class ClientProxyHandler extends SimpleChannelInboundHandler<FullHttpMess
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        server = TCPServer.create().address(connectTo.get()).handler("init", new ChannelInitializer<Channel>() {
+        server = template.createComponent().handler("init", new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) throws Exception {
                 ChannelPipeline pipeline = channel.pipeline();
