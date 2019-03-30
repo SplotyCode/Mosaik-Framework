@@ -9,11 +9,14 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.logging.LogLevel;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public interface INetworkComponent<S extends INetworkComponent> {
 
 
     S self();
+
+    S port(Supplier<Integer> port);
 
     <O> S option(ChannelOption<O> option, O value);
     S option(Map<ChannelOption, Object> options);

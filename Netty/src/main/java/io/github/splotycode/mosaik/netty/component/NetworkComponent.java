@@ -206,6 +206,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
+    @Override
     public S port(Supplier<Integer> port) {
         this.port = port;
         return self();

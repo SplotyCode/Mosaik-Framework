@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class ComponentTemplate<S extends ComponentTemplate<S, I>, I extends NetworkComponent<?, ?, I>> implements INetworkComponent<S> {
 
@@ -30,6 +31,12 @@ public abstract class ComponentTemplate<S extends ComponentTemplate<S, I>, I ext
     @Override
     public S self() {
         return (S) this;
+    }
+
+    @Override
+    public S port(Supplier<Integer> port) {
+        tasks.add(i -> i.port(port));
+        return self();
     }
 
     @Override
