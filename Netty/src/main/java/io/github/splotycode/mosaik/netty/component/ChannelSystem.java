@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.netty.component;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -81,8 +82,16 @@ public enum ChannelSystem {
         return apply(new ServerBootstrap());
     }
 
+    public Bootstrap newClient() {
+        return apply(new Bootstrap());
+    }
+
     public ServerBootstrap apply(ServerBootstrap bootstrap) {
         return bootstrap.group(newLoopGroup()).channel(serverChannelClass);
+    }
+
+    public Bootstrap apply(Bootstrap bootstrap) {
+        return bootstrap.group(newLoopGroup()).channel(channelClass);
     }
 
     public abstract boolean isAvailable();
