@@ -10,14 +10,14 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class JsonPacketEncoder extends MessageToByteEncoder<JsonPacket> {
+public class GsonPacketEncoder extends MessageToByteEncoder<GsonPacket> {
 
     private static final Gson GSON = new Gson();
 
-    private PacketRegistry<JsonPacket> registry;
+    private PacketRegistry<GsonPacket> registry;
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, JsonPacket packet, ByteBuf byteBuf) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, GsonPacket packet, ByteBuf byteBuf) throws Exception {
         int id = registry.getIdByPacket(packet.getClass());
 
         String json = GSON.toJson(packet);

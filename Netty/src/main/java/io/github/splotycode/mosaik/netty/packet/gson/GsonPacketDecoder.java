@@ -13,9 +13,9 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 @AllArgsConstructor
-public class JsonPacketDecoder extends ByteToMessageDecoder {
+public class GsonPacketDecoder extends ByteToMessageDecoder {
 
-    private PacketRegistry<JsonPacket> registry;
+    private PacketRegistry<GsonPacket> registry;
 
     private static final Gson GSON = new Gson();
     private static final JsonParser JSON_PARSER = new JsonParser();
@@ -29,11 +29,11 @@ public class JsonPacketDecoder extends ByteToMessageDecoder {
 
         JsonObject o = JSON_PARSER.parse(text).getAsJsonObject();
 
-        Class<? extends JsonPacket> clazz = registry.getPacketById(o.get("id").getAsInt());
+        Class<? extends GsonPacket> clazz = registry.getPacketById(o.get("id").getAsInt());
         if(clazz != null) {
             o.remove("id");
 
-            JsonPacket packet = GSON.fromJson(o, clazz);
+            GsonPacket packet = GSON.fromJson(o, clazz);
             list.add(packet);
         }
     }
