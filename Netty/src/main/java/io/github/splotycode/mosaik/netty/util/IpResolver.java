@@ -79,7 +79,7 @@ public class IpResolver {
         return this;
     }
 
-    public String getipAddress() {
+    public String getIpAddress() {
         if (cache == null) {
             return getIpAddressNow();
         }
