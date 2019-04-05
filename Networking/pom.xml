@@ -9,8 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.splotycode.mosaik</groupId>
-    <artifactId>Netty</artifactId>
+    <artifactId>Networking</artifactId>
     <build>
         <plugins>
             <plugin>

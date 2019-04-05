@@ -10,7 +10,7 @@
     <version>2.2.10-Dev</version>
     <modules>
         <module>Console</module>
-        <module>Netty</module>
+        <module>Networking</module>
         <module>Database</module>
         <module>Automatisation</module>
         <module>GameEngine</module>
