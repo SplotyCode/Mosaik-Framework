@@ -48,7 +48,7 @@
     <orderEntry type="module" module-name="DomParsing" />
     <orderEntry type="module" module-name="DomParsing-Impl" />
     <orderEntry type="module" module-name="IUI" />
-    <orderEntry type="library" name="Maven: io.github.splotycode.mosaik:Netty:2.2.10-Dev" level="project" />
+    <orderEntry type="module" module-name="Networking" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.5" level="project" />
     <orderEntry type="module" module-name="StartUp" />
     <orderEntry type="module" module-name="ValueTransformer" />
