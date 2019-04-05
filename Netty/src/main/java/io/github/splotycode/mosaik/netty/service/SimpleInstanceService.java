@@ -33,7 +33,8 @@ public abstract class SimpleInstanceService<S extends ComponentTemplate<S, C>, C
     }
 
     @Override
-    public void stopAll() {
+    public void stop() {
         instances.forEach(NetworkComponent::shutdown);
     }
+
 }
