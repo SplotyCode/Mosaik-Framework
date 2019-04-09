@@ -3,6 +3,8 @@ package io.github.splotycode.mosaik.networking.component;
 import io.github.splotycode.mosaik.networking.component.listener.BindListener;
 import io.github.splotycode.mosaik.networking.component.listener.BoundListener;
 import io.github.splotycode.mosaik.networking.component.listener.UnBoundListener;
+import io.github.splotycode.mosaik.networking.packet.system.PacketSystem;
+import io.github.splotycode.mosaik.networking.packet.system.PacketSystemHandler;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.listener.Listener;
@@ -416,5 +418,9 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
-
+    @Override
+    public S usePacketSystem(PacketSystem system) {
+        handler("packetSystem", new PacketSystemHandler(system, this instanceof IServer));
+        return self();
+    }
 }

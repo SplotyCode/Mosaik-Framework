@@ -7,6 +7,7 @@ import io.github.splotycode.mosaik.networking.component.SSLMode;
 import io.github.splotycode.mosaik.networking.component.listener.BindListener;
 import io.github.splotycode.mosaik.networking.component.listener.BoundListener;
 import io.github.splotycode.mosaik.networking.component.listener.UnBoundListener;
+import io.github.splotycode.mosaik.networking.packet.system.PacketSystem;
 import io.github.splotycode.mosaik.util.listener.Listener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
@@ -138,6 +139,12 @@ public abstract class ComponentTemplate<S extends ComponentTemplate<S, I>, I ext
     @Override
     public S nThreads(int nThreads) {
         tasks.add(i -> i.nThreads(nThreads));
+        return self();
+    }
+
+    @Override
+    public S usePacketSystem(PacketSystem system) {
+        tasks.add(i -> i.usePacketSystem(system));
         return self();
     }
 }

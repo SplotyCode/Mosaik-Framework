@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.networking.component;
 import io.github.splotycode.mosaik.networking.component.listener.BindListener;
 import io.github.splotycode.mosaik.networking.component.listener.BoundListener;
 import io.github.splotycode.mosaik.networking.component.listener.UnBoundListener;
+import io.github.splotycode.mosaik.networking.packet.system.PacketSystem;
 import io.github.splotycode.mosaik.util.listener.Listener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
@@ -47,5 +48,7 @@ public interface INetworkComponent<S extends INetworkComponent> {
     S noLogging();
 
     S nThreads(int nThreads);
+
+    S usePacketSystem(PacketSystem system);
 
 }
