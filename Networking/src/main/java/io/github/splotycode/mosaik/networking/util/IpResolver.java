@@ -56,7 +56,7 @@ public class IpResolver {
     }
 
     public Cache<String> createTimeCache(long maxAge) {
-        return DefaultCaches.getTimeCache(cache -> getIpAddressNow(), maxAge);
+        return DefaultCaches.getTimeCache(cache -> getIpFresh(), maxAge);
     }
 
     public IpResolver enableCaching(Cache<String> cache) {
@@ -81,12 +81,12 @@ public class IpResolver {
 
     public String getIpAddress() {
         if (cache == null) {
-            return getIpAddressNow();
+            return getIpFresh();
         }
         return cache.getValue();
     }
 
-    public String getIpAddressNow() {
+    public String getIpFresh() {
         try {
             return getIpAddressByUrl(preferred);
         } catch (IOException ex) {
