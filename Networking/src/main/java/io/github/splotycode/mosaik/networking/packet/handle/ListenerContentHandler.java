@@ -5,27 +5,27 @@ import io.github.splotycode.mosaik.util.listener.StringListenerHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-public class ListenerContentHandler<P extends Packet> extends SimpleChannelInboundHandler<P> {
+public class ListenerContentHandler extends SimpleChannelInboundHandler<Packet> {
 
-    private StringListenerHandler<PacketListener<P>> handler = new StringListenerHandler<>();
+    private StringListenerHandler<PacketListener> handler = new StringListenerHandler<>();
 
-    public ListenerContentHandler<P> register(String prefix, PacketListener<P> listener) {
+    public ListenerContentHandler register(String prefix, PacketListener listener) {
         handler.addListener(prefix, listener);
         return this;
     }
 
-    public ListenerContentHandler<P> register(PacketListener<P> listener) {
+    public ListenerContentHandler register(PacketListener listener) {
         handler.addListener(listener);
         return this;
     }
 
-    public ListenerContentHandler<P> register(Class clazz, PacketListener<P> listener) {
+    public ListenerContentHandler register(Class clazz, PacketListener listener) {
         handler.addListener(clazz, listener);
         return this;
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, P packet) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Packet packet) throws Exception {
         handler.call(packet.getClass().getName(), listener -> listener.onPacket(packet));
     }
 
