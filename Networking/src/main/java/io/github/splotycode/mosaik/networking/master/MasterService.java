@@ -14,8 +14,13 @@ import io.github.splotycode.mosaik.networking.util.IpResolver;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.task.TaskExecutor;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
+import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
+import io.netty.handler.ipfilter.IpFilterRule;
+import io.netty.handler.ipfilter.IpFilterRuleType;
+import io.netty.handler.ipfilter.RuleBasedIpFilter;
 import lombok.Getter;
 
+import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -97,6 +102,17 @@ public class MasterService extends RepeatableTask implements Service {
         return TCPServer.create()
                 .port(port)
                 .usePacketSystem(DefaultPacketSystem.createSerialized(masterRegistry))
+                .handler("ipFiler", new RuleBasedIpFilter(new IpFilterRule() {
+                    @Override
+                    public boolean matches(InetSocketAddress address) {
+                        return roots.keySet().contains(TransformerManager.getInstance().transform(address, String.class));
+                    }
+
+                    @Override
+                    public IpFilterRuleType ruleType() {
+                        return IpFilterRuleType.ACCEPT;
+                    }
+                }))
                 .handler("packetHandler", new AnnotationContentHandler(new MasterServerHandler()))
                 .bind(true);
     }
