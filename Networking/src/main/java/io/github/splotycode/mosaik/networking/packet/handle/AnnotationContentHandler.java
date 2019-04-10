@@ -7,6 +7,7 @@ import io.github.splotycode.mosaik.util.reflection.classregister.ClassRegister;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -59,7 +60,7 @@ public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInb
         return Object.class;
     }
 
-    private static Multimap<Class<? extends Packet>, HandlerData> handlers = new HashMultimap<>();
+    private static Multimap<Class<? extends Packet>, HandlerData> handlers = HashMultimap.create();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, P p) throws Exception {

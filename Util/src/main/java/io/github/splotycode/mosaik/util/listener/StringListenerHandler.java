@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public class StringListenerHandler<L extends Listener> implements ListenerHandler<L> {
 
-    private Multimap<String, L> listeners = new HashMultimap<>();
+    private Multimap<String, L> listeners = HashMultimap.create();
 
     public void addListener(String prefix, L listener) {
         listeners.put(prefix, listener);
