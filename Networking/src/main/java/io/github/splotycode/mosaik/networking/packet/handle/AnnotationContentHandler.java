@@ -13,7 +13,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
+@NoArgsConstructor
 public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInboundHandler<P> implements ClassRegister<Object> {
+
+    public AnnotationContentHandler(Object obj) {
+        register(obj);
+    }
 
     @AllArgsConstructor
     private static class HandlerData {
