@@ -2,7 +2,7 @@ package io.github.splotycode.mosaik.networking.service;
 
 import io.github.splotycode.mosaik.networking.component.NetworkComponent;
 import io.github.splotycode.mosaik.networking.component.template.ComponentTemplate;
-import io.github.splotycode.mosaik.networking.handler.CurrentConnectionHandler;
+import io.github.splotycode.mosaik.networking.util.CurrentConnectionHandler;
 import lombok.Getter;
 
 import java.util.ArrayList;
