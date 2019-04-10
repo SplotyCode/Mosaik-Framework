@@ -85,11 +85,6 @@
             <version>${mosaik.guava.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.jodah</groupId>
-            <artifactId>typetools</artifactId>
-            <version>${mosaik.typetools.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>${mosaik.netty.version}</version>

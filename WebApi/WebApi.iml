@@ -36,7 +36,6 @@
     <orderEntry type="library" name="Maven: org.jboss.spec.javax.websocket:jboss-websocket-api_1.1_spec:1.1.3.Final" level="project" />
     <orderEntry type="module" module-name="Runtime" />
     <orderEntry type="module" module-name="Util" />
-    <orderEntry type="library" name="Maven: net.jodah:typetools:0.6.0" level="project" />
     <orderEntry type="module" module-name="Annotations" />
     <orderEntry type="module" module-name="IUI" />
     <orderEntry type="module" module-name="ArgParser" />

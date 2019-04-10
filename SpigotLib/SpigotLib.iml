@@ -33,7 +33,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.8-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.gson:gson:2.3.1" level="project" />
     <orderEntry type="module" module-name="Util" />
-    <orderEntry type="library" name="Maven: net.jodah:typetools:0.6.0" level="project" />
     <orderEntry type="module" module-name="Annotations" />
     <orderEntry type="module" module-name="Runtime" />
     <orderEntry type="module" module-name="IUI" />

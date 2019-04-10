@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.util.reflection.classregister;
 
+import io.github.splotycode.mosaik.util.reflection.GenereticGuesser;
 import lombok.Setter;
-import net.jodah.typetools.TypeResolver;
 
 import java.util.Collection;
 
@@ -14,9 +14,10 @@ public class ListClassRegister<T> implements IListClassRegister<T> {
         this(null);
     }
 
+    @SuppressWarnings("unchecked")
     public ListClassRegister(Collection<T> collection) {
         this.collection = collection;
-        clazz = (Class<T>) TypeResolver.resolveRawArguments(ListClassRegister.class, getClass())[0];
+        clazz = (Class<T>) GenereticGuesser.find(this, ListClassRegister.class, "T");
     }
 
     public ListClassRegister(Collection<T> collection, Class<T> clazz) {

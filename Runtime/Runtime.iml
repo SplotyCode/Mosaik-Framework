@@ -14,7 +14,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Util" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
-    <orderEntry type="library" name="Maven: net.jodah:typetools:0.6.0" level="project" />
     <orderEntry type="module" module-name="Annotations" />
     <orderEntry type="module" module-name="IUI" />
     <orderEntry type="module" module-name="ArgParser" />
