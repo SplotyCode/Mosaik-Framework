@@ -37,7 +37,8 @@ public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInb
         Class clazz = obj.getClass();
         for (Method method : clazz.getMethods()) {
             if (method.isAnnotationPresent(PacketTarget.class)) {
-                if (method.getParameterCount() == 1) {
+                if (method.getParameterCount() == 1 ||
+                        (method.getParameterCount() == 2 && method.getParameterTypes()[1] == ChannelHandlerContext.class)) {
                     throw new AnnotationStructureExcpetion("Invalid Parameter length");
                 }
                 Class<?> parameter = method.getParameterTypes()[0];
@@ -71,7 +72,11 @@ public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInb
     protected void channelRead0(ChannelHandlerContext ctx, P p) throws Exception {
         for (HandlerData handlerData : handlers.get(p.getClass())) {
             try {
-                handlerData.method.invoke(handlerData.object, p);
+                if (handlerData.method.getParameterCount() == 1) {
+                    handlerData.method.invoke(handlerData.object, p);
+                } else {
+                    handlerData.method.invoke(handlerData.object, p, ctx);
+                }
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new PacketHandleExcpetion("Failed to execute handler Method: " + handlerData.displayName(), e);
             }
