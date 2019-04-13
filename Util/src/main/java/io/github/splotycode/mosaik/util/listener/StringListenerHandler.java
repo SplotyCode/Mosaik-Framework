@@ -31,7 +31,9 @@ public class StringListenerHandler<L extends Listener> implements ListenerHandle
 
     public void call(String prefix, Consumer<L> consumer) {
         for (Map.Entry<String, L> listener : listeners.entries()) {
-            if (listener.getKey().equals("*") || listener.getKey().startsWith(prefix)) {
+            if (listener.getKey().equals("*") ||
+                    prefix.startsWith("*") ||
+                    listener.getKey().startsWith(prefix)) {
                 consumer.accept(listener.getValue());
             }
         }
