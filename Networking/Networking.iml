@@ -16,6 +16,7 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="module" module-name="Annotations" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.5" level="project" />
+    <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.24" level="project" />
     <orderEntry type="module" module-name="ValueTransformer" />
     <orderEntry type="module" module-name="Runtime" />
     <orderEntry type="module" module-name="IUI" />

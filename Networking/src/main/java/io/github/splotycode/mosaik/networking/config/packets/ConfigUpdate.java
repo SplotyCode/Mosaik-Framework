@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.networking.master.packets;
+package io.github.splotycode.mosaik.networking.config.packets;
 
 import io.github.splotycode.mosaik.networking.packet.serialized.PacketSerializer;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
@@ -6,21 +6,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
+@Data
 @AllArgsConstructor
-public class DestroyPacket implements SerializedPacket {
+public class ConfigUpdate implements SerializedPacket {
 
-    private String betterRoot;
+    private String config;
 
     @Override
     public void read(PacketSerializer packet) {
-        betterRoot = packet.readString();
+        config = packet.readString();
     }
 
     @Override
     public void write(PacketSerializer packet) {
-        packet.writeString(betterRoot);
+        packet.writeString(config);
     }
-
 }
