@@ -16,7 +16,7 @@ public class UDPClient<S extends UDPClient<S>> extends AbstractClient<S> impleme
         udp = true;
     }
 
-    public static UDPClient create() {
+    public static UDPClient<? extends UDPClient> create() {
         return new UDPClient<>();
     }
 

@@ -12,8 +12,8 @@ import java.util.function.Supplier;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HttpServer<S extends HttpServer<S>> extends TCPServer<S> {
 
-    public static HttpServer create() {
-        return new HttpServer();
+    public static HttpServer<? extends HttpServer> create() {
+        return new HttpServer<>();
     }
 
     @Override

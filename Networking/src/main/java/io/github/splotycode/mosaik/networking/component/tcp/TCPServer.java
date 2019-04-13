@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @SuppressWarnings({"unused"})
 public class TCPServer<S extends TCPServer<S>> extends AbstractServer<S> implements IServer {
 
-    public static TCPServer create() {
+    public static TCPServer<? extends TCPServer> create() {
         return new TCPServer<>();
     }
 

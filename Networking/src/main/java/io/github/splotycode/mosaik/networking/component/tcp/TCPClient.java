@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TCPClient<S extends TCPClient<S>> extends AbstractClient<S> implements IClient {
 
-    public static TCPClient create() {
+    public static TCPClient<? extends TCPClient> create() {
         return new TCPClient<>();
     }
 
