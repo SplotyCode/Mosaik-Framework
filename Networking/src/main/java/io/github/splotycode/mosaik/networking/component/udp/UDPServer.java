@@ -9,10 +9,10 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UDPServer extends AbstractClient<UDPServer> implements IServer {
+public class UDPServer<S extends UDPServer<S>> extends AbstractClient<S> implements IServer {
 
     public static UDPServer create() {
-        return new UDPServer();
+        return new UDPServer<>();
     }
 
     @Override

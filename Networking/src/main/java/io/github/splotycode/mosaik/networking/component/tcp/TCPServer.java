@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuppressWarnings({"unused"})
-public class TCPServer extends AbstractServer<TCPServer> implements IServer {
+public class TCPServer<S extends TCPServer<S>> extends AbstractServer<S> implements IServer {
 
     public static TCPServer create() {
-        return new TCPServer();
+        return new TCPServer<>();
     }
 
     @Override

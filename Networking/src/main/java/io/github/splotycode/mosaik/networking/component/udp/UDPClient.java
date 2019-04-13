@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuppressWarnings({"unused"})
-public class UDPClient extends AbstractClient<UDPClient> implements IClient {
+public class UDPClient<S extends UDPClient<S>> extends AbstractClient<S> implements IClient {
 
     {
         udp = true;
     }
 
     public static UDPClient create() {
-        return new UDPClient();
+        return new UDPClient<>();
     }
 
     @Override

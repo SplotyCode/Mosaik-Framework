@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 
 @SuppressWarnings({"unused"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TCPClient extends AbstractClient<TCPClient> implements IClient {
+public class TCPClient<S extends TCPClient<S>> extends AbstractClient<S> implements IClient {
 
     public static TCPClient create() {
-        return new TCPClient();
+        return new TCPClient<>();
     }
 
     @Override
