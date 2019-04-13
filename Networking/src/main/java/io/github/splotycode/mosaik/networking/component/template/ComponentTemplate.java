@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class ComponentTemplate<S extends ComponentTemplate<S, I>, I extends NetworkComponent<?, ?, I>> implements INetworkComponent<S> {
+public abstract class ComponentTemplate<S extends ComponentTemplate, I extends NetworkComponent<?, ?, ? extends I>> implements INetworkComponent<S> {
 
     protected List<Consumer<I>> tasks = new ArrayList<>();
 
