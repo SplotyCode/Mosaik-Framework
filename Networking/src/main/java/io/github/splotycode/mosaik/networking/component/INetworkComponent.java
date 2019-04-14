@@ -51,4 +51,7 @@ public interface INetworkComponent<S extends INetworkComponent> {
 
     S usePacketSystem(PacketSystem system);
 
+    String displayName();
+    S setDisplayName(String displayName);
+
 }

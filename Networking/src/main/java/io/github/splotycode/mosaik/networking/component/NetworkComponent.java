@@ -74,6 +74,8 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         loopGroup = nThreads == -1 ? channelSystem.newLoopGroup() : channelSystem.newLoopGroup(nThreads);
     }
 
+    private String displayName;
+
     protected void prepareValues() {
         if (channelSystem == null) {
             channelSystem = ChannelSystem.getOptimal();
@@ -230,6 +232,17 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
+    @Override
+    public String displayName() {
+        return displayName == null ? getClass().getName() : displayName + " | " + getClass().getSimpleName();
+    }
+
+    @Override
+    public S setDisplayName(String displayName) {
+        this.displayName = displayName;
+        return self();
+    }
+
     public S shutdown() {
         loopGroup.shutdownGracefully();
         return self();
@@ -349,7 +362,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
 
             optionLogic();
 
-            logger.info("Binding " + getClass().getSimpleName() + " on " + address.toString());
+            logger.info("Binding " + displayName() + " on " + address.toString());
             handler.call(BindListener.class, (Consumer<BindListener>) h -> {
                 h.bind(this, bootstrap);
             });
@@ -359,13 +372,13 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
             running.set(true);
 
             channelFuture.channel().closeFuture().addListener((ChannelFutureListener) future -> {
-                logger.info("UnBound " + getClass().getSimpleName() + (future.isSuccess() ? "" : " (Failed)"));
+                logger.info("UnBound " + displayName() + (future.isSuccess() ? "" : " (Failed)"));
                 running.set(false);
                 handler.call(UnBoundListener.class, (Consumer<UnBoundListener>) h -> h.unBound(NetworkComponent.this, future));
             });
 
             channelFuture.addListener(future -> {
-                logger.info("Bound " + getClass().getSimpleName() + " on " + address.toString() + (future.isSuccess() ? "" : " (Failed)"));
+                logger.info("Bound " + displayName() + " on " + address.toString() + (future.isSuccess() ? "" : " (Failed)"));
                 handler.call(BoundListener.class, (Consumer<BoundListener>) h -> h.bound(this, channelFuture));
             });
         } finally {

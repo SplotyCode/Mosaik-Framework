@@ -100,7 +100,7 @@ public class MasterService extends RepeatableTask implements Service {
 
     protected TCPServer createServer() {
         return TCPServer.create()
-                .port(port)
+                .port(port).setDisplayName("Master")
                 .usePacketSystem(DefaultPacketSystem.createSerialized(masterRegistry))
                 .handler("ipFiler", new RuleBasedIpFilter(new IpFilterRule() {
                     @Override
@@ -119,14 +119,14 @@ public class MasterService extends RepeatableTask implements Service {
 
     protected TCPClient createClient(String host) {
         return TCPClient.create()
-                .host(host).port(port)
+                .host(host).port(port).setDisplayName("Master")
                 .usePacketSystem(DefaultPacketSystem.createSerialized(masterRegistry))
                 .bind(true);
     }
 
     protected void destroyMaster(String original, String better) {
         TCPClient.create()
-                .host(original)
+                .host(original).setDisplayName("Master Destroy")
                 .port(port)
                 .usePacketSystem(DefaultPacketSystem.createSerialized(masterRegistry))
                 .onBound((component, future) -> future.channel().writeAndFlush(new DestroyPacket(better)))
@@ -143,8 +143,8 @@ public class MasterService extends RepeatableTask implements Service {
         } else {
             client = createClient(currentBest);
         }
-        status = ServiceStatus.RUNNING;
         taskID = taskExecutor.runTask(this);
+        status = ServiceStatus.RUNNING;
     }
 
     @Override

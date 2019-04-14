@@ -45,13 +45,13 @@ public class ConfigService extends StaticConfigProvider implements Service {
     public void start() {
         if (serverAddress == null) {
             server = TCPServer.create()
-                    .port(port)
+                    .port(port).setDisplayName("Config")
                     .usePacketSystem(DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
-                    .handler("packetHandler", new AnnotationContentHandler(new ConfigServerHandler(this, keepAlive)))
+                    .handler("packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, new ConfigServerHandler(this, keepAlive)))
                     .bind();
         } else {
             client = TCPClient.create()
-                    .port(port)
+                    .port(port).setDisplayName("Config")
                     .usePacketSystem(DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
                     .handler("packetHandler", new AnnotationContentHandler(new ConfigClientHandler(this, keepAlive)))
                     .bind();

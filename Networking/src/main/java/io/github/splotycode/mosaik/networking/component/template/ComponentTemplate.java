@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 public abstract class ComponentTemplate<S extends ComponentTemplate, I extends NetworkComponent<?, ?, ? extends I>> implements INetworkComponent<S> {
 
     protected List<Consumer<I>> tasks = new ArrayList<>();
+    protected String displayName;
 
     public abstract I createComponent();
 
@@ -134,6 +135,18 @@ public abstract class ComponentTemplate<S extends ComponentTemplate, I extends N
     public S noLogging() {
         tasks.add(NetworkComponent::noLogging);
         return self();
+    }
+
+    @Override
+    public S setDisplayName(String displayName) {
+        this.displayName = displayName;
+        tasks.add(i -> i.setDisplayName(displayName));
+        return self();
+    }
+
+    @Override
+    public String displayName() {
+        return displayName;
     }
 
     @Override
