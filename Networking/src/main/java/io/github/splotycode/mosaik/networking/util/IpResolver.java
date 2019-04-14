@@ -22,9 +22,9 @@ public class IpResolver {
 
     public static final IpResolver GLOBAL = createDefaults();
 
-    public static String DEFAULT_PREFERRED = "http://checkip.amazonaws.com/";
+    public static final String DEFAULT_PREFERRED = "http://checkip.amazonaws.com/";
 
-    @Getter private static String[] DEFAULT = new String[]{
+    @Getter private static final String[] DEFAULT = new String[]{
             "http://icanhazip.com/",
             "http://www.trackip.net/ip",
             "http://myexternalip.com/raw",
