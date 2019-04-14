@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class TaskExecutor extends Thread {
@@ -19,7 +18,6 @@ public class TaskExecutor extends Thread {
     @Getter private ExecutorService service;
     private volatile AtomicLong currentID = new AtomicLong();
     private boolean interrupt = false;
-    private ConcurrentHashMap<Future, Task> futures = new ConcurrentHashMap<>();
 
     public TaskExecutor(ExecutorService service) {
         this.service = service;
@@ -30,16 +28,7 @@ public class TaskExecutor extends Thread {
     public void run() {
         while (true) {
             if (interrupt) break;
-            for (Map.Entry<Future, Task> pair : futures.entrySet()) {
-                Future future = pair.getKey();
-                if (future.isCancelled() || future.isDone()) {
-                    pair.getValue().getLock().unlock();
-                    futures.remove(pair.getKey());
-                }
-            }
-            futures.clear();
-
-            long minimumWait = 0;
+            long minimumWait = Long.MAX_VALUE;
             for (Map.Entry<Long, Task> pair : runningTasks.entrySet()) {
                 Task task = pair.getValue();
                 if (!task.runSimultaneity() || task.getLock().tryLock()) {
@@ -54,7 +43,8 @@ public class TaskExecutor extends Thread {
                                 runningTasks.remove(pair.getKey());
                             }
                             break;
-                        } case REPEATABLE: {
+                        }
+                        case REPEATABLE: {
                             RepeatableTask dTask = (RepeatableTask) task;
                             long end = dTask.getDelay() + dTask.getLastReset();
                             long delay = end - System.currentTimeMillis();
@@ -65,7 +55,8 @@ public class TaskExecutor extends Thread {
                                 dTask.reset();
                             }
                             break;
-                        } case COMPRESSING: {
+                        }
+                        case COMPRESSING: {
                             CompressingTask cTask = (CompressingTask) task;
                             synchronized (cTask.getFirstWait()) {
                                 synchronized (cTask.getCurrentWait()) {
@@ -95,7 +86,13 @@ public class TaskExecutor extends Thread {
                 }
             }
             try {
-                wait(minimumWait);
+                synchronized (this) {
+                    if (minimumWait == Long.MAX_VALUE) {
+                        wait();
+                    } else {
+                        wait(minimumWait);
+                    }
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -114,7 +111,12 @@ public class TaskExecutor extends Thread {
         if (task.runSimultaneity()) {
             service.submit(task);
         } else {
-            futures.put(service.submit(task), task);
+            service.submit(() -> {
+                task.run();
+                synchronized (this) {
+                    notify();
+                }
+            });
         }
     }
 
@@ -122,7 +124,9 @@ public class TaskExecutor extends Thread {
         task.onInstall(this);
         long id = currentID.getAndIncrement();
         runningTasks.put(id, task);
-        notify();
+        synchronized (this) {
+            notify();
+        }
         return id;
     }
 
