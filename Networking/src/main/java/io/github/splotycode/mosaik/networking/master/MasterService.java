@@ -113,7 +113,7 @@ public class MasterService extends RepeatableTask implements Service {
                         return IpFilterRuleType.ACCEPT;
                     }
                 }))
-                .handler("packetHandler", new AnnotationContentHandler(new MasterServerHandler()))
+                .handler("packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, new MasterServerHandler()))
                 .bind(true);
     }
 

@@ -16,7 +16,8 @@ import java.util.Collection;
 @NoArgsConstructor
 public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInboundHandler<P> implements ClassRegister<Object> {
 
-    public AnnotationContentHandler(Object obj) {
+    public AnnotationContentHandler(Class<? extends P> clazz, Object obj) {
+        super(clazz);
         register(obj);
     }
 
@@ -37,9 +38,9 @@ public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInb
         Class clazz = obj.getClass();
         for (Method method : clazz.getMethods()) {
             if (method.isAnnotationPresent(PacketTarget.class)) {
-                if (method.getParameterCount() == 1 ||
-                        (method.getParameterCount() == 2 && method.getParameterTypes()[1] == ChannelHandlerContext.class)) {
-                    throw new AnnotationStructureExcpetion("Invalid Parameter length");
+                if (method.getParameterCount() != 1 &&
+                        !(method.getParameterCount() == 2 && method.getParameterTypes()[1] == ChannelHandlerContext.class)) {
+                    throw new AnnotationStructureExcpetion("Invalid Parameter length on " + clazz.getName() + "#" + method.getName());
                 }
                 Class<?> parameter = method.getParameterTypes()[0];
                 if (Packet.class.isAssignableFrom(parameter)) {

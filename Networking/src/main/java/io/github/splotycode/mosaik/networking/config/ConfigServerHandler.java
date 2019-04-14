@@ -57,6 +57,6 @@ public class ConfigServerHandler implements BoundListener, UnBoundListener, Conf
 
     @Override
     public void onChange(String originalUpdate, ConfigEntry entry) {
-        kaChannels.writeAndFlush(new KAUpdate(entry.configKey(), entry.stringValue()));
+        kaChannels.writeAndFlush(new KAUpdate(entry.getKey(), entry.getValue(String.class)));
     }
 }

@@ -53,7 +53,7 @@ public class ConfigService extends StaticConfigProvider implements Service {
             client = TCPClient.create()
                     .port(port).setDisplayName("Config")
                     .usePacketSystem(DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
-                    .handler("packetHandler", new AnnotationContentHandler(new ConfigClientHandler(this, keepAlive)))
+                    .handler("packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, new ConfigClientHandler(this, keepAlive)))
                     .bind();
         }
     }
