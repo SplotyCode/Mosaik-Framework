@@ -33,7 +33,10 @@ import io.github.splotycode.mosaik.annotations.skippedpath.SkipPath;
         "META-INF",
         "org.apiguardian.api",
         "org.reflections",
-        "com.avaje"})
+        "com.avaje",
+        "org.json",
+        "module-info",
+        "org.slf4j"})
 public class DefaultSkippedPaths {
 
 }
