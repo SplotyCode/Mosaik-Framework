@@ -17,6 +17,7 @@ public class StaticHost implements Host {
     private MultipleListenerHandler handler = new MultipleListenerHandler();
 
     public StaticHost(InetAddress address, int checkPort, TaskExecutor executor, int interval, int timeout, int successThreshold, int failThreshold) {
+        this.address = address;
         healthCheck = new PingingHealthCheck(new InetSocketAddress(address.getHostAddress(), checkPort), executor, interval, timeout, successThreshold, failThreshold);
     }
 
