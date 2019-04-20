@@ -1,20 +1,19 @@
 package io.github.splotycode.mosaik.networking.config;
 
-import io.github.splotycode.mosaik.networking.component.NetworkComponent;
-import io.github.splotycode.mosaik.networking.component.listener.BoundListener;
 import io.github.splotycode.mosaik.networking.config.packets.ConfigNoUpdate;
 import io.github.splotycode.mosaik.networking.config.packets.ConfigRequestUpdate;
 import io.github.splotycode.mosaik.networking.config.packets.ConfigUpdate;
 import io.github.splotycode.mosaik.networking.config.packets.KAUpdate;
 import io.github.splotycode.mosaik.networking.packet.handle.PacketTarget;
+import io.github.splotycode.mosaik.networking.packet.handle.SelfAnnotationHandler;
+import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.util.CodecUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ConfigClientHandler implements BoundListener {
+public class ConfigClientHandler extends SelfAnnotationHandler<SerializedPacket> {
 
     private static final Logger LOGGER = Logger.getInstance(ConfigClientHandler.class);
 
@@ -43,8 +42,9 @@ public class ConfigClientHandler implements BoundListener {
     }
 
     @Override
-    public void bound(NetworkComponent component, ChannelFuture future) {
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         String configHash = CodecUtil.sha1Hex(provider.getRawConfig());
-        future.channel().writeAndFlush(new ConfigRequestUpdate(configHash));
+        ctx.writeAndFlush(new ConfigRequestUpdate(configHash));
     }
+
 }

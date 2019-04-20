@@ -12,6 +12,7 @@ import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
 import io.github.splotycode.mosaik.networking.service.Service;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
+import io.github.splotycode.mosaik.util.listener.Listener;
 import io.netty.channel.Channel;
 
 import java.io.File;
@@ -44,16 +45,18 @@ public class ConfigService extends StaticConfigProvider implements Service {
     @Override
     public void start() {
         if (serverAddress == null) {
+            Listener handler = new ConfigServerHandler(this, keepAlive);
             server = TCPServer.create()
                     .port(port).setDisplayName("Config")
                     .usePacketSystem(DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
-                    .handler("packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, new ConfigServerHandler(this, keepAlive)))
+                    .addListener(handler)
+                    .handler("packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, handler))
                     .bind();
         } else {
             client = TCPClient.create()
                     .port(port).setDisplayName("Config")
                     .usePacketSystem(DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
-                    .handler("packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, new ConfigClientHandler(this, keepAlive)))
+                    .handler("packetHandler", new ConfigClientHandler(this, keepAlive))
                     .bind();
         }
     }
