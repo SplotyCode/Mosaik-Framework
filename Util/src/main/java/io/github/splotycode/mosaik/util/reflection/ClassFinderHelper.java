@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.util.reflection;
 
 import com.google.common.reflect.ClassPath;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.cache.complex.resolver.CacheValueResolver;
 import io.github.splotycode.mosaik.util.cache.complex.validator.TimeValidator;
 import lombok.AccessLevel;
@@ -22,13 +23,15 @@ public final class ClassFinderHelper {
     private static Set<String> nonUserPrefixes = new HashSet<>();
     @Getter private static long totalClassCount;
 
+    private static boolean debugUserClasses = !StringUtil.isEmpty(System.getenv("debug-user-classes"));
+
     private static ComplexCache<Collection<Class<?>>> userClassesCache = new CacheBuilder<Collection<Class<?>>>().normal().setValidator(new TimeValidator<>(2 * 60 * 1000)).setResolver((CacheValueResolver<Collection<Class<?>>>) cache -> {
         Collection<Class<?>> list = new ArrayList<>();
         try {
             for (ClassPath.ClassInfo classInfo : ClassPath.from(Thread.currentThread().getContextClassLoader()).getAllClasses()) {
                 totalClassCount++;
                 boolean skip = false;
-                String packageName = classInfo.getPackageName();
+                String packageName = classInfo.getName();
                 for (String prefix : nonUserPrefixes) {
                     if (packageName.startsWith(prefix)) {
                         skip = true;
@@ -36,11 +39,14 @@ public final class ClassFinderHelper {
                     }
                 }
                 if (skip) continue;
+                if (debugUserClasses) {
+                    logger.debug(classInfo.getName());
+                }
                 try {
                     list.add(classInfo.load());
                 } catch (UnsupportedClassVersionError ex) {
                     logger.warn(classInfo.getName() + " has an unsupported class version (" + ex.getMessage() + ")");
-                }catch (Throwable ex) {
+                } catch (Throwable ex) {
                     new FailedToLoadClassException("Failed to load class '" + classInfo.getName() + "'if you want to skip it use @SkipPath", ex).printStackTrace();
                 }
             }
