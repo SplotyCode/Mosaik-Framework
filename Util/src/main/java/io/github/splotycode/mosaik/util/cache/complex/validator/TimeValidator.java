@@ -2,6 +2,9 @@ package io.github.splotycode.mosaik.util.cache.complex.validator;
 
 import io.github.splotycode.mosaik.util.cache.Cache;
 
+/**
+ * Checks if cache value is valid by checking how long it is cached in a cache.
+ */
 public class TimeValidator<T> implements CacheValidator<T> {
 
     private long started = System.currentTimeMillis();
