@@ -5,7 +5,6 @@ import io.github.splotycode.mosaik.networking.component.tcp.TCPServer;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.master.packets.DestroyPacket;
 import io.github.splotycode.mosaik.networking.packet.PacketRegistry;
-import io.github.splotycode.mosaik.networking.packet.handle.AnnotationContentHandler;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
 import io.github.splotycode.mosaik.networking.service.Service;
@@ -113,7 +112,7 @@ public class MasterService extends RepeatableTask implements Service {
                         return IpFilterRuleType.ACCEPT;
                     }
                 }))
-                .handler("packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, new MasterServerHandler()))
+                .handler("packetHandler", new MasterServerHandler(this))
                 .bind(true);
     }
 

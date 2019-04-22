@@ -40,6 +40,9 @@ public class CacheBuilder<T>{
         return new MapBuilder<>();
     }
 
+    /**
+     * Used to construct caches for single values.
+     */
     @Getter
     @EqualsAndHashCode
     public static class NormalBuilder<T> {
