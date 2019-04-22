@@ -10,6 +10,11 @@ public abstract class ValueTransformer<I, O> {
     @Getter private Class<I> inputClass;
     @Getter private Class<O> outputClass;
 
+    /**
+     * Transforms a object
+     * @param input the original object
+     * @return the transformed object
+     */
     public abstract O transform(I input) throws Exception;
 
     public ValueTransformer() {
@@ -18,6 +23,12 @@ public abstract class ValueTransformer<I, O> {
         outputClass = (Class<O>) generics[1];
     }
 
+    /**
+     * Checks if this transformer is able to make a specific transform operation
+     * @param input the input object
+     * @param output the class that the input should have after its transformation
+     * @return true if it is able to transform or else false
+     */
     public boolean valid(I input, Class<? extends O> output) {
         return ReflectionUtil.isAssignable(inputClass, input.getClass()) && ReflectionUtil.isAssignable(outputClass, output);
     }

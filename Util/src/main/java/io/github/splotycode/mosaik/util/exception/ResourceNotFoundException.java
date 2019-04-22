@@ -1,6 +1,10 @@
 package io.github.splotycode.mosaik.util.exception;
 
+/**
+ * Can be thrown if a resource was not found.
+ */
 public class ResourceNotFoundException extends RuntimeException {
+
     public ResourceNotFoundException() {
     }
 

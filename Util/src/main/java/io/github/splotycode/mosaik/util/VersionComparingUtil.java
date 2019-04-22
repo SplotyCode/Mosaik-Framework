@@ -3,9 +3,16 @@ package io.github.splotycode.mosaik.util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * Util to compare version numbers
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class VersionComparingUtil {
 
+    /**
+     * Compares two version numbers.
+     * @return -1, 0 or 1 like a normal comparator
+     */
     public static int compare(String v1, String v2) {
         String[] part1 = v1.split("[._\\-]");
         String[] part2 = v2.split("[._\\-]");

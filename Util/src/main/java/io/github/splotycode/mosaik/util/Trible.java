@@ -1,5 +1,9 @@
 package io.github.splotycode.mosaik.util;
 
+/**
+ * @deprecated use {@link Tribble}
+ */
+@Deprecated
 public class Trible<A, B, C> {
 
     private A one;

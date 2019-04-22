@@ -7,28 +7,48 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
 
+/**
+ * General Utils for enums
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringUtil {
 
+    /**
+     * Checks if a CharSequence is empty or null
+     * @param str the string to check
+     * @return true is empty or else false
+     */
     public static boolean isEmpty(CharSequence str){
         return str == null || str.length() == 0;
     }
 
+    /**
+     * Returns the number of bytes formatted
+     * @param bytes the number of bytes
+     */
     public static String humanReadableBytes(long bytes) {
         if (bytes < 1024) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(1024));
-        char pre = ("kMGTPE").charAt(exp-1);
+        char pre = "kMGTPE".charAt(exp-1);
         return String.format("%.1f %sB", bytes / Math.pow(1024, exp), pre);
     }
 
+    /**
+     * @deprecated use {@link Character#isWhitespace(char)}
+     */
     public static boolean isNoWhiteSpace(char ch) {
         return ch != Character.MIN_VALUE && ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t';
     }
 
+    @Deprecated
     public static boolean isNoSpecialSpace(char ch) {
         return ch != '\n' && ch != '\r' && ch != '\t' && ch != Character.MIN_VALUE;
     }
 
+    /**
+     * @deprecated use {@link Character#isWhitespace(char)}
+     */
+    @Deprecated
     public static boolean isWhiteSpace(char ch){
         return !isNoWhiteSpace(ch);
     }
@@ -44,6 +64,11 @@ public final class StringUtil {
         return sw.toString();
     }
 
+    /**
+     * Checks if a String could be parsed as a float
+     * @param str the string to check
+     * @return true if float or else false
+     */
     public static boolean isFloat(String str){
         try {
             Float.valueOf(str);
@@ -53,10 +78,19 @@ public final class StringUtil {
         return true;
     }
 
+    /**
+     * @deprecated use {@link Float#valueOf(String)}
+     */
+    @Deprecated
     public static float toFloat(String str){
         return Float.valueOf(str);
     }
 
+    /**
+     * Checks if a String could be parsed as a double
+     * @param str the string to check
+     * @return true if double or else false
+     */
     public static boolean isDouble(String str){
         try {
             Double.valueOf(str);
@@ -66,10 +100,18 @@ public final class StringUtil {
         return true;
     }
 
+    /**
+     * @deprecated use {@link Double#valueOf(String)}
+     */
     public static double toDouble(String str){
         return Double.parseDouble(str);
     }
 
+    /**
+     * Checks if a String could be parsed as a long
+     * @param str the string to check
+     * @return true if long or else false
+     */
     public static boolean isLong(String str){
         try {
             Long.valueOf(str);
@@ -79,6 +121,18 @@ public final class StringUtil {
         return true;
     }
 
+    /**
+     * @deprecated use {@link Long#valueOf(String)}
+     */
+    public static long toLong(String str){
+        return Long.parseLong(str);
+    }
+
+    /**
+     * Checks if a String could be parsed as a integer
+     * @param str the string to check
+     * @return true if integer or else false
+     */
     public static boolean isInteger(String str){
         try {
             Integer.valueOf(str);
@@ -88,76 +142,151 @@ public final class StringUtil {
         return true;
     }
 
-    public static long toLong(String str){
-        return Long.parseLong(str);
-    }
-
+    /**
+     * Transform a Object (T) to String.
+     * This is used for Join methods that is why it is called Joiner.
+     */
     public interface Joiner<T> {
+
         String join(T obj);
+
     }
 
+    /**
+     * This Joiner instance converts String to Strings by doing nothing
+     */
     public static final Joiner<String> STRING_JOINER = str -> str;
 
+    /**
+     * Combines multiple strings with a comma
+     * @param iterable the strings that should be combined
+     * @return the combined string
+     */
     public static String join(Iterable<String> iterable) {
         return join(iterable, ", ");
     }
 
-    public static String join(Iterable<String> iterable, String seperator) {
-        return join(iterable, STRING_JOINER, seperator);
+    /**
+     * Combines multiple strings
+     * @param iterable the strings that should be combined
+     * @param separator separator the strings
+     * @return the combined string
+     */
+    public static String join(Iterable<String> iterable, String separator) {
+        return join(iterable, STRING_JOINER, separator);
     }
 
-    public static String join(String[] array, String seperator){
-        return join(array, STRING_JOINER, seperator);
+    /**
+     * Combines multiple strings
+     * @param array the strings that should be combined
+     * @param separator separator the strings
+     * @return the combined string
+     */
+    public static String join(String[] array, String separator){
+        return join(array, STRING_JOINER, separator);
     }
 
+    /**
+     * Combines multiple strings with a comma
+     * @param array the strings that should be combined
+     * @return the combined string
+     */
     public static String join(String[] array){
         return join(array, STRING_JOINER, ", ");
     }
 
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * The string will be separated by a comma
+     * @param iterable the strings that should be combined
+     * @return the combined string
+     */
     public static <T> String join(Iterable<T> iterable, Joiner<T> joiner) {
         return join(iterable, joiner, ", ");
     }
 
-    public static <T> String join(Iterable<T> iterable, Joiner<T> joiner, String seperator) {
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * @param iterable the strings that should be combined
+     * @param separator separator the strings
+     * @return the combined string
+     */
+    public static <T> String join(Iterable<T> iterable, Joiner<T> joiner, String separator) {
         StringBuilder builder = new StringBuilder();
         for (T element : iterable)
-            builder.append(joiner.join(element)).append(seperator);
+            builder.append(joiner.join(element)).append(separator);
         String result = builder.toString();
-        if(result.endsWith(seperator)) return result.substring(0, result.length()-seperator.length());
+        if(result.endsWith(separator)) return result.substring(0, result.length()-separator.length());
         return result;
     }
 
-    public static String format(String s, Object... args) {
-        return new MessageFormat(s).format(args);
-    }
-
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * The string will be separated by a comma
+     * @param array the strings that should be combined
+     * @return the combined string
+     */
     public static <T> String join(T[] array, Joiner<T> joiner) {
         return join(array, joiner, ", ");
     }
 
-    public static <T> String join(T[] array, Joiner<T> joiner, String seperator) {
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * @param array the strings that should be combined
+     * @param separator separator the strings
+     * @return the combined string
+     */
+    public static <T> String join(T[] array, Joiner<T> joiner, String separator) {
         StringBuilder builder = new StringBuilder();
         for (T element : array)
-            builder.append(joiner.join(element)).append(seperator);
+            builder.append(joiner.join(element)).append(separator);
         String result = builder.toString();
-        if(result.endsWith(seperator)) return result.substring(0, result.length()-seperator.length());
+        if(result.endsWith(separator)) return result.substring(0, result.length()-separator.length());
         return result;
     }
 
+    /**
+     * Inserts objects into a String
+     * @param string the raw string
+     * @param args the objects you want to insert
+     * @return the formatted string
+     */
+    public static String format(String string, Object... args) {
+        return new MessageFormat(string).format(args);
+    }
+
+    /**
+     * Checks if two cars equals ignoring the case.
+     */
     public static boolean charsEqualIgnoreCase(char a, char b) {
         return a == b || Character.toLowerCase(a) == Character.toLowerCase(b);
     }
 
+    /**
+     * Checks if two cars equals ignoring the case.
+     */
     public static boolean endsWithChar(String str, char suffix) {
-        return str != null && str.length() != 0 && str.charAt(str.length() - 1) == suffix;
+        return !isEmpty(str) && str.charAt(str.length() - 1) == suffix;
     }
 
+    /**
+     * Checks if a string starts with a string ignoring the case
+     * @param str the string that should be checked
+     * @param prefix the string that <code>str</code> starts with
+     * @return true if it matches or else false
+     */
     public static boolean startsWithIgnoreCase(String str, String prefix) {
         int stringLength = str.length();
         int prefixLength = prefix.length();
         return stringLength >= prefixLength && str.regionMatches(true, 0, prefix, 0, prefixLength);
     }
 
+    /**
+     * Checks if a string ends with a string ignoring the case
+     * @param text the string that should be checked
+     * @param suffix the string that <code>str</code> ends with
+     * @return true if it matches or else false
+     */
     public static boolean endsWithIgnoreCase(String text, String suffix) {
         int l1 = text.length();
         int l2 = suffix.length();
@@ -172,6 +301,16 @@ public final class StringUtil {
         return true;
     }
 
+    /**
+     * Get the index of a char in String.
+     * The range of this check can be specified.
+     * It will try to find the last index.
+     * @param str the string that should be checked
+     * @param c the char we want to find
+     * @param start at what position should we start the string
+     * @param end at what position should we end the string
+     * @return the last index of the char, -1 if the char is not present in string
+     */
     public static int lastIndexOf(String str, char c, int start, int end) {
         start = Math.max(start, 0);
         for (int i = Math.min(end, str.length()) - 1; i >= start; i--) {
@@ -180,10 +319,27 @@ public final class StringUtil {
         return -1;
     }
 
+    /**
+     * Checks if a string contains another string.
+     * This check will ignore the case.
+     * @param where the source
+     * @param what the string you want to find in <code>where</code>
+     * @return true when the check is successful or else false
+     */
     public static boolean containsIgnoreCase(String where, String what) {
         return indexOfIgnoreCase(where, what, 0) >= 0;
     }
 
+    /**
+     * Get the index of string in a string.
+     * This check will ignore the case
+     * The range of this check can be specified.
+     * @param what the string that should be checked
+     * @param where the source
+     * @param what the string you want to find the index of in <code>where</code>
+     * @param fromIndex tarting point
+     * @return the index of the string,  -1 if the char is not present in string
+     */
     public static int indexOfIgnoreCase(String where, String what, int fromIndex) {
         int targetCount = what.length();
         int sourceCount = where.length();
@@ -221,21 +377,40 @@ public final class StringUtil {
         return -1;
     }
 
+    /**
+     * Removes the end of a string
+     * @param str the string from what you want to remove the end
+     * @param places the amount of chars you want to remove
+     * @return the new string
+     */
     public static String removeLast(String str, int places) {
         if (isEmpty(str)) return str;
         return str.substring(0, str.length() - places);
     }
 
-    public static boolean containsDouble(String s, char letter) {
-        int firstIndex = s.indexOf(letter);
-
-        return firstIndex > -1 && s.indexOf(letter, firstIndex + 1) > -1;
+    /**
+     * Checks if a letter is thwo times in string
+     * @param str source
+     * @param letter the letter you want to check for
+     * @return true if the lette is two times in the string or else false
+     */
+    public static boolean containsDouble(String str, char letter) {
+        int firstIndex = str.indexOf(letter);
+        return firstIndex > -1 && str.indexOf(letter, firstIndex + 1) > -1;
     }
 
+    /**
+     * Converts a string into camelcase
+     */
     public static String camelCase(String s) {
         return camelCase(s, " ");
     }
 
+    /**
+     * Converts a string into camelcase
+     * @param separator the separator that should be used.
+     *                  For example: My-Name-Is-David or My Name Is David
+     */
     public static String camelCase(String s, String separator) {
         if (s == null)  return null;
 
@@ -254,8 +429,15 @@ public final class StringUtil {
         return b.toString().trim();
     }
 
-    public static String getLastSplit(String str, String seperator) {
-        return str.substring(str.lastIndexOf(seperator) + 1);
+    /**
+     * Returns the last split index of a string
+     * Example:
+     * getLastSplit("hallo my name is david", " ") == "david"
+     *
+     * @param str the source
+     */
+    public static String getLastSplit(String str, String separator) {
+        return str.substring(str.lastIndexOf(separator) + 1);
     }
 
 }

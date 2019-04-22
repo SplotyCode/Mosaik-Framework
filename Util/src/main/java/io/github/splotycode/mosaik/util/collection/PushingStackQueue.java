@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.util.collection;
 
-import io.github.splotycode.mosaik.util.exception.MethodNotSupportedExcpetion;
+import io.github.splotycode.mosaik.util.exception.MethodNotSupportedException;
 
 import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -43,42 +43,42 @@ public class PushingStackQueue<E> extends ArrayBlockingQueue<E> {
 
     @Override
     public E element() {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public boolean add(E e) {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public boolean addAll(Collection<? extends E> collection) {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public boolean offer(E e, long l, TimeUnit timeUnit) throws InterruptedException {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public boolean removeAll(Collection<?> collection) {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public E remove() {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public boolean removeIf(Predicate<? super E> predicate) {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     @Override
     public boolean remove(Object o) {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     public PushingStackQueue(int cap, Supplier<E> supplier) {

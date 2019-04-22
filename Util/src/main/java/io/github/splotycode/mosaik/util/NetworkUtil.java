@@ -11,6 +11,11 @@ import java.util.function.Predicate;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class NetworkUtil {
 
+    /**
+     * Iterates over all addresses from all network interfaces.
+     * It will return the address and its interface of the first Address that bypasses the filter
+     * @param filter that filter that determines if a address is valid
+     */
     public static Pair<InetAddress, NetworkInterface> getINetFromInterface(Predicate<Pair<InetAddress, NetworkInterface>> filter) throws SocketException {
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 
@@ -31,6 +36,9 @@ public final class NetworkUtil {
         return null;
     }
 
+    /**
+     * Gets the MAC Address
+     */
     public static String getMacAddress() {
         try {
             Pair<InetAddress, NetworkInterface> pair = getINetFromInterface(pair0 -> pair0.getOne() instanceof Inet4Address);
@@ -49,6 +57,9 @@ public final class NetworkUtil {
     }
 
 
+    /**
+     * Gets the local ipv4 ip address
+     */
     public static String localIp() {
         try {
             Pair<InetAddress, NetworkInterface> lanIp = getINetFromInterface(address -> address.getOne() instanceof Inet4Address);
@@ -58,6 +69,12 @@ public final class NetworkUtil {
         }
     }
 
+    /**
+     * Checks if we can connect to SocketAddress
+     * @param host the socket address that should be checked
+     * @param timeout after what time should we stop the check
+     * @return true if it is online or false if the connection is timed or failed
+     */
     public static boolean isOnline(SocketAddress host, int timeout) {
         try {
             Socket socket = new Socket();

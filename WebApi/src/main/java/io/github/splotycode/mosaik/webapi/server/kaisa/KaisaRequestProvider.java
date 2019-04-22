@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.webapi.server.kaisa;
 
-import io.github.splotycode.mosaik.util.exception.MethodNotSupportedExcpetion;
+import io.github.splotycode.mosaik.util.exception.MethodNotSupportedException;
 import io.github.splotycode.mosaik.webapi.request.Method;
 
 import java.nio.ByteBuffer;
@@ -20,7 +20,7 @@ public class KaisaRequestProvider {
 
     private String[] downloadFirstLine() {
         ByteBuffer buffer = ByteBuffer.allocate(64);
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     public String resolvePath() {
@@ -38,23 +38,23 @@ public class KaisaRequestProvider {
     }
 
     public byte[] resolveBody() {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     public HashMap<String, String> resolveHeaders() {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     public Map<String, ? extends Collection<String>> resolveGet() {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     public Map<String, ? extends Collection<String>> resolvePost() {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
     public Map<String, String> resolveCookies() {
-        throw new MethodNotSupportedExcpetion();
+        throw new MethodNotSupportedException();
     }
 
 }

@@ -1,9 +1,23 @@
 package io.github.splotycode.mosaik.util;
 
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * Holds two Objects like Map.Entry.
+ */
+@Getter
+@Setter
 public class Pair <A, B> {
 
+    /**
+     * A empty pair
+     */
     public static final Pair<?, ?> EMPTY = new Pair<>(null, null);
 
+    /**
+     * Returns a empty pair
+     */
     public static <A, B> Pair<A, B> getEmpty() {
         return (Pair<A, B>) EMPTY;
     }
@@ -16,19 +30,4 @@ public class Pair <A, B> {
         this.two = two;
     }
 
-    public A getOne() {
-        return one;
-    }
-
-    public void setOne(A one) {
-        this.one = one;
-    }
-
-    public B getTwo() {
-        return two;
-    }
-
-    public void setTwo(B two) {
-        this.two = two;
-    }
 }

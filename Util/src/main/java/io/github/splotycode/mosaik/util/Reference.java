@@ -6,15 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Reference two another Object
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Referece<T> extends DefaultListenerHandler<ValueChangeListener<T>> {
+public class Reference<T> extends DefaultListenerHandler<ValueChangeListener<T>> {
 
     T value;
 
     public void setValue(T value) {
-        call(listener -> listener.valueChange(Referece.this.value, value));
+        call(listener -> listener.valueChange(Reference.this.value, value));
         this.value = value;
     }
 
