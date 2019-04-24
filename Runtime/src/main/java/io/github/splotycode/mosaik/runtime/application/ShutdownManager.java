@@ -2,7 +2,6 @@ package io.github.splotycode.mosaik.runtime.application;
 
 import io.github.splotycode.mosaik.util.task.Task;
 import io.github.splotycode.mosaik.util.task.TaskExecutor;
-import io.github.splotycode.mosaik.util.task.TaskType;
 import io.github.splotycode.mosaik.util.task.types.CompressingTask;
 
 import java.util.LinkedList;
@@ -31,10 +30,12 @@ public class ShutdownManager implements IShutdownManager {
             }
 
             for (Task task : taskExecutor.getRunningTasks()) {
-                if (task.getType() == TaskType.COMPRESSING) {
+                if (task instanceof CompressingTask) {
                     CompressingTask cTask = (CompressingTask) task;
-                    if (cTask.execOnShutdown() && cTask.getCurrentWait().get() != -1) {
-                        cTask.run();
+                    synchronized (cTask) {
+                        if (cTask.execOnShutdown() && cTask.getCurrentWait() != -1) {
+                            cTask.run();
+                        }
                     }
                 }
             }
