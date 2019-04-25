@@ -56,6 +56,31 @@ public final class NetworkUtil {
         }
     }
 
+    /**
+     * Checks if an address is local
+     */
+    public static boolean isLocalAddress(String address) {
+        try {
+            return isLocalAddress(InetAddress.getByName(address));
+        } catch (UnknownHostException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if an address is local
+     */
+    public static boolean isLocalAddress(InetAddress address) {
+        if (address.isAnyLocalAddress() || address.isLoopbackAddress()) {
+            return true;
+        }
+        try {
+            return NetworkInterface.getByInetAddress(address) != null;
+        } catch (SocketException e) {
+            return false;
+        }
+    }
+
 
     /**
      * Gets the local ipv4 ip address
