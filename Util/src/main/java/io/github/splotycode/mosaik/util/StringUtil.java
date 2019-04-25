@@ -23,6 +23,22 @@ public final class StringUtil {
     }
 
     /**
+     * Checks if a CharSequence is empty or null or has only whitespaces
+     * @param str the string to check
+     * @return true is empty or else false
+     */
+    public static boolean isEmptyDeep(CharSequence str){
+        if (str == null) return true;
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            if (!Character.isWhitespace(ch)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Returns the number of bytes formatted
      * @param bytes the number of bytes
      */
@@ -70,6 +86,7 @@ public final class StringUtil {
      * @return true if float or else false
      */
     public static boolean isFloat(String str){
+        if (str == null) return false;
         try {
             Float.valueOf(str);
         } catch (NumberFormatException ex){
@@ -91,10 +108,11 @@ public final class StringUtil {
      * @param str the string to check
      * @return true if double or else false
      */
-    public static boolean isDouble(String str){
+    public static boolean isDouble(String str) {
+        if (str == null) return false;
         try {
             Double.valueOf(str);
-        } catch (NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             return false;
         }
         return true;
@@ -112,10 +130,11 @@ public final class StringUtil {
      * @param str the string to check
      * @return true if long or else false
      */
-    public static boolean isLong(String str){
+    public static boolean isLong(String str) {
+        if (str == null) return false;
         try {
             Long.valueOf(str);
-        } catch (NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             return false;
         }
         return true;
@@ -134,9 +153,10 @@ public final class StringUtil {
      * @return true if integer or else false
      */
     public static boolean isInteger(String str){
+        if (str == null) return false;
         try {
             Integer.valueOf(str);
-        } catch (NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             return false;
         }
         return true;
@@ -212,6 +232,8 @@ public final class StringUtil {
      * @return the combined string
      */
     public static <T> String join(Iterable<T> iterable, Joiner<T> joiner, String separator) {
+        if (iterable == null || separator == null) return null;
+        if (joiner == null) throw new IllegalArgumentException("joiner");
         StringBuilder builder = new StringBuilder();
         for (T element : iterable)
             builder.append(joiner.join(element)).append(separator);
@@ -237,6 +259,8 @@ public final class StringUtil {
      * @return the combined string
      */
     public static <T> String join(T[] array, Joiner<T> joiner, String separator) {
+        if (array == null || separator == null) return null;
+        if (joiner == null) throw new IllegalArgumentException("joiner");
         StringBuilder builder = new StringBuilder();
         for (T element : array)
             builder.append(joiner.join(element)).append(separator);
@@ -252,6 +276,7 @@ public final class StringUtil {
      * @return the formatted string
      */
     public static String format(String string, Object... args) {
+        if (string == null) return null;
         return new MessageFormat(string).format(args);
     }
 
@@ -276,6 +301,7 @@ public final class StringUtil {
      * @return true if it matches or else false
      */
     public static boolean startsWithIgnoreCase(String str, String prefix) {
+        if (str == null || prefix == null) return false;
         int stringLength = str.length();
         int prefixLength = prefix.length();
         return stringLength >= prefixLength && str.regionMatches(true, 0, prefix, 0, prefixLength);
@@ -288,6 +314,7 @@ public final class StringUtil {
      * @return true if it matches or else false
      */
     public static boolean endsWithIgnoreCase(String text, String suffix) {
+        if (text == null || suffix ==  null) return false;
         int l1 = text.length();
         int l2 = suffix.length();
         if (l1 < l2) return false;
@@ -312,6 +339,7 @@ public final class StringUtil {
      * @return the last index of the char, -1 if the char is not present in string
      */
     public static int lastIndexOf(String str, char c, int start, int end) {
+        if (str == null) return -1;
         start = Math.max(start, 0);
         for (int i = Math.min(end, str.length()) - 1; i >= start; i--) {
             if (str.charAt(i) == c) return i;
@@ -341,6 +369,7 @@ public final class StringUtil {
      * @return the index of the string,  -1 if the char is not present in string
      */
     public static int indexOfIgnoreCase(String where, String what, int fromIndex) {
+        if (where == null || what == null) return -1;
         int targetCount = what.length();
         int sourceCount = where.length();
 
@@ -395,6 +424,7 @@ public final class StringUtil {
      * @return true if the lette is two times in the string or else false
      */
     public static boolean containsDouble(String str, char letter) {
+        if (str == null) return false;
         int firstIndex = str.indexOf(letter);
         return firstIndex > -1 && str.indexOf(letter, firstIndex + 1) > -1;
     }
@@ -411,11 +441,11 @@ public final class StringUtil {
      * @param separator the separator that should be used.
      *                  For example: My-Name-Is-David or My Name Is David
      */
-    public static String camelCase(String s, String separator) {
-        if (s == null)  return null;
+    public static String camelCase(String str, String separator) {
+        if (str == null)  return null;
 
         StringBuilder b = new StringBuilder();
-        String[] split = s.split(separator);
+        String[] split = str.split(separator);
         int i = 0;
         for (String srt : split) {
             i++;
@@ -437,6 +467,7 @@ public final class StringUtil {
      * @param str the source
      */
     public static String getLastSplit(String str, String separator) {
+        if (str == null || separator == null) return null;
         return str.substring(str.lastIndexOf(separator) + 1);
     }
 
