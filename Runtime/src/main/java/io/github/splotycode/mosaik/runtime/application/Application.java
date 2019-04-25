@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.runtime.application;
 
+import io.github.splotycode.mosaik.runtime.LinkBase;
 import lombok.Getter;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.runtime.startup.environment.ConfiguriseEnvironmentChanger;
@@ -29,6 +30,10 @@ public abstract class Application implements IApplication {
 
     public abstract void start(BootContext context) throws Exception;
     public void configurise(ConfiguriseEnvironmentChanger environmentChanger, DataFactory config) throws Exception {}
+
+    public static <A extends Application> A getInstance(Class<A> clazz) {
+        return LinkBase.getApplicationManager().getApplicationByClass(clazz);
+    }
 
     @Override
     public synchronized void setState(ApplicationState state) {
