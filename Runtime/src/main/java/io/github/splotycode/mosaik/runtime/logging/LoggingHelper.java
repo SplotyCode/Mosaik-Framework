@@ -47,8 +47,8 @@ public final class LoggingHelper {
     }
 
     public static void registerShutdownLogging() {
-        Application.getGlobalShutdownManager().addFirstShutdownTask(() -> printImportantSection("Api Shutdown Start"));
-        Application.getGlobalShutdownManager().addShutdownTask(() -> printImportantSection("Api Shutdown Start"));
+        Application.getGlobalShutdownManager().addFirstShutdownTask(() -> printImportantSection("Api Shutdown Starting"));
+        Application.getGlobalShutdownManager().addShutdownTask(() -> printImportantSection("Api Shutdown Completed"));
     }
 
     public static void printInfo() {
