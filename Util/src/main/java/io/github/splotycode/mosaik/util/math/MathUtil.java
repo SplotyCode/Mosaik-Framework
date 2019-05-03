@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.math;
 
+import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,23 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MathUtil {
+
+    public double weightedRandomn(double[] values, double[] probability) {
+        if (values == null) throw new IllegalArgumentException("values");
+        if (probability == null) throw new IllegalArgumentException("probability");
+        if (values.length != probability.length) throw new IllegalArgumentException(values.length + "!=" + probability.length);
+
+        double rand = Math.random();
+        double ratio = 1.0f / ArrayUtil.sum(probability);
+        double tempDist = 0;
+        for (int c = 0; c < values.length;c++) {
+            tempDist += probability[c];
+            if (rand / ratio <= tempDist) {
+                return values[c];
+            }
+        }
+        return 0;
+    }
 
     /**
      * Used for log operations were the base is not 10

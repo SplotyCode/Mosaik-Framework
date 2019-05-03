@@ -1810,37 +1810,27 @@ public final class ArrayUtil {
 
     public static int average(int[] input) {
         if (input.length == 0) return 0;
-        int sum = 0;
-        for (int num : input) sum += num;
-        return sum / input.length;
+        return sum(input) / input.length;
     }
 
     public static long average(long[] input) {
         if (input.length == 0) return 0;
-        long sum = 0;
-        for (long num : input) sum += num;
-        return sum / input.length;
+        return sum(input) / input.length;
     }
 
     public static double average(double[] input) {
         if (input.length == 0) return 0;
-        double sum = 0;
-        for (double num : input) sum += num;
-        return sum / input.length;
+        return sum(input) / input.length;
     }
 
     public static float average(float[] input) {
         if (input.length == 0) return 0;
-        float sum = 0;
-        for (float num : input) sum += num;
-        return sum / input.length;
+        return sum(input) / input.length;
     }
 
     public static short average(short[] input) {
         if (input.length == 0) return 0;
-        short sum = 0;
-        for (short num : input) sum += num;
-        return (short) (sum / input.length);
+        return (short) (sum(input) / input.length);
     }
 
     public static boolean average(boolean[] input, boolean def) {
@@ -1854,16 +1844,71 @@ public final class ArrayUtil {
 
     public static byte average(byte[] input) {
         if (input.length == 0) return 0;
-        byte sum = 0;
-        for (byte num : input) sum += num;
-        return (byte) (sum / input.length);
+        return (byte) (sum(input) / input.length);
     }
 
     public static char average(char[] input) {
         if (input.length == 0) return 0;
+        return (char) (sum(input) / input.length);
+    }
+
+    /*
+     * --------------------------------
+     * ----------- SUM ------------
+     * --------------------------------
+     */
+
+    public static int sum(int[] input) {
+        int sum = 0;
+        for (int num : input) sum += num;
+        return sum;
+    }
+
+    public static long sum(long[] input) {
+        long sum = 0;
+        for (long num : input) sum += num;
+        return sum;
+    }
+
+    public static double sum(double[] input) {
+        double sum = 0;
+        for (double num : input) sum += num;
+        return sum;
+    }
+
+    public static float sum(float[] input) {
+        float sum = 0;
+        for (float num : input) sum += num;
+        return sum;
+    }
+
+    public static short sum(short[] input) {
+        short sum = 0;
+        for (short num : input) sum += num;
+        return sum;
+    }
+
+    public static int sum(boolean[] input) {
+        int sum = 0;
+        for (boolean bool : input) {
+            if (bool) {
+                sum++;
+            }
+        }
+        return sum;
+    }
+
+    public static byte sum(byte[] input) {
+        byte sum = 0;
+        for (byte num : input) sum += num;
+        return sum;
+    }
+
+    public static char sum(char[] input) {
+        if (input.length == 0) return 0;
         char sum = 0;
         for (char num : input) sum += num;
-        return (char) (sum / input.length);
+        return sum;
     }
 
 
