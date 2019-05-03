@@ -8,7 +8,7 @@ import java.io.StringWriter;
 import java.text.MessageFormat;
 
 /**
- * General Utils for enums
+ * General Utils for strings
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StringUtil {
