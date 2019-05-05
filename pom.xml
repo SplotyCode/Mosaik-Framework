@@ -16,7 +16,6 @@
         <module>GameEngine</module>
         <module>WebApi</module>
         <module>ValueTransformer</module>
-        <module>SpigotLib</module>
         <module>ArgParser</module>
         <module>DomParsing</module>
         <module>StartUp</module>
@@ -28,7 +27,6 @@
         <module>Mosaik-All</module>
         <module>ArgParser-Impl</module>
         <module>DomParsing-Impl</module>
-        <module>SpigotLib-Annotation</module>
     </modules>
 
     <properties>
