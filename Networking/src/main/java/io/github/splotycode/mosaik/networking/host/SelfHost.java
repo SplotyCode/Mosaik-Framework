@@ -10,12 +10,11 @@ import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
 import lombok.Setter;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 public class SelfHost implements Host {
 
-    private StaticHealthCheck healthCheck = new StaticHealthCheck(true, new InetSocketAddress("localhost", 80));
+    private StaticHealthCheck healthCheck = new StaticHealthCheck(true);
 
     private MultipleListenerHandler handler = new MultipleListenerHandler();
 

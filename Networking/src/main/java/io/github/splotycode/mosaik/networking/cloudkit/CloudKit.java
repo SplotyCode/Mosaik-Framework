@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.networking.cloudkit;
 
+import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.config.ConfigProvider;
 import io.github.splotycode.mosaik.networking.host.AddressChangeListener;
 import io.github.splotycode.mosaik.networking.host.Host;
@@ -36,6 +37,11 @@ public class CloudKit implements AddressChangeListener {
 
     public CloudKit startMasterService(long updateDelay, int port) {
         startService(new MasterService(updateDelay, localTaskExecutor, port, ipResolver, hosts));
+        return this;
+    }
+
+    public CloudKit startMasterService() {
+        startService(new MasterService(this, localTaskExecutor, ipResolver, hosts));
         return this;
     }
 
@@ -77,5 +83,10 @@ public class CloudKit implements AddressChangeListener {
     public void onChange(InetAddress oldAddress, InetAddress newAddress) {
         Host host = hosts.remove(TransformerManager.getInstance().transform(oldAddress, String.class));
         hosts.put(TransformerManager.getInstance().transform(newAddress, String.class), host);
+    }
+
+    public <T> T getConfig(ConfigKey<T> key) {
+        if (configProvider == null) throw new ServiceNotAvailableExcpetion("config provider");
+        return configProvider.getConfigValue(key.getName(), key.getType(), key.getDef());
     }
 }

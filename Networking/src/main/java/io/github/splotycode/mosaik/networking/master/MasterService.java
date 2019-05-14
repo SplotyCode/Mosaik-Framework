@@ -1,29 +1,37 @@
 package io.github.splotycode.mosaik.networking.master;
 
+import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
+import io.github.splotycode.mosaik.networking.component.NetworkComponent;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPClient;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPServer;
+import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.master.packets.DestroyPacket;
 import io.github.splotycode.mosaik.networking.packet.PacketRegistry;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
-import io.github.splotycode.mosaik.networking.service.Service;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
+import io.github.splotycode.mosaik.networking.service.SingleComponentService;
+import io.github.splotycode.mosaik.networking.util.AddressSerializer;
+import io.github.splotycode.mosaik.networking.util.IpFilterHandler;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.task.TaskExecutor;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
-import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
-import io.netty.handler.ipfilter.IpFilterRule;
-import io.netty.handler.ipfilter.IpFilterRuleType;
-import io.netty.handler.ipfilter.RuleBasedIpFilter;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 
-import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class MasterService extends RepeatableTask implements Service {
+@Getter
+public class MasterService extends RepeatableTask implements SingleComponentService {
+
+    public static final ConfigKey<Long> DAEMON_STATS_DELAY = new ConfigKey<>("master.daemon_upload_stats", 15 * 1000L);
+
+    public static final ConfigKey<Long> MASTER_UPDATE_DELAY = new ConfigKey<>("master.update_delay", 8 * 1000L);
+    public static final ConfigKey<Integer> PORT = new ConfigKey<>("master.port");
 
     private final Logger logger = Logger.getInstance(getClass());
 
@@ -43,10 +51,16 @@ public class MasterService extends RepeatableTask implements Service {
     private final TaskExecutor taskExecutor;
     private long taskID;
 
-    @Getter private TCPServer server;
-    @Getter private TCPClient client;
+    private CloudKit kit;
 
-    @Getter private ServiceStatus status = ServiceStatus.UNKNOWN;
+    private TCPServer server;
+    private TCPClient client;
+
+    private ServiceStatus status = ServiceStatus.UNKNOWN;
+
+    public MasterService(CloudKit kit, TaskExecutor taskExecutor, IpResolver ipResolver, TreeMap<String, Host> roots) {
+        this(kit.getConfig(MASTER_UPDATE_DELAY), taskExecutor, kit.getConfig(PORT), ipResolver, roots);
+    }
 
     public MasterService(long delay, TaskExecutor taskExecutor, int port, IpResolver ipResolver, TreeMap<String, Host> roots) {
         super("Master Sync", delay);
@@ -101,17 +115,12 @@ public class MasterService extends RepeatableTask implements Service {
         return TCPServer.create()
                 .port(port).setDisplayName("Master")
                 .usePacketSystem(DefaultPacketSystem.createSerialized(masterRegistry))
-                .handler("ipFiler", new RuleBasedIpFilter(new IpFilterRule() {
+                .handler("ipFiler", new IpFilterHandler() {
                     @Override
-                    public boolean matches(InetSocketAddress address) {
-                        return roots.keySet().contains(TransformerManager.getInstance().transform(address, String.class));
+                    protected Collection<String> grantedAddresses() {
+                        return roots.keySet();
                     }
-
-                    @Override
-                    public IpFilterRuleType ruleType() {
-                        return IpFilterRuleType.ACCEPT;
-                    }
-                }))
+                })
                 .handler("packetHandler", new MasterServerHandler(this))
                 .bind(true);
     }
@@ -120,6 +129,7 @@ public class MasterService extends RepeatableTask implements Service {
         return TCPClient.create()
                 .host(host).port(port).setDisplayName("Master")
                 .usePacketSystem(DefaultPacketSystem.createSerialized(masterRegistry))
+                .handler("packetHandler", new MasterClientHandler(this))
                 .bind(true);
     }
 
@@ -161,5 +171,14 @@ public class MasterService extends RepeatableTask implements Service {
     public String statusMessage() {
         if (status == null) return null;
         return self ? "Primary Master" : "Bound to " + currentBest;
+    }
+
+    public Host getHostByCtx(ChannelHandlerContext ctx) {
+        return roots.get(AddressSerializer.toString(ctx.channel().remoteAddress()));
+    }
+
+    @Override
+    public NetworkComponent component() {
+        return self ? server : client;
     }
 }

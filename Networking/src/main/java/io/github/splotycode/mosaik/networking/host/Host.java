@@ -12,4 +12,12 @@ public interface Host {
 
     ListenerHandler handler();
 
+    default boolean isOnline() {
+        HealthCheck healthCheck = healthCheck();
+        if (healthCheck == null) {
+            throw new NullPointerException("healthCheck()");
+        }
+        return healthCheck.isOnline();
+    }
+
 }

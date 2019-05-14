@@ -2,8 +2,6 @@ package io.github.splotycode.mosaik.networking.healthcheck;
 
 import lombok.*;
 
-import java.net.SocketAddress;
-
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -12,6 +10,5 @@ import java.net.SocketAddress;
 public class StaticHealthCheck implements HealthCheck {
 
     private boolean online;
-    private SocketAddress address;
 
 }

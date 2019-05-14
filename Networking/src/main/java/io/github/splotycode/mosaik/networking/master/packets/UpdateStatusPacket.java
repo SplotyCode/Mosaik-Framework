@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.networking.master.packets;
 
 import io.github.splotycode.mosaik.networking.packet.serialized.PacketSerializer;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
+import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,5 +51,9 @@ public class UpdateStatusPacket implements SerializedPacket {
                 packet.writeVarInt(instance.getValue());
             }
         }
+     }
+
+     public HostStatistics toStatistics() {
+        return new HostStatistics(cpu, freeRam, connections);
      }
 }

@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.networking.config;
 
+import io.github.splotycode.mosaik.networking.component.NetworkComponent;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPClient;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPServer;
 import io.github.splotycode.mosaik.networking.config.packets.ConfigNoUpdate;
@@ -10,14 +11,14 @@ import io.github.splotycode.mosaik.networking.packet.PacketRegistry;
 import io.github.splotycode.mosaik.networking.packet.handle.AnnotationContentHandler;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
-import io.github.splotycode.mosaik.networking.service.Service;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
+import io.github.splotycode.mosaik.networking.service.SingleComponentService;
 import io.github.splotycode.mosaik.util.listener.Listener;
 import io.netty.channel.Channel;
 
 import java.io.File;
 
-public class ConfigService extends StaticConfigProvider implements Service {
+public class ConfigService extends StaticConfigProvider implements SingleComponentService {
 
     public static final PacketRegistry<SerializedPacket> PACKET_REGISTRY = new PacketRegistry<>();
 
@@ -81,5 +82,10 @@ public class ConfigService extends StaticConfigProvider implements Service {
     public String statusMessage() {
         if (getStatus() != ServiceStatus.RUNNING) return null;
         return serverAddress == null ? "Server" : "Bound to " + serverAddress;
+    }
+
+    @Override
+    public NetworkComponent component() {
+        return serverAddress == null ? server : client;
     }
 }

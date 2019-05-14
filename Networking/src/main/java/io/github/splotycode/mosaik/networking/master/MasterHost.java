@@ -1,0 +1,80 @@
+package io.github.splotycode.mosaik.networking.master;
+
+import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
+import io.github.splotycode.mosaik.networking.config.ConfigKey;
+import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
+import io.github.splotycode.mosaik.networking.host.AddressChangeListener;
+import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
+import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
+import io.github.splotycode.mosaik.util.ExceptionUtil;
+import io.github.splotycode.mosaik.util.listener.ListenerHandler;
+import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
+import lombok.Getter;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.function.Consumer;
+
+public class MasterHost implements StatisticalHost {
+
+    public static final ConfigKey<Long> HEALTH_THRESHOLD = new ConfigKey<>("master.host.health_threshold", 8 * 1000L);
+
+    private long lastUpdate;
+    private MasterHealthCheck healthCheck = new MasterHealthCheck();
+    @Getter private HostStatistics statistics;
+
+    private CloudKit kit;
+    private InetAddress address;
+
+    public MasterHost(CloudKit kit, String address) {
+        this.kit = kit;
+        changeAddress(address);
+    }
+
+    protected InetAddress getAddress(String rawAddress) {
+        try {
+            return InetAddress.getByName(rawAddress);
+        } catch (UnknownHostException e) {
+            ExceptionUtil.throwRuntime(e);
+            return null;
+        }
+    }
+
+    public void changeAddress(String rawAddress) {
+        InetAddress address = getAddress(rawAddress);
+        handler.call(AddressChangeListener.class, (Consumer<AddressChangeListener>) listener -> listener.onChange(this.address, address));
+        this.address = address;
+    }
+
+    private MultipleListenerHandler handler = new MultipleListenerHandler();
+
+    @Override
+    public void update(HostStatistics statistics) {
+       this.statistics = statistics;
+       lastUpdate = System.currentTimeMillis();
+    }
+
+    private class MasterHealthCheck implements HealthCheck {
+
+        @Override
+        public boolean isOnline() {
+            long delay = System.currentTimeMillis() - lastUpdate;
+            return delay <= kit.getConfig(HEALTH_THRESHOLD) + kit.getConfig(MasterService.DAEMON_STATS_DELAY);
+        }
+    }
+
+    @Override
+    public HealthCheck healthCheck() {
+        return healthCheck;
+    }
+
+    @Override
+    public InetAddress address() {
+        return address;
+    }
+
+    @Override
+    public ListenerHandler handler() {
+        return null;
+    }
+}
