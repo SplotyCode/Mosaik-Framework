@@ -59,11 +59,13 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
             throw new HandleRequestException("Trying to work with crashed Handler: " + clazz.getSimpleName(), data.getLoadError());
         }
         data.applyCashingConfiguration(request.getResponse());
+        data.applyContentType(request.getResponse());
 
         for (AnnotationHandlerData data : sub.stream().filter(sub -> sub.valid(request)).sorted(Comparator.comparingInt(AnnotationHandlerData::getPriority)).collect(Collectors.toList())) {
             AnnotationHandlerData.SupAnnotationHandlerData sup = (AnnotationHandlerData.SupAnnotationHandlerData) data;
 
             sup.applyCashingConfiguration(request.getResponse());
+            sup.applyContentType(request.getResponse());
             try {
                 DataFactory info = new DataFactory();
                 info.putData(REQUEST, request);

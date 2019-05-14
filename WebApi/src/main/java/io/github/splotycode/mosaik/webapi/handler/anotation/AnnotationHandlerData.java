@@ -1,7 +1,6 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation;
 
 import io.github.splotycode.mosaik.util.Pair;
-import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.util.reflection.annotation.data.AnnotationData;
 import io.github.splotycode.mosaik.util.reflection.annotation.data.IMethodData;
 import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
@@ -12,6 +11,7 @@ import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.CacheDe
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import io.github.splotycode.mosaik.webapi.request.RequestHeader;
+import io.github.splotycode.mosaik.webapi.response.ContentType;
 import io.github.splotycode.mosaik.webapi.response.HttpCashingConfiguration;
 import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.response.content.ResponseContent;
@@ -36,6 +36,7 @@ public class AnnotationHandlerData extends AnnotationData {
     private List<String> neededGet = new ArrayList<>(), neededPost = new ArrayList<>();
     private HashMap<String, String> getMustBe = new HashMap<>(), postMustBe = new HashMap<>();
     private HttpCashingConfiguration cashingConfiguration;
+    private ContentType contentType;
 
     @Override
     public void buildData(Annotation[] annotations) {
@@ -69,22 +70,9 @@ public class AnnotationHandlerData extends AnnotationData {
             } else if (annotation instanceof CacheDefaultProvider) {
                 cashingConfiguration = ((CacheDefaultProvider) annotation).value().get();
             } else if (annotation instanceof Cache) {
-                Cache cache = (Cache) annotation;
-                cashingConfiguration = new HttpCashingConfiguration(
-                        cache.expires(),
-                        cache.noCache(),
-                        cache.noStore(),
-                        cache.noTransform(),
-                        cache.onlyIfCashed(),
-                        cache.mustRevalidate(),
-                        cache.isPublic(),
-                        cache.isPrivate(),
-                        cache.maxAge(),
-                        cache.maxStale(),
-                        cache.minFresh(),
-                        CollectionUtil.newHashSet(cache.modes()),
-                        cache.eTagMode()
-                );
+                cashingConfiguration = HttpCashingConfiguration.fromCache((Cache) annotation);
+            } else if (annotation instanceof ResponseContentType) {
+                contentType = ((ResponseContentType) annotation).value();
             }
         }
     }
@@ -93,6 +81,10 @@ public class AnnotationHandlerData extends AnnotationData {
         if (this.httpMethod != null && !method.equals(this.httpMethod))
             throw new IllegalStateException("Can not force two different methods (" + method + " and " + this.httpMethod);
         this.httpMethod = method;
+    }
+
+    void applyContentType(Response response) {
+        response.setContentType(contentType);
     }
 
     void applyCashingConfiguration(Response response) {
@@ -114,6 +106,7 @@ public class AnnotationHandlerData extends AnnotationData {
         }
         if (mapping != null && !mapping.match(request.getPath()).isMatch()) return false;
         if (httpMethod != null && (costomMethod ? request.getMethod().getMethod().matches(httpMethod) : request.getMethod().getMethod().equals(httpMethod))) return false;
+
         for (String get : neededGet)
             if (!request.getGet().containsKey(get))
                 return false;

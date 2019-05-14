@@ -1,6 +1,8 @@
 package io.github.splotycode.mosaik.webapi.response;
 
 import io.github.splotycode.mosaik.util.CodecUtil;
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
+import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.Cache;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +35,24 @@ public class HttpCashingConfiguration {
                 .setPublic(true)
                 .addValidationModes(ValidationMode.E_TAG, ValidationMode.MODIFIED)
                 .setETagMode(DefaultETagMode.SHA_1);
+    }
+
+    public static HttpCashingConfiguration fromCache(Cache cache) {
+        return new HttpCashingConfiguration(
+                cache.expires(),
+                cache.noCache(),
+                cache.noStore(),
+                cache.noTransform(),
+                cache.onlyIfCashed(),
+                cache.mustRevalidate(),
+                cache.isPublic(),
+                cache.isPrivate(),
+                cache.maxAge(),
+                cache.maxStale(),
+                cache.minFresh(),
+                CollectionUtil.newHashSet(cache.modes()),
+                cache.eTagMode()
+        );
     }
 
     private long expires = -1;
