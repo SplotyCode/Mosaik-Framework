@@ -80,7 +80,7 @@ public final class ExceptionUtil {
     /**
      * Throws a Throwable by using the <code>toRuntime</code> method
      */
-    public static void throwRuntime(Throwable throwable) {
+    public static void throwRuntime(Throwable throwable) throws RuntimeException {
         throw toRuntime(throwable);
     }
 
@@ -88,7 +88,7 @@ public final class ExceptionUtil {
      * Throws a Throwable by using the <code>toRuntime</code> method
      * @param message the message that the wrapped throwable should have
      */
-    public static void throwRuntime(Throwable throwable, String message) {
+    public static void throwRuntime(Throwable throwable, String message) throws RuntimeException {
         throw toRuntime(throwable, message);
     }
 
