@@ -1,6 +1,5 @@
 package io.github.splotycode.mosaik.networking.util;
 
-import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.DefaultCaches;
 import io.github.splotycode.mosaik.util.logger.Logger;
@@ -12,9 +11,7 @@ import lombok.NoArgsConstructor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -24,13 +21,8 @@ public class IpResolver {
     private static class LocalIpResolver extends IpResolver {
 
         @Override
-        public String getIpAddress() {
-            try {
-                return InetAddress.getLocalHost().getHostAddress();
-            } catch (UnknownHostException e) {
-                ExceptionUtil.throwRuntime(e);
-                return null;
-            }
+        public MosaikAddress getIpAddress() {
+            return MosaikAddress.local();
         }
 
     }
@@ -58,7 +50,7 @@ public class IpResolver {
 
     private String preferred;
     private String[] failover;
-    private Cache<String> cache;
+    private Cache<MosaikAddress> cache;
 
     public static IpResolver createDefaults() {
         return new IpResolver(DEFAULT_PREFERRED, DEFAULT);
@@ -72,11 +64,11 @@ public class IpResolver {
         return new IpResolver(preferred, others);
     }
 
-    public Cache<String> createTimeCache(long maxAge) {
+    public Cache<MosaikAddress> createTimeCache(long maxAge) {
         return DefaultCaches.getTimeCache(cache -> getIpFresh(), maxAge);
     }
 
-    public IpResolver enableCaching(Cache<String> cache) {
+    public IpResolver enableCaching(Cache<MosaikAddress> cache) {
         this.cache = cache;
         return this;
     }
@@ -96,14 +88,14 @@ public class IpResolver {
         return this;
     }
 
-    public String getIpAddress() {
+    public MosaikAddress getIpAddress() {
         if (cache == null) {
             return getIpFresh();
         }
         return cache.getValue();
     }
 
-    public String getIpFresh() {
+    public MosaikAddress getIpFresh() {
         try {
             return getIpAddressByUrl(preferred);
         } catch (IOException ex) {
@@ -119,10 +111,10 @@ public class IpResolver {
         return null;
     }
 
-    private static String getIpAddressByUrl(String url) throws IOException {
+    private static MosaikAddress getIpAddressByUrl(String url) throws IOException {
         URL website = new URL(url);
         BufferedReader in = new BufferedReader(new InputStreamReader(website.openStream()));
-        return in.readLine();
+        return new MosaikAddress(in.readLine());
     }
 
 }

@@ -6,13 +6,11 @@ import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
 import io.github.splotycode.mosaik.networking.host.AddressChangeListener;
 import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
 import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
-import io.github.splotycode.mosaik.util.ExceptionUtil;
+import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
 import lombok.Getter;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.function.Consumer;
 
 public class MasterHost implements StatisticalHost {
@@ -24,24 +22,15 @@ public class MasterHost implements StatisticalHost {
     @Getter private HostStatistics statistics;
 
     private CloudKit kit;
-    private InetAddress address;
+    private MosaikAddress address;
 
     public MasterHost(CloudKit kit, String address) {
         this.kit = kit;
         changeAddress(address);
     }
 
-    protected InetAddress getAddress(String rawAddress) {
-        try {
-            return InetAddress.getByName(rawAddress);
-        } catch (UnknownHostException e) {
-            ExceptionUtil.throwRuntime(e);
-            return null;
-        }
-    }
-
     public void changeAddress(String rawAddress) {
-        InetAddress address = getAddress(rawAddress);
+        MosaikAddress address = new MosaikAddress(rawAddress);
         handler.call(AddressChangeListener.class, (Consumer<AddressChangeListener>) listener -> listener.onChange(this.address, address));
         this.address = address;
     }
@@ -69,7 +58,7 @@ public class MasterHost implements StatisticalHost {
     }
 
     @Override
-    public InetAddress address() {
+    public MosaikAddress address() {
         return address;
     }
 

@@ -8,12 +8,11 @@ import io.github.splotycode.mosaik.networking.host.SelfHost;
 import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.service.Service;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
+import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.task.TaskExecutor;
-import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.concurrent.Executors;
@@ -23,16 +22,16 @@ import java.util.concurrent.Executors;
 public class CloudKit implements AddressChangeListener {
 
     private ConfigProvider configProvider;
-    private HashSet<Service> services = new HashSet<>();
-    private IpResolver ipResolver = IpResolver.GLOBAL;
-    private TaskExecutor localTaskExecutor = new TaskExecutor(Executors.newFixedThreadPool(2));
-    private final TreeMap<String, Host> hosts = new TreeMap<>();
-    private Host selfHost = new SelfHost(ipResolver);
+    private final HashSet<Service> services = new HashSet<>();
+    private IpResolver localIpResolver;
+    private TaskExecutor localTaskExecutor;
+    private final TreeMap<MosaikAddress, Host> hosts = new TreeMap<>();
+    private Host selfHost = new SelfHost(localIpResolver);
     private String hostConfigName;
     private HostProvider hostProvider;
 
     {
-        hosts.put(ipResolver.getIpAddress(), selfHost);
+        hosts.put(localIpResolver.getIpAddress(), selfHost);
     }
 
     public CloudKit startMasterService(long updateDelay, int port) {
@@ -68,11 +67,11 @@ public class CloudKit implements AddressChangeListener {
             configProvider.handler().addListener(hostConfigName, (originalUpdate, entry) -> {
                 hosts.values().forEach(host -> host.handler().removeListener(this));
                 hosts.clear();
-                hosts.put(ipResolver.getIpAddress(), selfHost);
+                hosts.put(localIpResolver.getIpAddress(), selfHost);
                 for (Object host : entry.getValue(Iterable.class)) {
                     Host hostObj = hostProvider.provide(host.toString());
                     hostObj.handler().addListener(this);
-                    hosts.put(host.toString(), hostObj);
+                    hosts.put(hostObj.address(), hostObj);
                 }
             });
         }
@@ -80,9 +79,9 @@ public class CloudKit implements AddressChangeListener {
     }
 
     @Override
-    public void onChange(InetAddress oldAddress, InetAddress newAddress) {
-        Host host = hosts.remove(TransformerManager.getInstance().transform(oldAddress, String.class));
-        hosts.put(TransformerManager.getInstance().transform(newAddress, String.class), host);
+    public void onChange(MosaikAddress oldAddress, MosaikAddress newAddress) {
+        Host host = hosts.remove(oldAddress);
+        hosts.put(newAddress, host);
     }
 
     public <T> T getConfig(ConfigKey<T> key) {

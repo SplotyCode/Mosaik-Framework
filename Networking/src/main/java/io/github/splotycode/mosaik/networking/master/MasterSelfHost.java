@@ -8,14 +8,11 @@ import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
 import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
 import io.github.splotycode.mosaik.networking.statistics.UpdateLocalStatisticsTask;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
-import io.github.splotycode.mosaik.util.ExceptionUtil;
+import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.DefaultCaches;
 import io.github.splotycode.mosaik.util.listener.DummyListenerHandler;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 public class MasterSelfHost implements StatisticalHost {
 
@@ -46,13 +43,8 @@ public class MasterSelfHost implements StatisticalHost {
     }
 
     @Override
-    public InetAddress address() {
-        try {
-            return InetAddress.getByName(resolver.getIpAddress());
-        } catch (UnknownHostException e) {
-            ExceptionUtil.throwRuntime(e);
-            return null;
-        }
+    public MosaikAddress address() {
+        return resolver.getIpAddress();
     }
 
     @Override
