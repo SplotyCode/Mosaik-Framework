@@ -21,7 +21,7 @@ public class PortSupplier implements Supplier<Integer> {
 
     public PortSupplier(int minPort, int maxPort) {
         if (minPort > maxPort) throw new IllegalArgumentException("minPort > maxPort");
-        if (minPort < 0) throw new IllegalArgumentException("minPort migth not be negative");
+        if (minPort < 0) throw new IllegalArgumentException("minPort might not be negative");
         this.minPort = minPort;
         this.maxPort = maxPort;
     }

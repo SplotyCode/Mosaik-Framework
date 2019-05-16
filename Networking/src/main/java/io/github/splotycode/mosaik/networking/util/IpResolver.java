@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.networking.util;
 
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.DefaultCaches;
 import io.github.splotycode.mosaik.util.logger.Logger;
@@ -11,12 +12,28 @@ import lombok.NoArgsConstructor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class IpResolver {
+
+    private static class LocalIpResolver extends IpResolver {
+
+        @Override
+        public String getIpAddress() {
+            try {
+                return InetAddress.getLocalHost().getHostAddress();
+            } catch (UnknownHostException e) {
+                ExceptionUtil.throwRuntime(e);
+                return null;
+            }
+        }
+
+    }
 
     private static final Logger LOGGER = Logger.getInstance(IpResolver.class);
 
@@ -43,12 +60,12 @@ public class IpResolver {
     private String[] failover;
     private Cache<String> cache;
 
-    public static IpResolver create() {
-        return new IpResolver();
-    }
-
     public static IpResolver createDefaults() {
         return new IpResolver(DEFAULT_PREFERRED, DEFAULT);
+    }
+
+    public static IpResolver createLocal() {
+        return new LocalIpResolver();
     }
 
     public static IpResolver create(String preferred, String... others) {

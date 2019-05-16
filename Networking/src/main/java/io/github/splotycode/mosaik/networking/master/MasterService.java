@@ -14,16 +14,13 @@ import io.github.splotycode.mosaik.networking.service.ServiceStatus;
 import io.github.splotycode.mosaik.networking.service.SingleComponentService;
 import io.github.splotycode.mosaik.networking.util.AddressSerializer;
 import io.github.splotycode.mosaik.networking.util.IpFilterHandler;
-import io.github.splotycode.mosaik.networking.util.IpResolver;
 import io.github.splotycode.mosaik.util.logger.Logger;
-import io.github.splotycode.mosaik.util.task.TaskExecutor;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.TreeMap;
 
 @Getter
 public class MasterService extends RepeatableTask implements SingleComponentService {
@@ -41,33 +38,29 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         masterRegistry.register(DestroyPacket.class);
     }
 
-    private TreeMap<String, Host> roots;
     private String currentBest;
     private boolean self;
-    private IpResolver ipResolver;
-
-    private int port;
-
-    private final TaskExecutor taskExecutor;
-    private long taskID;
-
-    private CloudKit kit;
 
     private TCPServer server;
     private TCPClient client;
 
+    private int port;
+
+    private long taskID;
+
+    private CloudKit kit;
+
+
     private ServiceStatus status = ServiceStatus.UNKNOWN;
 
-    public MasterService(CloudKit kit, TaskExecutor taskExecutor, IpResolver ipResolver, TreeMap<String, Host> roots) {
-        this(kit.getConfig(MASTER_UPDATE_DELAY), taskExecutor, kit.getConfig(PORT), ipResolver, roots);
+    public MasterService(CloudKit kit) {
+        this(kit, kit.getConfig(MASTER_UPDATE_DELAY), kit.getConfig(PORT));
     }
 
-    public MasterService(long delay, TaskExecutor taskExecutor, int port, IpResolver ipResolver, TreeMap<String, Host> roots) {
+    public MasterService(CloudKit kit, long delay, int port) {
         super("Master Sync", delay);
-        this.taskExecutor = taskExecutor;
-        this.roots = roots;
-        this.ipResolver = ipResolver;
         this.port = port;
+        this.kit = kit;
     }
 
     @Override
@@ -75,10 +68,10 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         String best = getBestRoot();
         if (!best.equals(currentBest)) {
             logger.info("Best Primary Master switched from " +  currentBest + " to " + best);
-            if (currentBest.equals(ipResolver.getIpAddress())) {
+            if (currentBest.equals(kit.getLocalIpResolver().getIpAddress())) {
                 server.shutdown();
             }
-            if (best.equals(ipResolver.getIpAddress())) {
+            if (best.equals(kit.getLocalIpResolver().getIpAddress())) {
                 logger.info("Optimal Primary master is this machine");
                 if (client != null) {
                     client.shutdown();
@@ -91,7 +84,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
             currentBest = best;
 
-            for (Map.Entry<String, Host> root : roots.entrySet()) {
+            for (Map.Entry<String, Host> root : kit.getHosts().entrySet()) {
                 if (root.getKey().hashCode() > currentBest.hashCode() && root.getValue().healthCheck().isOnline()) {
                     logger.info("Sending Destroy packet to " + root.getKey());
                     destroyMaster(root.getKey(), currentBest);
@@ -103,12 +96,12 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     }
 
     private String getBestRoot() {
-        for (Map.Entry<String, Host> root : roots.entrySet()) {
+        for (Map.Entry<String, Host> root : kit.getHosts().entrySet()) {
             if (root.getValue().healthCheck().isOnline()) {
                 return root.getKey();
             }
         }
-        return ipResolver.getIpAddress();
+        return kit.getLocalIpResolver().getIpAddress();
     }
 
     protected TCPServer createServer() {
@@ -118,7 +111,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
                 .handler("ipFiler", new IpFilterHandler() {
                     @Override
                     protected Collection<String> grantedAddresses() {
-                        return roots.keySet();
+                        return kit.getHosts().keySet();
                     }
                 })
                 .handler("packetHandler", new MasterServerHandler(this))
@@ -129,7 +122,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         return TCPClient.create()
                 .host(host).port(port).setDisplayName("Master")
                 .usePacketSystem(DefaultPacketSystem.createSerialized(masterRegistry))
-                .handler("packetHandler", new MasterClientHandler(this))
+                .handler("packetHandler", new MasterClientHandler(kit))
                 .bind(true);
     }
 
@@ -145,14 +138,14 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     @Override
     public void start() {
         currentBest = getBestRoot();
-        self = currentBest.equals(ipResolver.getIpAddress());
+        self = currentBest.equals(kit.getLocalIpResolver().getIpAddress());
         logger.info("Best Root is " + currentBest + " Self: " + self);
         if (self) {
             server = createServer();
         } else {
             client = createClient(currentBest);
         }
-        taskID = taskExecutor.runTask(this);
+        taskID = kit.getLocalTaskExecutor().runTask(this);
         status = ServiceStatus.RUNNING;
     }
 
@@ -163,7 +156,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
     @Override
     public void stop() {
-        taskExecutor.stopTask(taskID);
+        kit.getLocalTaskExecutor().stopTask(taskID);
         status = ServiceStatus.STOPPED;
     }
 
@@ -174,7 +167,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     }
 
     public Host getHostByCtx(ChannelHandlerContext ctx) {
-        return roots.get(AddressSerializer.toString(ctx.channel().remoteAddress()));
+        return kit.getHosts().get(AddressSerializer.toString(ctx.channel().remoteAddress()));
     }
 
     @Override

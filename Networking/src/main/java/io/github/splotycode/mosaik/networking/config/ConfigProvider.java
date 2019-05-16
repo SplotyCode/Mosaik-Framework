@@ -17,6 +17,10 @@ public interface ConfigProvider {
     String getRawConfig();
     void setRawConfig(String config);
 
+    default <T> T getConfigValue(ConfigKey<T> key) {
+        return getConfigValue(key.getName(), key.getType(), key.getDef());
+    }
+
     default <T> T getConfigValue(String key, Class<T> clazz, T def) {
         ConfigEntry entry = getEntry(key);
         if (entry == null) return def;
