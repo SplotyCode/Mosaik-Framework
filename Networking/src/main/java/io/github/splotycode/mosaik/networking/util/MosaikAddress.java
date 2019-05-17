@@ -15,6 +15,10 @@ public class MosaikAddress implements Comparable<MosaikAddress> {
     private String rawAddress;
     private InetAddress address;
 
+    public static MosaikAddress from(InetSocketAddress address) {
+        return new MosaikAddress(address.getAddress());
+    }
+
     public static MosaikAddress local() {
         try {
             return new MosaikAddress(InetAddress.getLocalHost());

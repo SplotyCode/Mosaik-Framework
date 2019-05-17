@@ -1,6 +1,5 @@
 package io.github.splotycode.mosaik.networking.util;
 
-import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.ipfilter.AbstractRemoteAddressFilter;
 import io.netty.handler.ipfilter.IpFilterRule;
@@ -13,7 +12,7 @@ public abstract class IpFilterHandler extends AbstractRemoteAddressFilter<InetSo
 
     @Override
     public boolean matches(InetSocketAddress address) {
-        return grantedAddresses().contains(TransformerManager.getInstance().transform(address, String.class));
+        return grantedAddresses().contains(MosaikAddress.from(address));
     }
 
     @Override
@@ -26,6 +25,6 @@ public abstract class IpFilterHandler extends AbstractRemoteAddressFilter<InetSo
         return matches(address);
     }
 
-    protected abstract Collection<String> grantedAddresses();
+    protected abstract Collection<MosaikAddress> grantedAddresses();
 
 }

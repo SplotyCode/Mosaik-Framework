@@ -59,7 +59,7 @@ public class SelfHost implements Host {
     public MosaikAddress address() {
         return localAddress ?
                 (localAddressCache == null ? MosaikAddress.local() : localAddressCache.getValue()) :
-                new MosaikAddress(ipResolver.getIpAddress());
+                ipResolver.getIpAddress();
     }
 
     @Override
