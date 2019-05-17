@@ -15,9 +15,13 @@ import java.util.Map;
 @AllArgsConstructor
 public class UpdateStatusPacket implements SerializedPacket {
 
-    private long freeRam;
     private int cpu;
+    private long freeRam;
     private Map<String, Map<Integer, Integer>> connections;
+
+    public static UpdateStatusPacket create(HostStatistics statistics) {
+        return new UpdateStatusPacket(statistics.getCpu(), statistics.getFreeRam(), statistics.getConnections());
+    }
 
     @Override
     public void read(PacketSerializer packet) throws Exception {

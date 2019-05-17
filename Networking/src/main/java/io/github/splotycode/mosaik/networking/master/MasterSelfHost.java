@@ -7,7 +7,6 @@ import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
 import io.github.splotycode.mosaik.networking.healthcheck.StaticHealthCheck;
 import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
 import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
-import io.github.splotycode.mosaik.networking.statistics.UpdateLocalStatisticsTask;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.cache.Cache;
@@ -42,7 +41,7 @@ public class MasterSelfHost implements StatisticalHost {
     }
 
     private void createCache() {
-        statistic = DefaultCaches.getTimeCache(cache -> UpdateLocalStatisticsTask.createPacket(cloudKit).toStatistics(), cloudKit.getConfig(CACHE_TIME));
+        statistic = DefaultCaches.getTimeCache(cache -> HostStatistics.current(cloudKit), cloudKit.getConfig(CACHE_TIME));
         if (set != null) {
             statistic.setValue(set);
         }
