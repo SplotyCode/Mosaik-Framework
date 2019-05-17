@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.networking.component;
 
 import io.github.splotycode.mosaik.networking.exception.SecureExcpetion;
+import io.github.splotycode.mosaik.networking.packet.system.PacketSystem;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -17,7 +18,7 @@ import java.util.Map;
 public abstract class AbstractServer<S extends AbstractServer<S>> extends NetworkComponent<ServerBootstrap, ServerChannel, S> {
 
     protected Map<ChannelOption, Object> childOptions;
-    protected ChannelHandler childHandler;
+    protected HandlerHolder childHandlers = new HandlerHolder();
 
     public S sslSelfSigned() {
         try {
@@ -68,8 +69,8 @@ public abstract class AbstractServer<S extends AbstractServer<S>> extends Networ
                     pipeline.addLast("ssl", ssl);
                 }
 
-                if (childHandler != null) {
-                    pipeline.addLast("costom", childHandler);
+                for (HandlerHolder.AbstractHandlerData handler : childHandlers.getHandlerData()) {
+                    pipeline.addLast(handler.getName(), handler.handler());
                 }
             }
 
@@ -89,8 +90,23 @@ public abstract class AbstractServer<S extends AbstractServer<S>> extends Networ
         }
     }
 
-    public S childHandler(ChannelHandler handler) {
-        childHandler = handler;
+    public S childHandler(int priority, String name, ChannelHandler handler) {
+        childHandlers.addHandler(priority, name, handler);
+        return self();
+    }
+
+    public <H extends ChannelHandler> H getChildHandler(Class<H> clazz) {
+        return childHandlers.getHandler(clazz);
+    }
+
+    public String getChildHandlerName(Class<? extends ChannelHandler> clazz) {
+        return childHandlers.getHandlerName(clazz);
+    }
+
+
+    @Override
+    public S usePacketSystem(int priority, PacketSystem system) {
+        childHandler(priority, "packetSystem", createPacketHandler(system));
         return self();
     }
 

@@ -2,7 +2,6 @@ package io.github.splotycode.mosaik.networking.config;
 
 import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.io.FileUtil;
-import io.github.splotycode.mosaik.util.listener.StringListenerHandler;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -10,14 +9,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StaticConfigProvider implements ConfigProvider {
+public class StaticConfigProvider extends AbstractConfigProvider {
 
     private File file;
 
     private Yaml yaml = new Yaml();
-    private Map<String, ConfigEntry> config = new HashMap<>();
-
-    private StringListenerHandler<ConfigChangeListener> handler = new StringListenerHandler<>();
 
     public StaticConfigProvider(File file) {
         this.file = file;
@@ -30,35 +26,8 @@ public class StaticConfigProvider implements ConfigProvider {
         }
     }
 
-    @Override
-    public void set(String key, Object value) {
-        ConfigEntry entry = getEntry(key);
-        entry.setValue(value);
-        handler.call(key, listener -> listener.onChange(key, entry));
-    }
-
-    @Override
-    public ConfigEntry getEntry(String key) {
-        return config.get(key);
-    }
-
-    @Override
-    public Iterable<ConfigEntry> getEntries() {
-        return config.values();
-    }
-
-    @Override
-    public Iterable<Map.Entry<String, Object>> getRawEntries() {
-        HashMap<String, Object> config = new HashMap<>(this.config.size(), 1);
-        for (Map.Entry<String, ConfigEntry> value : this.config.entrySet()) {
-            config.put(value.getKey(), value.getValue().getValue());
-        }
-        return config.entrySet();
-    }
-
-    @Override
-    public StringListenerHandler<ConfigChangeListener> handler() {
-        return handler;
+    public StaticConfigProvider(String content) {
+        setRawConfig(content, false);
     }
 
     @Override

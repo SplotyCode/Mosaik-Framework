@@ -7,6 +7,7 @@ import io.github.splotycode.mosaik.networking.packet.handle.PacketTarget;
 import io.github.splotycode.mosaik.networking.packet.handle.SelfAnnotationHandler;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
+import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.AllArgsConstructor;
 
@@ -31,7 +32,7 @@ public class MasterServerHandler extends SelfAnnotationHandler<SerializedPacket>
         if (service.getClient() != null) {
             service.getClient().shutdown();
         }
-        service.createClient(packet.getBetterRoot());
+        service.createClient(new MosaikAddress(packet.getBetterRoot()));
     }
 
 }

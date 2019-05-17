@@ -5,7 +5,7 @@ import io.github.splotycode.mosaik.networking.component.listener.BoundListener;
 import io.github.splotycode.mosaik.networking.component.listener.UnBoundListener;
 import io.github.splotycode.mosaik.networking.packet.system.PacketSystem;
 import io.github.splotycode.mosaik.networking.packet.system.PacketSystemHandler;
-import io.github.splotycode.mosaik.util.Pair;
+import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.listener.Listener;
 import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
@@ -68,7 +68,8 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     protected Lock bindLock = new ReentrantLock();
 
     protected Map<ChannelOption, Object> channelOptions;
-    protected HashMap<Class, Pair<String, ChannelHandler>> costomHandlers = new HashMap<>();
+
+    private HandlerHolder handlers = new HandlerHolder();
 
     protected void newLoop() {
         loopGroup = nThreads == -1 ? channelSystem.newLoopGroup() : channelSystem.newLoopGroup(nThreads);
@@ -221,6 +222,11 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
+    public S host(MosaikAddress address) {
+        host = address.asString();
+        return self();
+    }
+
     @Override
     public S channelSystem(ChannelSystem channelSystem) {
         this.channelSystem = channelSystem;
@@ -279,21 +285,17 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     }
 
     @Override
-    public S handler(String name, ChannelHandler handler) {
-        costomHandlers.put(handler.getClass(), new Pair<>(name, handler));
+    public S handler(int priority, String name, ChannelHandler handler) {
+        handlers.addHandler(priority, name, handler);
         return self();
     }
 
     public <H extends ChannelHandler> H getHandler(Class<H> clazz) {
-        Pair<String, ChannelHandler> handler = costomHandlers.get(clazz);
-        if (handler == null) return null;
-        return (H) handler.getTwo();
+        return handlers.getHandler(clazz);
     }
 
     public String getHandlerName(Class<? extends ChannelHandler> clazz) {
-        Pair<String, ChannelHandler> handler = costomHandlers.get(clazz);
-        if (handler == null) return null;
-        return handler.getOne();
+        return handlers.getHandlerName(clazz);
     }
 
     @Override
@@ -390,7 +392,9 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     }
 
     protected abstract void applyChannel();
+
     protected abstract ChannelFuture doBind();
+
     protected abstract void doHandlers(ChannelPipeline pipeline);
 
     protected void optionLogic() {
@@ -409,8 +413,8 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
                     pipeline.addLast(new LoggingHandler(logCategory, logLevel));
                 }
                 doHandlers(pipeline);
-                for (Map.Entry<Class, Pair<String, ChannelHandler>> handler : costomHandlers.entrySet()) {
-                    pipeline.addLast(handler.getValue().getOne(), handler.getValue().getTwo());
+                for (HandlerHolder.AbstractHandlerData handler : handlers.getHandlerData()) {
+                    pipeline.addLast(handler.getName(), handler.handler());
                 }
             }
 
@@ -431,9 +435,13 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
+    protected PacketSystemHandler createPacketHandler(PacketSystem system) {
+        return new PacketSystemHandler(system, this instanceof IServer);
+    }
+
     @Override
-    public S usePacketSystem(PacketSystem system) {
-        handler("packetSystem", new PacketSystemHandler(system, this instanceof IServer));
+    public S usePacketSystem(int priority, PacketSystem system) {
+        handler(priority, "packetSystem", createPacketHandler(system));
         return self();
     }
 }

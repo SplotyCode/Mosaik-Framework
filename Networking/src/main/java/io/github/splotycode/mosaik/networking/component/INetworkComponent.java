@@ -29,7 +29,7 @@ public interface INetworkComponent<S extends INetworkComponent> {
     S addListener(Listener listener);
     S removeListener(Listener listener);
 
-    S handler(String name, ChannelHandler handler);
+    S handler(int priority, String name, ChannelHandler handler);
 
     S channelSystem(ChannelSystem channelSystem);
 
@@ -49,7 +49,7 @@ public interface INetworkComponent<S extends INetworkComponent> {
 
     S nThreads(int nThreads);
 
-    S usePacketSystem(PacketSystem system);
+    S usePacketSystem(int priority, PacketSystem system);
 
     String displayName();
     S setDisplayName(String displayName);

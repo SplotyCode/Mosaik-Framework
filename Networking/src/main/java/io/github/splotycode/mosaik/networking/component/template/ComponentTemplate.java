@@ -84,8 +84,8 @@ public abstract class ComponentTemplate<S extends ComponentTemplate, I extends N
     }
 
     @Override
-    public S handler(String name, ChannelHandler handler) {
-        tasks.add(i -> i.handler(name, handler));
+    public S handler(int priority, String name, ChannelHandler handler) {
+        tasks.add(i -> i.handler(priority, name, handler));
         return self();
     }
 
@@ -156,8 +156,8 @@ public abstract class ComponentTemplate<S extends ComponentTemplate, I extends N
     }
 
     @Override
-    public S usePacketSystem(PacketSystem system) {
-        tasks.add(i -> i.usePacketSystem(system));
+    public S usePacketSystem(int priority, PacketSystem system) {
+        tasks.add(i -> i.usePacketSystem(priority, system));
         return self();
     }
 }

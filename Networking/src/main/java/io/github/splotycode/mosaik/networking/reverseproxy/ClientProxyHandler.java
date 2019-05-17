@@ -27,7 +27,7 @@ public class ClientProxyHandler extends SimpleChannelInboundHandler<FullHttpMess
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        server = template.createComponent().handler("init", new ChannelInitializer<Channel>() {
+        server = template.createComponent().handler(5, "init", new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) throws Exception {
                 ChannelPipeline pipeline = channel.pipeline();

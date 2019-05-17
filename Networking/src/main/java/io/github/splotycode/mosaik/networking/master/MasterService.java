@@ -13,22 +13,24 @@ import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
 import io.github.splotycode.mosaik.networking.service.SingleComponentService;
 import io.github.splotycode.mosaik.networking.util.AddressSerializer;
-import io.github.splotycode.mosaik.networking.util.IpFilterHandler;
+import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.ipfilter.IpFilterRuleType;
+import io.netty.handler.ipfilter.IpSubnetFilterRule;
+import io.netty.handler.ipfilter.RuleBasedIpFilter;
 import lombok.Getter;
 
-import java.util.Collection;
 import java.util.Map;
 
 @Getter
 public class MasterService extends RepeatableTask implements SingleComponentService {
 
-    public static final ConfigKey<Long> DAEMON_STATS_DELAY = new ConfigKey<>("master.daemon_upload_stats", 15 * 1000L);
+    public static final ConfigKey<Long> DAEMON_STATS_DELAY = new ConfigKey<>("master.daemon_upload_stats", long.class, 15 * 1000L);
 
-    public static final ConfigKey<Long> MASTER_UPDATE_DELAY = new ConfigKey<>("master.update_delay", 8 * 1000L);
-    public static final ConfigKey<Integer> PORT = new ConfigKey<>("master.port");
+    public static final ConfigKey<Long> MASTER_UPDATE_DELAY = new ConfigKey<>("master.update_delay", long.class,  8 * 1000L);
+    public static final ConfigKey<Integer> PORT = new ConfigKey<>("master.port", int.class, -1);
 
     private final Logger logger = Logger.getInstance(getClass());
 
@@ -38,7 +40,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         masterRegistry.register(DestroyPacket.class);
     }
 
-    private String currentBest;
+    private MosaikAddress currentBest;
     private boolean self;
 
     private TCPServer server;
@@ -65,7 +67,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
     @Override
     public void run() {
-        String best = getBestRoot();
+        MosaikAddress best = getBestRoot();
         if (!best.equals(currentBest)) {
             logger.info("Best Primary Master switched from " +  currentBest + " to " + best);
             if (currentBest.equals(kit.getLocalIpResolver().getIpAddress())) {
@@ -84,10 +86,10 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
             currentBest = best;
 
-            for (Map.Entry<String, Host> root : kit.getHosts().entrySet()) {
+            for (Map.Entry<MosaikAddress, Host> root : kit.getHosts().entrySet()) {
                 if (root.getKey().hashCode() > currentBest.hashCode() && root.getValue().healthCheck().isOnline()) {
                     logger.info("Sending Destroy packet to " + root.getKey());
-                    destroyMaster(root.getKey(), currentBest);
+                    destroyMaster(root.getKey());
                 }
             }
         } else {
@@ -95,8 +97,8 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         }
     }
 
-    private String getBestRoot() {
-        for (Map.Entry<String, Host> root : kit.getHosts().entrySet()) {
+    private MosaikAddress getBestRoot() {
+        for (Map.Entry<MosaikAddress, Host> root : kit.getHosts().entrySet()) {
             if (root.getValue().healthCheck().isOnline()) {
                 return root.getKey();
             }
@@ -107,31 +109,27 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     protected TCPServer createServer() {
         return TCPServer.create()
                 .port(port).setDisplayName("Master")
-                .usePacketSystem(DefaultPacketSystem.createSerialized(masterRegistry))
-                .handler("ipFiler", new IpFilterHandler() {
-                    @Override
-                    protected Collection<String> grantedAddresses() {
-                        return kit.getHosts().keySet();
-                    }
-                })
-                .handler("packetHandler", new MasterServerHandler(this))
+                .logging()
+                .usePacketSystem(2, DefaultPacketSystem.createSerialized(masterRegistry))
+                .childHandler(1, "ipFiler", new RuleBasedIpFilter(new IpSubnetFilterRule("10.10.1.1",16, IpFilterRuleType.REJECT)))
+                .childHandler(5, "packetHandler", new MasterServerHandler(this))
                 .bind(true);
     }
 
-    protected TCPClient createClient(String host) {
+    protected TCPClient createClient(MosaikAddress host) {
         return TCPClient.create()
                 .host(host).port(port).setDisplayName("Master")
-                .usePacketSystem(DefaultPacketSystem.createSerialized(masterRegistry))
-                .handler("packetHandler", new MasterClientHandler(kit))
+                .usePacketSystem(2, DefaultPacketSystem.createSerialized(masterRegistry))
+                .handler(5, "packetHandler", new MasterClientHandler(kit))
                 .bind(true);
     }
 
-    protected void destroyMaster(String original, String better) {
+    protected void destroyMaster(MosaikAddress original) {
         TCPClient.create()
                 .host(original).setDisplayName("Master Destroy")
                 .port(port)
-                .usePacketSystem(DefaultPacketSystem.createSerialized(masterRegistry))
-                .onBound((component, future) -> future.channel().writeAndFlush(new DestroyPacket(better)))
+                .usePacketSystem(2, DefaultPacketSystem.createSerialized(masterRegistry))
+                .onBound((component, future) -> future.channel().writeAndFlush(new DestroyPacket(currentBest.asString())))
                 .bind();
     }
 

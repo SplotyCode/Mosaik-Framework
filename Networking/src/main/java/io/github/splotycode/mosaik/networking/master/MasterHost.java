@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.networking.master;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
+import io.github.splotycode.mosaik.networking.cloudkit.HostProvider;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
 import io.github.splotycode.mosaik.networking.host.AddressChangeListener;
@@ -15,7 +16,9 @@ import java.util.function.Consumer;
 
 public class MasterHost implements StatisticalHost {
 
-    public static final ConfigKey<Long> HEALTH_THRESHOLD = new ConfigKey<>("master.host.health_threshold", 8 * 1000L);
+    public static final HostProvider PROVIDER = MasterHost::new;
+
+    public static final ConfigKey<Long> HEALTH_THRESHOLD = new ConfigKey<>("master.host.health_threshold", long.class, 8 * 1000L);
 
     private long lastUpdate;
     private MasterHealthCheck healthCheck = new MasterHealthCheck();

@@ -49,15 +49,15 @@ public class ConfigService extends StaticConfigProvider implements SingleCompone
             Listener handler = new ConfigServerHandler(this, keepAlive);
             server = TCPServer.create()
                     .port(port).setDisplayName("Config")
-                    .usePacketSystem(DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
+                    .usePacketSystem(2, DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
                     .addListener(handler)
-                    .handler("packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, handler))
+                    .childHandler(5, "packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, handler))
                     .bind();
         } else {
             client = TCPClient.create()
                     .port(port).setDisplayName("Config")
-                    .usePacketSystem(DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
-                    .handler("packetHandler", new ConfigClientHandler(this, keepAlive))
+                    .usePacketSystem(2, DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
+                    .handler(5, "packetHandler", new ConfigClientHandler(this, keepAlive))
                     .bind();
         }
     }

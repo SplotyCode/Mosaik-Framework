@@ -29,8 +29,8 @@ public abstract class ServerTemplate<I extends AbstractServer<? extends I>> exte
         };
     }
 
-    public ServerTemplate childHandler(ChannelHandler handler) {
-        tasks.add(i -> i.childHandler(handler));
+    public ServerTemplate childHandler(int priority, String name, ChannelHandler handler) {
+        tasks.add(i -> i.childHandler(priority, name, handler));
         return self();
     }
 

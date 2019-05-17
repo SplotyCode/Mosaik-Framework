@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.networking.host;
 
+import io.github.splotycode.mosaik.networking.cloudkit.SelfHostProvider;
 import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
 import io.github.splotycode.mosaik.networking.healthcheck.StaticHealthCheck;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
@@ -11,6 +12,8 @@ import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
 import lombok.Setter;
 
 public class SelfHost implements Host {
+
+    public static final SelfHostProvider PROVIDER = kit -> new SelfHost(kit.getLocalIpResolver());
 
     private StaticHealthCheck healthCheck = new StaticHealthCheck(true);
 

@@ -21,9 +21,15 @@ public interface ConfigProvider {
         return getConfigValue(key.getName(), key.getType(), key.getDef());
     }
 
+    default <T> void setConfigValue(ConfigKey<T> key, T obj) {
+        set(key.getName(), obj);
+    }
+
     default <T> T getConfigValue(String key, Class<T> clazz, T def) {
         ConfigEntry entry = getEntry(key);
         if (entry == null) return def;
+        T value = entry.getValue(clazz);
+        if (value == null) return def;
         try {
             return entry.getValue(clazz);
         } catch (Throwable throwable) {
