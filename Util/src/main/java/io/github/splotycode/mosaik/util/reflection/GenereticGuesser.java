@@ -16,7 +16,7 @@ public class GenereticGuesser {
     private static Map<Pair<Object, String>, Class<?>> cache = new HashMap<>();
 
     public static Class<?> find(Object object, Class<?> superclass, String typeParamName) {
-        Pair<Object, String> key = new Pair<>(object, superclass.getName() + "##" + typeParamName);
+        Pair<Object, String> key = new Pair<>(object, (superclass != null ? superclass.getName() + "##" : "")  + typeParamName);
         Class<?> clazz = cache.get(key);
         if (clazz == null) {
             clazz = getInstance().gues(object, superclass, typeParamName);
