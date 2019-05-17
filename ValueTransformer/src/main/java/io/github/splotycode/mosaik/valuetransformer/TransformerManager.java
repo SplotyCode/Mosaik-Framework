@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.valuetransformer;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
+import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 
 import java.util.*;
@@ -25,7 +26,7 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
     //TODO: if we have a transformer that transforms int to string and a transformer that transforms string to short it should be possible to transform int to shorts
 
     public <T> T transform(Object input, Class<T> result, Collection<ValueTransformer> transformers) {
-        if (result.isAssignableFrom(input.getClass())) return (T) input;
+        if (ReflectionUtil.isAssignable(result, input.getClass())) return (T) input;
         //List<Class<?>> possibleResults = getPossibleResults(input.getClass());
 
         for (ValueTransformer transformer : transformers) {
