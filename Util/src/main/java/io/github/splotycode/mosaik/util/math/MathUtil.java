@@ -10,13 +10,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MathUtil {
 
+    /**
+     * Returns a random number
+     * @param values the possible numbers
+     * @param probability probability for each value
+     */
     public double weightedRandomn(double[] values, double[] probability) {
         if (values == null) throw new IllegalArgumentException("values");
         if (probability == null) throw new IllegalArgumentException("probability");
         if (values.length != probability.length) throw new IllegalArgumentException(values.length + "!=" + probability.length);
 
         double rand = Math.random();
-        double ratio = 1.0f / ArrayUtil.sum(probability);
+        double ratio = 1f / ArrayUtil.sum(probability);
         double tempDist = 0;
         for (int c = 0; c < values.length;c++) {
             tempDist += probability[c];
@@ -25,6 +30,48 @@ public final class MathUtil {
             }
         }
         return 0;
+    }
+
+    /**
+     * Reverse a Number.
+     * Example: 2345 => 5432
+     */
+    public short reverse(short n) {
+        short reverse = 0;
+        while (n != 0) {
+            reverse *= 10;
+            reverse += n % 10;
+            n /= 10;
+        }
+        return reverse;
+    }
+
+    /**
+     * Reverse a Number.
+     * Example: 2345 => 5432
+     */
+    public long reverse(long n) {
+        long reverse = 0;
+        while (n != 0) {
+            reverse *= 10;
+            reverse += n % 10;
+            n /= 10;
+        }
+        return reverse;
+    }
+
+    /**
+     * Reverse a Number.
+     * Example: 2345 => 5432
+     */
+    public int reverse(int n) {
+        int reverse = 0;
+        while (n != 0) {
+            reverse *= 10;
+            reverse += n % 10;
+            n /= 10;
+        }
+        return reverse;
     }
 
     /**
