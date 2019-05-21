@@ -2,7 +2,7 @@ package io.github.splotycode.mosaik.networking.cloudkit;
 
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.config.ConfigProvider;
-import io.github.splotycode.mosaik.networking.host.AddressChangeListener;
+import io.github.splotycode.mosaik.networking.config.SimpleConfigProvider;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.host.SelfHost;
 import io.github.splotycode.mosaik.networking.master.MasterHost;
@@ -10,11 +10,15 @@ import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.service.Service;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
+import io.github.splotycode.mosaik.util.listener.Listener;
+import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
 import io.github.splotycode.mosaik.util.task.TaskExecutor;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
@@ -23,19 +27,21 @@ import java.util.concurrent.ThreadFactory;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CloudKit implements AddressChangeListener {
+public class CloudKit {
 
-    public static CloudKit.SetUp create() {
-        return new CloudKit().new SetUp();
+    public static Builder build() {
+        return new CloudKit().new Builder();
     }
 
     private ConfigProvider configProvider;
+
+    private MultipleListenerHandler<Listener> handler = new MultipleListenerHandler<>();
+
     private final HashSet<Service> services = new HashSet<>();
 
     private TaskExecutor localTaskExecutor;
 
-    private String hostConfigName;
-    private final TreeMap<MosaikAddress, Host> hosts = new TreeMap<>();
+    private HostMapProvider hosts;
     private HostProvider hostProvider;
 
     private IpResolver localIpResolver;
@@ -56,7 +62,7 @@ public class CloudKit implements AddressChangeListener {
         if (configProvider instanceof Service) {
             startService((Service) configProvider);
         } else {
-            this.configProvider = configProvider;
+            setConfigProvider0(configProvider);
         }
         return this;
     }
@@ -67,29 +73,26 @@ public class CloudKit implements AddressChangeListener {
         return this;
     }
 
+    public TreeMap<MosaikAddress, Host> hostMap() {
+        return hosts.getValue();
+    }
+
+    public Collection<Host> getHosts() {
+        return hostMap().values();
+    }
+
     public CloudKit startService(Service service) {
         services.add(service);
         service.start();
         if (service instanceof ConfigProvider) {
-            configProvider = (ConfigProvider) service;
-            configProvider.handler().addListener(hostConfigName, (originalUpdate, entry) -> {
-                hosts.values().forEach(host -> host.handler().removeListener(this));
-                hosts.clear();
-                hosts.put(localIpResolver.getIpAddress(), selfHost);
-                for (Object host : entry.getValue(Iterable.class)) {
-                    Host hostObj = hostProvider.provide(this, host.toString());
-                    hostObj.handler().addListener(this);
-                    hosts.put(hostObj.address(), hostObj);
-                }
-            });
+            setConfigProvider0((ConfigProvider) service);
         }
         return this;
     }
 
-    @Override
-    public void onChange(MosaikAddress oldAddress, MosaikAddress newAddress) {
-        Host host = hosts.remove(oldAddress);
-        hosts.put(newAddress, host);
+    private void setConfigProvider0(ConfigProvider configProvider) {
+        handler.call(ConfigProviderChangeListener.class, listener -> listener.newConfigProvider(this.configProvider, configProvider));
+        this.configProvider = configProvider;
     }
 
     private void checkConfigProvider() {
@@ -102,63 +105,82 @@ public class CloudKit implements AddressChangeListener {
         return this;
     }
 
+    public CloudKit setConfig(String key, Object value) {
+        checkConfigProvider();
+        configProvider.set(key, value);
+        return this;
+    }
+
     public <T> T getConfig(ConfigKey<T> key) {
         checkConfigProvider();
         return configProvider.getConfigValue(key);
     }
 
-    public class SetUp {
+    public MosaikAddress localAddress() {
+        return localIpResolver.getIpAddress();
+    }
 
-        public SetUp localIpResolver(IpResolver resolver) {
+    public class Builder {
+
+        public Builder localIpResolver(IpResolver resolver) {
             localIpResolver = resolver;
             return this;
         }
 
-        public SetUp localIpResolver(String preferred, String... failover) {
+        public Builder localIpResolver(String preferred, String... failover) {
             localIpResolver = IpResolver.create(preferred, failover);
             return this;
         }
 
-        public SetUp localIpResolver(boolean local) {
+        public Builder localIpResolver(boolean local) {
             localIpResolver = local ? IpResolver.createLocal() : IpResolver.createDefaults();
             return this;
         }
 
-        public SetUp localIpResolver() {
+        public Builder localIpResolver() {
             return localIpResolver(false);
         }
 
-        public SetUp localTaskExecutor(int nThreads) {
+        public Builder localTaskExecutor(int nThreads) {
             return localTaskExecutor(nThreads, Executors.defaultThreadFactory());
         }
 
-        public SetUp localTaskExecutor(int nThreads, ThreadFactory factory) {
+        public Builder localTaskExecutor(int nThreads, ThreadFactory factory) {
             return localTaskExecutor(new TaskExecutor(nThreads == 1 ?
                     Executors.newSingleThreadExecutor(factory) :
                     Executors.newFixedThreadPool(nThreads, factory)));
         }
 
-        public SetUp localTaskExecutor(ExecutorService executor) {
+        public Builder localTaskExecutor(ExecutorService executor) {
             localTaskExecutor = new TaskExecutor(executor);
             return this;
         }
 
-        public SetUp localTaskExecutor(TaskExecutor taskExecutor) {
+        public Builder localTaskExecutor(TaskExecutor taskExecutor) {
             localTaskExecutor = taskExecutor;
             return this;
         }
 
-        public SetUp hostProvider(HostProvider provider) {
+        public Builder hostProvider(HostProvider provider) {
             hostProvider = provider;
             return this;
         }
 
-        public SetUp selfHostProvider(SelfHostProvider provider) {
+        public Builder selfHostProvider(SelfHostProvider provider) {
             selfHostProvider = provider;
             return this;
         }
 
-        public CloudKit next() {
+        public ConfigBuilder toConfig() {
+            build();
+            return new ConfigBuilder(this);
+        }
+
+        public CloudKit configAndBuild() {
+            return toConfig().finish();
+        }
+
+        public CloudKit build() {
             if (localIpResolver == null) {
                 localIpResolver = IpResolver.GLOBAL;
             }
@@ -172,8 +194,54 @@ public class CloudKit implements AddressChangeListener {
                 selfHostProvider = SelfHost.PROVIDER;
             }
             selfHost = selfHostProvider.provide(CloudKit.this);
-            hosts.put(selfHost.address(), selfHost);
             return CloudKit.this;
+        }
+
+    }
+
+    @AllArgsConstructor
+    public class ConfigBuilder {
+
+        private Builder mainBuilder;
+
+        public ConfigBuilder hostMapProvider(HostMapProvider provider) {
+            hosts = provider;
+            return this;
+        }
+
+        public ConfigBuilder hostMapProviderConfig(String path) {
+            checkConfigProvider();
+            hosts = new ConfigHostMapProvider(CloudKit.this, path);
+            return this;
+        }
+
+        public ConfigBuilder configProvider(ConfigProvider provider) {
+            setConfigProvider(provider);
+            return this;
+        }
+
+        protected void checkConfigProvider() {
+            if (configProvider == null) {
+                configProvider = new SimpleConfigProvider();
+            }
+        }
+
+        public CloudKit finish() {
+            apply();
+            return CloudKit.this;
+        }
+
+        private void apply() {
+            checkConfigProvider();
+        }
+
+        public Builder applyAndBack() {
+            apply();
+            return back();
+        }
+
+        public Builder back() {
+            return mainBuilder;
         }
 
     }

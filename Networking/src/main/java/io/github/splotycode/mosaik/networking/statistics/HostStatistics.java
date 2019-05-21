@@ -2,13 +2,9 @@ package io.github.splotycode.mosaik.networking.statistics;
 
 import com.sun.management.OperatingSystemMXBean;
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
-import io.github.splotycode.mosaik.networking.component.NetworkComponent;
-import io.github.splotycode.mosaik.networking.service.ManagedComponentService;
+import io.github.splotycode.mosaik.networking.packet.serialized.PacketSerializer;
+import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.service.Service;
-import io.github.splotycode.mosaik.networking.service.SingleComponentService;
-import io.github.splotycode.mosaik.networking.util.CurrentConnectionHandler;
-import io.github.splotycode.mosaik.util.Pair;
-import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,59 +17,44 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Getter
-public class HostStatistics {
+public class HostStatistics implements SerializedPacket {
 
-    private static Map<Integer, Integer> getCurrentConnections(Service service) {
-        if (service instanceof CostomStatisticService) {
-            return ((CostomStatisticService) service).statistics();
-        }
-        if (service instanceof SingleComponentService) {
-            NetworkComponent<?, ? ,?> component = ((SingleComponentService) service).component();
-            if (component != null && component.running()) {
-                CurrentConnectionHandler handler = component.getHandler(CurrentConnectionHandler.class);
-                return CollectionUtil.newHashMap(new Pair<>(component.port(), (int) handler.getConnections()));
-            }
-        }
-        if (service instanceof ManagedComponentService) {
-            Map<Integer, Integer> connections = new HashMap<>();
-            for (NetworkComponent<?, ?, ?> component : ((ManagedComponentService) service).getInstances()) {
-                if (!component.running()) continue;
-                CurrentConnectionHandler handler = component.getHandler(CurrentConnectionHandler.class);
-                connections.put(component.port(), (int) handler.getConnections());
-            }
-            return connections;
-        }
-        return null;
-    }
-
-    public static int getCpuLoad() {
-        return  (int) Math.round(((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad());
+    public static double getCpuLoad() {
+        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad() * 100;
     }
 
     public static HostStatistics current(CloudKit kit) {
-        int cpu = getCpuLoad();
+        double cpu = getCpuLoad();
         long freeRam = Runtime.getRuntime().freeMemory();
-        Map<String, Map<Integer, Integer>> connections = new HashMap<>();
+
+        HostStatistics statistics = new HostStatistics(cpu, freeRam);
+
         for (Service service : kit.getServices()) {
-            Map<Integer, Integer> serviceConnections = getCurrentConnections(service);
-            if (serviceConnections != null) {
-                connections.put(service.displayName(), serviceConnections);
+            if (service instanceof StatisticService) {
+                ServiceStatistics serviceStatistics = ((StatisticService) service).statistics();
+                if (serviceStatistics != null) {
+                    statistics.connections.put(service.displayName(), serviceStatistics);
+                }
             }
         }
-        return new HostStatistics(cpu, freeRam, connections);
+        return statistics;
     }
 
-    private final int cpu;
-    private final long freeRam;
-    private final Map<String, Map<Integer, Integer>> connections;
+    private HostStatistics(double cpu, long freeRam) {
+        this(cpu, freeRam, new HashMap<>());
+    }
+
+    private double cpu;
+    private long freeRam;
+    private Map<String, ServiceStatistics> connections;
 
     public Set<String> getServices() {
         return connections.keySet();
     }
 
     public int getInstances(String service) {
-        Map<Integer, Integer> data = connections.get(service);
-        return data == null ? 0 : data.size();
+        ServiceStatistics statistics = connections.get(service);
+        return statistics == null ? 0 : statistics.getInstances();
     }
 
     public int getInstances(Service service) {
@@ -81,13 +62,8 @@ public class HostStatistics {
     }
 
     public int getConnections(String service) {
-        Map<Integer, Integer> data = connections.get(service);
-        if (data == null) return 0;
-        int connections = 0;
-        for (int instanceConnections : data.values()) {
-            connections += instanceConnections;
-        }
-        return connections;
+        ServiceStatistics statistics = connections.get(service);
+        return statistics == null ? 0 : statistics.totalConnections();
     }
 
     public int getConnections(Service service) {
@@ -96,20 +72,45 @@ public class HostStatistics {
 
     public int totalInstances() {
         int instances = 0;
-        for (Map<Integer, Integer> service : connections.values()) {
-            instances += service.size();
+        for (ServiceStatistics statistics : connections.values()) {
+            instances += statistics.getInstances();
         }
         return instances;
     }
 
     public int totalConnections() {
         int cons = 0;
-        for (Map<Integer, Integer> service : connections.values()) {
-            for (int instanceConnection : service.values()) {
-                cons += instanceConnection;
-            }
+        for (ServiceStatistics statistics : connections.values()) {
+            cons += statistics.totalConnections();
         }
         return cons;
+    }
+
+    @Override
+    public void read(PacketSerializer packet) throws Exception {
+        freeRam = packet.readLong();
+        cpu = packet.readDouble();
+
+        int connectionSize = packet.readVarInt();
+        connections = new HashMap<>(connectionSize, 1);
+        for (int i = 0; i < connectionSize; i++) {
+            String name = packet.readString();
+            ServiceStatistics statistics = new ServiceStatistics();
+            statistics.read(packet);
+            connections.put(name, statistics);
+        }
+    }
+
+    @Override
+    public void write(PacketSerializer packet) throws Exception {
+        packet.writeLong(freeRam);
+        packet.writeDouble(cpu);
+
+        packet.writeVarInt(connections.size());
+        for (Map.Entry<String, ServiceStatistics> service : connections.entrySet()) {
+            packet.writeString(service.getKey());
+            service.getValue().write(packet);
+        }
     }
 
 }

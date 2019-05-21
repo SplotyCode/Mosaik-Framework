@@ -80,12 +80,21 @@ public class MosaikAddress implements Comparable<MosaikAddress> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            if (o instanceof String) {
+                return equals((String) o);
+            }
+            return false;
+        }
         MosaikAddress that = (MosaikAddress) o;
         if (rawAddress == null && that.rawAddress == null) {
             return address.equals(that.address);
         }
         return asString().equals(that.asString());
+    }
+
+    public boolean equals(String address) {
+        return asString().equals(address);
     }
 
     @Override

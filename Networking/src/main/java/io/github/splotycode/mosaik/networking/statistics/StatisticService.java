@@ -2,10 +2,8 @@ package io.github.splotycode.mosaik.networking.statistics;
 
 import io.github.splotycode.mosaik.networking.service.Service;
 
-import java.util.Map;
+public interface StatisticService extends Service {
 
-public interface CostomStatisticService extends Service {
-
-    Map<Integer, Integer> statistics();
+    ServiceStatistics statistics();
 
 }

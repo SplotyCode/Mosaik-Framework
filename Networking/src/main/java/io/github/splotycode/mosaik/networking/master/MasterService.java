@@ -12,7 +12,6 @@ import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
 import io.github.splotycode.mosaik.networking.service.SingleComponentService;
-import io.github.splotycode.mosaik.networking.util.AddressSerializer;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
@@ -22,6 +21,7 @@ import io.netty.handler.ipfilter.IpSubnetFilterRule;
 import io.netty.handler.ipfilter.RuleBasedIpFilter;
 import lombok.Getter;
 
+import java.net.InetSocketAddress;
 import java.util.Map;
 
 @Getter
@@ -86,7 +86,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
             currentBest = best;
 
-            for (Map.Entry<MosaikAddress, Host> root : kit.getHosts().entrySet()) {
+            for (Map.Entry<MosaikAddress, Host> root : kit.hostMap().entrySet()) {
                 if (root.getKey().hashCode() > currentBest.hashCode() && root.getValue().healthCheck().isOnline()) {
                     logger.info("Sending Destroy packet to " + root.getKey());
                     destroyMaster(root.getKey());
@@ -98,7 +98,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     }
 
     private MosaikAddress getBestRoot() {
-        for (Map.Entry<MosaikAddress, Host> root : kit.getHosts().entrySet()) {
+        for (Map.Entry<MosaikAddress, Host> root : kit.hostMap().entrySet()) {
             if (root.getValue().healthCheck().isOnline()) {
                 return root.getKey();
             }
@@ -165,7 +165,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     }
 
     public Host getHostByCtx(ChannelHandlerContext ctx) {
-        return kit.getHosts().get(AddressSerializer.toString(ctx.channel().remoteAddress()));
+        return kit.hostMap().get(MosaikAddress.from((InetSocketAddress) ctx.channel().remoteAddress()));
     }
 
     @Override

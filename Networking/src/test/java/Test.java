@@ -1,31 +1,31 @@
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
-import io.github.splotycode.mosaik.networking.config.ConfigService;
-import io.github.splotycode.mosaik.networking.host.StaticHost;
+import io.github.splotycode.mosaik.networking.master.MasterHost;
+import io.github.splotycode.mosaik.networking.master.MasterSelfHost;
+import io.github.splotycode.mosaik.networking.master.MasterService;
+import io.github.splotycode.mosaik.runtime.startup.StartUpInvoke;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.Collections;
 
 public class Test {
 
     public static void main(String[] args) {
-        //StartUpInvoke.invokeTestSuite();
-        CloudKit cloudKit = new CloudKit();
-        cloudKit.setHostProvider(host -> {
-            try {
-                return new StaticHost(InetAddress.getByName(host),
-                        5001, cloudKit.getLocalTaskExecutor(),
-                        20 * 1000, 15 * 1000, 8, 2);
-            } catch (UnknownHostException e) {
-                return null;
-            }
-        });
-        cloudKit.startService(new ConfigService(null, true, 5000, null));
-        cloudKit.startMasterService(8000, 5001);
+        StartUpInvoke.invokeTestSuite();
+        CloudKit kit =
+                CloudKit.build()
+                        .localIpResolver(false)
+                        .hostProvider(MasterHost.PROVIDER)
+                        .selfHostProvider(MasterSelfHost.PROVIDER)
+                .toConfig()
+                        .hostMapProviderConfig("roots")
+                .finish();
+        kit.setConfig(MasterService.PORT, 8008);
+        kit.setConfig("roots", Collections.emptyList());
+        kit.startMasterService();
         //NetClient client = new NetClient();
-        //    TCPServer server = TCPServer.create().port(333)
+        //    TCPServer server = TCPServer.build().port(333)
         //            .onUnBound(new ReconnectListener(1.2f, 1, 2))
         //            .bind(false);
-        /*ChannelFuture future = TCPServer.create().onBind((component, bootstrap) -> System.out.println("BIND!"))
+        /*ChannelFuture future = TCPServer.build().onBind((component, bootstrap) -> System.out.println("BIND!"))
                 .onBound((component, future1) -> System.out.println("BOUNG!"))
                 .onUnBound((component, future1) -> System.out.println("UNBOUND")).port(4444).bind(false).nettyFuture();
         future.addListener(future1 -> System.out.println("raw init1"));
