@@ -1,34 +1,41 @@
-package io.github.splotycode.mosaik.networking.master;
+package io.github.splotycode.mosaik.networking.master.host;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
 import io.github.splotycode.mosaik.networking.cloudkit.SelfHostProvider;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
 import io.github.splotycode.mosaik.networking.healthcheck.StaticHealthCheck;
+import io.github.splotycode.mosaik.networking.master.manage.MasterInstanceService;
+import io.github.splotycode.mosaik.networking.service.Service;
 import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
-import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.DefaultCaches;
 import io.github.splotycode.mosaik.util.listener.DummyListenerHandler;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
+import lombok.Getter;
 
-public class MasterSelfHost implements StatisticalHost {
+public class MasterSelfHost implements MasterHost {
 
     public static final SelfHostProvider PROVIDER = MasterSelfHost::new;
 
-    public static final ConfigKey<Long> CACHE_TIME = new ConfigKey<>("master.self_stats_cache", long.class);
+    public static final ConfigKey<Long> CACHE_TIME = new ConfigKey<>("master.self_stats_cache", long.class, 2000L);
 
     private StaticHealthCheck healthCheck = new StaticHealthCheck(true);
     private IpResolver resolver;
     private Cache<HostStatistics> statistic;
-    private CloudKit cloudKit;
+    @Getter private CloudKit cloudKit;
     private HostStatistics set;
 
     public MasterSelfHost(CloudKit cloudKit) {
         this.cloudKit = cloudKit;
         resolver = cloudKit.getLocalIpResolver();
+    }
+
+    @Override
+    public String toString() {
+        return "Local-" + address().asString();
     }
 
     @Override
@@ -66,5 +73,20 @@ public class MasterSelfHost implements StatisticalHost {
     @Override
     public ListenerHandler handler() {
         return DummyListenerHandler.DUMMY;
+    }
+
+    @Override
+    public void startNewInstance(Service service) {
+        if (service instanceof MasterInstanceService) {
+            ((MasterInstanceService) service).getLocalManager().startNewInstance();
+        }
+    }
+
+    @Override
+    public void stopService(String rawService, int port) {
+        Service service = getCloudKit().getServiceByName(rawService);
+        if (service instanceof MasterInstanceService) {
+            ((MasterInstanceService) service).getLocalManager().stop(port);
+        }
     }
 }

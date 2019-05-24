@@ -165,7 +165,17 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     }
 
     public Host getHostByCtx(ChannelHandlerContext ctx) {
-        return kit.hostMap().get(MosaikAddress.from((InetSocketAddress) ctx.channel().remoteAddress()));
+        Channel channel = ctx.channel();
+        Host host = kit.hostMap().get(MosaikAddress.from((InetSocketAddress) channel.remoteAddress()));
+        if (host instanceof RemoteMasterHost) {
+            ((RemoteMasterHost) host).setChannel(channel);
+        }
+        return host;
+    }
+
+    @Override
+    public CloudKit kit() {
+        return kit;
     }
 
     @Override

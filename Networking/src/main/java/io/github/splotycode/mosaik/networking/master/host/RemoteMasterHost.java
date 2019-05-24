@@ -1,22 +1,27 @@
-package io.github.splotycode.mosaik.networking.master;
+package io.github.splotycode.mosaik.networking.master.host;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
 import io.github.splotycode.mosaik.networking.cloudkit.HostProvider;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
 import io.github.splotycode.mosaik.networking.host.AddressChangeListener;
+import io.github.splotycode.mosaik.networking.master.MasterService;
+import io.github.splotycode.mosaik.networking.master.packets.StartInstancePacket;
+import io.github.splotycode.mosaik.networking.master.packets.StopInstancePacket;
+import io.github.splotycode.mosaik.networking.service.Service;
 import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
-import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
+import io.netty.channel.Channel;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.function.Consumer;
 
-public class MasterHost implements StatisticalHost {
+public class RemoteMasterHost implements MasterHost {
 
-    public static final HostProvider PROVIDER = MasterHost::new;
+    public static final HostProvider PROVIDER = RemoteMasterHost::new;
 
     public static final ConfigKey<Long> HEALTH_THRESHOLD = new ConfigKey<>("master.host.health_threshold", long.class, 8 * 1000L);
 
@@ -24,11 +29,13 @@ public class MasterHost implements StatisticalHost {
     private MasterHealthCheck healthCheck = new MasterHealthCheck();
     @Getter private HostStatistics statistics;
 
-    private CloudKit kit;
+    @Getter private CloudKit cloudKit;
     private MosaikAddress address;
 
-    public MasterHost(CloudKit kit, String address) {
-        this.kit = kit;
+    @Setter private Channel channel;
+
+    public RemoteMasterHost(CloudKit cloudKit, String address) {
+        this.cloudKit = cloudKit;
         changeAddress(address);
     }
 
@@ -41,9 +48,29 @@ public class MasterHost implements StatisticalHost {
     private MultipleListenerHandler handler = new MultipleListenerHandler();
 
     @Override
+    public String toString() {
+        return "External-" + address().asString();
+    }
+
+    @Override
     public void update(HostStatistics statistics) {
        this.statistics = statistics;
        lastUpdate = System.currentTimeMillis();
+    }
+
+    @Override
+    public void startNewInstance(String service) {
+        channel.writeAndFlush(new StartInstancePacket(service));
+    }
+
+    @Override
+    public void startNewInstance(Service service) {
+        startNewInstance(service.displayName());
+    }
+
+    @Override
+    public void stopService(String service, int port) {
+        channel.writeAndFlush(new StopInstancePacket(service, port));
     }
 
     private class MasterHealthCheck implements HealthCheck {
@@ -51,7 +78,7 @@ public class MasterHost implements StatisticalHost {
         @Override
         public boolean isOnline() {
             long delay = System.currentTimeMillis() - lastUpdate;
-            return delay <= kit.getConfig(HEALTH_THRESHOLD) + kit.getConfig(MasterService.DAEMON_STATS_DELAY);
+            return delay <= cloudKit.getConfig(HEALTH_THRESHOLD) + cloudKit.getConfig(MasterService.DAEMON_STATS_DELAY);
         }
     }
 
