@@ -5,7 +5,7 @@ import io.github.splotycode.mosaik.networking.config.ConfigProvider;
 import io.github.splotycode.mosaik.networking.config.SimpleConfigProvider;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.host.SelfHost;
-import io.github.splotycode.mosaik.networking.master.MasterHost;
+import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.service.Service;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
@@ -68,6 +68,7 @@ public class CloudKit {
     }
 
     public CloudKit stopService(Service service) {
+        handler.removeListener(service);
         services.remove(service);
         service.stop();
         return this;
@@ -83,6 +84,7 @@ public class CloudKit {
 
     public CloudKit startService(Service service) {
         services.add(service);
+        handler.addListener(service);
         service.start();
         if (service instanceof ConfigProvider) {
             setConfigProvider0((ConfigProvider) service);
@@ -109,6 +111,15 @@ public class CloudKit {
         checkConfigProvider();
         configProvider.set(key, value);
         return this;
+    }
+
+    public Service getServiceByName(String name) {
+        for (Service service : services) {
+            if (service.displayName().equals(name)) {
+                return service;
+            }
+        }
+        return null;
     }
 
     public <T> T getConfig(ConfigKey<T> key) {
@@ -188,7 +199,7 @@ public class CloudKit {
                 localTaskExecutor(2);
             }
             if (hostProvider == null) {
-                hostProvider = MasterHost.PROVIDER;
+                hostProvider = RemoteMasterHost.PROVIDER;
             }
             if (selfHostProvider == null) {
                 selfHostProvider = SelfHost.PROVIDER;
