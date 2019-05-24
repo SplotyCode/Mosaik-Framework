@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.networking.util;
 
+import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
 import io.github.splotycode.mosaik.util.logger.Logger;
 
 import java.net.InetAddress;
@@ -70,6 +71,14 @@ public class MosaikAddress implements Comparable<MosaikAddress> {
             rawAddress = address.getHostAddress();
         }
         return rawAddress;
+    }
+
+    public boolean isLocal(CloudKit kit) {
+        return match(kit.getLocalIpResolver());
+    }
+
+    public boolean match(IpResolver resolver) {
+        return equals(resolver.getIpAddress());
     }
 
     @Override

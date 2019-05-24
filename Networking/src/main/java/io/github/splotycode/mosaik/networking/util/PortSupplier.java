@@ -1,5 +1,7 @@
 package io.github.splotycode.mosaik.networking.util;
 
+import io.github.splotycode.mosaik.networking.config.ConfigProvider;
+import io.github.splotycode.mosaik.networking.config.ConfigurationExcpetion;
 import io.github.splotycode.mosaik.networking.exception.OutOfPortsException;
 import lombok.Getter;
 
@@ -18,6 +20,25 @@ public class PortSupplier implements Supplier<Integer> {
     private List<Integer> portBlockList = new ArrayList<>();
 
     private int currentPort = minPort;
+
+    public static PortSupplier fromConfig(ConfigProvider provider, String prefix) {
+        PortSupplier supplier = new PortSupplier(
+                provider.getConfigValue(prefix + ".min_port", int.class, 0),
+                provider.getConfigValue(prefix + ".max_port", int.class, 0)
+        );
+        if (supplier.maxPort == 0 || supplier.minPort == 0) {
+            throw new ConfigurationExcpetion("Invalid port configuration");
+        }
+        Integer[] preferredPorts = provider.getConfigValue(prefix + ".preferred", Integer[].class, null);
+        if (preferredPorts != null) {
+            supplier.addPreferedPorts(preferredPorts);
+        }
+        Integer[] blockedPorts = provider.getConfigValue(prefix + ".blocked", Integer[].class, null);
+        if (preferredPorts != null) {
+            supplier.addBlockedPorts(blockedPorts);
+        }
+        return supplier;
+    }
 
     public PortSupplier(int minPort, int maxPort) {
         if (minPort > maxPort) throw new IllegalArgumentException("minPort > maxPort");
@@ -41,7 +62,7 @@ public class PortSupplier implements Supplier<Integer> {
         Integer prefPort = preferredPorts.poll();
         if (prefPort != null) return prefPort;
         while (true) {
-            if (currentPort >= maxPort) throw new OutOfPortsException("Max port (" + maxPort + ") Reached");
+            if (currentPort >= maxPort) throw new OutOfPortsException("Max port (" + maxPort + ") Reached, preferred port list is also empty");
             currentPort++;
             if (!portBlockList.contains(currentPort)) return currentPort;
         }
