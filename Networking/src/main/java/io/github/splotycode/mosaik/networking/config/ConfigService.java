@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.networking.config;
 
+import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
 import io.github.splotycode.mosaik.networking.component.NetworkComponent;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPClient;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPServer;
@@ -12,7 +13,7 @@ import io.github.splotycode.mosaik.networking.packet.handle.AnnotationContentHan
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
-import io.github.splotycode.mosaik.networking.service.SingleComponentService;
+import io.github.splotycode.mosaik.networking.statistics.SingleComponentService;
 import io.github.splotycode.mosaik.util.listener.Listener;
 import io.netty.channel.Channel;
 
@@ -33,11 +34,19 @@ public class ConfigService extends StaticConfigProvider implements SingleCompone
     private int port;
     private String serverAddress;
 
-    public ConfigService(File file, boolean keepAlive, int port, String serverAddress) {
+    private CloudKit kit;
+
+    public ConfigService(File file, boolean keepAlive, int port, String serverAddress, CloudKit kit) {
         super(file);
         this.keepAlive = keepAlive;
         this.port = port;
         this.serverAddress = serverAddress;
+        this.kit = kit;
+    }
+
+    @Override
+    public CloudKit kit() {
+        return kit;
     }
 
     private TCPServer server;

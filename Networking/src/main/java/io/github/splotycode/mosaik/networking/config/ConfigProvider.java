@@ -25,6 +25,12 @@ public interface ConfigProvider {
         set(key.getName(), obj);
     }
 
+    default <T> T getConfigValue(String key, Class<T> clazz) {
+        T result = getConfigValue(key, clazz, null);
+        if (result == null) throw new IllegalArgumentException("Config: " + key);
+        return result;
+    }
+
     default <T> T getConfigValue(String key, Class<T> clazz, T def) {
         ConfigEntry entry = getEntry(key);
         if (entry == null) return def;

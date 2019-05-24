@@ -6,15 +6,18 @@ import io.github.splotycode.mosaik.networking.component.tcp.TCPClient;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPServer;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.host.Host;
+import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.master.packets.DestroyPacket;
 import io.github.splotycode.mosaik.networking.packet.PacketRegistry;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
-import io.github.splotycode.mosaik.networking.service.SingleComponentService;
+import io.github.splotycode.mosaik.networking.statistics.CloudStatistics;
+import io.github.splotycode.mosaik.networking.statistics.SingleComponentService;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.ipfilter.IpFilterRuleType;
 import io.netty.handler.ipfilter.IpSubnetFilterRule;
@@ -51,7 +54,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     private long taskID;
 
     private CloudKit kit;
-
+    private CloudStatistics statistics;
 
     private ServiceStatus status = ServiceStatus.UNKNOWN;
 
@@ -63,24 +66,24 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         super("Master Sync", delay);
         this.port = port;
         this.kit = kit;
+        statistics = new CloudStatistics(kit);
     }
 
     @Override
     public void run() {
         MosaikAddress best = getBestRoot();
         if (!best.equals(currentBest)) {
+            boolean own = best.isLocal(kit);
+
             logger.info("Best Primary Master switched from " +  currentBest + " to " + best);
-            if (currentBest.equals(kit.getLocalIpResolver().getIpAddress())) {
-                server.shutdown();
-            }
-            if (best.equals(kit.getLocalIpResolver().getIpAddress())) {
+            kit.getHandler().call(MasterChangeListener.class, listener -> listener.onChange(own, best, currentBest));
+
+            if (own) {
                 logger.info("Optimal Primary master is this machine");
-                if (client != null) {
-                    client.shutdown();
-                    client = null;
-                }
+                client.shutdown();
                 server = createServer();
             } else {
+                server.shutdown();
                 client = createClient(best);
             }
 

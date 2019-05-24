@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.lang.management.ManagementFactory;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class HostStatistics implements SerializedPacket {
         double cpu = getCpuLoad();
         long freeRam = Runtime.getRuntime().freeMemory();
 
-        HostStatistics statistics = new HostStatistics(cpu, freeRam);
+        HostStatistics statistics = new HostStatistics(cpu, freeRam, (StatisticalHost) kit.getSelfHost());
 
         for (Service service : kit.getServices()) {
             if (service instanceof StatisticService) {
@@ -40,9 +41,15 @@ public class HostStatistics implements SerializedPacket {
         return statistics;
     }
 
-    private HostStatistics(double cpu, long freeRam) {
-        this(cpu, freeRam, new HashMap<>());
+    private HostStatistics(double cpu, long freeRam, StatisticalHost host) {
+        this(host, cpu, freeRam, new HashMap<>());
     }
+
+    public Collection<Instance> getConnection(Service service) {
+        return connections.get(service.displayName()).instances.values();
+    }
+
+    private StatisticalHost host;
 
     private double cpu;
     private long freeRam;
@@ -54,7 +61,15 @@ public class HostStatistics implements SerializedPacket {
 
     public int getInstances(String service) {
         ServiceStatistics statistics = connections.get(service);
-        return statistics == null ? 0 : statistics.getInstances();
+        return statistics == null ? 0 : statistics.getInstancesCount();
+    }
+
+    public ServiceStatistics getService(Service service) {
+        return getService(service.displayName());
+    }
+
+    public ServiceStatistics getService(String service) {
+        return connections.get(service);
     }
 
     public int getInstances(Service service) {
@@ -73,7 +88,7 @@ public class HostStatistics implements SerializedPacket {
     public int totalInstances() {
         int instances = 0;
         for (ServiceStatistics statistics : connections.values()) {
-            instances += statistics.getInstances();
+            instances += statistics.getInstancesCount();
         }
         return instances;
     }
@@ -95,7 +110,7 @@ public class HostStatistics implements SerializedPacket {
         connections = new HashMap<>(connectionSize, 1);
         for (int i = 0; i < connectionSize; i++) {
             String name = packet.readString();
-            ServiceStatistics statistics = new ServiceStatistics();
+            ServiceStatistics statistics = new ServiceStatistics(host, name);
             statistics.read(packet);
             connections.put(name, statistics);
         }
