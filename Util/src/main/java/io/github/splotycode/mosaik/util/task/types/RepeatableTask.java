@@ -11,6 +11,13 @@ public class RepeatableTask extends AbstractTask {
     public RepeatableTask(String displayName, long delay) {
         super(displayName);
         this.delay = delay;
+        checkDelay();
+    }
+
+    private void checkDelay() {
+        if (delay <= 0) {
+            throw new IllegalArgumentException("Delay might be greater then delay");
+        }
     }
 
     public RepeatableTask(Runnable runnable, long delay) {

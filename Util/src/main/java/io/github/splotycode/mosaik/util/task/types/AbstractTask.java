@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.util.task.types;
 import io.github.splotycode.mosaik.util.task.Task;
 import io.github.splotycode.mosaik.util.task.TaskExecutor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -10,7 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Getter
 public abstract class AbstractTask implements Task {
 
-    protected String displayNme;
+    @Setter protected String displayNme;
     protected Runnable runnable;
     private Lock lock = new ReentrantLock();
     private volatile boolean used;
