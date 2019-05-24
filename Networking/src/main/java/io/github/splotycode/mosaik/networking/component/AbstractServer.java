@@ -13,6 +13,7 @@ import javax.net.ssl.SSLException;
 import java.io.File;
 import java.security.cert.CertificateException;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractServer<S extends AbstractServer<S>> extends NetworkComponent<ServerBootstrap, ServerChannel, S> {
@@ -92,6 +93,11 @@ public abstract class AbstractServer<S extends AbstractServer<S>> extends Networ
 
     public S childHandler(int priority, String name, ChannelHandler handler) {
         childHandlers.addHandler(priority, name, handler);
+        return self();
+    }
+
+    public S childHandler(int priority, String name, Class<? extends ChannelHandler> clazz, Supplier<ChannelHandler> obj) {
+        childHandlers.addHandler(priority, name, clazz, obj);
         return self();
     }
 

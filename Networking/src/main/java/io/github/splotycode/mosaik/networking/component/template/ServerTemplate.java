@@ -8,8 +8,9 @@ import io.netty.channel.ChannelOption;
 
 import java.io.File;
 import java.util.Map;
+import java.util.function.Supplier;
 
-public abstract class ServerTemplate<I extends AbstractServer<? extends I>> extends ComponentTemplate<ServerTemplate, I> {
+public abstract class ServerTemplate<I extends AbstractServer<? extends I>> extends ComponentTemplate<ServerTemplate<I>, I> {
 
     public static ServerTemplate<TCPServer<? extends TCPServer>> tcp() {
         return new ServerTemplate<TCPServer<? extends TCPServer>>() {
@@ -29,22 +30,27 @@ public abstract class ServerTemplate<I extends AbstractServer<? extends I>> exte
         };
     }
 
-    public ServerTemplate childHandler(int priority, String name, ChannelHandler handler) {
+    public ServerTemplate<I> childHandler(int priority, String name, ChannelHandler handler) {
         tasks.add(i -> i.childHandler(priority, name, handler));
         return self();
     }
 
-    public ServerTemplate childOption(Map<ChannelOption, Object> options) {
+    public ServerTemplate<I> childHandler(int priority, String name, Class<? extends ChannelHandler> clazz, Supplier<ChannelHandler> obj) {
+        tasks.add(i -> i.childHandler(priority, name, clazz, obj));
+        return self();
+    }
+
+    public ServerTemplate<I> childOption(Map<ChannelOption, Object> options) {
         tasks.add(i -> i.childOption(options));
         return self();
     }
 
-    public ServerTemplate sslSelfSigned() {
+    public ServerTemplate<I> sslSelfSigned() {
         tasks.add(AbstractServer::sslSelfSigned);
         return self();
     }
 
-    public ServerTemplate ssl(File certificate, File priavteKey) {
+    public ServerTemplate<I> ssl(File certificate, File priavteKey) {
         tasks.add(i -> i.ssl(certificate, priavteKey));
         return self();
     }

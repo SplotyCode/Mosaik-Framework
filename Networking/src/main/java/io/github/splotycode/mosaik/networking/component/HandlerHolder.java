@@ -86,7 +86,7 @@ public class HandlerHolder {
         addHandler(new SharableHandlerData(priority, obj.getClass(), name, obj));
     }
 
-    public void addHandler(int priority, String name, Class<ChannelHandler> clazz, Supplier<ChannelHandler> obj) {
+    public void addHandler(int priority, String name, Class<? extends ChannelHandler> clazz, Supplier<ChannelHandler> obj) {
         addHandler(new HandlerData(priority, clazz, name, obj));
     }
 
