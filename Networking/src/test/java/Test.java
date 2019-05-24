@@ -1,6 +1,6 @@
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
-import io.github.splotycode.mosaik.networking.master.MasterHost;
-import io.github.splotycode.mosaik.networking.master.MasterSelfHost;
+import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
+import io.github.splotycode.mosaik.networking.master.host.MasterSelfHost;
 import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.runtime.startup.StartUpInvoke;
 
@@ -13,7 +13,7 @@ public class Test {
         CloudKit kit =
                 CloudKit.build()
                         .localIpResolver(false)
-                        .hostProvider(MasterHost.PROVIDER)
+                        .hostProvider(RemoteMasterHost.PROVIDER)
                         .selfHostProvider(MasterSelfHost.PROVIDER)
                 .toConfig()
                         .hostMapProviderConfig("roots")
