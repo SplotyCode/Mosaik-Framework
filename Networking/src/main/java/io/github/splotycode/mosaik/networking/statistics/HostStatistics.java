@@ -46,10 +46,22 @@ public class HostStatistics implements SerializedPacket {
     }
 
     public Collection<Instance> getConnection(Service service) {
-        return connections.get(service.displayName()).instances.values();
+        return getConnection(service.displayName());
+    }
+
+    public Collection<Instance> getConnection(String service) {
+        return connections.get(service).instances.values();
     }
 
     private StatisticalHost host;
+
+    public boolean hasService(Service service) {
+        return hasService(service.displayName());
+    }
+
+    public boolean hasService(String service) {
+        return connections.containsKey(service);
+    }
 
     private double cpu;
     private long freeRam;
