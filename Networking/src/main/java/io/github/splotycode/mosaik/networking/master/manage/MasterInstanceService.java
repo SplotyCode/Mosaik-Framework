@@ -87,4 +87,8 @@ public abstract class MasterInstanceService<C extends NetworkComponent<?, ?, ?>>
         return statistics;
     }
 
+    @Override
+    public String statusMessage() {
+        return "Controlling " + localManager.getInstances().size() + " instances";
+    }
 }
