@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.io;
 
+import com.sun.nio.zipfs.ZipFileSystem;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.exception.ResourceNotFoundException;
@@ -7,18 +8,20 @@ import io.github.splotycode.mosaik.util.logger.Logger;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.io.*;
 import java.io.ByteArrayInputStream;
+import java.io.*;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.nio.file.FileSystem;
+import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IOUtil {
@@ -195,17 +198,43 @@ public final class IOUtil {
         }
     }
 
-    public static Path getResourcePath(String path) {
+    private static FileSystem getFileSystem(URI uri) throws IOException {
+        try {
+            return FileSystems.getFileSystem(uri);
+        } catch(FileSystemNotFoundException e) {
+            Map<String, String> env = new HashMap<>();
+            env.put("create", "true");
+            return FileSystems.newFileSystem(uri, env);
+        }
+    }
+
+    public static Path getResourcePath(String path, boolean closeFileSystem) {
         URL url = IOUtil.class.getResource(path);
         if (url == null) {
             throw new ResourceNotFoundException("Resource not found: " + path);
         }
+
+        FileSystem fileSystem = null;
         try {
-            return Paths.get(url.toURI());
-        } catch (URISyntaxException e) {
+            URI uri = url.toURI();
+            fileSystem = getFileSystem(uri);
+            return Paths.get(uri);
+        } catch (URISyntaxException | IOException e) {
             ExceptionUtil.throwRuntime(e);
+        } finally {
+            if (closeFileSystem && fileSystem instanceof ZipFileSystem) {
+                try {
+                    fileSystem.close();
+                } catch (IOException e) {
+                    ExceptionUtil.throwRuntime(e);
+                }
+            }
         }
         return null;
+    }
+
+    public static Path getResourcePath(String path) {
+        return getResourcePath(path, false);
     }
 
 }
