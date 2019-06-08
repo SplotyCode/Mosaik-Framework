@@ -23,30 +23,30 @@ public class AgeGenerator implements Generator<Integer> {
                                                                 .back()
                                                                 .next()
                                                                     .setRegion(AgeRegion.TEENAGER)
-                                                                    .setProbability(14)
-                                                                .back()
-                                                                .next()
-                                                                    .setRegion(AgeRegion.JUNG_AGED)
-                                                                    .setProbability(32)
-                                                                .back()
-                                                                .next()
-                                                                    .setRegion(AgeRegion.MIDDLE_AGED)
-                                                                    .setProbability(16)
-                                                                .back()
-                                                                .next()
-                                                                    .setRegion(AgeRegion.OLD_AGED)
                                                                     .setProbability(26)
                                                                 .back()
                                                                 .next()
+                                                                    .setRegion(AgeRegion.JUNG_AGED)
+                                                                    .setProbability(30)
+                                                                .back()
+                                                                .next()
+                                                                    .setRegion(AgeRegion.MIDDLE_AGED)
+                                                                    .setProbability(20)
+                                                                .back()
+                                                                .next()
+                                                                    .setRegion(AgeRegion.OLD_AGED)
+                                                                    .setProbability(15)
+                                                                .back()
+                                                                .next()
                                                                     .setRegion(AgeRegion.SUPER_OLD_AGED)
-                                                                    .setProbability(7)
+                                                                    .setProbability(5)
                                                                 .back()
                                                                 .build();
 
 
     private AgeData[] wights;
 
-    public AgeGenerator(AgeData... wights) {
+    private AgeGenerator(AgeData... wights) {
         this.wights = wights;
         if (wights.length == 0) throw new IllegalArgumentException("Wights length is 0");
     }
@@ -75,18 +75,29 @@ public class AgeGenerator implements Generator<Integer> {
         }
 
         /**
+         * Shortcut for AgeBuilder
+         * @param region the age region
+         * @param probability the probability
+         * @return this builder
+         */
+        public AgeBuilder addWigth(AgeRegion region, int probability) {
+            return next().setRegion(region).setProbability(probability).back();
+        }
+
+        /**
          * Generates the AgeGenerator
          * @return te AgeGenerator
          */
         public AgeGenerator build() {
             int sum = 0;
-            for (AgeData data : wights)
+            for (AgeData data : wights) {
                 sum += data.probability;
-            if (sum != 100) throw new IllegalArgumentException("Wights are not 100 in sum!");
-            return new AgeGenerator(wights.toArray(new AgeData[wights.size()]));
+            }
+            if (sum != 100) throw new IllegalArgumentException("Wights are not 100 in sum! (They are " + sum + ")");
+            return new AgeGenerator(wights.toArray(new AgeData[0]));
         }
 
-        private class WightBuilder {
+        public class WightBuilder {
 
             private AgeData data = new AgeData();
 
