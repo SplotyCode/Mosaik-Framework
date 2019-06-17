@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util;
 
+import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -81,7 +82,12 @@ public final class ExceptionUtil {
      * Throws a Throwable by using the <code>toRuntime</code> method
      */
     public static void throwRuntime(Throwable throwable) throws RuntimeException {
-        throw toRuntime(throwable);
+        if (throwable instanceof RuntimeException ||
+                ReflectionUtil.getUnsafe() == null) {
+            throw toRuntime(throwable);
+        } else {
+            ReflectionUtil.getUnsafe().throwException(throwable);
+        }
     }
 
     /**
