@@ -1,5 +1,7 @@
 package io.github.splotycode.mosaik.util;
 
+import io.github.splotycode.mosaik.util.datafactory.DataFactories;
+import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import lombok.Getter;
 
@@ -15,7 +17,17 @@ public abstract class ValueTransformer<I, O> {
      * @param input the original object
      * @return the transformed object
      */
-    public abstract O transform(I input) throws Exception;
+    public O transform(I input) throws Exception {
+        return transform(input, DataFactories.EMPTY_DATA_FACTORY);
+    }
+
+    /**
+     * Transforms a object
+     * @param input the original object
+     * @param info additionally transforming info
+     * @return the transformed object
+     */
+    public abstract O transform(I input, DataFactory info) throws Exception;
 
     public ValueTransformer() {
         Type[] generics = ReflectionUtil.getGenerics(getClass());
