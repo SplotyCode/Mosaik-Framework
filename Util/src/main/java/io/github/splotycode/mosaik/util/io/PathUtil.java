@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.io;
 
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.info.SystemInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,7 +9,9 @@ import io.github.splotycode.mosaik.util.cache.DefaultCaches;
 import lombok.NoArgsConstructor;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -17,6 +20,15 @@ import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PathUtil {
+
+    public static URL getUrl(String str) {
+        try {
+            return new URL(str);
+        } catch (MalformedURLException e) {
+            ExceptionUtil.throwRuntime(e);
+            return null;
+        }
+    }
 
     public static String getFileNameWithoutEx(File file) {
         return getFileNameWithoutEx(file.getName());
