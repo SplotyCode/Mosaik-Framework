@@ -37,7 +37,7 @@ public class UserAgendGenerator implements Generator<String> {
         agend.append(info.getPlatform()).append("; ");
         if (info.getDistro() != null) {
             agend.append(info.getDistro()).append("; ");
-            agend.append(info.getKernel()).append(" ").append(info.isBit64() ? "x64" : "x32");
+            agend.append(info.getKernel()).append(" ").append(info.isBit64() ? "x64" : "x32").append("; ");
         } else {
             agend.append(info.getKernel()).append("; ");
             agend.append(info.isBit64() ? "x64" : "x32").append("; ");
