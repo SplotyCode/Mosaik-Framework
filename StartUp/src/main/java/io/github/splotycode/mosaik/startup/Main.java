@@ -56,10 +56,8 @@ public class Main {
         if (initialised) throw new AlreadyInitailizedException("Main.main() already called");
         initialised = true;
 
-        bootData = new BootContext(args, start);
+        bootData = new BootContext(args, start, BootContext.createProvider(args));
         LinkBase.getInstance().registerLink(Links.BOOT_DATA, bootData);
-
-        checkClassLoader();
 
         MosaikModule.STARTUP.checkLoaded();
         MosaikModule.DOM_PARSING_IMPL.checkLoaded();
@@ -69,6 +67,7 @@ public class Main {
         setUpLogging();
         LoggingHelper.loggingStartUp();
 
+        checkClassLoader();
         if (ReflectionUtil.getCallerClasses().length >= 4) {
             logger.warn("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass().getName());
         }
@@ -96,7 +95,7 @@ public class Main {
 
         /* Running Startup Tasks*/
         LoggingHelper.startSection("StartUp Tasks");
-        StartTaskExecutor.getInstance().collectSkippedPaths();
+        StartTaskExecutor.getInstance().collectSkippedPaths(bootData.getClassLoaderProvider().getClassLoader());
         StartTaskExecutor.getInstance().findAll(false);
         StartTaskExecutor.getInstance().runAll(environmentChanger);
         LoggingHelper.endSection();
@@ -138,10 +137,14 @@ public class Main {
 
         if (thisLoader.getClass() != threadLoader.getClass() || thisLoader.getClass() != systemLoader.getClass()) {
             logger.warn(StringUtil.format("Invalid ClassLoader! ThisLoader: '{1}', SystemLoader: '{2}', ThisLoader: '{3}'",
-                    thisLoader.getClass().getName(),
-                    threadLoader.getClass().getName(),
-                    systemLoader.getClass().getName()));
+                    className(thisLoader),
+                    className(threadLoader),
+                    className(systemLoader)));
         }
+    }
+
+    private static String className(Object obj) {
+        return obj == null ? "Null" : obj.getClass().getName();
     }
 
 }
