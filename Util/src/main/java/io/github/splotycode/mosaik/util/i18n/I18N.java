@@ -1,15 +1,17 @@
 package io.github.splotycode.mosaik.util.i18n;
 
 import io.github.splotycode.mosaik.util.io.IOUtil;
+import lombok.Getter;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
 
 public class I18N {
 
-    private HashMap<String, String> map = new HashMap<>();
+    @Getter private HashMap<String, String> map = new HashMap<>();
+    private ThreadLocal<MessageFormat> formatThreadLocal = ThreadLocal.withInitial(() -> new MessageFormat(""));
 
-    public String get(String key, String... objects) {
+    public String get(String key, Object... objects) {
         String value = map.get(key);
         if (value == null) {
             System.err.println("Failed to find " + key + " in Locale");
@@ -18,7 +20,9 @@ public class I18N {
                 new Throwable().printStackTrace();
             } catch (Throwable ignored) {}
         }
-        return MessageFormat.format(value, (Object[]) objects);
+        MessageFormat format = formatThreadLocal.get();
+        format.applyPattern(value);
+        return format.format(objects);
     }
 
     public I18N setLocale(ILocale locale) {
