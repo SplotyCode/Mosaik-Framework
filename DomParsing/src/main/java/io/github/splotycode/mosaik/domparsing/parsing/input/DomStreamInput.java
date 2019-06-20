@@ -4,7 +4,6 @@ import io.github.splotycode.mosaik.domparsing.parsing.DomSourceType;
 import io.github.splotycode.mosaik.util.io.IOUtil;
 import lombok.AllArgsConstructor;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 @AllArgsConstructor
@@ -16,7 +15,7 @@ public class DomStreamInput implements DomInput {
     public byte[] getBytes() {
         try {
             return IOUtil.toByteArray(stream);
-        } catch (IOException e) {
+        } catch (Throwable e) {
             throw new DomInputException("Could not convert stream to byte array", e);
         }
     }
@@ -25,7 +24,7 @@ public class DomStreamInput implements DomInput {
     public String getString() {
         try {
             return IOUtil.loadText(stream);
-        } catch (IOException e) {
+        } catch (Throwable e) {
             throw new DomInputException("Could not load text from stream", e);
         }
     }

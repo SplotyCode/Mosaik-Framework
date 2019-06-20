@@ -1,13 +1,12 @@
 package io.github.splotycode.mosaik.domparsing.parsing.output;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import io.github.splotycode.mosaik.domparsing.parsing.DomSourceType;
 import io.github.splotycode.mosaik.util.io.ByteArrayInputStream;
 import io.github.splotycode.mosaik.util.io.FileUtil;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 @AllArgsConstructor
@@ -20,7 +19,7 @@ public class DomStringOutput implements DomOutput {
     public void writeFile(File file) {
         try {
             FileUtil.writeToFile(file, string);
-        } catch (IOException e) {
+        } catch (Throwable e) {
             throw new DomOutputException("Could not write string to file", e);
         }
     }

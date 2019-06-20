@@ -11,8 +11,6 @@ import io.github.splotycode.mosaik.util.logger.LoggerFactory;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.xml.DOMConfigurator;
 
-import java.io.IOError;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class MosaikLoggerFactory extends InitialisedOnce implements LoggerFactory {
@@ -25,15 +23,11 @@ public class MosaikLoggerFactory extends InitialisedOnce implements LoggerFactor
     @Override
     protected void init() {
         System.setProperty("log4j.defaultInitOverride", "true");
-        try {
-            String config = IOUtil.resourceToText("/log-config.xml");
-            config = config.replaceAll("_\\$log\\$_", LinkBase.getInstance().getLink(Links.PATH_MANAGER).getLogDirectory().getAbsolutePath());
-            config = config.replaceAll("_\\$file_mode\\$_", DebugProvider.getInstance().hasDebug(DebugMode.LOG_FILE) ? "TRACE" : "INFO");
-            config = config.replaceAll("_\\$log_mode\\$_", DebugProvider.getInstance().hasDebug(DebugMode.LOG) ? "TRACE" : "INFO");
-            new DOMConfigurator().doConfigure(IOUtil.toInputStream(config, StandardCharsets.UTF_8), LogManager.getLoggerRepository());
-        } catch (IOException e) {
-            throw new IOError(e);
-        }
-    }
+        String config = IOUtil.resourceToText("/log-config.xml");
+        config = config.replaceAll("_\\$log\\$_", LinkBase.getInstance().getLink(Links.PATH_MANAGER).getLogDirectory().getAbsolutePath());
+        config = config.replaceAll("_\\$file_mode\\$_", DebugProvider.getInstance().hasDebug(DebugMode.LOG_FILE) ? "TRACE" : "INFO");
+        config = config.replaceAll("_\\$log_mode\\$_", DebugProvider.getInstance().hasDebug(DebugMode.LOG) ? "TRACE" : "INFO");
+        new DOMConfigurator().doConfigure(IOUtil.toInputStream(config, StandardCharsets.UTF_8), LogManager.getLoggerRepository());
+}
 
 }

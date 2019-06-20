@@ -7,6 +7,7 @@ import io.github.splotycode.mosaik.annotations.AnnotationHelper;
 import io.github.splotycode.mosaik.runtime.startup.StartupTask;
 import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
 import io.github.splotycode.mosaik.startup.exception.FrameworkStartException;
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.io.IOUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
@@ -68,23 +69,23 @@ public class StartTaskExecutor {
         logger.info("Executing StartUp Tasks (" + run + "/" + tasks.values().size() + "): " + StringUtil.join(tasks.values(), obj -> obj.getClass().getSimpleName(), ", "));
     }
 
-    private List<ClassPath.ResourceInfo> getSippedFiles() {
+    private List<ClassPath.ResourceInfo> getSippedFiles(ClassLoader classLoader) {
         try {
             List<ClassPath.ResourceInfo> files = new ArrayList<>();
-            for (ClassPath.ResourceInfo resource : ClassPath.from(Thread.currentThread().getContextClassLoader()).getResources()) {
+            for (ClassPath.ResourceInfo resource : ClassPath.from(classLoader).getResources()) {
                 if (resource.getResourceName().contains("disabled_paths")) {
                     files.add(resource);
                 }
             }
             return files;
         } catch (IOException ex) {
-            ex.printStackTrace();
+            ExceptionUtil.throwRuntime(ex);
         }
         return Collections.emptyList();
     }
 
-    public void collectSkippedPaths() {
-        List<ClassPath.ResourceInfo> files = getSippedFiles();
+    public void collectSkippedPaths(ClassLoader classLoader) {
+        List<ClassPath.ResourceInfo> files = getSippedFiles(classLoader);
         for (ClassPath.ResourceInfo file : files) {
             try (InputStream is = file.asByteSource().openStream()) {
                 List<String> lines = IOUtil.loadLines(is);
@@ -92,7 +93,7 @@ public class StartTaskExecutor {
                     ClassFinderHelper.registerSkippedPath(skippedPath);
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                ExceptionUtil.throwRuntime(ex);
             }
         }
         if (ClassFinderHelper.getSkippedPaths().isEmpty()) {

@@ -1,11 +1,9 @@
 package io.github.splotycode.mosaik.networking.config;
 
-import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.io.FileUtil;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,11 +16,7 @@ public class StaticConfigProvider extends AbstractConfigProvider {
     public StaticConfigProvider(File file) {
         this.file = file;
         if (file != null && file.exists()) {
-            try {
-                setRawConfig(FileUtil.loadFile(file), false);
-            } catch (IOException e) {
-                ExceptionUtil.throwRuntime(e);
-            }
+            setRawConfig(FileUtil.loadFile(file), false);
         }
     }
 
@@ -42,11 +36,7 @@ public class StaticConfigProvider extends AbstractConfigProvider {
 
     public void setRawConfig(String rawConfig, boolean update) {
         if (file != null && update) {
-            try {
-                FileUtil.writeToFile(file, rawConfig);
-            } catch (IOException e) {
-                ExceptionUtil.throwRuntime(e);
-            }
+            FileUtil.writeToFile(file, rawConfig);
         }
         HashMap<String, ConfigEntry> config = new HashMap<>();
         for (Map.Entry<String, Object> value : ((Map<String, Object>) yaml.load(rawConfig)).entrySet()) {

@@ -10,7 +10,6 @@ import lombok.Getter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -58,12 +57,8 @@ public class FileSystemImpl<D> implements FileSystem<D> {
 
     @Override
     public void putEntry(String entryKey, D entry) {
-        try {
-            File file = new File(root, entryKey + ".kv");
-            FileUtil.writeToFile(file, entryParser.fromObject(entry));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        File file = new File(root, entryKey + ".kv");
+        FileUtil.writeToFile(file, entryParser.fromObject(entry));
     }
 
     @Override

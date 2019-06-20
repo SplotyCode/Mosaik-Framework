@@ -19,7 +19,7 @@ public class DomFileInput implements DomInput {
     public byte[] getBytes() {
         try {
             return IOUtil.toByteArray(getStream());
-        } catch (IOException e) {
+        } catch (Throwable e) {
             throw new DomInputException("Could not convert stream to byte array", e);
         }
     }
@@ -28,7 +28,7 @@ public class DomFileInput implements DomInput {
     public String getString() {
         try {
             return IOUtil.loadText(getStream());
-        } catch (IOException e) {
+        } catch (Throwable e) {
             throw new DomInputException("Could not convert stream to text", e);
         }
     }

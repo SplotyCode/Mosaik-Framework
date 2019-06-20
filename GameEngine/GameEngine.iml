@@ -123,10 +123,10 @@
     <orderEntry type="library" name="Maven: org.lwjgl:lwjgl:natives-linux:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl:lwjgl:natives-macos:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl:lwjgl:natives-windows:3.2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.junit.jupiter:junit-jupiter-api:5.5.0-M1" level="project" />
-    <orderEntry type="library" name="Maven: org.apiguardian:apiguardian-api:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.opentest4j:opentest4j:1.1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.junit.platform:junit-platform-commons:1.5.0-M1" level="project" />
+    <orderEntry type="library" name="Maven: org.junit.jupiter:junit-jupiter-api:5.5.0-RC2" level="project" />
+    <orderEntry type="library" name="Maven: org.apiguardian:apiguardian-api:1.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.opentest4j:opentest4j:1.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.junit.platform:junit-platform-commons:1.5.0-RC2" level="project" />
     <orderEntry type="library" name="Maven: org.slick2d:slick2d-core:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl.lwjgl:lwjgl:2.9.3" level="project" />
     <orderEntry type="library" name="Maven: org.lwjgl.lwjgl:lwjgl-platform:natives-windows:2.9.3" level="project" />

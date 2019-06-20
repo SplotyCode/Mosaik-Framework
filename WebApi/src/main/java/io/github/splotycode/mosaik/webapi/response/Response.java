@@ -137,8 +137,8 @@ public class Response {
                     if (rawContent == null) {
                         try {
                             rawContent = new ByteArrayInputStream(IOUtil.toByteArray(loadContent()));
-                        } catch (IOException ex) {
-                            throw new ContentException("Failed to convert stream to byte array");
+                        } catch (Throwable ex) {
+                            throw new ContentException("Failed to convert stream to byte array", ex);
                         }
                     }
                     return new ByteArrayInputStream(((ByteArrayInputStream)rawContent).getOriginal());
