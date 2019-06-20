@@ -16,9 +16,9 @@ import java.util.List;
 public class DefaultMethodData extends AnnotationData implements IMethodData {
 
     @Getter @Setter
-    private Method method;
+    protected Method method;
 
-    private List<Pair<ParameterResolver, Parameter>> parameters = new ArrayList<>();
+    protected List<Pair<ParameterResolver, Parameter>> parameters = new ArrayList<>();
 
     @Override
     public void registerParameter(Parameter parameter, ParameterResolver parameterResolver) {
