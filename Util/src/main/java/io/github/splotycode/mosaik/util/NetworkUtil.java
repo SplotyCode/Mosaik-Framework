@@ -57,6 +57,17 @@ public final class NetworkUtil {
     }
 
     /**
+     * Extracts the host string of a SocketAddress
+     * @return the extracted host
+     */
+    public static String extractHost(SocketAddress address) {
+        if (address instanceof InetSocketAddress) {
+            return ((InetSocketAddress) address).getHostString();
+        }
+        return StringUtil.getLastSplit(address.toString(), "/");
+    }
+
+    /**
      * Checks if an address is local
      */
     public static boolean isLocalAddress(String address) {
