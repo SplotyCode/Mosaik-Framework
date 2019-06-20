@@ -28,9 +28,9 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
     public static DataKey<AnnotationHandlerData> GLOBAL = new DataKey<>("web.global");
     public static DataKey<AnnotationHandlerData.SupAnnotationHandlerData> SUP = new DataKey<>("web.sup");
 
-    private Collection<AnnotationHandler<AnnotationHttpHandler, Annotation, AnnotationHandlerData>> costom = new ArrayList<>();
+    private Collection<AnnotationHandler<AnnotationHttpHandler, ? extends Annotation, AnnotationHandlerData>> costom = new ArrayList<>();
 
-    public void addCostomHandler(AnnotationHandler<AnnotationHttpHandler, Annotation, AnnotationHandlerData> handler) {
+    public void addCostomHandler(AnnotationHandler<AnnotationHttpHandler, ? extends Annotation, AnnotationHandlerData> handler) {
         costom.add(handler);
     }
 
@@ -117,12 +117,7 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
     }
 
     @Override
-    public AnnotationHttpHandler self() {
-        return this;
-    }
-
-    @Override
-    public Collection<AnnotationHandler<AnnotationHttpHandler, Annotation, AnnotationHandlerData>> getAnnotationHandlers() {
+    public Collection<AnnotationHandler<AnnotationHttpHandler, ? extends Annotation, AnnotationHandlerData>> getAnnotationHandlers() {
         return costom;
     }
 }

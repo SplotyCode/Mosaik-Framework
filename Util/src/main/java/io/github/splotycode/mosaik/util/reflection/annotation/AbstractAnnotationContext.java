@@ -68,12 +68,7 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
     protected void callAnnotationHandler(boolean pre, D data, Method method) {
         getAnnotationHandlers().forEach(handler -> {
             try {
-                Annotation annotation = method.getAnnotation(handler.annotation());
-                if (pre) {
-                    handler.preCall(self(), annotation, data);
-                } else {
-                    handler.postCall(self(), annotation, data);
-                }
+                handler.doCall(method, pre ? AnnotationHandler.CallType.PRE : AnnotationHandler.CallType.POST, self(), data);
             } catch (Throwable e) {
                 throw new AnnotationHandlerExcpetion("Error in " + handler.getClass().getName() + (pre ? "#preCall" : "#postCall"), e);
             }
@@ -154,14 +149,11 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
     }
 
     protected void initHandlers(D data, AnnotatedElement object) {
-        for (AnnotationHandler<C, Annotation, D> handler : getAnnotationHandlers()) {
-            if (object.isAnnotationPresent(handler.annotation())) {
-                Annotation annotation = object.getAnnotation(handler.annotation());
-                try {
-                    handler.init(self(), annotation, data);
-                } catch (Throwable throwable) {
-                    throw new AnnotationHandlerExcpetion("Error calling init on " + handler.getClass().getName(), throwable);
-                }
+        for (AnnotationHandler<C, ? extends Annotation, D> handler : getAnnotationHandlers()) {
+            try {
+                handler.doCall(object, AnnotationHandler.CallType.INIT, self(), data);
+            } catch (Throwable throwable) {
+                throw new AnnotationHandlerExcpetion("Error calling init on " + handler.getClass().getName(), throwable);
             }
         }
     }
@@ -203,6 +195,11 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
         } finally {
             callAnnotationHandler(false, (D) mData, method);
         }
+    }
+
+    @Override
+    public C self() {
+        return (C) this;
     }
 
     @Override

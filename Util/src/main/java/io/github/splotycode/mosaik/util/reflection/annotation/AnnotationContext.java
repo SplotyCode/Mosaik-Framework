@@ -29,7 +29,7 @@ public interface AnnotationContext<C extends AnnotationContext, D extends IAnnot
 
     C self();
 
-    Collection<AnnotationHandler<C, Annotation, D>> getAnnotationHandlers();
+    Collection<AnnotationHandler<C, ? extends Annotation, D>> getAnnotationHandlers();
 
     Class<? extends D> elementClass();
 
