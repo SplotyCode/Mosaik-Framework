@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.networking.component.http;
 
-import io.github.splotycode.mosaik.valuetransformer.io.SocketAddressToString;
+import io.github.splotycode.mosaik.util.NetworkUtil;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,7 +14,7 @@ public class HttpRedirectHandler extends SimpleChannelInboundHandler<HttpRequest
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(request.protocolVersion(), HttpResponseStatus.MOVED_PERMANENTLY);
         String host = request.headers().get(HttpHeaderNames.HOST);
         if (host == null) {
-            host = new SocketAddressToString().transform(ctx.channel().localAddress());
+            host = NetworkUtil.extractHost(ctx.channel().localAddress());
         }
         response.headers().set(HttpHeaderNames.LOCATION, "https://" + host + request.uri());
 

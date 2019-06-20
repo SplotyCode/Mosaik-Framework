@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.networking.util;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
 
 import java.net.InetAddress;
@@ -16,8 +17,11 @@ public class MosaikAddress implements Comparable<MosaikAddress> {
     private String rawAddress;
     private InetAddress address;
 
-    public static MosaikAddress from(InetSocketAddress address) {
-        return new MosaikAddress(address.getAddress());
+    public static MosaikAddress from(SocketAddress address) {
+        if (address instanceof InetSocketAddress) {
+            return new MosaikAddress(((InetSocketAddress) address).getAddress());
+        }
+        return new MosaikAddress(StringUtil.getLastSplit(address.toString(), "/"));
     }
 
     public static MosaikAddress local() {
