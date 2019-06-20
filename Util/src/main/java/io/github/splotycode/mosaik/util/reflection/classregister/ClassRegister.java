@@ -1,10 +1,9 @@
 package io.github.splotycode.mosaik.util.reflection.classregister;
 
-import com.google.common.reflect.ClassPath;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.ClassCollector;
+import io.github.splotycode.mosaik.util.reflection.ClassPath;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -62,16 +61,14 @@ public interface ClassRegister<T> {
     }
 
     default void registerPackage(String path) {
-        try {
-            for (ClassPath.ClassInfo classInfo : ClassPath.from(getClass().getClassLoader()).getTopLevelClassesRecursive(path)) {
-                Class<?> clazz = classInfo.load();
+        new ClassPath(getClass().getClassLoader()).classes(resource -> {
+            if (resource.inPackage(path)) {
+                Class<?> clazz = resource.load();
                 if (getObjectClass().isAssignableFrom(clazz)) {
                     register((Class<? extends T>) clazz);
                 }
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        });
     }
 
     default void unRegisterPackage(String path) {

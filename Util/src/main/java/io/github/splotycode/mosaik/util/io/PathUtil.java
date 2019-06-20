@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.util.io;
 
 import io.github.splotycode.mosaik.util.ExceptionUtil;
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.info.SystemInfo;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,7 +43,7 @@ public final class PathUtil {
     }
 
     public static String getFileName(String path) {
-        if (path == null || path.length() == 0) {
+        if (StringUtil.isEmpty(path)) {
             return "";
         }
 

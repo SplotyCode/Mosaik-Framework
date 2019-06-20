@@ -55,7 +55,7 @@ public final class ClassCollector implements Predicate<Class> {
     }
 
     private Collection<Class> collectAll0() {
-        return ClassFinderHelper.getUserClasses().stream().filter(this::test).collect(Collectors.toList());
+        return ClassFinderHelper.getUserClasses().stream().filter(this).collect(Collectors.toList());
     }
 
     public Predicate<Class> buildCondition() {
