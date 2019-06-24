@@ -18,6 +18,7 @@ import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.init.AlreadyInitailizedException;
 import io.github.splotycode.mosaik.util.io.IOUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
+import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.util.reflection.modules.MosaikModule;
 import lombok.Getter;
@@ -41,17 +42,21 @@ public class Main {
 
     public static void mainIfNotInitialised() throws Exception {
         if (!initialised)
-            main();
+            mainImpl();
     }
 
     public static void mainIfNotInitialised(String[] args) throws Exception {
         if (!initialised)
-            main(args);
+            mainImpl(args);
     }
 
     private static Logger logger;
 
     public static void main(String[] args) throws Exception {
+        mainImpl(args);
+    }
+
+    private static void mainImpl(String... args) throws Exception {
         long start = System.currentTimeMillis();
         if (initialised) throw new AlreadyInitailizedException("Main.main() already called");
         initialised = true;
@@ -68,8 +73,8 @@ public class Main {
         LoggingHelper.loggingStartUp();
 
         checkClassLoader();
-        if (ReflectionUtil.getCallerClasses().length >= 4) {
-            logger.warn("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass().getName());
+        if (ReflectionUtil.getCallerClasses().length >= 4 + 1) {
+            logger.warn("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass(1).getName());
         }
 
         logger.info("");
