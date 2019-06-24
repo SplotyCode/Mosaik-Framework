@@ -3,13 +3,14 @@ package io.github.splotycode.mosaik.util.i18n;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @EqualsAndHashCode
 public class MessageContext {
 
     protected I18N translator;
-    protected Map<String, String> replacements;
+    protected Map<String, String> replacements = new HashMap<>();
     @Setter protected String prefix;
     @Setter protected boolean allLinePrefix;
 
@@ -38,7 +39,7 @@ public class MessageContext {
         if (allLinePrefix) {
             StringBuilder builder = new StringBuilder();
             for (String line : text.split("\n")) {
-                builder.append(prefix).append(line);
+                builder.append(prefix).append(line).append("\n");
             }
             return builder.toString();
         }
