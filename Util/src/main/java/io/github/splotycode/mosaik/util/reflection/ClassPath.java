@@ -4,6 +4,7 @@ import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.collection.MultiHashMap;
 import io.github.splotycode.mosaik.util.io.PathUtil;
+import io.github.splotycode.mosaik.util.logger.Logger;
 import lombok.Getter;
 
 import java.io.File;
@@ -18,8 +19,10 @@ import java.util.jar.JarFile;
 
 public class ClassPath {
 
-    private HashMap<File, ClassLoader> paths = new HashMap<>();
-    private MultiHashMap<ClassLoader, Resource> resources = new MultiHashMap<>();
+    private Logger logger = Logger.getInstance(ClassPath.class);
+
+    @Getter private HashMap<File, ClassLoader> paths = new HashMap<>();
+    @Getter private MultiHashMap<ClassLoader, Resource> resources = new MultiHashMap<>();
     private HashSet<String> scanned = new HashSet<>();
 
     public static class Resource {
@@ -58,7 +61,7 @@ public class ClassPath {
         if (classpathAttribute == null) return Collections.emptySet();
         Set<File> classpaths = new HashSet<>();
         for (String path : classpathAttribute.split(" ")) {
-            if (StringUtil.isEmptyDeep(path)) {
+            if (!StringUtil.isEmptyDeep(path)) {
                 URL url = new URL(file.toURI().toURL(), path);
                 classpaths.add(new File(url.getFile()));
             }
