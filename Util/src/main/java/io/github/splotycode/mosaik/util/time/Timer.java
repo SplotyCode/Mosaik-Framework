@@ -1,4 +1,6 @@
-package io.github.splotycode.mosaik.util;
+package io.github.splotycode.mosaik.util.time;
+
+import io.github.splotycode.mosaik.util.ExceptionUtil;
 
 /**
  * Used to measure timing
