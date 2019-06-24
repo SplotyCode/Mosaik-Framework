@@ -100,7 +100,9 @@ public class Main {
 
         /* Running Startup Tasks*/
         LoggingHelper.startSection("StartUp Tasks");
-        StartTaskExecutor.getInstance().collectSkippedPaths(bootData.getClassLoaderProvider().getClassLoader());
+        ClassLoader classLoader = bootData.getClassLoaderProvider().getClassLoader();
+        ClassFinderHelper.setClassLoader(classLoader);
+        StartTaskExecutor.getInstance().collectSkippedPaths(classLoader);
         StartTaskExecutor.getInstance().findAll(false);
         StartTaskExecutor.getInstance().runAll(environmentChanger);
         LoggingHelper.endSection();
