@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.runtime.application;
 import io.github.splotycode.mosaik.util.task.Task;
 import io.github.splotycode.mosaik.util.task.TaskExecutor;
 import io.github.splotycode.mosaik.util.task.types.CompressingTask;
+import lombok.Getter;
 
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
@@ -10,10 +11,15 @@ import java.util.concurrent.TimeUnit;
 
 public class ShutdownManager implements IShutdownManager {
 
-    private LinkedList<Runnable> tasks = new LinkedList<>();
+    @Getter private LinkedList<Runnable> shutdownTasks = new LinkedList<>();
 
     public ShutdownManager() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> tasks.forEach(Runnable::run), "Mosaik Shutdown Thread"));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::simulateShutdown, "Mosaik Shutdown Thread"));
+    }
+
+    @Override
+    public void simulateShutdown() {
+        shutdownTasks.forEach(Runnable::run);
     }
 
     private Runnable getTaskExecutorRunnable(TaskExecutor taskExecutor) {
@@ -44,32 +50,32 @@ public class ShutdownManager implements IShutdownManager {
 
     @Override
     public void addFirstTaskExecutor(TaskExecutor executor) {
-        tasks.addFirst(getTaskExecutorRunnable(executor));
+        shutdownTasks.addFirst(getTaskExecutorRunnable(executor));
     }
 
     @Override
     public void addLastTaskExecutor(TaskExecutor executor) {
-        tasks.addLast(getTaskExecutorRunnable(executor));
+        shutdownTasks.addLast(getTaskExecutorRunnable(executor));
     }
 
     @Override
     public void addShutdownTask(Runnable runnable) {
-        tasks.addLast(runnable);
+        shutdownTasks.addLast(runnable);
     }
 
     @Override
     public void addShutdownTask(Thread thread) {
-        tasks.addLast(thread::start);
+        shutdownTasks.addLast(thread::start);
     }
 
     @Override
     public void addFirstShutdownTask(Runnable runnable) {
-        tasks.addFirst(runnable);
+        shutdownTasks.addFirst(runnable);
     }
 
     @Override
     public void addFirstShutdownTask(Thread thread) {
-        tasks.addFirst(thread::start);
+        shutdownTasks.addFirst(thread::start);
     }
 
 }
