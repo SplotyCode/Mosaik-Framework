@@ -169,10 +169,10 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
     protected Object callMethod0(D rawData, DataFactory additionalInfo) {
         IMethodData mData = toMethodData(rawData);
 
-        Object[] parameters = new Object[mData.getAllPrameters().size()];
+        Object[] parameters = new Object[mData.getAllParameters().size()];
         try {
             int i = 0;
-            for (Pair<ParameterResolver, Parameter> pair : mData.getAllPrameters()) {
+            for (Pair<ParameterResolver, Parameter> pair : mData.getAllParameters()) {
                 try {
                     parameters[i] = pair.getOne().transform(self(), pair.getTwo(), additionalInfo);
                 } catch (ParameterResolveException ex) {

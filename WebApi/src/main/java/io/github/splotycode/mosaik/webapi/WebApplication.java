@@ -1,13 +1,10 @@
 package io.github.splotycode.mosaik.webapi;
 
-import com.google.common.reflect.ClassPath;
+import io.github.splotycode.mosaik.util.logger.Logger;
+import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.webapi.handler.HandlerManager;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import lombok.Getter;
-import io.github.splotycode.mosaik.util.logger.Logger;
-import io.github.splotycode.mosaik.webapi.handler.HandlerManager;
-import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
-
-import java.io.IOException;
 
 @Deprecated
 public class WebApplication {
@@ -64,7 +61,8 @@ public class WebApplication {
         }
     }
 
-    public void registerTransformers(String packagePath) {
+    /*public void registerTransformers(String packagePath) {
+
         try {
             for (ClassPath.ClassInfo classInfo : ClassPath.from(getClass().getClassLoader()).getTopLevelClassesRecursive(packagePath)) {
                 Class<?> clazz = classInfo.load();
@@ -75,6 +73,6 @@ public class WebApplication {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }

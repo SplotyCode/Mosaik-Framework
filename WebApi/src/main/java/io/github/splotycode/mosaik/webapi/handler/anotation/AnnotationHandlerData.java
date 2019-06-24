@@ -152,7 +152,7 @@ public class AnnotationHandlerData extends AnnotationData {
         }
 
         @Override
-        public Collection<Pair<ParameterResolver, Parameter>> getAllPrameters() {
+        public Collection<Pair<ParameterResolver, Parameter>> getAllParameters() {
             return parameters;
         }
     }

@@ -11,9 +11,10 @@ public interface IMethodData extends IAnnotationData {
 
     void registerParameter(Parameter parameter, ParameterResolver parameterResolver);
 
-    Collection<Pair<ParameterResolver, Parameter>> getAllPrameters();
+    Collection<Pair<ParameterResolver, Parameter>> getAllParameters();
 
-    Method getMethod();
-    void setMethod(Method method);
+    default Method getMethod() {
+        return (Method) getElement();
+    }
 
 }
