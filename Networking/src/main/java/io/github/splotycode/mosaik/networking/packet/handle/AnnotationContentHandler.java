@@ -1,8 +1,7 @@
 package io.github.splotycode.mosaik.networking.packet.handle;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import io.github.splotycode.mosaik.networking.packet.Packet;
+import io.github.splotycode.mosaik.util.collection.MultiHashMap;
 import io.github.splotycode.mosaik.util.reflection.classregister.ClassRegister;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -45,7 +44,7 @@ public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInb
                 }
                 Class<?> parameter = method.getParameterTypes()[0];
                 if (Packet.class.isAssignableFrom(parameter)) {
-                    handlers.put((Class<? extends Packet>) parameter, new HandlerData(method, obj));
+                    handlers.addToList((Class<? extends Packet>) parameter, new HandlerData(method, obj));
                 } else {
                     throw new AnnotationStructureExcpetion("Parameter need to extend Packet");
                 }
@@ -68,7 +67,7 @@ public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInb
         return Object.class;
     }
 
-    private static Multimap<Class<? extends Packet>, HandlerData> handlers = HashMultimap.create();
+    private static MultiHashMap<Class<? extends Packet>, HandlerData> handlers = new MultiHashMap<>();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, P p) throws Exception {
