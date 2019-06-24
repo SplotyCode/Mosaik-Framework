@@ -20,17 +20,26 @@ public final class ClassFinderHelper {
 
     private static Logger logger = Logger.getInstance(ClassFinderHelper.class);
 
+    private static ClassLoader classLoader;
+
+    public static void setClassLoader(ClassLoader classLoader) {
+        ClassFinderHelper.classLoader = classLoader;
+    }
+
     private static Set<String> nonUserPrefixes = new HashSet<>();
     @Getter private static long totalClassCount;
 
     private static boolean debugUserClasses = !StringUtil.isEmpty(System.getenv("debug-user-classes"));
 
     private static ClassLoader getClassLoader() {
-        ClassLoader thread = Thread.currentThread().getContextClassLoader();
-        if (thread == null) {
-            return ClassFinderHelper.class.getClassLoader();
+        if (classLoader == null) {
+            ClassLoader thread = Thread.currentThread().getContextClassLoader();
+            if (thread == null) {
+                return ClassFinderHelper.class.getClassLoader();
+            }
+            return thread;
         }
-        return thread;
+        return classLoader;
     }
 
     private static boolean skip(String path) {
@@ -48,15 +57,12 @@ public final class ClassFinderHelper {
             totalClassCount++;
             String name = resource.javaName();
             if (skip(name)) return;
-            if (debugUserClasses) {
-                logger.debug(name);
-            }
             try {
                 list.add(resource.load());
             } catch (UnsupportedClassVersionError ex) {
                 logger.warn(name + " has an unsupported class version (" + ex.getMessage() + ")");
             } catch (Throwable ex) {
-                new FailedToLoadClassException("Failed to load class '" + name + "'if you want to skip it use @SkipPath", ex).printStackTrace();
+                new FailedToLoadClassException("Failed to load class '" + name + "' if you want to skip it use @SkipPath", ex).printStackTrace();
             }
         });
         return list;
