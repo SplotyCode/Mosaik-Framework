@@ -1911,5 +1911,48 @@ public final class ArrayUtil {
         return sum;
     }
 
+    /*
+     * --------------------------------
+     * --------- To Array -------------
+     * --------------------------------
+     */
+
+
+    public final <T> T[] collect(T... array) {
+        return array;
+    }
+
+    public final int[] collect(int... array) {
+        return array;
+    }
+
+    public final long[] collect(long... array) {
+        return array;
+    }
+
+    public final short[] collect(short... array) {
+        return array;
+    }
+
+    public final double[] collect(double... array) {
+        return array;
+    }
+
+    public final float[] collect(float... array) {
+        return array;
+    }
+
+    public final byte[] collect(byte... array) {
+        return array;
+    }
+
+    public final char[] collect(char... array) {
+        return array;
+    }
+
+    public final boolean[] collect(boolean... array) {
+        return array;
+    }
+
 
 }

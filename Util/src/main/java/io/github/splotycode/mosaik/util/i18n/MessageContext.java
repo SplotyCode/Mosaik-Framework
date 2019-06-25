@@ -39,7 +39,10 @@ public class MessageContext {
         if (allLinePrefix) {
             StringBuilder builder = new StringBuilder();
             for (String line : text.split("\n")) {
-                builder.append(prefix).append(line).append("\n");
+                if (!line.startsWith(prefix)) {
+                    builder.append(prefix);
+                }
+                builder.append(line).append("\n");
             }
             return builder.toString();
         }
