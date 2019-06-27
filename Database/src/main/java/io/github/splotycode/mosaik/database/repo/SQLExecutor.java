@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.database.repo;
 
-import io.github.splotycode.mosaik.database.connection.sql.SQLDriverConnection;
+import io.github.splotycode.mosaik.database.connection.sql.JDBCConnection;
+import io.github.splotycode.mosaik.database.connection.sql.JDBCConnectionProvider;
 import io.github.splotycode.mosaik.database.table.ColumnNameResolver;
 import io.github.splotycode.mosaik.database.table.ColumnType;
 import io.github.splotycode.mosaik.database.table.FieldObject;
@@ -15,7 +16,7 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
+public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> {
 
     private static Map<Filters.FilterType, String> filterTypes = new HashMap<>();
 
@@ -33,16 +34,16 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     @Override
-    public void drop(SQLDriverConnection connection) {
+    public void drop(JDBCConnectionProvider connection) {
         exec(connection, new StringBuilder("DROP TABLE ").append(name), "DROP");
     }
 
     @Override
-    public void create(SQLDriverConnection connection) {
+    public void create(JDBCConnectionProvider connection) {
         createTable(connection, false);
     }
 
-    private void createTable(SQLDriverConnection connection, boolean ifNotExists) {
+    private void createTable(JDBCConnectionProvider connection, boolean ifNotExists) {
         StringBuilder builder = new StringBuilder("CREATE TABLE ");
         if (ifNotExists) builder.append("IF NOT EXISTS ");
         builder.append(name).append(" (");
@@ -94,17 +95,17 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     @Override
-    public void createIfNotExists(SQLDriverConnection connection) {
+    public void createIfNotExists(JDBCConnectionProvider connection) {
         createTable(connection, true);
     }
 
     @Override
-    public void save(SQLDriverConnection connection, T entry) {
+    public void save(JDBCConnectionProvider connection, T entry) {
         save(connection, entry, allResolvers);
     }
 
     @Override
-    public void save(SQLDriverConnection connection, T entry, ColumnNameResolver... fields) {
+    public void save(JDBCConnectionProvider connection, T entry, ColumnNameResolver... fields) {
         StringBuilder builder = new StringBuilder("INSERT INTO ");
         builder.append(name).append(" SET ");
         for (ColumnNameResolver fieldResolver : fields) {
@@ -119,11 +120,11 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
         exec(connection, builder, "Saving Table");
     }
 
-    /*@Override public void delete(SQLDriverConnection connection, T entity) {}
-    @Override public void deletePrimary(SQLDriverConnection connection, Object primary) {}*/
+    /*@Override public void delete(JDBCConnectionProvider connection, T entity) {}
+    @Override public void deletePrimary(JDBCConnectionProvider connection, Object primary) {}*/
 
     @Override
-    public void deleteFirst(SQLDriverConnection connection, Filters.Filter filter) {
+    public void deleteFirst(JDBCConnectionProvider connection, Filters.Filter filter) {
         StringBuilder builder = new StringBuilder("DELETE FROM ");
         builder.append(name).append(" ");
         builder.append(generateWhere(filter));
@@ -131,18 +132,19 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
         exec(connection, builder, "Deleting rows");
     }
 
-    private void exec(SQLDriverConnection connection, StringBuilder builder, String action) {
-        try {
-            Statement statement = connection.getConnection().createStatement();
-            statement.execute(builder.toString());
-            statement.close();
+    private void exec(JDBCConnectionProvider provider, StringBuilder builder, String action) {
+        String command = builder.toString();
+        try (JDBCConnection connection = provider.provide()) {
+            try (Statement statement = connection.getConnection().createStatement()) {
+                statement.execute(command);
+            }
         } catch (SQLException ex) {
-            throw new RepoException("Error on " + action + ": " + ex.getMessage(), ex);
+            throw new RepoException("Error on " + action + ": " + ex.getMessage() + " Generated message '" + command + "'", ex);
         }
     }
 
     @Override
-    public void deleteAll(SQLDriverConnection connection, Filters.Filter filter) {
+    public void deleteAll(JDBCConnectionProvider connection, Filters.Filter filter) {
         StringBuilder builder = new StringBuilder("DELETE FROM ");
         builder.append(name).append(" ");
         builder.append(generateWhere(filter));
@@ -150,57 +152,56 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     @Override
-    public boolean exists(SQLDriverConnection connection, Filters.Filter filter) {
+    public boolean exists(JDBCConnectionProvider provider, Filters.Filter filter) {
         StringBuilder builder = new StringBuilder("SELECT null from ");
         builder.append(name).append(generateWhere(filter));
-        try {
-            Statement statement = connection.getConnection().createStatement();
-            boolean result = statement.executeQuery(builder.toString()).next();
-            statement.close();
-            return result;
+        try (JDBCConnection connection = provider.provide()) {
+            try (Statement statement = connection.getConnection().createStatement()) {
+                return statement.executeQuery(builder.toString()).next();
+            }
         } catch (SQLException ex) {
             throw new RepoException("Error on exists check: " + ex.getMessage(), ex);
         }
     }
 
     @Override
-    public long count(SQLDriverConnection connection) {
-        try {
-            PreparedStatement statement = connection.getConnection().prepareStatement("select count(*) from ?");
-            statement.setString(1, name);
-            ResultSet result = statement.executeQuery();
-            long count = 0;
-            while (result.next()) {
-                count = result.getLong(1);
+    public long count(JDBCConnectionProvider provider) {
+        try (JDBCConnection connection = provider.provide()) {
+            try (PreparedStatement statement = connection.getConnection().prepareStatement("select count(*) from ?")) {
+                statement.setString(1, name);
+                try (ResultSet result = statement.executeQuery()) {
+                    long count = 0;
+                    while (result.next()) {
+                        count = result.getLong(1);
+                    }
+                    return count;
+                }
             }
-            result.close();
-            statement.close();
-            return count;
         } catch (SQLException ex) {
             throw new RepoException("Error on counting rows: " + ex.getMessage(), ex);
         }
     }
 
     @Override
-    public long count(SQLDriverConnection connection, Filters.Filter filter) {
-        try {
-            PreparedStatement statement = connection.getConnection().prepareStatement("select count(*) from ? where ?");
-            statement.setString(1, name);
-            statement.setString(2, generateWhere(filter));
-            ResultSet result = statement.executeQuery();
-            long count = 0;
-            while (result.next()) {
-                count = result.getLong(1);
+    public long count(JDBCConnectionProvider provider, Filters.Filter filter) {
+        try (JDBCConnection connection = provider.provide()) {
+            try (PreparedStatement statement = connection.getConnection().prepareStatement("select count(*) from ? where ?")) {
+                statement.setString(1, name);
+                statement.setString(2, generateWhere(filter));
+                try (ResultSet result = statement.executeQuery()) {
+                    long count = 0;
+                    while (result.next()) {
+                        count = result.getLong(1);
+                    }
+                    return count;
+                }
             }
-            result.close();
-            statement.close();
-            return count;
         } catch (SQLException ex) {
             throw new RepoException("Error on counting rows: " + ex.getMessage(), ex);
         }
     }
 
-    private void update(SQLDriverConnection connection, T entity, Filters.Filter filter, Collection<FieldObject> fields) {
+    private void update(JDBCConnectionProvider connection, T entity, Filters.Filter filter, Collection<FieldObject> fields) {
         StringBuilder builder = new StringBuilder("UPDATE ");
         builder.append(table).append(" SET ");
         for (FieldObject field : fields) {
@@ -220,17 +221,17 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     @Override
-    public void update(SQLDriverConnection connection, T entity, Filters.Filter filter) {
+    public void update(JDBCConnectionProvider connection, T entity, Filters.Filter filter) {
         update(connection, entity, filter, fields.values());
     }
 
     @Override
-    public void update(SQLDriverConnection connection, T entity, ColumnNameResolver... fields) {
+    public void update(JDBCConnectionProvider connection, T entity, ColumnNameResolver... fields) {
         update(connection, entity, null, Arrays.stream(fields).map(resolver -> this.fields.get(resolver.getColumnName())).collect(Collectors.toList()));
     }
 
     @Override
-    public void update(SQLDriverConnection connection, T entity, Filters.Filter filter, ColumnNameResolver... fields) {
+    public void update(JDBCConnectionProvider connection, T entity, Filters.Filter filter, ColumnNameResolver... fields) {
         update(connection, entity, filter, Arrays.stream(fields).map(resolver -> this.fields.get(resolver.getColumnName())).collect(Collectors.toList()));
     }
 
@@ -241,60 +242,69 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     private String buildFilter(Filters.Filter filter) {
         Filters.FilterType type = filter.type;
         if (filter instanceof Filters.ComplexFilter) {
-            return StringUtil.join(((Filters.ComplexFilter) filter).getFilters(), this::buildFilter, type.name());
+            return StringUtil.join(((Filters.ComplexFilter) filter).getFilters(), this::buildFilter, "  " + type.name() + " ");
         }
         String operator = filterTypes.get(type);
         Filters.ValueFilter valueFilter = (Filters.ValueFilter) filter;
         String value = TransformerManager.getInstance().transform(valueFilter.getObject(), String.class);
-        return valueFilter.field + operator + value;
+        return valueFilter.field + operator + "'" + value + "'";
     }
 
     @Override
-    public Iterable<T> selectAll(SQLDriverConnection connection, ColumnNameResolver... fields) {
+    public Iterable<T> selectAll(JDBCConnectionProvider connection, ColumnNameResolver... fields) {
         return select(connection, null, fields);
     }
 
     @Override
-    public Iterable<T> selectAll(SQLDriverConnection connection) {
+    public Iterable<T> selectAll(JDBCConnectionProvider connection) {
         return select(connection, false, null, allResolvers);
     }
 
     @Override
-    public Iterable<T> select(SQLDriverConnection connection, Filters.Filter filter, ColumnNameResolver... fields) {
+    public Iterable<T> select(JDBCConnectionProvider connection, Filters.Filter filter, ColumnNameResolver... fields) {
         return select(connection, false, filter, fields);
     }
 
     @Override
-    public Iterable<T> select(SQLDriverConnection connection, Filters.Filter filter) {
+    public Iterable<T> select(JDBCConnectionProvider connection, Filters.Filter filter) {
         return select(connection, false, filter);
     }
 
-    private Iterable<T> select(SQLDriverConnection connection, boolean onlyOne, Filters.Filter filter, ColumnNameResolver... fields) {
+    private void appendColumn(StringBuilder builder, ColumnNameResolver... fields) {
+        if (fields.length == 0) {
+            builder.append('*');
+        } else {
+            builder.append(StringUtil.join(fields, ColumnNameResolver::getColumnName));
+        }
+    }
+
+    private Iterable<T> select(JDBCConnectionProvider provider, boolean onlyOne, Filters.Filter filter, ColumnNameResolver... fields) {
+        if (fields.length == 0) {
+            fields = allResolvers;
+        }
+
         StringBuilder builder = new StringBuilder("SELECT ");
-        builder.append(StringUtil.join(fields, ColumnNameResolver::getColumnName));
-        builder.append(" FROM ").append(name);
+        appendColumn(builder, fields);
+        builder.append(" FROM ").append(name).append(" ");
         if (filter != null) builder.append(generateWhere(filter));
 
-        try {
-            Statement statement = connection.getConnection().createStatement();
-            ResultSet result = statement.executeQuery(builder.toString());
-
-            boolean exists = result.next();
-            if (exists) {
-                ArrayList<T> list = new ArrayList<>();
-                do {
-                    T object = (T) clazz.newInstance();
-                    for (ColumnNameResolver field : fields) {
-                        setValue(field.getColumnName(), result.getString(field.getColumnName()), object);
-                    }
-                    list.add(object);
-                } while (result.next() || onlyOne);
-                result.close();
-                statement.close();
-                return list;
+        System.out.println(builder.toString());
+        try (Statement statement = provider.provide().getConnection().createStatement()){
+            try (ResultSet result = statement.executeQuery(builder.toString())) {
+                boolean exists = result.next();
+                if (exists) {
+                    ArrayList<T> list = new ArrayList<>();
+                    do {
+                        T object = (T) clazz.newInstance();
+                        for (ColumnNameResolver field : fields) {
+                            String name = field.getColumnName();
+                            setValue(name, result.getString(name), object);
+                        }
+                        list.add(object);
+                    } while (result.next() && !onlyOne);
+                    return list;
+                }
             }
-            result.close();
-            statement.close();
             return null;
         } catch (SQLException ex) {
             throw new RepoException("Failed on executing select query", ex);
@@ -304,7 +314,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     @Override
-    public T selectFirst(SQLDriverConnection connection, Filters.Filter filter, ColumnNameResolver... fields) {
+    public T selectFirst(JDBCConnectionProvider connection, Filters.Filter filter, ColumnNameResolver... fields) {
         Iterable<T> iterable = select(connection, true, filter, fields);
         if (iterable != null) {
             return iterable.iterator().next();
@@ -313,7 +323,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, SQLDriverConnection> {
     }
 
     @Override
-    public T selectFirst(SQLDriverConnection connection, Filters.Filter filter) {
+    public T selectFirst(JDBCConnectionProvider connection, Filters.Filter filter) {
         Iterable<T> iterable = select(connection, true, filter);
         if (iterable == null) return null;
         return iterable.iterator().next();

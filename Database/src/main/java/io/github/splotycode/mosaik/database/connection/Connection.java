@@ -1,12 +1,8 @@
 package io.github.splotycode.mosaik.database.connection;
 
-import io.github.splotycode.mosaik.database.Database;
+import java.io.Closeable;
 
-/**
- * Symbolises a Database Connection
- * @param <T> this type
- */
-public interface Connection<T extends Connection> {
+public interface Connection extends Closeable {
 
     /**
      * Checks is a connection is connected
@@ -19,60 +15,11 @@ public interface Connection<T extends Connection> {
      */
     void disconnect();
 
-    /**
-     * Connects to the Database
-     * @param string full connection string
-     * @return this connection
-     */
-    T connect(String string);
-
-    /**
-     * Connects to the Database
-     * @param host the host or host:port
-     * @param database the database name
-     * @return this connection
-     */
-    T connect(String host, String database);
-
-    /**
-     * Connects to the Database
-     * @param host the host or host:port
-     * @param user the username for login
-     * @param password the password for login
-     * @param database the database name
-     * @return this connection
-     */
-    T connect(String host, String user, String password, String database);
-    /**
-     * Connects to the Database
-     * @param host the host or host:port
-     * @param user the username for login
-     * @param password the password for login
-     * @param database the database name
-     * @param port the port on witch the Database lives
-     * @return this connection
-     */
-    T connect(String host, String user, String password, String database, int port);
-    /**
-     * Connects to the Database
-     * @param host the host or host:port
-     * @param database the database name
-     * @param port the port on witch the Database lives
-     * @return this connection
-     */
-    T connect(String host, String database, int port);
-
-    /**
-     * Gets the default port for this connection port
-     * @return the port
-     */
-    int getDefaultPort();
-
-    /**
-     * Makes this the default connection
-     */
-    default void makeDefault() {
-        Database.getInstance().setDefaultConnection(this);
+    @Override
+    default void close() {
+        disconnectIfNecessary();
     }
+
+    void disconnectIfNecessary();
 
 }

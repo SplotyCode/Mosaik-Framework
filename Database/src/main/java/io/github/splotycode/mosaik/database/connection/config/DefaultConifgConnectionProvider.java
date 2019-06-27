@@ -1,8 +1,9 @@
-package io.github.splotycode.mosaik.database.connection;
+package io.github.splotycode.mosaik.database.connection.config;
 
+import io.github.splotycode.mosaik.database.connection.Connection;
 import io.github.splotycode.mosaik.util.StringUtil;
 
-public abstract class AbstractConnection<T extends AbstractConnection> implements Connection<T> {
+public abstract class DefaultConifgConnectionProvider<T extends DefaultConifgConnectionProvider, C extends Connection> implements ConfigConnectionProvider<T, C> {
 
     @Override
     public T connect(String host, String database) {
