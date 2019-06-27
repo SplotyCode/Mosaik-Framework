@@ -436,12 +436,22 @@ public final class StringUtil {
         return camelCase(s, " ");
     }
 
+
     /**
      * Converts a string into camelcase
      * @param separator the separator that should be used.
      *                  For example: My-Name-Is-David or My Name Is David
      */
     public static String camelCase(String str, String separator) {
+        return camelCase(str, separator, true);
+    }
+
+    /**
+     * Converts a string into camelcase
+     * @param separator the separator that should be used.
+     *                  For example: My-Name-Is-David or My Name Is David
+     */
+    public static String camelCase(String str, String separator, boolean firstUpper) {
         if (str == null)  return null;
 
         StringBuilder b = new StringBuilder();
@@ -449,8 +459,14 @@ public final class StringUtil {
         int i = 0;
         for (String srt : split) {
             i++;
-            if (srt.length() > 0) {
-                b.append(srt.substring(0, 1).toUpperCase()).append(srt.substring(1).toLowerCase());
+            if (!srt.isEmpty()) {
+                String first = srt.substring(0, 1);
+                if (!firstUpper && i == 1) {
+                    first = first.toLowerCase();
+                } else {
+                    first = first.toUpperCase();
+                }
+                b.append(first).append(srt.substring(1).toLowerCase());
                 if (split.length != i) {
                     b.append(separator);
                 }
