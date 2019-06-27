@@ -28,6 +28,7 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
     //TODO: if we have a transformer that transforms int to string and a transformer that transforms string to short it should be possible to transform int to shorts
 
     public <T> T transform(Object input, Class<T> result, Collection<ValueTransformer> transformers) {
+        if (input == null) return null;
         if (ReflectionUtil.isAssignable(result, input.getClass())) return (T) input;
         //List<Class<?>> possibleResults = getPossibleResults(input.getClass());
 
