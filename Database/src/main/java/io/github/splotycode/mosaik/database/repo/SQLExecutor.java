@@ -56,9 +56,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
                 for (int parameter : object.getColumn().typeParameters()) {
                     builder.append(parameter).append(", ");
                 }
-                if (object.getColumn().typeParameters().length != 0) {
-                    builder.setLength(builder.length() - 2);
-                }
+                StringUtil.removeEnd(builder, ", ", true);
                 builder.append(") ");
             }
             if (object.isAutoIncrement()) builder.append(" AUTO_INCREMENT");
@@ -84,10 +82,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
             if (String.class.isAssignableFrom(clazz)) {
                 return ColumnType.VARCHAR;
             }
-            if (String.class.isAssignableFrom(clazz)) {
-                return ColumnType.VARCHAR;
-            }
-            if (Short.class.isAssignableFrom(clazz)) {
+            if (ReflectionUtil.isAssignable(Short.class, clazz)) {
                 return ColumnType.SMALLINT;
             }
         }
@@ -110,13 +105,9 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
         builder.append(name).append(" SET ");
         for (ColumnNameResolver fieldResolver : fields) {
             String field = fieldResolver.getColumnName();
-            try {
-                builder.append(field).append("='").append(getValue(field, entry)).append("', ");
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            builder.append(field).append("='").append(getValue(field, entry)).append("', ");
         }
-        if (fields.length != 0) builder.setLength(builder.length() - 2);
+        StringUtil.removeEnd(builder, ", ");
         exec(connection, builder, "Saving Table");
     }
 
@@ -126,8 +117,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
     @Override
     public void deleteFirst(JDBCConnectionProvider connection, Filters.Filter filter) {
         StringBuilder builder = new StringBuilder("DELETE FROM ");
-        builder.append(name).append(" ");
-        builder.append(generateWhere(filter));
+        builder.append(name).append(generateWhere(filter));
         builder.append(" LIMIT 1;");
         exec(connection, builder, "Deleting rows");
     }
@@ -146,8 +136,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
     @Override
     public void deleteAll(JDBCConnectionProvider connection, Filters.Filter filter) {
         StringBuilder builder = new StringBuilder("DELETE FROM ");
-        builder.append(name).append(" ");
-        builder.append(generateWhere(filter));
+        builder.append(name).append(generateWhere(filter));
         exec(connection, builder, "Deleting rows");
     }
 
@@ -185,15 +174,14 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
     @Override
     public long count(JDBCConnectionProvider provider, Filters.Filter filter) {
         try (JDBCConnection connection = provider.provide()) {
-            try (PreparedStatement statement = connection.getConnection().prepareStatement("select count(*) from ? where ?")) {
+            try (PreparedStatement statement = connection.getConnection().prepareStatement("select count(*) from ? ?")) {
                 statement.setString(1, name);
                 statement.setString(2, generateWhere(filter));
                 try (ResultSet result = statement.executeQuery()) {
-                    long count = 0;
-                    while (result.next()) {
-                        count = result.getLong(1);
+                    if (result.next()) {
+                        return result.getLong(1);
                     }
-                    return count;
+                    return 0;
                 }
             }
         } catch (SQLException ex) {
@@ -205,18 +193,10 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
         StringBuilder builder = new StringBuilder("UPDATE ");
         builder.append(table).append(" SET ");
         for (FieldObject field : fields) {
-            try {
-                builder.append(field.getName()).append(" = '").append(getValue(field, entity)).append("', ");
-            } catch (IllegalAccessException e) {
-                throw new RepoException("Could not getvalue for " + field.getName(), e);
-            }
+            builder.append(field.getName()).append(" = '").append(getValue(field, entity)).append("', ");
         }
-        if (fields.size() != 0) {
-            builder.setLength(builder.length() - 2);
-        }
-        if (filter != null) {
-            builder.append(" ").append(generateWhere(filter));
-        }
+        StringUtil.removeEnd(builder, ", ");
+        builder.append(generateWhere(filter));
         exec(connection, builder, "Updating");
     }
 
@@ -236,7 +216,8 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
     }
 
     private String generateWhere(Filters.Filter filter) {
-        return "where " + buildFilter(filter);
+        if (filter == null) return "";
+        return " where " + buildFilter(filter);
     }
 
     private String buildFilter(Filters.Filter filter) {
@@ -285,10 +266,8 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
 
         StringBuilder builder = new StringBuilder("SELECT ");
         appendColumn(builder, fields);
-        builder.append(" FROM ").append(name).append(" ");
-        if (filter != null) builder.append(generateWhere(filter));
+        builder.append(" FROM ").append(name).append(generateWhere(filter));
 
-        System.out.println(builder.toString());
         try (Statement statement = provider.provide().getConnection().createStatement()){
             try (ResultSet result = statement.executeQuery(builder.toString())) {
                 boolean exists = result.next();

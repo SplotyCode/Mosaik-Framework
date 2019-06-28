@@ -26,14 +26,18 @@ public abstract class AbstractExecutor<T, C extends ConnectionProvider> implemen
                 .toArray(ColumnNameResolver[]::new);
     }
 
-    protected String getValue(String field, T instance) throws IllegalAccessException {
+    protected String getValue(String field, T instance) {
         return getValue(fields.get(field), instance);
     }
 
-    protected String getValue(FieldObject fieldObject, T instance) throws IllegalAccessException {
+    protected String getValue(FieldObject fieldObject, T instance) {
         Field field = fieldObject.getField();
         field.setAccessible(true);
-        return TransformerManager.getInstance().transform(field.get(instance), String.class);
+        try {
+            return TransformerManager.getInstance().transform(field.get(instance), String.class);
+        } catch (IllegalAccessException e) {
+            throw new RepoException("Could not getvalue for " + field.getName(), e);
+        }
     }
 
     public void setValue(String fieldName, Object value, T instance) throws IllegalAccessException {
