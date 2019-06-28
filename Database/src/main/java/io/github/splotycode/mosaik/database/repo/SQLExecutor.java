@@ -6,6 +6,7 @@ import io.github.splotycode.mosaik.database.table.ColumnNameResolver;
 import io.github.splotycode.mosaik.database.table.ColumnType;
 import io.github.splotycode.mosaik.database.table.FieldObject;
 import io.github.splotycode.mosaik.util.StringUtil;
+import io.github.splotycode.mosaik.util.collection.EmptyIterable;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 
@@ -287,7 +288,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
                     return list;
                 }
             }
-            return null;
+            return EmptyIterable.emptyIterable();
         } catch (SQLException ex) {
             throw new RepoException("Failed on executing select query", ex);
         } catch (IllegalAccessException | InstantiationException ex) {
