@@ -76,6 +76,9 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
             if (ReflectionUtil.isAssignable(Integer.class, clazz)) {
                 return ColumnType.INT;
             }
+            if (ReflectionUtil.isAssignable(Boolean.class, clazz)) {
+                return ColumnType.TINYINT;
+            }
             if (ReflectionUtil.isAssignable(Long.class, clazz)) {
                 return ColumnType.BIGINT;
             }
