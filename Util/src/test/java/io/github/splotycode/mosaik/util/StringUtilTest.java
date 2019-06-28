@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.util;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class StringUtilTest {
 
     @Test
-    void isEmpty() {
+    public void isEmpty() {
         assertTrue(StringUtil.isEmpty(""));
         assertTrue(StringUtil.isEmpty(null));
         assertFalse(StringUtil.isEmpty("heyy"));
@@ -18,7 +18,7 @@ public class StringUtilTest {
     }
 
     @Test
-    void isEmptyDeep() {
+    public void isEmptyDeep() {
         assertTrue(StringUtil.isEmptyDeep(""));
         assertTrue(StringUtil.isEmptyDeep(null));
         assertTrue(StringUtil.isEmptyDeep(" "));
@@ -31,7 +31,7 @@ public class StringUtilTest {
     }
 
     @Test
-    void humanReadableBytes() {
+    public void humanReadableBytes() {
         assertEquals("400 B", StringUtil.humanReadableBytes(400));
         assertEquals("2.0 kB", StringUtil.humanReadableBytes(2 * 1024));
         assertEquals("2.5 kB", StringUtil.humanReadableBytes(2 * 1024 + 512));
@@ -57,7 +57,7 @@ public class StringUtilTest {
     }
 
     @Test
-    void checkIsTypes() {
+    public void checkIsTypes() {
         checkIsType(StringUtil::isInteger, false);
         checkIsType(StringUtil::isLong, false);
         checkIsType(StringUtil::isFloat, true);
@@ -65,7 +65,7 @@ public class StringUtilTest {
     }
 
     @Test
-    void join() {
+    public void join() {
         String[] array = new String[] {"hello", "join", "test"};
         assertEquals("hello, join, test", StringUtil.join(array));
         assertEquals("hello,join,test", StringUtil.join(array, ","));
@@ -74,7 +74,7 @@ public class StringUtilTest {
     }
 
     @Test
-    void charsEqualIgnoreCase() {
+    public void charsEqualIgnoreCase() {
         assertTrue(StringUtil.charsEqualIgnoreCase('a', 'a'));
         assertTrue(StringUtil.charsEqualIgnoreCase('!', '!'));
 
@@ -90,7 +90,7 @@ public class StringUtilTest {
     }
 
     @Test
-    void endsWithChar() {
+    public void endsWithChar() {
         assertFalse(StringUtil.endsWithChar(null, 'a'));
         assertFalse(StringUtil.endsWithChar("", 'a'));
         assertTrue(StringUtil.endsWithChar("hallo", 'o'));
@@ -100,7 +100,7 @@ public class StringUtilTest {
     }
 
     @Test
-    void startsWithIgnoreCase() {
+    public void startsWithIgnoreCase() {
         assertFalse(StringUtil.startsWithIgnoreCase(null, "a"));
         assertFalse(StringUtil.startsWithIgnoreCase("", "a"));
         assertTrue(StringUtil.startsWithIgnoreCase("hallo", "h"));
@@ -110,16 +110,69 @@ public class StringUtilTest {
     }
 
     @Test
-    void camelCase() {
+    public void camelCase() {
         assertEquals("Hallo My Name Is David", StringUtil.camelCase("hallo my name is david"));
         assertEquals("Hallo-My-Name-Is-David", StringUtil.camelCase("hallo-my-name-is-david", "-"));
     }
 
     @Test
-    void getLastSplit() {
+    public void getLastSplit() {
         assertEquals("is", StringUtil.getLastSplit("hallo here it is", " "));
         assertNull(StringUtil.getLastSplit(null, " "));
         assertNull(StringUtil.getLastSplit("hallo here it is", null));
     }
 
+    @Test
+    public void endsWithIgnoreCase() {
+        assertTrue(StringUtil.endsWithIgnoreCase("asdasbcaasdaabc", "abc"));
+        assertFalse(StringUtil.endsWithIgnoreCase("asdasbcaasdaabcc", "abc"));
+
+        assertTrue(StringUtil.endsWithIgnoreCase("abc", "abc"));
+        assertFalse(StringUtil.endsWithIgnoreCase("ab", "abc"));
+
+        assertFalse(StringUtil.endsWithIgnoreCase(null, null));
+    }
+
+    @Test
+    public void containsIgnoreCase() {
+        assertFalse(StringUtil.containsIgnoreCase("adsasdasd", "hallo"));
+        assertTrue(StringUtil.containsIgnoreCase("hallo", "hallo"));
+        assertTrue(StringUtil.containsIgnoreCase("HALLO", "hallo"));
+        assertTrue(StringUtil.containsIgnoreCase("aHALLOa", "hallo"));
+        assertTrue(StringUtil.containsIgnoreCase("aHalLOa", "hALLO"));
+    }
+
+    @Test
+    public void repeat() {
+        assertEquals("hahahaha", StringUtil.repeat("ha", 4));
+        assertEquals("jjjjj", StringUtil.repeat("j", 5));
+
+        assertNull(StringUtil.repeat(null, 4));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void repeatNegative() {
+        StringUtil.repeat("jjjj", -1);
+    }
+
+    @Test
+    public void removeLast() {
+        assertEquals("hallo", StringUtil.removeLast("hallo1234", 4));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void removeLastIndex() {
+        assertEquals("hallo", StringUtil.removeLast("1", 2));
+    }
+
+    @Test
+    public void removeEnd() {
+        assertEquals("str", StringUtil.removeEnd("str", "hey"));
+        assertEquals("hallo", StringUtil.removeEnd("hallo12", "12"));
+
+        assertEquals("hallo", StringUtil.removeEnd(new StringBuilder("hallo12"), "12", true).toString());
+
+        assertEquals("hallo", StringUtil.removeEnd(new StringBuilder("hallo12"), "22", true).toString());
+        assertEquals("hallo12", StringUtil.removeEnd(new StringBuilder("hallo12"), "22", false).toString());
+    }
 }

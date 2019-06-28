@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
+import java.util.Objects;
 
 /**
  * General Utils for strings
@@ -233,13 +234,11 @@ public final class StringUtil {
      */
     public static <T> String join(Iterable<T> iterable, Joiner<T> joiner, String separator) {
         if (iterable == null || separator == null) return null;
-        if (joiner == null) throw new IllegalArgumentException("joiner");
+        Objects.requireNonNull(joiner, "joiner");
         StringBuilder builder = new StringBuilder();
         for (T element : iterable)
             builder.append(joiner.join(element)).append(separator);
-        String result = builder.toString();
-        if(result.endsWith(separator)) return result.substring(0, result.length()-separator.length());
-        return result;
+        return removeEnd(builder.toString(), separator);
     }
 
     /**
@@ -260,13 +259,11 @@ public final class StringUtil {
      */
     public static <T> String join(T[] array, Joiner<T> joiner, String separator) {
         if (array == null || separator == null) return null;
-        if (joiner == null) throw new IllegalArgumentException("joiner");
+        Objects.requireNonNull(joiner, "joiner");
         StringBuilder builder = new StringBuilder();
         for (T element : array)
             builder.append(joiner.join(element)).append(separator);
-        String result = builder.toString();
-        if(result.endsWith(separator)) return result.substring(0, result.length()-separator.length());
-        return result;
+        return removeEnd(builder.toString(), separator);
     }
 
     /**
@@ -485,6 +482,64 @@ public final class StringUtil {
     public static String getLastSplit(String str, String separator) {
         if (str == null || separator == null) return null;
         return str.substring(str.lastIndexOf(separator) + 1);
+    }
+
+    /**
+     * Repeats a string n times
+     * @param str the string you want to repeat
+     * @param times the number of times you wan to repeat the string
+     */
+    public static String repeat(String str, int times) {
+        if (str == null) return null;
+        if (str.isEmpty()) return "";
+        if (times <= 0) throw new IllegalArgumentException("Times need to be greater then 0");
+
+        int length = str.length();
+        boolean singleChar = length == 1;
+        int output = length * times;
+        char first = singleChar ? str.charAt(0) : Character.MIN_VALUE;
+
+        StringBuilder builder = new StringBuilder(output);
+        for (int i = 0; i < times; i++) {
+            if (singleChar) {
+                builder.append(first);
+            } else {
+                builder.append(str);
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Removed the end of a string if it is the end
+     * @param str the source string
+     * @param end the end you want to remove
+     * @return the source string without the end
+     */
+    public static String removeEnd(String str, String end) {
+        Objects.requireNonNull(str, "str");
+        Objects.requireNonNull(end, "end");
+        if (str.endsWith(end)) {
+            return str.substring(0, str.length() - end.length());
+        }
+        return str;
+    }
+
+    /**
+     * Removed the end of a StringBuilder
+     * @param builder the source StringBuilder
+     * @param end the end you want to remove
+     * @param onlyPossible is it possible that the source is long then the end AND is not the end
+     * @return the source string without the end
+     */
+    public static StringBuilder removeEnd(StringBuilder builder, String end, boolean onlyPossible) {
+        Objects.requireNonNull(builder, "builder");
+        Objects.requireNonNull(end, "end");
+        int diff = builder.length() - end.length();
+        if (diff >= 0 && (onlyPossible || builder.subSequence(builder.length() - end.length(), builder.length()).equals(end))) {
+            builder.setLength(builder.length() - end.length());
+        }
+        return builder;
     }
 
 }
