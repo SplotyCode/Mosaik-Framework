@@ -67,6 +67,14 @@ public class Vector {
         return s;
     }
 
+    public double dotVec(double v) {
+        double s = 0;
+        for (int i = 0; i < size; i++) {
+            s += values[i] * v;
+        }
+        return s;
+    }
+
     private void checkEqualDimensions(Vector b) {
         if (size != b.size) {
             throw new IllegalArgumentException("Wrong Vector Size");
@@ -79,6 +87,10 @@ public class Vector {
 
     public double get(int i) {
         return values[i];
+    }
+
+    public void set(int pos, double value) {
+        values[pos] = value;
     }
 
     public double[] valueCopy() {

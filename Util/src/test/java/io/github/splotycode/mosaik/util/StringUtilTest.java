@@ -170,9 +170,15 @@ public class StringUtilTest {
         assertEquals("str", StringUtil.removeEnd("str", "hey"));
         assertEquals("hallo", StringUtil.removeEnd("hallo12", "12"));
 
-        assertEquals("hallo", StringUtil.removeEnd(new StringBuilder("hallo12"), "12", true).toString());
+        assertEquals("hallo", testRemoveEnd("hallo12", "12", true));
 
-        assertEquals("hallo", StringUtil.removeEnd(new StringBuilder("hallo12"), "22", true).toString());
-        assertEquals("hallo12", StringUtil.removeEnd(new StringBuilder("hallo12"), "22", false).toString());
+        assertEquals("hallo", testRemoveEnd("hallo12", "22", true));
+        assertEquals("hallo12", testRemoveEnd("hallo12", "22", false));
+    }
+
+    private String testRemoveEnd(String str, String end, boolean onlyPossible) {
+        StringBuilder builder = new StringBuilder(str);
+        StringUtil.removeEnd(builder, end, onlyPossible);
+        return builder.toString();
     }
 }

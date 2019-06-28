@@ -39,7 +39,15 @@ public class Matrix {
         return C;
     }
 
+    /**
+     * @deprecated use {@link Matrix#add(Vector)}
+     */
+    @Deprecated
     public Matrix addVec(Vector b) {
+        return add(b);
+    }
+
+    public Matrix add(Vector b) {
         Matrix C = new Matrix(rows, cols);
         double[] ba = b.valueCopy();
         for (int i = 0; i < rows; i++) {
@@ -144,6 +152,14 @@ public class Matrix {
             result[j] = new Vector(v);
         }
         return result;
+    }
+
+    public Vector getColumn(int col) {
+        Vector vector = new Vector(rows);
+        for (int i = 0; i < rows; i++) {
+            vector.set(i, values[i][col]);
+        }
+        return vector;
     }
 
     private void checkEqualDimensions(Matrix b) {
