@@ -20,7 +20,7 @@ public class BufPacketDecoder extends ByteToMessageDecoder {
             int id = is.readInt();
             Class<? extends BufPacket> packetClass = registry.getPacketById(id);
             if (packetClass == null) {
-                throw new NullPointerException("Coud not find that Packet");
+                throw new NullPointerException("Could not find Packet with id " + id);
             }
             list.add(packetClass.newInstance());
         }

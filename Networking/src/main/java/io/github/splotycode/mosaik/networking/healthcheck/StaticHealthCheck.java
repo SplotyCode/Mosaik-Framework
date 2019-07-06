@@ -2,9 +2,7 @@ package io.github.splotycode.mosaik.networking.healthcheck;
 
 import lombok.*;
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class StaticHealthCheck implements HealthCheck {
