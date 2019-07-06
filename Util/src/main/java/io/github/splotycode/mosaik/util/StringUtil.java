@@ -387,7 +387,7 @@ public final class StringUtil {
 
         for (int i = fromIndex; i <= max; i++) {
             if (!charsEqualIgnoreCase(where.charAt(i), first)) {
-                while (++i <= max && !charsEqualIgnoreCase(where.charAt(i), first)) ;
+                while (++i <= max && !charsEqualIgnoreCase(where.charAt(i), first));
             }
             if (i <= max) {
                 int j = i + 1;
@@ -547,6 +547,35 @@ public final class StringUtil {
         if (diff >= 0 && (onlyPossible || builder.subSequence(builder.length() - end.length(), builder.length()).equals(end))) {
             builder.setLength(builder.length() - end.length());
         }
+    }
+
+    /**
+     * Gets the last n chars
+     * @param str the source
+     * @param places the number of chars
+     */
+    public static String getLast(String str, int places) {
+        if (str == null || str.length() < places) return "";
+        return str.substring(str.length() - places);
+    }
+
+    /**
+     * Gets the last char of a string
+     * @param str the string
+     */
+    public static char getLast(String str) {
+        return str.charAt(str.length() - 1);
+    }
+
+    /**
+     * Checks if a <code>trim()</code> will change something
+     * @param str the string
+     * @see String#trim()
+     * @return true if string will change on <code>trim()</code>
+     */
+    public static boolean containsTrimmed(String str) {
+        if (StringUtil.isEmpty(str)) return false;
+        return getLast(str) <= ' ' || str.charAt(0) <= ' ';
     }
 
 }

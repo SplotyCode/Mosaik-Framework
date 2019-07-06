@@ -181,4 +181,12 @@ public class StringUtilTest {
         StringUtil.removeEnd(builder, end, onlyPossible);
         return builder.toString();
     }
+
+    @Test
+    public void getLast() {
+        assertEquals("", StringUtil.getLast("hallo", 0));
+        assertEquals("", StringUtil.getLast("hallo", -2));
+        assertEquals("", StringUtil.getLast(null, 2));
+        assertEquals("lo", StringUtil.getLast("hallo", 2));
+    }
 }

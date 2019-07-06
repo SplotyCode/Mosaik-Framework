@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
@@ -36,7 +37,7 @@ public final class PathUtil {
     }
 
     public static String getFileNameWithoutEx(String path) {
-        if (path == null || path.length() == 0) {
+        if (StringUtil.isEmpty(path)) {
             return "";
         }
         return path.replaceFirst("[.][^.]+$", "");
@@ -61,7 +62,7 @@ public final class PathUtil {
     @Getter private static final String WINDOWS_CHARS = "<>:\"|?*";
 
     public static boolean isValidFileName(String name) {
-        if (name.length() == 0 || name.equals(".") || name.equals("..")) {
+        if (StringUtil.isEmpty(name) || name.equals(".") || name.equals("..")) {
             return false;
         }
 
@@ -75,7 +76,7 @@ public final class PathUtil {
             return false;
         }
 
-        Charset cs = Charsets.UTF16;
+        Charset cs = StandardCharsets.UTF_16;
         return cs.canEncode() && cs.newEncoder().canEncode(name);
     }
 
