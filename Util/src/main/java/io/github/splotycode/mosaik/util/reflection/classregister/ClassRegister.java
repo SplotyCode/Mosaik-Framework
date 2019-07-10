@@ -41,10 +41,10 @@ public interface ClassRegister<T> {
     }
 
     default void unRegister(String clazz) {
-        for (T obj : new ArrayList<>(getAll())) {
-            if (obj.getClass().getSimpleName().equals(clazz)) {
-                unRegister(obj);
-            }
+        try {
+            unRegister((T) Class.forName(clazz));
+        } catch (ClassNotFoundException e) {
+            logger.warn("Class " + clazz + " is not found by class loader");
         }
     }
 

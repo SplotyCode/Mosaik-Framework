@@ -166,22 +166,22 @@ public final class FileUtil {
     private static void delete(Path path) {
         boolean result = false;
         try {
+            Throwable error = null;
             try {
-                Files.deleteIfExists(path);
+                result = Files.deleteIfExists(path);
             } catch (AccessDeniedException ex) {
+                error = ex;
                 try {
                     File file = path.toFile();
-                    if (file == null) {
-                        result = false;
-                    } else if (file.delete() || !file.exists()) {
+                    if (file != null && (file.delete() || !file.exists())) {
                         result = true;
                     }
                 } catch (Throwable throwable) {
-                    result = false;
+                    error = throwable;
                 }
             }
             if (!result) {
-                throw new IOException("Failed to delete " + path.toString());
+                throw new IOException("Failed to delete " + path.toString(), error);
             }
         } catch (IOException e) {
             ExceptionUtil.throwRuntime(e);
