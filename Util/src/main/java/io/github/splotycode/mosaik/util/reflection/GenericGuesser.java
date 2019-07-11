@@ -8,10 +8,10 @@ import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GenereticGuesser {
+public class GenericGuesser {
 
     @Getter @Setter
-    public static GenereticGuesser instance = new GenereticGuesser();
+    public static GenericGuesser instance = new GenericGuesser();
 
     private static Map<Pair<Object, String>, Class<?>> cache = new HashMap<>();
 
