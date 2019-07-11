@@ -16,12 +16,7 @@ public class SerializedPacketDecoder extends ByteToMessageDecoder {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf bytebuf, List<Object> output) throws Exception {
 		PacketSerializer ps = new PacketSerializer(bytebuf);
-		int id = ps.readVarInt();
-		Class<? extends SerializedPacket> packetClass = registry.getPacketById(id);
-		if (packetClass == null) {
-			throw new NullPointerException("Coud not find that Packet");
-		}
-		SerializedPacket p = packetClass.newInstance();
+		SerializedPacket p = registry.forcePacketByID(ps.readVarInt()).newInstance();
 		p.read(ps);
 		output.add(p);
 	}

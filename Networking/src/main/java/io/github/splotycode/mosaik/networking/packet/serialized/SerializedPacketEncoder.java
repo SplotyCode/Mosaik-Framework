@@ -13,12 +13,8 @@ public class SerializedPacketEncoder extends MessageToByteEncoder<SerializedPack
 
 	@Override
 	protected void encode(ChannelHandlerContext ctx, SerializedPacket packet, ByteBuf output) throws Exception {
-		int id = registry.getIdByPacket(packet.getClass());
-		if(id == -1) {
-			throw new NullPointerException("Coud not find id to packet: " + packet.getClass().getSimpleName());
-		}
 		PacketSerializer ps = new PacketSerializer(output);
-		ps.writeVarInt(id);
+		ps.writeVarInt(registry.forceIdByPacket(packet.getClass()));
 		packet.write(ps);
 	}
 
