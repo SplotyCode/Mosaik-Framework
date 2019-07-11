@@ -98,7 +98,7 @@ public class CloudKit {
     }
 
     private void checkConfigProvider() {
-        if (configProvider == null) throw new ServiceNotAvailableExcpetion("config provider");
+        if (configProvider == null) throw new ServiceNotAvailableException("config provider");
     }
 
     public <T> CloudKit setConfig(ConfigKey<T> key, T value) {

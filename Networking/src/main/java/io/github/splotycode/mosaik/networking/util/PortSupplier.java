@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.networking.util;
 
 import io.github.splotycode.mosaik.networking.config.ConfigProvider;
-import io.github.splotycode.mosaik.networking.config.ConfigurationExcpetion;
+import io.github.splotycode.mosaik.networking.config.ConfigurationException;
 import io.github.splotycode.mosaik.networking.exception.OutOfPortsException;
 import lombok.Getter;
 
@@ -27,7 +27,7 @@ public class PortSupplier implements Supplier<Integer> {
                 provider.getConfigValue(prefix + ".max_port", int.class, 0)
         );
         if (supplier.maxPort == 0 || supplier.minPort == 0) {
-            throw new ConfigurationExcpetion("Invalid port configuration");
+            throw new ConfigurationException("Invalid port configuration");
         }
         Integer[] preferredPorts = provider.getConfigValue(prefix + ".preferred", Integer[].class, null);
         if (preferredPorts != null) {
