@@ -3,11 +3,13 @@ package io.github.splotycode.mosaik.networking.cloudkit;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.config.ConfigProvider;
 import io.github.splotycode.mosaik.networking.config.SimpleConfigProvider;
+import io.github.splotycode.mosaik.networking.config.StaticConfigProvider;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.host.SelfHost;
 import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.service.Service;
+import io.github.splotycode.mosaik.networking.util.IpFilterHandler;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.listener.Listener;
@@ -18,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.TreeMap;
@@ -47,6 +50,13 @@ public class CloudKit {
     private IpResolver localIpResolver;
     private Host selfHost;
     private SelfHostProvider selfHostProvider;
+
+    private IpFilterHandler ipFilter = new IpFilterHandler() {
+        @Override
+        protected Collection<MosaikAddress> grantedAddresses() {
+            return hosts.hosts.keySet();
+        }
+    };
 
     public CloudKit startMasterService(long updateDelay, int port) {
         startService(new MasterService(this, updateDelay, port));
@@ -82,6 +92,10 @@ public class CloudKit {
         return hostMap().values();
     }
 
+    public MosaikAddress selfAddress() {
+        return localIpResolver.getIpAddress();
+    }
+
     public CloudKit startService(Service service) {
         services.add(service);
         handler.addListener(service);
@@ -111,6 +125,15 @@ public class CloudKit {
         checkConfigProvider();
         configProvider.set(key, value);
         return this;
+    }
+
+    public <S extends Service> S getServiceByClass(Class<S> clazz) {
+        for (Service service : services) {
+            if (service.getClass() == clazz) {
+                return (S) service;
+            }
+        }
+        return null;
     }
 
     public Service getServiceByName(String name) {
@@ -228,6 +251,11 @@ public class CloudKit {
 
         public ConfigBuilder configProvider(ConfigProvider provider) {
             setConfigProvider(provider);
+            return this;
+        }
+
+        public ConfigBuilder fileConfig(File file) {
+            setConfigProvider(new StaticConfigProvider(file));
             return this;
         }
 
