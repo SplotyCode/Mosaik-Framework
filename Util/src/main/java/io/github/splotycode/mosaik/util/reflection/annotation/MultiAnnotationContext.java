@@ -9,7 +9,7 @@ import io.github.splotycode.mosaik.util.reflection.annotation.data.IAnnotationDa
 import io.github.splotycode.mosaik.util.reflection.annotation.data.IMethodData;
 import io.github.splotycode.mosaik.util.reflection.annotation.exception.AnnotationLoadError;
 import io.github.splotycode.mosaik.util.reflection.annotation.exception.DataUnavailableException;
-import io.github.splotycode.mosaik.util.reflection.annotation.exception.InvalidAnnotationDataExcpetion;
+import io.github.splotycode.mosaik.util.reflection.annotation.exception.InvalidAnnotationDataException;
 import io.github.splotycode.mosaik.util.reflection.annotation.exception.ParameterInitExcepeion;
 import io.github.splotycode.mosaik.util.reflection.annotation.method.AnnotationHandler;
 import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
@@ -48,7 +48,7 @@ public abstract class MultiAnnotationContext<C extends MultiAnnotationContext, D
         try {
             data.buildData(clazz.getAnnotations());
         } catch (Throwable ex) {
-            throw new InvalidAnnotationDataExcpetion("Failed to build global data for " + clazz.getName(), ex);
+            throw new InvalidAnnotationDataException("Failed to build global data for " + clazz.getName(), ex);
         }
     }
 
