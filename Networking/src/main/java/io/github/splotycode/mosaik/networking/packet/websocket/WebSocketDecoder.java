@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.networking.packet;
+package io.github.splotycode.mosaik.networking.packet.websocket;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
