@@ -1,8 +1,7 @@
 package io.github.splotycode.mosaik.networking.statistics;
 
-import io.github.splotycode.mosaik.networking.component.NetworkComponent;
+import io.github.splotycode.mosaik.networking.component.INetworkProcess;
 import io.github.splotycode.mosaik.networking.packet.serialized.PacketSerializer;
-import io.github.splotycode.mosaik.networking.util.CurrentConnectionHandler;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,10 +61,9 @@ public class ServiceStatistics {
         return counter;
     }
 
-    public ServiceStatistics addComponent(NetworkComponent<?, ?, ?> component) {
-        if (component.running()) {
-            CurrentConnectionHandler handler = component.getHandler(CurrentConnectionHandler.class);
-            instances.put(component.port(), new Instance((int) handler.getConnections(), component.port(), host, !component.running(), service));
+    public ServiceStatistics addComponent(INetworkProcess process) {
+        if (process.running()) {
+            instances.put(process.port(), new Instance(process.connectionCount(), process.port(), host, false, service));
         }
         return this;
     }

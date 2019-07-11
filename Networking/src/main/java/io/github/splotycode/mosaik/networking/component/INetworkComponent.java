@@ -21,8 +21,6 @@ public interface INetworkComponent<S extends INetworkComponent> {
     <O> S option(ChannelOption<O> option, O value);
     S option(Map<ChannelOption, Object> options);
 
-    S shutdown();
-
     S onBind(BindListener listener);
     S onBound(BoundListener listener);
     S onUnBound(UnBoundListener listener);
