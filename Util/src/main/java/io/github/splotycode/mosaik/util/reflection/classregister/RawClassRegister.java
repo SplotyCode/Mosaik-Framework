@@ -19,11 +19,13 @@ public interface RawClassRegister<T extends Class> {
     @SuppressWarnings("unchecked")
     default T getObjectClass() {
         return (T) TYPE_STORE.computeIfAbsent(getClass(), dummy -> {
-           Class clazz = GenericGuesser.find(getClass(), RawClassRegister.class, "T");
-           if (clazz == null) {
-               throw new IllegalStateException("GenericGuesser could not find generic please override getObjectClass()");
-           }
-           return clazz;
+            try {
+                Class clazz = GenericGuesser.find(getClass(), RawClassRegister.class, "T");
+                assert clazz != null;
+                return clazz;
+            } catch (Throwable e) {
+                throw new IllegalStateException("GenericGuesser could not find generic please override getObjectClass()");
+            }
         });
     }
 

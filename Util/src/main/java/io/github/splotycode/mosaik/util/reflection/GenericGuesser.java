@@ -33,7 +33,7 @@ public class GenericGuesser {
             while(currentClass.getSuperclass() != superclass) {
                 currentClass = currentClass.getSuperclass();
                 if (currentClass == null) {
-                    throw new FailedFindSuperExcepeion("Failed find super class " + superclass.getName() + " in " + thisClass.getName());
+                    throw new FailedFindSuperException("Failed find super class " + superclass.getName() + " in " + thisClass.getName());
                 }
             }
 
@@ -94,24 +94,24 @@ public class GenericGuesser {
         return Object.class;
     }
 
-    public static class FailedFindSuperExcepeion extends RuntimeException {
+    public static class FailedFindSuperException extends RuntimeException {
 
-        public FailedFindSuperExcepeion() {
+        public FailedFindSuperException() {
         }
 
-        public FailedFindSuperExcepeion(String s) {
+        public FailedFindSuperException(String s) {
             super(s);
         }
 
-        public FailedFindSuperExcepeion(String s, Throwable throwable) {
+        public FailedFindSuperException(String s, Throwable throwable) {
             super(s, throwable);
         }
 
-        public FailedFindSuperExcepeion(Throwable throwable) {
+        public FailedFindSuperException(Throwable throwable) {
             super(throwable);
         }
 
-        public FailedFindSuperExcepeion(String s, Throwable throwable, boolean b, boolean b1) {
+        public FailedFindSuperException(String s, Throwable throwable, boolean b, boolean b1) {
             super(s, throwable, b, b1);
         }
     }
