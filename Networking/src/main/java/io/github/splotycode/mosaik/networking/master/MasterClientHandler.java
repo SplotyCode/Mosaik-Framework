@@ -12,6 +12,7 @@ public class MasterClientHandler extends SelfAnnotationHandler<SerializedPacket>
 
     protected final CloudKit kit;
     protected long updateID;
+    protected Channel channel;
 
     public MasterClientHandler(CloudKit kit) {
         this.kit = kit;
@@ -19,12 +20,9 @@ public class MasterClientHandler extends SelfAnnotationHandler<SerializedPacket>
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        updateID = kit.getLocalTaskExecutor().runTask(getStatisticsTask(ctx.channel()));
+        channel = ctx.channel();
+        updateID = kit.getLocalTaskExecutor().runTask(new UpdateLocalStatisticsTask(kit, channel));
         super.channelRegistered(ctx);
-    }
-
-    protected RepeatableTask getStatisticsTask(Channel channel) {
-        return new UpdateLocalStatisticsTask(kit, channel);
     }
 
     @Override

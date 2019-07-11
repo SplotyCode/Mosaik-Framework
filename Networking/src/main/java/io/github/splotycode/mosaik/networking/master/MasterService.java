@@ -2,12 +2,16 @@ package io.github.splotycode.mosaik.networking.master;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
 import io.github.splotycode.mosaik.networking.component.NetworkComponent;
+import io.github.splotycode.mosaik.networking.component.listener.standart.ListStatusListener;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPClient;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPServer;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.master.packets.DestroyPacket;
+import io.github.splotycode.mosaik.networking.master.packets.DistributePacket;
+import io.github.splotycode.mosaik.networking.master.packets.StartInstancePacket;
+import io.github.splotycode.mosaik.networking.master.packets.StopInstancePacket;
 import io.github.splotycode.mosaik.networking.packet.PacketRegistry;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
@@ -15,16 +19,15 @@ import io.github.splotycode.mosaik.networking.service.ServiceStatus;
 import io.github.splotycode.mosaik.networking.statistics.CloudStatistics;
 import io.github.splotycode.mosaik.networking.statistics.SingleComponentService;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
+import io.github.splotycode.mosaik.util.ExceptionUtil;
+import io.github.splotycode.mosaik.util.listener.Listener;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.ipfilter.IpFilterRuleType;
-import io.netty.handler.ipfilter.IpSubnetFilterRule;
-import io.netty.handler.ipfilter.RuleBasedIpFilter;
 import lombok.Getter;
 
-import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Map;
 
 @Getter
@@ -41,6 +44,8 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
     {
         masterRegistry.register(DestroyPacket.class);
+        masterRegistry.register(StartInstancePacket.class);
+        masterRegistry.register(StopInstancePacket.class);
     }
 
     private MosaikAddress currentBest;
@@ -48,6 +53,10 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
     private TCPServer server;
     private TCPClient client;
+
+    private ArrayList<Listener> clientListener = new ArrayList<>();
+    private MasterClientHandler clientHandler;
+    private MasterServerHandler serverHandler = new MasterServerHandler(this);
 
     private int port;
 
@@ -66,6 +75,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         super("Master Sync", delay);
         this.port = port;
         this.kit = kit;
+        clientHandler = new MasterClientHandler(kit);
         statistics = new CloudStatistics(kit);
     }
 
@@ -114,8 +124,8 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
                 .port(port).setDisplayName("Master")
                 .logging()
                 .usePacketSystem(2, DefaultPacketSystem.createSerialized(masterRegistry))
-                .childHandler(1, "ipFiler", new RuleBasedIpFilter(new IpSubnetFilterRule("10.10.1.1",16, IpFilterRuleType.REJECT)))
-                .childHandler(5, "packetHandler", new MasterServerHandler(this))
+                .childHandler(1, "ipFiler", kit.getIpFilter())
+                .childHandler(5, "packetHandler", serverHandler)
                 .bind(true);
     }
 
@@ -123,7 +133,8 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         return TCPClient.create()
                 .host(host).port(port).setDisplayName("Master")
                 .usePacketSystem(2, DefaultPacketSystem.createSerialized(masterRegistry))
-                .handler(5, "packetHandler", new MasterClientHandler(kit))
+                .handler(5, "packetHandler", clientHandler)
+                .addListener(new ListStatusListener(clientListener))
                 .bind(true);
     }
 
@@ -168,8 +179,11 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     }
 
     public Host getHostByCtx(ChannelHandlerContext ctx) {
-        Channel channel = ctx.channel();
-        Host host = kit.hostMap().get(MosaikAddress.from((InetSocketAddress) channel.remoteAddress()));
+        return getHostByChannel(ctx.channel());
+    }
+
+    public Host getHostByChannel(Channel channel) {
+        Host host = kit.hostMap().get(MosaikAddress.from(channel.remoteAddress()));
         if (host instanceof RemoteMasterHost) {
             ((RemoteMasterHost) host).setChannel(channel);
         }
@@ -181,8 +195,44 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         return kit;
     }
 
+    public void sendMaster(SerializedPacket packet) {
+        if (self) {
+            sendSelf(packet);
+        } else {
+            clientHandler.channel.writeAndFlush(packet);
+        }
+    }
+
+    public void sendAll(SerializedPacket packet) {
+        sendSelf(packet);
+        clientHandler.channel.writeAndFlush(new DistributePacket(packet, this));
+    }
+
+    public void sendSelf(SerializedPacket packet) {
+        //client.nettyFuture().channel().writeAndFlush(packet);
+        try {
+            clientHandler.channelRead0(null, packet);
+        } catch (Exception e) {
+            ExceptionUtil.throwRuntime(e);
+        }
+    }
+
     @Override
     public NetworkComponent component() {
         return self ? server : client;
     }
+
+    public MasterService addServerHandler(Object handler) {
+        serverHandler.register(handler);
+        return this;
+    }
+
+    public MasterService addClientHandler(Object handler) {
+        if (handler instanceof Listener) {
+            clientListener.add((Listener) handler);
+        }
+        clientHandler.register(handler);
+        return this;
+    }
+
 }
