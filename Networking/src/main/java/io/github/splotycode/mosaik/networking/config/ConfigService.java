@@ -60,6 +60,7 @@ public class ConfigService extends StaticConfigProvider implements SingleCompone
                     .port(port).setDisplayName("Config")
                     .usePacketSystem(2, DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
                     .addListener(handler)
+                    .childHandler(1, "ipFilter", kit.getIpFilter())
                     .childHandler(5, "packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, handler))
                     .bind();
         } else {
