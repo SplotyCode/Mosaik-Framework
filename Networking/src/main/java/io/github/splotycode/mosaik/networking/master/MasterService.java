@@ -40,12 +40,10 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
     private final Logger logger = Logger.getInstance(getClass());
 
-    private PacketRegistry<SerializedPacket> masterRegistry = new PacketRegistry<>();
+    private PacketRegistry<SerializedPacket> masterRegistry = new PacketRegistry<>(SerializedPacket.class);
 
     {
-        masterRegistry.register(DestroyPacket.class);
-        masterRegistry.register(StartInstancePacket.class);
-        masterRegistry.register(StopInstancePacket.class);
+        masterRegistry.registerPackage(DestroyPacket.class);
     }
 
     private MosaikAddress currentBest;

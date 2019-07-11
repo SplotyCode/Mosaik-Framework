@@ -6,6 +6,7 @@ import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.service.Service;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
 import io.github.splotycode.mosaik.networking.template.packets.CreateTemplatePacket;
+import io.github.splotycode.mosaik.networking.template.packets.SyncPacket;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.runtime.pathmanager.PathManager;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
@@ -48,6 +49,7 @@ public class TemplateService implements Service, MasterChangeListener {
     @Override
     public void start() {
         master = kit.getServiceByClass(MasterService.class);
+        master.getMasterRegistry().registerPackage(SyncPacket.class);
         master.addClientHandler(handler);
         master.addServerHandler(masterHandler);
         directory = new File(PathManager.getInstance().getMainDirectory(), "Templates");

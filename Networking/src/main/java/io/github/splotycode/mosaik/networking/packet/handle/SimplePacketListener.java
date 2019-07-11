@@ -1,14 +1,14 @@
 package io.github.splotycode.mosaik.networking.packet.handle;
 
 import io.github.splotycode.mosaik.networking.packet.Packet;
-import io.github.splotycode.mosaik.util.reflection.GenereticGuesser;
+import io.github.splotycode.mosaik.util.reflection.GenericGuesser;
 
 public abstract class SimplePacketListener<P extends Packet> implements PacketListener {
 
     private Class clazz;
 
     public SimplePacketListener() {
-        clazz = GenereticGuesser.find(this, SimplePacketListener.class, "P");
+        clazz = GenericGuesser.find(this, SimplePacketListener.class, "P");
     }
 
     @Override

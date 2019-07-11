@@ -21,13 +21,10 @@ import java.io.File;
 
 public class ConfigService extends StaticConfigProvider implements SingleComponentService {
 
-    public static final PacketRegistry<SerializedPacket> PACKET_REGISTRY = new PacketRegistry<>();
+    public static final PacketRegistry<SerializedPacket> PACKET_REGISTRY = new PacketRegistry<>(SerializedPacket.class);
 
     static {
-        PACKET_REGISTRY.register(ConfigRequestUpdate.class);
-        PACKET_REGISTRY.register(ConfigNoUpdate.class);
-        PACKET_REGISTRY.register(ConfigUpdate.class);
-        PACKET_REGISTRY.register(KAUpdate.class);
+        PACKET_REGISTRY.registerPackage(ConfigUpdate.class);
     }
 
     private boolean keepAlive;
