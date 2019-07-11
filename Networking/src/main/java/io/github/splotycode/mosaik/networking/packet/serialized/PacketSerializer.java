@@ -50,6 +50,25 @@ public class PacketSerializer extends ByteBuf {
         return out;
     }
 
+    public byte[] drain() {
+        return ByteBufUtil.drain(buf);
+    }
+
+    public byte[] read(int length) {
+        return ByteBufUtil.readBytes(buf, length);
+    }
+
+    public byte[] readArray() {
+        byte[] bytes = new byte[readVarInt()];
+        readBytes(bytes);
+        return bytes;
+    }
+
+    public void writeArray(byte[] bytes) {
+        writeVarInt(bytes.length);
+        writeBytes(bytes);
+    }
+
     public <T> T readEnum(Class<T> enumClass) {
         return enumClass.getEnumConstants()[readVarInt()];
     }
