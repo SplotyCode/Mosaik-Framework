@@ -49,7 +49,7 @@ public class Main {
 
     public static void mainIfNotInitialised(String[] args) throws Exception {
         if (!initialised)
-            mainImpl(new StartUpConfiguration().withArgs(args));
+            mainImpl(new StartUpConfiguration().withArgs(args).withClassLoader(BootContext.createProvider(args)));
     }
 
     public static void mainIfNotInitialised(StartUpConfiguration configuration) throws Exception {
@@ -60,7 +60,7 @@ public class Main {
     private static Logger logger;
 
     public static void main(String[] args) throws Exception {
-        mainImpl(new StartUpConfiguration().withArgs(args));
+        mainImpl(new StartUpConfiguration().withArgs(args).withClassLoader(BootContext.createProvider(args)));
     }
 
     public static void main(StartUpConfiguration configuration) throws Exception {
