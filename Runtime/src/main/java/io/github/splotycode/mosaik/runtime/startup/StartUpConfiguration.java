@@ -14,10 +14,16 @@ import java.util.Arrays;
 public class StartUpConfiguration {
 
     private ClassLoaderProvider classLoader;
+
     private Class<? extends LoggerFactory> bootLoggerFactory;
     private Class<? extends LoggerFactory> runtimeLoggerFactory;
+
     private String[] args;
     private ArrayList<String> argList;
+
+    private String linkBasePath;
+    private boolean skipClassLoaderCheck;
+    private boolean skipInvokedCheck;
 
     public StartUpConfiguration withArgs(String[] args) {
         this.args = args;
@@ -47,6 +53,21 @@ public class StartUpConfiguration {
         return this;
     }
 
+    public StartUpConfiguration withLinkBasePath(String linkBasePath) {
+        this.linkBasePath = linkBasePath;
+        return this;
+    }
+
+    public StartUpConfiguration skipClassLoaderCheck() {
+        skipClassLoaderCheck = true;
+        return this;
+    }
+
+    public StartUpConfiguration skipInvokedCheck() {
+        skipInvokedCheck = true;
+        return this;
+    }
+
     public void finish() {
         if (argList != null) {
             if (args != null) {
@@ -61,6 +82,9 @@ public class StartUpConfiguration {
         }
         if (classLoader == null) {
             classLoader = ClassLoaderProvider.DefaultClassLoaderProvider.INSTANCE;
+        }
+        if (linkBasePath == null) {
+            linkBasePath = "linkbase.txt";
         }
     }
 

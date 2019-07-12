@@ -84,12 +84,14 @@ public class Main {
         MosaikModule.DOM_PARSING_IMPL.checkLoaded();
         MosaikModule.ARG_PARSER_IMPL.checkLoaded();
 
-        loadLinkBase();
+        loadLinkBase(configuration.getLinkBasePath());
         setUpLogging(configuration.getBootLoggerFactory());
         LoggingHelper.loggingStartUp();
 
-        checkClassLoader();
-        if (ReflectionUtil.getCallerClasses().length >= 4 + 1) {
+        if (!configuration.isSkipClassLoaderCheck()) {
+            checkClassLoader();
+        }
+        if (!configuration.isSkipInvokedCheck() && ReflectionUtil.getCallerClasses().length >= 4 + 1) {
             logger.warn("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass(1).getName());
         }
 
@@ -98,8 +100,8 @@ public class Main {
         instance = new Main();
     }
 
-    private static void loadLinkBase() throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-        String[] lines = IOUtil.resourceToText("/linkbase.txt").split("\n");
+    private static void loadLinkBase(String path) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        String[] lines = IOUtil.resourceToText(path).split("\n");
         for (String line : lines) {
             String[] lineSplit = line.split(": ");
             LinkBase.getInstance().getLinkFactory().putData(lineSplit[0], null, Class.forName(lineSplit[1]).newInstance());
