@@ -2,7 +2,9 @@ package io.github.splotycode.mosaik.runtime.startup;
 
 public interface ClassLoaderProvider {
 
-    class DefaultClassLoaderProvider implements ClassLoaderProvider {
+    enum DefaultClassLoaderProvider implements ClassLoaderProvider {
+
+        INSTANCE;
 
         @Override
         public ClassLoader getClassLoader() {

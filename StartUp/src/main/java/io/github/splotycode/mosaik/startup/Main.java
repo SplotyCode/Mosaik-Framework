@@ -6,6 +6,7 @@ import io.github.splotycode.mosaik.runtime.application.IApplication;
 import io.github.splotycode.mosaik.runtime.logging.LoggingHelper;
 import io.github.splotycode.mosaik.runtime.logging.MosaikLoggerFactory;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
+import io.github.splotycode.mosaik.runtime.startup.StartUpConfiguration;
 import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
 import io.github.splotycode.mosaik.startup.application.ApplicationManager;
 import io.github.splotycode.mosaik.startup.envirementchanger.StartUpInvirementChangerImpl;
@@ -18,6 +19,7 @@ import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.init.AlreadyInitailizedException;
 import io.github.splotycode.mosaik.util.io.IOUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
+import io.github.splotycode.mosaik.util.logger.LoggerFactory;
 import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.util.reflection.modules.MosaikModule;
@@ -37,31 +39,45 @@ public class Main {
     @Getter private static boolean initialised = false;
 
     public static void main() throws Exception {
-        main(ArrayUtil.EMPTY_STRING_ARRAY);
+        mainImpl(new StartUpConfiguration());
     }
 
     public static void mainIfNotInitialised() throws Exception {
         if (!initialised)
-            mainImpl();
+            mainImpl(new StartUpConfiguration());
     }
 
     public static void mainIfNotInitialised(String[] args) throws Exception {
         if (!initialised)
-            mainImpl(args);
+            mainImpl(new StartUpConfiguration().withArgs(args));
+    }
+
+    public static void mainIfNotInitialised(StartUpConfiguration configuration) throws Exception {
+        if (!initialised)
+            mainImpl(configuration);
     }
 
     private static Logger logger;
 
     public static void main(String[] args) throws Exception {
-        mainImpl(args);
+        mainImpl(new StartUpConfiguration().withArgs(args));
     }
 
-    private static void mainImpl(String... args) throws Exception {
+    public static void main(StartUpConfiguration configuration) throws Exception {
+        mainImpl(configuration);
+    }
+
+    private static void mainImpl(StartUpConfiguration configuration) throws Exception {
         long start = System.currentTimeMillis();
         if (initialised) throw new AlreadyInitailizedException("Main.main() already called");
         initialised = true;
 
-        bootData = new BootContext(args, start, BootContext.createProvider(args));
+        configuration.finish();
+        if (configuration.hasBootLoggerFactory()) {
+            Logger.setFactory(configuration.getBootLoggerFactory());
+        }
+
+        bootData = configuration.getBootContext(start);
         LinkBase.getInstance().registerLink(Links.BOOT_DATA, bootData);
 
         MosaikModule.STARTUP.checkLoaded();
@@ -69,7 +85,7 @@ public class Main {
         MosaikModule.ARG_PARSER_IMPL.checkLoaded();
 
         loadLinkBase();
-        setUpLogging();
+        setUpLogging(configuration.getBootLoggerFactory());
         LoggingHelper.loggingStartUp();
 
         checkClassLoader();
@@ -120,18 +136,8 @@ public class Main {
         startUpManager.finished();
     }
 
-    private static void setUpLogging() {
-        Logger.setFactory(MosaikLoggerFactory.class);
-        System.setProperty("log4j.defaultInitOverride", "true");
-        try {
-            org.apache.log4j.Logger root = org.apache.log4j.Logger.getRootLogger();
-            if (!root.getAllAppenders().hasMoreElements()) {
-                root.setLevel(Level.WARN);
-                root.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.DEFAULT_CONVERSION_PATTERN)));
-            }
-        } catch (Throwable e) {
-            throw new FrameworkStartException("Could not initialize log4j logging", e);
-        }
+    private static void setUpLogging(Class<? extends LoggerFactory> factory) {
+        Logger.setFactory(factory);
         logger = Logger.getInstance(Main.class);
 
         LoggingHelper.registerShutdownLogging();
