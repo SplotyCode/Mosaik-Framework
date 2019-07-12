@@ -11,7 +11,6 @@ import java.util.*;
 
 public class TransformerManager implements IListClassRegister<ValueTransformer> {
 
-    public static final DataKey<Class> RESULT = new DataKey<>("result");
     public static final DataKey<TransformerManager> LINK = new DataKey<>("transformer.manager");
 
     public static TransformerManager getInstance() {
@@ -36,7 +35,7 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
             if (transformer.valid(input, result)) {
                 try {
                     DataFactory info = new DataFactory();
-                    info.putData(RESULT, result);
+                    info.putData(CommonData.RESULT, result);
                     return (T) transformer.transform(input, info);
                 } catch (Throwable throwable) {
                     throw new TransformException("Failed to transform with " + transformer.getClass().getName(), throwable);
