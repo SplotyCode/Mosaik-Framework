@@ -18,6 +18,7 @@
       <module fileurl="file://$PROJECT_DIR$/Mosaik-All/Mosaik-All.iml" filepath="$PROJECT_DIR$/Mosaik-All/Mosaik-All.iml" />
       <module fileurl="file://$PROJECT_DIR$/Mosaik-Framework.iml" filepath="$PROJECT_DIR$/Mosaik-Framework.iml" />
       <module fileurl="file://$PROJECT_DIR$/Networking/Networking.iml" filepath="$PROJECT_DIR$/Networking/Networking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Networking-Web/Networking-Web.iml" filepath="$PROJECT_DIR$/Networking-Web/Networking-Web.iml" />
       <module fileurl="file://$PROJECT_DIR$/Runtime/Runtime.iml" filepath="$PROJECT_DIR$/Runtime/Runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/StartUp/StartUp.iml" filepath="$PROJECT_DIR$/StartUp/StartUp.iml" />
       <module fileurl="file://$PROJECT_DIR$/Util/Util.iml" filepath="$PROJECT_DIR$/Util/Util.iml" />

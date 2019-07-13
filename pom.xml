@@ -27,6 +27,7 @@
         <module>Mosaik-All</module>
         <module>ArgParser-Impl</module>
         <module>DomParsing-Impl</module>
+        <module>Networking-Web</module>
     </modules>
 
     <properties>
