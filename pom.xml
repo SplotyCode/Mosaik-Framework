@@ -53,14 +53,14 @@
         <mosaik.junit_platform.version>1.1.0</mosaik.junit_platform.version>
 
         <!-- Plugin Versions -->
-        <mosaik.plugin.jar>2.4</mosaik.plugin.jar>
-        <mosaik.plugin.compile>3.8.0</mosaik.plugin.compile>
+        <mosaik.plugin.jar>3.1.2</mosaik.plugin.jar>
+        <mosaik.plugin.compile>3.8.1</mosaik.plugin.compile>
         <mosaik.plugin.assembly>3.1.1</mosaik.plugin.assembly>
-        <mosaik.plugin.gpg>1.5</mosaik.plugin.gpg>
-        <mosaik.plugin.nexus-staging>1.6.7</mosaik.plugin.nexus-staging>
-        <mosaik.plugin.source>2.2.1</mosaik.plugin.source>
+        <mosaik.plugin.gpg>1.6</mosaik.plugin.gpg>
+        <mosaik.plugin.nexus-staging>1.6.8</mosaik.plugin.nexus-staging>
+        <mosaik.plugin.source>3.1.0</mosaik.plugin.source>
         <mosaik.plugin.codehaus-buildnumber>1.4</mosaik.plugin.codehaus-buildnumber>
-        <mosaik.plugin.javadoc>3.0.1</mosaik.plugin.javadoc>
+        <mosaik.plugin.javadoc>3.1.1</mosaik.plugin.javadoc>
         <mosaik.plugin.surefire>2.19.1</mosaik.plugin.surefire>
     </properties>
 
