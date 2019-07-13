@@ -3,11 +3,14 @@ package io.github.splotycode.mosaik.networking.template;
 import io.github.splotycode.mosaik.networking.template.packets.AddFilePacket;
 import io.github.splotycode.mosaik.networking.template.packets.DestroyTemplatePacket;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
-import io.github.splotycode.mosaik.util.io.BinaryUtil;
 import io.github.splotycode.mosaik.util.io.FileUtil;
+import io.github.splotycode.mosaik.util.io.PathUtil;
 import lombok.Data;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 
 @Data
@@ -25,6 +28,7 @@ public class Template {
     }
 
     public void addFile(String name, byte[] content) {
+        if (!PathUtil.validAndNoUpwardTravel(file, name)) throw new IllegalArgumentException("Illegal template name");
         service.getMaster().sendAll(new AddFilePacket(this.name, name, System.currentTimeMillis(), service.getKit().selfAddress().asString(), content));
     }
 

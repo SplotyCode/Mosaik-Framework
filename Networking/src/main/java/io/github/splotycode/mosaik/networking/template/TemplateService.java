@@ -93,7 +93,7 @@ public class TemplateService implements Service, MasterChangeListener {
     }
 
     public void create(String name) {
-        if (!PathUtil.isValidFileName(name)) throw new IllegalArgumentException("Illegal template name");
+        if (!PathUtil.validAndNoUpwardTravel(directory, name)) throw new IllegalArgumentException("Illegal template name");
         master.sendAll(new CreateTemplatePacket(name));
     }
 
