@@ -19,14 +19,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Getter
 public class StringManipulator implements ResponseManipulator<StringManipulator> {
 
     private ManipulateData processedData;
-    private String input;
-    private Set<Replacement> replacements = new HashSet<>();
+    @Getter private String input;
+    @Getter private Set<Replacement> replacements = new HashSet<>();
 
-    private boolean cashing;
+    @Getter private boolean cashing;
 
     public ManipulateData getManipulateData() {
         if (processedData == null) {
