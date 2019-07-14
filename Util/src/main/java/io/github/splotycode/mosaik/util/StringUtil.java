@@ -312,11 +312,41 @@ public final class StringUtil {
     /**
      * Combines multiple objects with a specific Joiner.
      * @param builder a prefix
+     * @param iterable the objects that should be combined
+     * @param separator separator the strings
+     * @param onlyPossible is it possible that the source is long then the end AND is not the end
+     */
+    public static <T> void join(StringBuilder builder, Iterable<T> iterable, Joiner<T> joiner, String separator, boolean onlyPossible) {
+        for (T element : iterable) {
+            joiner.join(builder, element);
+            builder.append(separator);
+        }
+        removeEnd(builder, separator, onlyPossible);
+    }
+
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * @param builder a prefix
      * @param array the objects that should be combined
      * @param separator separator the strings
      * @param onlyPossible is it possible that the source is long then the end AND is not the end
      */
     public static <T> void join(StringBuilder builder, T[] array, StringBuilderJoiner<T> joiner, String separator, boolean onlyPossible) {
+        for (T element : array) {
+            joiner.join(builder, element);
+            builder.append(separator);
+        }
+        removeEnd(builder, separator, onlyPossible);
+    }
+
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * @param builder a prefix
+     * @param array the objects that should be combined
+     * @param separator separator the strings
+     * @param onlyPossible is it possible that the source is long then the end AND is not the end
+     */
+    public static <T> void join(StringBuilder builder, T[] array, Joiner<T> joiner, String separator, boolean onlyPossible) {
         for (T element : array) {
             joiner.join(builder, element);
             builder.append(separator);
