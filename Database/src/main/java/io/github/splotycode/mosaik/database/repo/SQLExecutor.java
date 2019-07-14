@@ -10,10 +10,7 @@ import io.github.splotycode.mosaik.util.collection.EmptyIterable;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -120,10 +117,8 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
 
     @Override
     public void deleteFirst(JDBCConnectionProvider connection, Filters.Filter filter) {
-        StringBuilder builder = new StringBuilder("DELETE FROM ");
-        builder.append(name).append(generateWhere(filter));
-        builder.append(" LIMIT 1;");
-        exec(connection, builder, "Deleting rows");
+        StringBuilder builder = new StringBuilder("DELETE FROM ").append(name);
+        executeWithWhere(connection, builder, " LIMIT 1;", filter, "Deleting rows");
     }
 
     private void exec(JDBCConnectionProvider provider, StringBuilder builder, String action) {
@@ -137,19 +132,25 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
         }
     }
 
+    private void exec(PreparedStatement statement, String action) {
+        try {
+            statement.execute();
+        } catch (SQLException ex) {
+            throw new RepoException("Error on " + action + ": " + ex.getMessage(), ex);
+        }
+    }
+
     @Override
     public void deleteAll(JDBCConnectionProvider connection, Filters.Filter filter) {
-        StringBuilder builder = new StringBuilder("DELETE FROM ");
-        builder.append(name).append(generateWhere(filter));
-        exec(connection, builder, "Deleting rows");
+        StringBuilder builder = new StringBuilder("DELETE FROM ").append(name);
+        executeWithWhere(connection, builder, "", filter, "Deleting rows");
     }
 
     @Override
     public boolean exists(JDBCConnectionProvider provider, Filters.Filter filter) {
-        StringBuilder builder = new StringBuilder("SELECT null from ");
-        builder.append(name).append(generateWhere(filter));
+        StringBuilder builder = new StringBuilder("SELECT null from ").append(name);
         try (JDBCConnection connection = provider.provide()) {
-            try (Statement statement = connection.getConnection().createStatement()) {
+            try (PreparedStatement statement = generateWhere(builder, "", connection.getConnection(), filter)) {
                 return statement.executeQuery(builder.toString()).next();
             }
         } catch (SQLException ex) {
@@ -177,10 +178,9 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
 
     @Override
     public long count(JDBCConnectionProvider provider, Filters.Filter filter) {
+        StringBuilder builder = new StringBuilder("select count(*) from ").append(name);
         try (JDBCConnection connection = provider.provide()) {
-            try (PreparedStatement statement = connection.getConnection().prepareStatement("select count(*) from ? ?")) {
-                statement.setString(1, name);
-                statement.setString(2, generateWhere(filter));
+            try (PreparedStatement statement = generateWhere(builder, "", connection.getConnection(), filter)) {
                 try (ResultSet result = statement.executeQuery()) {
                     if (result.next()) {
                         return result.getLong(1);
@@ -194,14 +194,16 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
     }
 
     private void update(JDBCConnectionProvider connection, T entity, Filters.Filter filter, Collection<FieldObject> fields) {
-        StringBuilder builder = new StringBuilder("UPDATE ");
-        builder.append(table).append(" SET ");
+        StringBuilder builder = new StringBuilder("UPDATE ")
+                .append(table)
+                .append(" SET ");
         for (FieldObject field : fields) {
             builder.append(field.getName()).append(" = '").append(getValue(field, entity)).append("', ");
         }
         StringUtil.removeEnd(builder, ", ");
-        builder.append(generateWhere(filter));
-        exec(connection, builder, "Updating");
+        try (JDBCConnection conn = connection.provide()) {
+            exec(generateWhere(builder, "", conn.getConnection(), filter), "Updating");
+        }
     }
 
     @Override
@@ -219,20 +221,44 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
         update(connection, entity, filter, Arrays.stream(fields).map(resolver -> this.fields.get(resolver.getColumnName())).collect(Collectors.toList()));
     }
 
-    private String generateWhere(Filters.Filter filter) {
-        if (filter == null) return "";
-        return " where " + buildFilter(filter);
+    private void executeWithWhere(JDBCConnectionProvider provider, StringBuilder builder, String suffix, Filters.Filter filter, String action) {
+        try (JDBCConnection connection = provider.provide()) {
+            generateWhere(builder, suffix, connection.getConnection(), filter).execute();
+        } catch (SQLException ex) {
+            throw new RepoException("Error on " + action + ": " + ex.getMessage(), ex);
+        }
     }
 
-    private String buildFilter(Filters.Filter filter) {
+    private PreparedStatement generateWhere(StringBuilder builder, String suffix, Connection connection, Filters.Filter filter) {
+        try {
+            if (filter != null) {
+                ArrayList<String> placeholders = new ArrayList<>();
+                builder.append(" where ");
+                buildFilter(builder, filter, placeholders);
+                builder.append(suffix);
+                PreparedStatement statement = connection.prepareStatement(builder.toString());
+                for (int i = 0; i < placeholders.size(); i++) {
+                    statement.setString(i + 1, placeholders.get(i));
+                }
+            }
+            return connection.prepareStatement(builder.toString() + suffix);
+        } catch (SQLException ex) {
+            throw new RepoException("Errored while building filter");
+        }
+    }
+
+    private void buildFilter(StringBuilder builder, Filters.Filter filter, ArrayList<String> placeholders) {
         Filters.FilterType type = filter.type;
         if (filter instanceof Filters.ComplexFilter) {
-            return StringUtil.join(((Filters.ComplexFilter) filter).getFilters(), this::buildFilter, "  " + type.name() + " ");
+            StringUtil.join(builder, ((Filters.ComplexFilter) filter).getFilters(),
+                    (childBuilder, childFilter) -> buildFilter(childBuilder, childFilter, placeholders),
+                    "  " + type.name() + " ", false);
+        } else {
+            String operator = filterTypes.get(type);
+            Filters.ValueFilter valueFilter = (Filters.ValueFilter) filter;
+            placeholders.add(TransformerManager.getInstance().transform(valueFilter.getObject(), String.class));
+            builder.append(valueFilter.field).append(operator).append("'?'");
         }
-        String operator = filterTypes.get(type);
-        Filters.ValueFilter valueFilter = (Filters.ValueFilter) filter;
-        String value = TransformerManager.getInstance().transform(valueFilter.getObject(), String.class);
-        return valueFilter.field + operator + "'" + value + "'";
     }
 
     @Override
@@ -270,29 +296,31 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
 
         StringBuilder builder = new StringBuilder("SELECT ");
         appendColumn(builder, fields);
-        builder.append(" FROM ").append(name).append(generateWhere(filter));
+        builder.append(" FROM ").append(name);
 
-        try (Statement statement = provider.provide().getConnection().createStatement()){
-            try (ResultSet result = statement.executeQuery(builder.toString())) {
-                boolean exists = result.next();
-                if (exists) {
-                    ArrayList<T> list = new ArrayList<>();
-                    do {
-                        T object = (T) clazz.newInstance();
-                        for (ColumnNameResolver field : fields) {
-                            String name = field.getColumnName();
-                            setValue(name, result.getString(name), object);
-                        }
-                        list.add(object);
-                    } while (result.next() && !onlyOne);
-                    return list;
+        try (JDBCConnection conn = provider.provide()) {
+            try (PreparedStatement statement = generateWhere(builder, "", conn.getConnection(), filter)) {
+                try (ResultSet result = statement.executeQuery()) {
+                    boolean exists = result.next();
+                    if (exists) {
+                        ArrayList<T> list = new ArrayList<>();
+                        do {
+                            T object = (T) clazz.newInstance();
+                            for (ColumnNameResolver field : fields) {
+                                String name = field.getColumnName();
+                                setValue(name, result.getString(name), object);
+                            }
+                            list.add(object);
+                        } while (result.next() && !onlyOne);
+                        return list;
+                    }
                 }
+                return EmptyIterable.emptyIterable();
+            } catch (SQLException ex) {
+                throw new RepoException("Failed on executing select query", ex);
+            } catch (IllegalAccessException | InstantiationException ex) {
+                throw new RepoException("Failed to create new Object/setting values", ex);
             }
-            return EmptyIterable.emptyIterable();
-        } catch (SQLException ex) {
-            throw new RepoException("Failed on executing select query", ex);
-        } catch (IllegalAccessException | InstantiationException ex) {
-            throw new RepoException("Failed to create new Object/setting values", ex);
         }
     }
 
