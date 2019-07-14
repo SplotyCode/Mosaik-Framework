@@ -14,21 +14,32 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//TODO streaming support
 public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> {
 
-    private static Map<Filters.FilterType, String> filterTypes = new HashMap<>();
+    private static final Map<Filters.FilterType, String> FILTER_TYPES;
+    private static final String[] QUESTION_MARK;
+
+    static {
+        QUESTION_MARK = new String[36];
+        QUESTION_MARK[0] = "";
+        for (int i = 1; i < 36; i++) {
+            QUESTION_MARK[i] = StringUtil.removeLast(StringUtil.repeat("? ", i), 1);
+        }
+    }
 
     public SQLExecutor(Class<?> clazz) {
         super(clazz);
     }
 
     static {
-        filterTypes.put(Filters.FilterType.EQUAL, "=");
-        filterTypes.put(Filters.FilterType.NOTEQUAL, "!=");
-        filterTypes.put(Filters.FilterType.GREATER, ">");
-        filterTypes.put(Filters.FilterType.LESS, "<");
-        filterTypes.put(Filters.FilterType.LESS_OR_EQUAL, "<=");
-        filterTypes.put(Filters.FilterType.GREATER_OR_EQUAL, ">=");
+        FILTER_TYPES = new HashMap<>(6, 1);
+        FILTER_TYPES.put(Filters.FilterType.EQUAL, "=");
+        FILTER_TYPES.put(Filters.FilterType.NOTEQUAL, "!=");
+        FILTER_TYPES.put(Filters.FilterType.GREATER, ">");
+        FILTER_TYPES.put(Filters.FilterType.LESS, "<");
+        FILTER_TYPES.put(Filters.FilterType.LESS_OR_EQUAL, "<=");
+        FILTER_TYPES.put(Filters.FilterType.GREATER_OR_EQUAL, ">=");
     }
 
     @Override
@@ -80,6 +91,12 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
             if (ReflectionUtil.isAssignable(Long.class, clazz)) {
                 return ColumnType.BIGINT;
             }
+            if (ReflectionUtil.isAssignable(Double.class, clazz)) {
+                return ColumnType.DOUBLE; //todo double check
+            }
+            if (ReflectionUtil.isAssignable(Float.class, clazz)) {
+                return ColumnType.FLOAT; //todo reaL?
+            }
             if (String.class.isAssignableFrom(clazz)) {
                 return ColumnType.VARCHAR;
             }
@@ -103,13 +120,20 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
     @Override
     public void save(JDBCConnectionProvider connection, T entry, ColumnNameResolver... fields) {
         StringBuilder builder = new StringBuilder("INSERT INTO ");
-        builder.append(name).append(" SET ");
-        for (ColumnNameResolver fieldResolver : fields) {
-            String field = fieldResolver.getColumnName();
-            builder.append(field).append("='").append(getValue(field, entry)).append("', ");
+        builder.append(name).append(" (");
+        StringUtil.join(builder, fields, ColumnNameResolver::getColumnName, ", ", false);
+        builder.append(") VALUES (").append(QUESTION_MARK[fields.length]).append(")");
+
+        try (JDBCConnection conn = connection.provide()){
+            try (PreparedStatement statement = conn.getConnection().prepareStatement(builder.toString())){
+                for (int i = 0; i < fields.length; i++) {
+                    statement.setString(i + 1, getValue(fields[i].getColumnName(), entry));
+                }
+                exec(statement, "Saving Table");
+            }
+        } catch (SQLException ex) {
+            throw new RepoException("Failed to save table", ex);
         }
-        StringUtil.removeEnd(builder, ", ");
-        exec(connection, builder, "Saving Table");
     }
 
     /*@Override public void delete(JDBCConnectionProvider connection, T entity) {}
@@ -197,12 +221,18 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
         StringBuilder builder = new StringBuilder("UPDATE ")
                 .append(table)
                 .append(" SET ");
-        for (FieldObject field : fields) {
-            builder.append(field.getName()).append(" = '").append(getValue(field, entity)).append("', ");
-        }
-        StringUtil.removeEnd(builder, ", ");
+        StringUtil.join(builder, fields, (childBuilder, field) -> childBuilder.append(field.getName()).append(" = '?'"), ", ", false);
         try (JDBCConnection conn = connection.provide()) {
-            exec(generateWhere(builder, "", conn.getConnection(), filter), "Updating");
+            try (PreparedStatement statement = generateWhere(builder, "", conn.getConnection(), filter, fields.size())) {
+                int i = 1;
+                for (FieldObject field : fields) {
+                    statement.setString(i, getValue(field, entity));
+                    i++;
+                }
+                exec(statement, "Updating");
+            } catch (SQLException ex) {
+                throw new RepoException("Failed to build prepared statement to update", ex);
+            }
         }
     }
 
@@ -230,6 +260,10 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
     }
 
     private PreparedStatement generateWhere(StringBuilder builder, String suffix, Connection connection, Filters.Filter filter) {
+        return generateWhere(builder, suffix, connection, filter, 0);
+    }
+
+    private PreparedStatement generateWhere(StringBuilder builder, String suffix, Connection connection, Filters.Filter filter, int offset) {
         try {
             if (filter != null) {
                 ArrayList<String> placeholders = new ArrayList<>();
@@ -238,7 +272,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
                 builder.append(suffix);
                 PreparedStatement statement = connection.prepareStatement(builder.toString());
                 for (int i = 0; i < placeholders.size(); i++) {
-                    statement.setString(i + 1, placeholders.get(i));
+                    statement.setString(i + 1 + offset, placeholders.get(i));
                 }
             }
             return connection.prepareStatement(builder.toString() + suffix);
@@ -254,7 +288,7 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
                     (childBuilder, childFilter) -> buildFilter(childBuilder, childFilter, placeholders),
                     "  " + type.name() + " ", false);
         } else {
-            String operator = filterTypes.get(type);
+            String operator = FILTER_TYPES.get(type);
             Filters.ValueFilter valueFilter = (Filters.ValueFilter) filter;
             placeholders.add(TransformerManager.getInstance().transform(valueFilter.getObject(), String.class));
             builder.append(valueFilter.field).append(operator).append("'?'");
