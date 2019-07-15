@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.database.table;
 
-import io.github.splotycode.mosaik.database.databasetypes.Casandra;
-import io.github.splotycode.mosaik.database.databasetypes.SQL;
+import io.github.splotycode.mosaik.database.annotation.Casandra;
+import io.github.splotycode.mosaik.database.annotation.SQL;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

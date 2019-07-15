@@ -92,10 +92,10 @@ public class SQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionProvider> 
                 return ColumnType.BIGINT;
             }
             if (ReflectionUtil.isAssignable(Double.class, clazz)) {
-                return ColumnType.DOUBLE; //todo double check
+                return ColumnType.DECIMAL;
             }
             if (ReflectionUtil.isAssignable(Float.class, clazz)) {
-                return ColumnType.FLOAT; //todo reaL?
+                return ColumnType.DOUBLE; //todo reaL when available ?
             }
             if (String.class.isAssignableFrom(clazz)) {
                 return ColumnType.VARCHAR;

@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.database.databasetypes;
+package io.github.splotycode.mosaik.database.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
