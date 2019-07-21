@@ -18,17 +18,28 @@ import lombok.Getter;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 @Getter
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public abstract class MultiAnnotationContext<C extends MultiAnnotationContext, D extends IAnnotationData> extends AbstractAnnotationContext<C, D, Class> {
 
-    //TODO more specific data keys with genetics
     public static DataKey<IAnnotationData> GLOBAL = new DataKey<>("base.global");
     public static DataKey<IAnnotationData> SUP = new DataKey<>("base.sup");
+
+    @SuppressWarnings("unchecked")
+    public DataKey<D> globalKey() {
+        return (DataKey<D>) GLOBAL;
+    }
+
+    @SuppressWarnings("unchecked")
+    public DataKey<D> supKey() {
+        return (DataKey<D>) SUP;
+    }
 
     protected Collection<D> sub = new ArrayList<>();
 
@@ -117,16 +128,29 @@ public abstract class MultiAnnotationContext<C extends MultiAnnotationContext, D
     }
 
     public static Predicate<Class> buildPredicate(boolean needClass, Collection<AnnotationHandler> handlers, Collection<AnnotationHandler> subHandlers) {
-        Predicate<Class> classPredicate = item -> {
-            return handlers.stream().anyMatch(
-                    handler -> item.isAnnotationPresent(handler.annotation())
-            );
-        };
-        Predicate<Class> methodPredicate = ClassConditions.anyMethod(method -> {
-            return subHandlers.stream().anyMatch(
-                    handler -> method.isAnnotationPresent(handler.annotation())
-            );
-        });
+        return buildPredicate(needClass, handlers.stream(), subHandlers.stream());
+    }
+
+    public static Predicate<Class> buildPredicate(boolean needClass, AnnotationHandler[] handlers, AnnotationHandler[] subHandlers) {
+        return buildPredicate(needClass, Arrays.stream(handlers), Arrays.stream(subHandlers));
+    }
+
+    public static Predicate<Class> buildPredicate(boolean needClass, Collection<AnnotationHandler> handlers) {
+        return buildPredicate(needClass, handlers.stream(), handlers.stream());
+    }
+
+    public static Predicate<Class> buildPredicate(boolean needClass, AnnotationHandler[] handlers) {
+        return buildPredicate(needClass, Arrays.stream(handlers), Arrays.stream(handlers));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Predicate<Class> buildPredicate(boolean needClass, Stream<AnnotationHandler> handlers, Stream<AnnotationHandler> subHandlers) {
+        Predicate<Class> classPredicate = item -> handlers.anyMatch(
+                handler -> item.isAnnotationPresent(handler.annotation())
+        );
+        Predicate<Class> methodPredicate = ClassConditions.anyMethod(method -> subHandlers.anyMatch(
+                handler -> method.isAnnotationPresent(handler.annotation())
+        ));
         if (needClass) {
             return Conditions.and(classPredicate, methodPredicate);
         }
