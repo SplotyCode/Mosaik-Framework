@@ -1,6 +1,5 @@
 package io.github.splotycode.mosaik.util.io;
 
-import com.sun.nio.zipfs.ZipFileSystem;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.exception.ResourceNotFoundException;
@@ -16,11 +15,8 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystemNotFoundException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.FileSystem;
+import java.nio.file.*;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -302,11 +298,14 @@ public final class IOUtil {
         } catch (URISyntaxException | IOException e) {
             ExceptionUtil.throwRuntime(e);
         } finally {
-            if (closeFileSystem && fileSystem instanceof ZipFileSystem) {
-                try {
-                    fileSystem.close();
-                } catch (IOException e) {
-                    ExceptionUtil.throwRuntime(e);
+            if (closeFileSystem && fileSystem != null) {
+                String scheme = fileSystem.provider().getScheme().toLowerCase();
+                if (scheme.equals("zip") || scheme.equals("jar")) {
+                    try {
+                        fileSystem.close();
+                    } catch (IOException e) {
+                        ExceptionUtil.throwRuntime(e);
+                    }
                 }
             }
         }
