@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.util.reflection;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.collection.MultiHashMap;
+import io.github.splotycode.mosaik.util.io.FileUtil;
 import io.github.splotycode.mosaik.util.io.PathUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import lombok.Getter;
@@ -42,6 +43,10 @@ public class ClassPath {
 
         public boolean inPackage(String path) {
             return this.path.startsWith(path);
+        }
+
+        public void export(File file) {
+            FileUtil.copyResource(path, file, loader);
         }
 
         public Class<?> load() {

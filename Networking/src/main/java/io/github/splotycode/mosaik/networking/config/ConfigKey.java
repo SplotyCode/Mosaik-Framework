@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.networking.config;
 
-import io.github.splotycode.mosaik.util.reflection.GenereticGuesser;
+import io.github.splotycode.mosaik.util.reflection.GenericGuesser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,7 +10,7 @@ public class ConfigKey<T> {
 
     public ConfigKey(String name) {
         this(name, (Class<T>) null);
-        type = (Class<T>) GenereticGuesser.find(this, ConfigKey.class, "T");
+        type = (Class<T>) GenericGuesser.find(this, ConfigKey.class, "T");
     }
 
     public ConfigKey(String name, T def) {

@@ -5,6 +5,8 @@ import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.info.SystemInfo;
 import io.github.splotycode.mosaik.util.logger.Logger;
+import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
+import io.github.splotycode.mosaik.util.reflection.ClassPath;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +22,8 @@ import java.util.function.Predicate;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FileUtil {
+
+    public static final File[] EMPTY_FILE_ARRAY = new File[0];
 
     private static File tempDirectory;
     private static final Logger logger = Logger.getInstance(FileUtil.class);
@@ -166,22 +170,22 @@ public final class FileUtil {
     private static void delete(Path path) {
         boolean result = false;
         try {
+            Throwable error = null;
             try {
-                Files.deleteIfExists(path);
+                result = Files.deleteIfExists(path);
             } catch (AccessDeniedException ex) {
+                error = ex;
                 try {
                     File file = path.toFile();
-                    if (file == null) {
-                        result = false;
-                    } else if (file.delete() || !file.exists()) {
+                    if (file != null && (file.delete() || !file.exists())) {
                         result = true;
                     }
                 } catch (Throwable throwable) {
-                    result = false;
+                    error = throwable;
                 }
             }
             if (!result) {
-                throw new IOException("Failed to delete " + path.toString());
+                throw new IOException("Failed to delete " + path.toString(), error);
             }
         } catch (IOException e) {
             ExceptionUtil.throwRuntime(e);
@@ -437,6 +441,51 @@ public final class FileUtil {
         }
 
         return map;
+    }
+
+
+    public static void copyResource(String resource, File destination) {
+        copyResource(resource, destination, null);
+    }
+
+    public static void copyResource(String resource, File destination, ClassLoader loader) {
+        try (InputStream is = IOUtil.resourceToURL(resource, loader).openStream()) {
+            writeToFile(destination, is);
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
+        }
+    }
+
+    public static void listFiles(File root, boolean recursive, Consumer<File> callback) {
+        if (recursive) {
+            try {
+                Files.walkFileTree(root.toPath(), new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) {
+                        callback.accept(path.toFile());
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+            } catch (IOException e) {
+                /* impossible */
+                ExceptionUtil.throwRuntime(e);
+            }
+        } else {
+            File[] files = root.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    callback.accept(file);
+                }
+            }
+        }
+    }
+
+    public static void copyResources(String path, File root, boolean recursive) {
+        new ClassPath(ClassFinderHelper.getClassLoader()).resources(resource -> {
+            if (resource.inPackage(path) && (recursive || !resource.getPath().substring(path.length()).contains("/"))) {
+                resource.export(new File(root, resource.getPath()));
+            }
+        });
     }
 
 }

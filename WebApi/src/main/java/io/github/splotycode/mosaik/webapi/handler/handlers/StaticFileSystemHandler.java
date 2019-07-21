@@ -16,7 +16,7 @@ import java.io.File;
 @Disabled
 public class StaticFileSystemHandler implements HttpHandler {
 
-    private File root;
+    protected File root;
     private String prefix;
     private boolean recursive, allowUpwardTraveling, noError;
 
@@ -30,13 +30,15 @@ public class StaticFileSystemHandler implements HttpHandler {
 
     @Override
     public boolean valid(Request request) throws HandleRequestException {
-        return request.getSimplifiedPath().startsWith(prefix) && (allowUpwardTraveling || !request.getSimplifiedPath().contains(".."));
+        String path = request.getSimplifiedPath();
+        return path.startsWith(prefix) &&
+                (allowUpwardTraveling || !path.contains("..")) &&
+                (recursive || !path.contains("/"));
     }
 
     @Override
     public boolean handle(Request request) throws HandleRequestException {
         String path = request.getSimplifiedPath();
-        if (!recursive && (path.contains("/") || path.contains("\\"))) return false;
 
         File file = new File(root, path.substring(prefix.length()));
         if (!noError || file.exists()) {

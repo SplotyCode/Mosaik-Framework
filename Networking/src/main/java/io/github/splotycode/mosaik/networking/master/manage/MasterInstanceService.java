@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.networking.master.manage;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
-import io.github.splotycode.mosaik.networking.component.NetworkComponent;
+import io.github.splotycode.mosaik.networking.component.INetworkProcess;
 import io.github.splotycode.mosaik.networking.master.MasterChangeListener;
 import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.statistics.ServiceStatistics;
@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @Getter
-public abstract class MasterInstanceService<C extends NetworkComponent<?, ?, ?>> implements StatisticService, MasterChangeListener {
+public abstract class MasterInstanceService<C extends INetworkProcess> implements StatisticService, MasterChangeListener {
 
     protected CloudKit kit;
     protected MasterService master;

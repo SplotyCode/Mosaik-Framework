@@ -1,10 +1,10 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
-import com.google.common.collect.Lists;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.collection.CollectionUtil;
+import io.github.splotycode.mosaik.util.collection.ReversedList;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternAction;
 import io.github.splotycode.mosaik.webapi.response.content.manipulate.pattern.PatternCommand;
@@ -19,14 +19,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Getter
 public class StringManipulator implements ResponseManipulator<StringManipulator> {
 
     private ManipulateData processedData;
-    private String input;
-    private Set<Replacement> replacements = new HashSet<>();
+    @Getter private String input;
+    @Getter private Set<Replacement> replacements = new HashSet<>();
 
-    private boolean cashing;
+    @Getter private boolean cashing;
 
     public ManipulateData getManipulateData() {
         if (processedData == null) {
@@ -168,7 +167,7 @@ public class StringManipulator implements ResponseManipulator<StringManipulator>
         }
 
         ManipulateData.ManipulatePattern pattern = patternFromName(command.getName());
-        for (PatternCommand parent : Lists.reverse(parents)) {
+        for (PatternCommand parent : new ReversedList<>(parents)) {
             pattern = pattern.getChilds().get(parent.getName());
         }
         return pattern;

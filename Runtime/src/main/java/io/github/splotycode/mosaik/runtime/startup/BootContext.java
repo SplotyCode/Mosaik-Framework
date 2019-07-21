@@ -26,7 +26,7 @@ public class BootContext {
                 e.printStackTrace();
             }
         }
-        return new ClassLoaderProvider.DefaultClassLoaderProvider();
+        return ClassLoaderProvider.DefaultClassLoaderProvider.INSTANCE;
     }
 
     public void applyArgs(Object obj) {

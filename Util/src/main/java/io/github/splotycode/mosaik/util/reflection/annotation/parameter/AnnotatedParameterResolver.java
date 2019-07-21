@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.util.reflection.annotation.parameter;
 
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
-import io.github.splotycode.mosaik.util.reflection.GenereticGuesser;
+import io.github.splotycode.mosaik.util.reflection.GenericGuesser;
 import io.github.splotycode.mosaik.util.reflection.annotation.AnnotationContext;
 
 import java.lang.annotation.Annotation;
@@ -17,7 +17,7 @@ public abstract class AnnotatedParameterResolver<A extends Annotation, R, C exte
 
 
     public AnnotatedParameterResolver() {
-        annotation = (Class<? extends A>) GenereticGuesser.find(this, getClass(), "A");
+        annotation = (Class<? extends A>) GenericGuesser.find(this, getClass(), "A");
     }
 
     @Override

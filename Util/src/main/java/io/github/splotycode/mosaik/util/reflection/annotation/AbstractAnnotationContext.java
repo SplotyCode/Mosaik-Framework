@@ -70,7 +70,7 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
             try {
                 handler.doCall(method, pre ? AnnotationHandler.CallType.PRE : AnnotationHandler.CallType.POST, self(), data);
             } catch (Throwable e) {
-                throw new AnnotationHandlerExcpetion("Error in " + handler.getClass().getName() + (pre ? "#preCall" : "#postCall"), e);
+                throw new AnnotationHandlerException("Error in " + handler.getClass().getName() + (pre ? "#preCall" : "#postCall"), e);
             }
         });
     }
@@ -115,7 +115,7 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
         try {
             return clazz.newInstance();
         } catch (Throwable ex) {
-            throw new AnnotationDataExcpetion("failed to construct " + name + " Data: " + clazz.getName(), ex);
+            throw new AnnotationDataException("failed to construct " + name + " Data: " + clazz.getName(), ex);
         }
     }
 
@@ -123,7 +123,7 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
         try {
             object = clazz.newInstance();
         } catch (ReflectiveOperationException ex) {
-            throw new AnnotationFeedExcpetion("Failed to create " + clazz.getName(), ex);
+            throw new AnnotationFeedException("Failed to create " + clazz.getName(), ex);
         }
     }
 
@@ -144,7 +144,7 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
         try {
             data.buildData(method.getAnnotations());
         } catch (Throwable ex) {
-            throw new InvalidAnnotationDataExcpetion("Failed to build data for " + data.getDisplayName(), ex);
+            throw new InvalidAnnotationDataException("Failed to build data for " + data.getDisplayName(), ex);
         }
     }
 
@@ -153,7 +153,7 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
             try {
                 handler.doCall(object, AnnotationHandler.CallType.INIT, self(), data);
             } catch (Throwable throwable) {
-                throw new AnnotationHandlerExcpetion("Error calling init on " + handler.getClass().getName(), throwable);
+                throw new AnnotationHandlerException("Error calling init on " + handler.getClass().getName(), throwable);
             }
         }
     }
@@ -176,7 +176,7 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
                 try {
                     parameters[i] = pair.getOne().transform(self(), pair.getTwo(), additionalInfo);
                 } catch (ParameterResolveException ex) {
-                    throw new ParameterTransformExcpetion("Failed to transform parameter", ex);
+                    throw new ParameterTransformException("Failed to transform parameter", ex);
                 }
                 i++;
             }

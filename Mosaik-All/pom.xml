@@ -115,11 +115,6 @@
             <version>${mosaik.mongo.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>${mosaik.reflections.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Annotations</artifactId>
             <version>2.2.10-Dev</version>

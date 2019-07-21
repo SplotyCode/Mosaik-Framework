@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.domparsing.annotation.parsing;
 
 import io.github.splotycode.mosaik.domparsing.annotation.EntryListener;
-import io.github.splotycode.mosaik.domparsing.annotation.EntryParseExcpetion;
+import io.github.splotycode.mosaik.domparsing.annotation.EntryParseException;
 import io.github.splotycode.mosaik.domparsing.annotation.IEntryParser;
 
 import java.io.*;
@@ -19,7 +19,7 @@ public class SerialisedEntryParser implements IEntryParser {
             is.close();
             return obj;
         } catch (Exception ex) {
-            throw new EntryParseExcpetion("Failed to get Obect out of Stream", ex);
+            throw new EntryParseException("Failed to get Obect out of Stream", ex);
         }
     }
 
@@ -41,7 +41,7 @@ public class SerialisedEntryParser implements IEntryParser {
             oos.close();
             return result;
         } catch (IOException e) {
-            throw new EntryParseExcpetion("Failed to save Object", e);
+            throw new EntryParseException("Failed to save Object", e);
         }
     }
 }

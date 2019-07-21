@@ -1,7 +1,9 @@
 package io.github.splotycode.mosaik.networking.master;
 
 import io.github.splotycode.mosaik.networking.host.Host;
+import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.master.packets.DestroyPacket;
+import io.github.splotycode.mosaik.networking.master.packets.DistributePacket;
 import io.github.splotycode.mosaik.networking.packet.handle.PacketTarget;
 import io.github.splotycode.mosaik.networking.packet.handle.SelfAnnotationHandler;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
@@ -27,6 +29,20 @@ public class MasterServerHandler extends SelfAnnotationHandler<SerializedPacket>
         } else {
             throw new IllegalStateException("Got Update packet from a non statistical host");
         }
+    }
+
+    @PacketTarget
+    public void onPacketDistribute(DistributePacket packet, ChannelHandlerContext ctx) {
+        SerializedPacket distribute = packet.body();
+        service.sendSelf(distribute);
+        service.kit().getHosts().forEach(host -> {
+            if (host instanceof RemoteMasterHost) {
+                RemoteMasterHost remoteHost = (RemoteMasterHost) host;
+                if (remoteHost.getChannel() != ctx.channel()) {
+                    remoteHost.getChannel().writeAndFlush(distribute);
+                }
+            }
+        });
     }
 
     @PacketTarget

@@ -20,6 +20,15 @@ public final class ArrayUtil {
     public static final boolean[] EMPTY_BOOLEAN_ARRAY = new boolean[0];
     public static final float[] EMPTY_FLOAT_ARRAY = new float[0];
 
+    public static final Byte[] EMPTY_BYTE_OBJECT_ARRAY = new Byte[0];
+    public static final Short[] EMPTY_SHORT_OBJECT_ARRAY = new Short[0];
+    public static final Character[] EMPTY_CHAR_OBJECT_ARRAY = new Character[0];
+    public static final Integer[] EMPTY_INT_OBJECT_ARRAY = new Integer[0];
+    public static final Long[] EMPTY_LONG_OBJECT_ARRAY = new Long[0];
+    public static final Double[] EMPTY_DOUBLE_OBJECT_ARRAY = new Double[0];
+    public static final Boolean[] EMPTY_BOOLEAN_OBJECT_ARRAY = new Boolean[0];
+    public static final Float[] EMPTY_FLOAT_OBJECT_ARRAY = new Float[0];
+
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
@@ -319,6 +328,116 @@ public final class ArrayUtil {
             return EMPTY_FLOAT_ARRAY;
         }
         final float[] result = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    /*
+     * --------------------------------
+     * --------- toObject ----------
+     * --------------------------------
+     */
+
+    public static Integer[] toObject(final int[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_INT_OBJECT_ARRAY;
+        }
+        final Integer[] result = new Integer[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Short[] toObject(final short[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_SHORT_OBJECT_ARRAY;
+        }
+        final Short[] result = new Short[array.length];
+        for (short i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Long[] toObject(final long[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_LONG_OBJECT_ARRAY;
+        }
+        final Long[] result = new Long[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Boolean[] toObject(final boolean[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_BOOLEAN_OBJECT_ARRAY;
+        }
+        final Boolean[] result = new Boolean[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Character[] toObject(final char[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_CHAR_OBJECT_ARRAY;
+        }
+        final Character[] result = new Character[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Byte[] toObject(final byte[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_BYTE_OBJECT_ARRAY;
+        }
+        final Byte[] result = new Byte[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Double[] toObject(final double[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_DOUBLE_OBJECT_ARRAY;
+        }
+        final Double[] result = new Double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Float[] toObject(final float[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_FLOAT_OBJECT_ARRAY;
+        }
+        final Float[] result = new Float[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = array[i];
         }
@@ -1913,7 +2032,7 @@ public final class ArrayUtil {
 
     /*
      * --------------------------------
-     * --------- To Array -------------
+     * --------- collect -------------
      * --------------------------------
      */
 

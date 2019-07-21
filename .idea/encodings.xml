@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/../GameEngine" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/AnnotationProcessing" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Annotations" charset="UTF-8" />
@@ -15,6 +14,7 @@
     <file url="file://$PROJECT_DIR$/IUI" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Mosaik-All" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Networking" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Networking-Web" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Runtime" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/StartUp" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Util" charset="UTF-8" />

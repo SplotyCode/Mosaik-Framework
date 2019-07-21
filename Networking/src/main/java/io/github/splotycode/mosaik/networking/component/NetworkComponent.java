@@ -5,6 +5,7 @@ import io.github.splotycode.mosaik.networking.component.listener.BoundListener;
 import io.github.splotycode.mosaik.networking.component.listener.UnBoundListener;
 import io.github.splotycode.mosaik.networking.packet.system.PacketSystem;
 import io.github.splotycode.mosaik.networking.packet.system.PacketSystemHandler;
+import io.github.splotycode.mosaik.networking.util.CurrentConnectionHandler;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.listener.Listener;
@@ -32,7 +33,7 @@ import java.util.function.Supplier;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends Channel>, C extends Channel, S extends NetworkComponent<B, C, S>> implements INetworkComponent<S> {
+public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends Channel>, C extends Channel, S extends NetworkComponent<B, C, S>> implements INetworkComponent<S>, INetworkProcess {
 
     protected Logger logger = Logger.getInstance(getClass());
 
@@ -133,6 +134,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return (S) this;
     }
 
+    @Override
     public int port() {
         return usedPort;
     }
@@ -311,6 +313,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
         return self();
     }
 
+    @Override
     public boolean running() {
         return running.get();
     }
@@ -443,5 +446,17 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     public S usePacketSystem(int priority, PacketSystem system) {
         handler(priority, "packetSystem", createPacketHandler(system));
         return self();
+    }
+
+    @Override
+    public int connectionCount() {
+        CurrentConnectionHandler handler = getHandler(CurrentConnectionHandler.class);
+        if (handler == null) return 0;
+        return (int) handler.getConnections();
+    }
+
+    @Override
+    public void stop() {
+        shutdown();
     }
 }

@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.networking.component;
 
-import io.github.splotycode.mosaik.networking.exception.SecureExcpetion;
+import io.github.splotycode.mosaik.networking.exception.SecureException;
 import io.github.splotycode.mosaik.networking.packet.system.PacketSystem;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -26,7 +26,7 @@ public abstract class AbstractServer<S extends AbstractServer<S>> extends Networ
             SelfSignedCertificate ssc = new SelfSignedCertificate();
             ssl(ssc.certificate(), ssc.privateKey());
         } catch (CertificateException ex) {
-            throw new SecureExcpetion("Failed to set SSL Context", ex);
+            throw new SecureException("Failed to set SSL Context", ex);
         }
         return self();
     }
@@ -48,11 +48,11 @@ public abstract class AbstractServer<S extends AbstractServer<S>> extends Networ
         }
     }
 
-    public S ssl(File certificate, File priavteKey) {
+    public S ssl(File certificate, File privateKey) {
         try {
-            sslContext = SslContextBuilder.forServer(certificate, priavteKey).build();
+            sslContext = SslContextBuilder.forServer(certificate, privateKey).build();
         } catch (SSLException ex) {
-            throw new SecureExcpetion("Failed to set SSL Context", ex);
+            throw new SecureException("Failed to set SSL Context", ex);
         }
         return self();
     }

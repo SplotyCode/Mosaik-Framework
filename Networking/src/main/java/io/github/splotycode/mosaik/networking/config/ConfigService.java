@@ -21,13 +21,10 @@ import java.io.File;
 
 public class ConfigService extends StaticConfigProvider implements SingleComponentService {
 
-    public static final PacketRegistry<SerializedPacket> PACKET_REGISTRY = new PacketRegistry<>();
+    public static final PacketRegistry<SerializedPacket> PACKET_REGISTRY = new PacketRegistry<>(SerializedPacket.class);
 
     static {
-        PACKET_REGISTRY.register(ConfigRequestUpdate.class);
-        PACKET_REGISTRY.register(ConfigNoUpdate.class);
-        PACKET_REGISTRY.register(ConfigUpdate.class);
-        PACKET_REGISTRY.register(KAUpdate.class);
+        PACKET_REGISTRY.registerPackage(ConfigUpdate.class);
     }
 
     private boolean keepAlive;
@@ -60,6 +57,7 @@ public class ConfigService extends StaticConfigProvider implements SingleCompone
                     .port(port).setDisplayName("Config")
                     .usePacketSystem(2, DefaultPacketSystem.createSerialized(PACKET_REGISTRY))
                     .addListener(handler)
+                    .childHandler(1, "ipFilter", kit.getIpFilter())
                     .childHandler(5, "packetHandler", new AnnotationContentHandler<>(SerializedPacket.class, handler))
                     .bind();
         } else {

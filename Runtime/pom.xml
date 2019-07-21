@@ -19,14 +19,14 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/versioninformation.kv</include>
+                    <include>**/mosaikversion.kv</include>
                 </includes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>**/versioninformation.kv</exclude>
+                    <exclude>**/mosaikversion.kv</exclude>
                 </excludes>
             </resource>
         </resources>

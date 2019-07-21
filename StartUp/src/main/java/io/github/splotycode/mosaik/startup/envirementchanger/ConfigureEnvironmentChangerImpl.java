@@ -4,7 +4,7 @@ import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.application.Application;
 import io.github.splotycode.mosaik.runtime.application.ApplicationState;
 import io.github.splotycode.mosaik.runtime.startup.environment.ConfiguriseEnvironmentChanger;
-import io.github.splotycode.mosaik.startup.exception.EnvironmentChangeExcpetion;
+import io.github.splotycode.mosaik.startup.exception.EnvironmentChangeException;
 
 public class ConfigureEnvironmentChangerImpl extends AbstractEnvironmentChanger implements ConfiguriseEnvironmentChanger {
 
@@ -20,7 +20,7 @@ public class ConfigureEnvironmentChangerImpl extends AbstractEnvironmentChanger 
 
     private void stopApplication(Application application) {
         if (application.getState() != ApplicationState.FOUND && application.getState() != ApplicationState.CONFIGURISED) {
-            throw new EnvironmentChangeExcpetion("Can not stop application in this state");
+            throw new EnvironmentChangeException("Can not stop application in this state");
         }
         application.setState(ApplicationState.SKIPPED);
     }

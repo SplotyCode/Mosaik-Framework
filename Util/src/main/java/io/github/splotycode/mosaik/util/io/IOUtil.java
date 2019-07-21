@@ -256,6 +256,15 @@ public final class IOUtil {
         }
     }
 
+    public static byte[] loadBytes(final URL url) {
+        try (InputStream inputStream = url.openStream()) {
+            return loadBytes(inputStream);
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
+            return null;
+        }
+    }
+
     public static InputStream toInputStream(final String input) {
         return toInputStream(input, Charset.defaultCharset());
     }

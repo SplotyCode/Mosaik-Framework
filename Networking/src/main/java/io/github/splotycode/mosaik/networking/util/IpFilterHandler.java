@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.networking.util;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.ipfilter.AbstractRemoteAddressFilter;
 import io.netty.handler.ipfilter.IpFilterRule;
@@ -8,6 +9,7 @@ import io.netty.handler.ipfilter.IpFilterRuleType;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
+@ChannelHandler.Sharable
 public abstract class IpFilterHandler extends AbstractRemoteAddressFilter<InetSocketAddress> implements IpFilterRule {
 
     @Override

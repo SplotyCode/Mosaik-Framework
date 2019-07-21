@@ -24,6 +24,14 @@ public class StartUpInvoke {
         }
     }
 
+    public static void inokeIfNotInitialised(StartUpConfiguration configuration) {
+        try {
+            clazz.getMethod("mainIfNotInitialised", StartUpConfiguration.class).invoke(null, configuration);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            ExceptionUtil.throwRuntime(e);
+        }
+    }
+
     public static void inokeIfNotInitialised(String... args) {
         try {
             clazz.getMethod("mainIfNotInitialised", String[].class).invoke(null, new Object[] {args});

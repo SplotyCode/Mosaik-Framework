@@ -40,13 +40,13 @@ public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInb
             if (method.isAnnotationPresent(PacketTarget.class)) {
                 if (method.getParameterCount() != 1 &&
                         !(method.getParameterCount() == 2 && method.getParameterTypes()[1] == ChannelHandlerContext.class)) {
-                    throw new AnnotationStructureExcpetion("Invalid Parameter length on " + clazz.getName() + "#" + method.getName());
+                    throw new AnnotationStructureException("Invalid Parameter length on " + clazz.getName() + "#" + method.getName());
                 }
                 Class<?> parameter = method.getParameterTypes()[0];
                 if (Packet.class.isAssignableFrom(parameter)) {
                     handlers.addToList((Class<? extends Packet>) parameter, new HandlerData(method, obj));
                 } else {
-                    throw new AnnotationStructureExcpetion("Parameter need to extend Packet");
+                    throw new AnnotationStructureException("Parameter need to extend Packet");
                 }
             }
         }
@@ -70,7 +70,7 @@ public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInb
     private static MultiHashMap<Class<? extends Packet>, HandlerData> handlers = new MultiHashMap<>();
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, P p) throws Exception {
+    public void channelRead0(ChannelHandlerContext ctx, P p) throws Exception {
         for (HandlerData handlerData : handlers.get(p.getClass())) {
             try {
                 if (handlerData.method.getParameterCount() == 1) {
@@ -79,7 +79,7 @@ public class AnnotationContentHandler<P extends Packet> extends SimpleChannelInb
                     handlerData.method.invoke(handlerData.object, p, ctx);
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new PacketHandleExcpetion("Failed to execute handler Method: " + handlerData.displayName(), e);
+                throw new PacketHandleException("Failed to execute handler Method: " + handlerData.displayName(), e);
             }
         }
     }

@@ -25,14 +25,14 @@ public class RemoteMasterHost implements MasterHost {
 
     public static final ConfigKey<Long> HEALTH_THRESHOLD = new ConfigKey<>("master.host.health_threshold", long.class, 8 * 1000L);
 
-    private long lastUpdate;
+    @Getter private long lastUpdate;
     private MasterHealthCheck healthCheck = new MasterHealthCheck();
     @Getter private HostStatistics statistics;
 
     @Getter private CloudKit cloudKit;
     private MosaikAddress address;
 
-    @Setter private Channel channel;
+    @Setter @Getter private Channel channel;
 
     public RemoteMasterHost(CloudKit cloudKit, String address) {
         this.cloudKit = cloudKit;

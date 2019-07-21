@@ -5,6 +5,7 @@ import io.github.splotycode.mosaik.database.databasetypes.Casandra;
 
 /**
  * All SQL ColumnType's
+ *
  * @see Column
  */
 @Casandra

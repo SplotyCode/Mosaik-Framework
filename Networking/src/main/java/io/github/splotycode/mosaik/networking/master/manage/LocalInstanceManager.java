@@ -1,13 +1,13 @@
 package io.github.splotycode.mosaik.networking.master.manage;
 
-import io.github.splotycode.mosaik.networking.component.NetworkComponent;
+import io.github.splotycode.mosaik.networking.component.INetworkProcess;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.HashMap;
 
 @AllArgsConstructor
-public class LocalInstanceManager<C extends NetworkComponent<?, ?, ?>> {
+public class LocalInstanceManager<C extends INetworkProcess> {
 
     private MasterInstanceService<C> service;
 
@@ -26,11 +26,11 @@ public class LocalInstanceManager<C extends NetworkComponent<?, ?, ?>> {
     public void stop(int port) {
         C instance = instances.remove(port);
         if (instance == null) throw new IllegalStateException("Tried to close a instance that does not exists");
-        instance.shutdown();
+        instance.stop();
     }
 
     public void stopAll() {
-        instances.values().forEach(NetworkComponent::shutdown);
+        instances.values().forEach(INetworkProcess::stop);
     }
 
 }

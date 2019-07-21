@@ -167,9 +167,19 @@ public final class StringUtil {
      * Transform a Object (T) to String.
      * This is used for Join methods that is why it is called Joiner.
      */
-    public interface Joiner<T> {
+    public interface Joiner<T> extends StringBuilderJoiner<T> {
 
-        String join(T obj);
+        String doJoin(T obj);
+
+        @Override
+        default void join(StringBuilder builder, T obj) {
+            builder.append(doJoin(obj));
+        }
+    }
+
+    public interface StringBuilderJoiner<T> {
+
+        void join(StringBuilder builder, T obj);
 
     }
 
@@ -235,10 +245,7 @@ public final class StringUtil {
     public static <T> String join(Iterable<T> iterable, Joiner<T> joiner, String separator) {
         if (iterable == null || separator == null) return null;
         Objects.requireNonNull(joiner, "joiner");
-        StringBuilder builder = new StringBuilder();
-        for (T element : iterable)
-            builder.append(joiner.join(element)).append(separator);
-        return removeEnd(builder.toString(), separator);
+        return join(iterable, joiner, separator, false).toString();
     }
 
     /**
@@ -253,17 +260,98 @@ public final class StringUtil {
 
     /**
      * Combines multiple objects with a specific Joiner.
-     * @param array the strings that should be combined
+     * @param array the objects that should be combined
      * @param separator separator the strings
      * @return the combined string
      */
     public static <T> String join(T[] array, Joiner<T> joiner, String separator) {
         if (array == null || separator == null) return null;
         Objects.requireNonNull(joiner, "joiner");
+        return join(array, joiner, separator, false).toString();
+    }
+
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * @param iterable the objects that should be combined
+     * @param separator separator the strings
+     * @param onlyPossible is it possible that the source is long then the end AND is not the end
+     */
+    public static <T> StringBuilder join(Iterable<T> iterable, StringBuilderJoiner<T> joiner, String separator, boolean onlyPossible) {
         StringBuilder builder = new StringBuilder();
-        for (T element : array)
-            builder.append(joiner.join(element)).append(separator);
-        return removeEnd(builder.toString(), separator);
+        join(builder, iterable, joiner, separator, onlyPossible);
+        return builder;
+    }
+
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * @param iterable the objects that should be combined
+     * @param separator separator the strings
+     * @param onlyPossible is it possible that the source is long then the end AND is not the end
+     */
+    public static <T> StringBuilder join(T[] iterable, StringBuilderJoiner<T> joiner, String separator, boolean onlyPossible) {
+        StringBuilder builder = new StringBuilder();
+        join(builder, iterable, joiner, separator, onlyPossible);
+        return builder;
+    }
+
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * @param builder a prefix
+     * @param iterable the objects that should be combined
+     * @param separator separator the strings
+     * @param onlyPossible is it possible that the source is long then the end AND is not the end
+     */
+    public static <T> void join(StringBuilder builder, Iterable<T> iterable, StringBuilderJoiner<T> joiner, String separator, boolean onlyPossible) {
+        for (T element : iterable) {
+            joiner.join(builder, element);
+            builder.append(separator);
+        }
+        removeEnd(builder, separator, onlyPossible);
+    }
+
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * @param builder a prefix
+     * @param iterable the objects that should be combined
+     * @param separator separator the strings
+     * @param onlyPossible is it possible that the source is long then the end AND is not the end
+     */
+    public static <T> void join(StringBuilder builder, Iterable<T> iterable, Joiner<T> joiner, String separator, boolean onlyPossible) {
+        for (T element : iterable) {
+            joiner.join(builder, element);
+            builder.append(separator);
+        }
+        removeEnd(builder, separator, onlyPossible);
+    }
+
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * @param builder a prefix
+     * @param array the objects that should be combined
+     * @param separator separator the strings
+     * @param onlyPossible is it possible that the source is long then the end AND is not the end
+     */
+    public static <T> void join(StringBuilder builder, T[] array, StringBuilderJoiner<T> joiner, String separator, boolean onlyPossible) {
+        for (T element : array) {
+            joiner.join(builder, element);
+            builder.append(separator);
+        }
+        removeEnd(builder, separator, onlyPossible);
+    }
+
+    /**
+     * Combines multiple objects with a specific Joiner.
+     * @param builder a prefix
+     * @param array the objects that should be combined
+     * @param separator separator the strings
+     * @param onlyPossible is it possible that the source is long then the end AND is not the end
+     */
+    public static <T> void join(StringBuilder builder, T[] array, Joiner<T> joiner, String separator, boolean onlyPossible) {
+        for (T element : array) {
+            joiner.join(builder, element);
+            builder.append(separator);
+        }
+        removeEnd(builder, separator, onlyPossible);
     }
 
     /**
@@ -359,7 +447,6 @@ public final class StringUtil {
      * Get the index of string in a string.
      * This check will ignore the case
      * The range of this check can be specified.
-     * @param what the string that should be checked
      * @param where the source
      * @param what the string you want to find the index of in <code>where</code>
      * @param fromIndex tarting point

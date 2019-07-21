@@ -14,7 +14,6 @@ import java.util.function.Supplier;
 
 public interface INetworkComponent<S extends INetworkComponent> {
 
-
     S self();
 
     S port(Supplier<Integer> port);

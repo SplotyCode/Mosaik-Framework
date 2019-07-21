@@ -31,7 +31,7 @@ public final class ClassFinderHelper {
 
     private static boolean debugUserClasses = !StringUtil.isEmpty(System.getenv("debug-user-classes"));
 
-    private static ClassLoader getClassLoader() {
+    public static ClassLoader getClassLoader() {
         if (classLoader == null) {
             ClassLoader thread = Thread.currentThread().getContextClassLoader();
             if (thread == null) {
