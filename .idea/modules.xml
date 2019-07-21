@@ -12,7 +12,7 @@
       <module fileurl="file://$PROJECT_DIR$/DomParsing/DomParsing.iml" filepath="$PROJECT_DIR$/DomParsing/DomParsing.iml" />
       <module fileurl="file://$PROJECT_DIR$/DomParsing-Impl/DomParsing-Impl.iml" filepath="$PROJECT_DIR$/DomParsing-Impl/DomParsing-Impl.iml" />
       <module fileurl="file://$PROJECT_DIR$/Examples/papa/Examle-Papa.iml" filepath="$PROJECT_DIR$/Examples/papa/Examle-Papa.iml" />
-      <module fileurl="file://$PROJECT_DIR$/GameEngine/GameEngine.iml" filepath="$PROJECT_DIR$/GameEngine/GameEngine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../GameEngine/GameEngine.iml" filepath="$PROJECT_DIR$/../GameEngine/GameEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/IUI/IUI.iml" filepath="$PROJECT_DIR$/IUI/IUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/Mosaik-All/Mosaik-All.iml" filepath="$PROJECT_DIR$/Mosaik-All/Mosaik-All.iml" />
       <module fileurl="file://$PROJECT_DIR$/Mosaik-Framework.iml" filepath="$PROJECT_DIR$/Mosaik-Framework.iml" />
