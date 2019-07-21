@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ProcessBar implements INamedTaskBar {
 
-    private int max;
+    private int max, min;
     private Logger logger;
     private String prefix;
     private int value;
@@ -37,7 +37,9 @@ public class ProcessBar implements INamedTaskBar {
 
     private void draw() {
         String eta = getETaAsString();
-        int percent = value * 100 / max;
+        double range = max - min;
+        double realValue = value - min;
+        int percent = (int) Math.round(realValue / range * 100);
         String prefix = this.prefix;
         if (sameLine) {
             prefix = '\r' + prefix;
@@ -49,8 +51,8 @@ public class ProcessBar implements INamedTaskBar {
                         '>' +
                         StringUtil.repeat(" ", 100 - percent) +
                         ']' +
-                        StringUtil.repeat(" ", (int) (Math.log10(max)) - (int) (Math.log10(value))) +
-                        String.format(" %d/%d, %s", value, max, eta);
+                        StringUtil.repeat(" ", (int) (Math.log10(range)) - (int) (Math.log10(realValue))) +
+                        String.format(" %d/%d, %s", value - min, max - min, eta);
         logger.info(string);
     }
 
@@ -112,6 +114,11 @@ public class ProcessBar implements INamedTaskBar {
     @Override
     public int max() {
         return max;
+    }
+
+    @Override
+    public int min() {
+        return min;
     }
 
     @Override
