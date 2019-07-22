@@ -1,16 +1,19 @@
 package io.github.splotycode.mosaik.util.reflection;
 
+import io.github.splotycode.mosaik.util.StringUtil;
 import org.junit.Test;
 
 public class ClassPathTest {
 
     @Test(expected = RuntimeException.class)
     public void test() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader != null) {
-            test(new ClassPath(classLoader));
+        if (StringUtil.isEmpty(System.getenv("TRAVIS"))) {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            if (classLoader != null) {
+                test(new ClassPath(classLoader));
+            }
+            test(new ClassPath(ClassPathTest.class.getClassLoader()));
         }
-        test(new ClassPath(ClassPathTest.class.getClassLoader()));
     }
 
     private void test(ClassPath path) {
