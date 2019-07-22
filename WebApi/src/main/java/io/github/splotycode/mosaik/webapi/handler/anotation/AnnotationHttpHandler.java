@@ -37,15 +37,18 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
     private WebServer webServer;
 
     public AnnotationHttpHandler(Class clazz, WebServer webServer) {
-        if (webServer == null) throw new NullPointerException("webServer");
-        this.webServer = webServer;
+        this(webServer);
         feed(clazz);
     }
 
     public AnnotationHttpHandler(Object object, WebServer webServer) {
+        this(webServer);
+        feedObject(object);
+    }
+
+    private AnnotationHttpHandler(WebServer webServer) {
         if (webServer == null) throw new NullPointerException("webServer");
         this.webServer = webServer;
-        feedObject(object);
     }
 
     @Override

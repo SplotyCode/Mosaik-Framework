@@ -20,7 +20,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
@@ -84,7 +83,9 @@ public class AnnotationHandlerData extends AnnotationData {
     }
 
     void applyContentType(Response response) {
-        response.setContentType(contentType);
+        if (contentType != null) {
+            response.setContentType(contentType);
+        }
     }
 
     void applyCashingConfiguration(Response response) {
@@ -132,12 +133,11 @@ public class AnnotationHandlerData extends AnnotationData {
 
         private List<Pair<ParameterResolver, Parameter>> parameters = new ArrayList<>();
         private boolean returnContext;
-        @Setter private Method method;
 
         @Override
         public void buildData(Annotation[] annotations) {
             super.buildData(annotations);
-            Class<?> returnType = method.getReturnType();
+            Class<?> returnType = getMethod().getReturnType();
             returnContext = ResponseContent.class.isAssignableFrom(returnType);
             if (!returnContext && returnType != boolean.class &&
                     returnType != Boolean.class &&
