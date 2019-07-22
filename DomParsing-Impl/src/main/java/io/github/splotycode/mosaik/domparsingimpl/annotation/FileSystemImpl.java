@@ -51,8 +51,10 @@ public class FileSystemImpl<D> implements FileSystem<D> {
     }
 
     protected File getFile(String key) {
-        if (PathUtil.isValidFileName(key)) throw new IllegalArgumentException("Invalid key");
-        return new File(root, key + ".kv");
+        if (PathUtil.validAndNoUpwardTravel(root, key)) {
+            return new File(root, key + ".kv");
+        }
+        throw new IllegalArgumentException("Invalid key");
     }
 
     @Override
