@@ -14,7 +14,7 @@ public class ClassPathTest {
             });
         }
         classLoader = ClassPathTest.class.getClassLoader();
-        path = new ClassPath(getClass().getClassLoader());
+        path = new ClassPath(classLoader);
         path.classes(s -> {
             throw new RuntimeException();
         });
