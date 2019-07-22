@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.runtime.startup;
 
 import io.github.splotycode.mosaik.util.ExceptionUtil;
+import io.github.splotycode.mosaik.util.StringUtil;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -41,6 +42,8 @@ public class StartUpInvoke {
     }
 
     public static void invokeTestSuite() {
-        inokeIfNotInitialised("-mosaik.appname", "tests", "-debug:log_file");
+        if (StringUtil.isEmpty(System.getenv("TRAVIS"))) {
+            inokeIfNotInitialised("-mosaik.appname", "tests", "-debug:log_file");
+        }
     }
 }
