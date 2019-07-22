@@ -16,7 +16,11 @@ public final class AddressSerializer {
         try {
             return SOCKET_ADDRESS_SERIALIZER.transform(address);
         } catch (Exception e) {
-            throw new TransformException(e);
+            if (e instanceof TransformException) {
+                throw (TransformException) e;
+            } else {
+                throw new TransformException(e);
+            }
         }
     }
 
