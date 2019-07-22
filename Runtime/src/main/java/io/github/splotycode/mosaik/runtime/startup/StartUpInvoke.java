@@ -41,9 +41,11 @@ public class StartUpInvoke {
         }
     }
 
-    public static void invokeTestSuite() {
+    public static boolean invokeTestSuite() {
         if (StringUtil.isEmpty(System.getenv("TRAVIS"))) {
             inokeIfNotInitialised("-mosaik.appname", "tests", "-debug:log_file");
+            return true;
         }
+        return false;
     }
 }

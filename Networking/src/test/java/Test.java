@@ -9,22 +9,23 @@ import java.util.Collections;
 public class Test {
 
     public static void main(String[] args) {
-        StartUpInvoke.invokeTestSuite();
-        CloudKit kit =
-                CloudKit.build()
-                        .localIpResolver(false)
-                        .hostProvider(RemoteMasterHost.PROVIDER)
-                        .selfHostProvider(MasterSelfHost.PROVIDER)
-                .toConfig()
-                        .hostMapProviderConfig("roots")
-                .finish();
-        kit.setConfig(MasterService.PORT, 8008);
-        kit.setConfig("roots", Collections.emptyList());
-        kit.startMasterService();
-        //NetClient client = new NetClient();
-        //    TCPServer server = TCPServer.build().port(333)
-        //            .onUnBound(new ReconnectListener(1.2f, 1, 2))
-        //            .bind(false);
+        if (StartUpInvoke.invokeTestSuite()) {
+            CloudKit kit =
+                    CloudKit.build()
+                            .localIpResolver(false)
+                            .hostProvider(RemoteMasterHost.PROVIDER)
+                            .selfHostProvider(MasterSelfHost.PROVIDER)
+                            .toConfig()
+                            .hostMapProviderConfig("roots")
+                            .finish();
+            kit.setConfig(MasterService.PORT, 8008);
+            kit.setConfig("roots", Collections.emptyList());
+            kit.startMasterService();
+        }
+            //NetClient client = new NetClient();
+            //    TCPServer server = TCPServer.build().port(333)
+            //            .onUnBound(new ReconnectListener(1.2f, 1, 2))
+            //            .bind(false);
         /*ChannelFuture future = TCPServer.build().onBind((component, bootstrap) -> System.out.println("BIND!"))
                 .onBound((component, future1) -> System.out.println("BOUNG!"))
                 .onUnBound((component, future1) -> System.out.println("UNBOUND")).port(4444).bind(false).nettyFuture();
