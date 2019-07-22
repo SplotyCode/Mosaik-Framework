@@ -18,7 +18,7 @@ public class StaticHost implements Host {
 
     public StaticHost(MosaikAddress address, int checkPort, TaskExecutor executor, int interval, int timeout, int successThreshold, int failThreshold) {
         setAddress(address);
-        healthCheck = new PingingHealthCheck(new InetSocketAddress(address.asString(), checkPort), executor, interval, timeout, successThreshold, failThreshold);
+        healthCheck = PingingHealthCheck.createThresHold(new InetSocketAddress(address.asString(), checkPort), timeout, executor, interval, successThreshold, failThreshold);
     }
 
     private void setAddress(MosaikAddress address) {
