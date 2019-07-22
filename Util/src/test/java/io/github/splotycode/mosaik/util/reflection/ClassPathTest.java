@@ -7,7 +7,7 @@ public class ClassPathTest {
 
     @Test(expected = RuntimeException.class)
     public void test() {
-        if (StringUtil.isEmpty(System.getenv("TRAVIS"))) {
+        if (!StringUtil.isEmpty(System.getenv("TRAVIS"))) {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             if (classLoader != null) {
                 test(new ClassPath(classLoader));
