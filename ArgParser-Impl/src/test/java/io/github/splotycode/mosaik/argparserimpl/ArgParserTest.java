@@ -15,9 +15,10 @@ public class ArgParserTest {
 
     @Test
     public void testParseArgs() {
-        StartUpInvoke.invokeTestSuite();
-        LinkBase.getInstance().getLink(Links.ARG_PARSER).parseArgs(this, new String[]{"-neo"});
-        assertTrue(neo);
+        if (StartUpInvoke.invokeTestSuite()) {
+            LinkBase.getInstance().getLink(Links.ARG_PARSER).parseArgs(this, new String[]{"-neo"});
+            assertTrue(neo);
+        }
     }
 
 }

@@ -5,12 +5,12 @@ import io.github.splotycode.mosaik.domparsing.annotation.IEntryParser;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import io.github.splotycode.mosaik.util.io.FileUtil;
+import io.github.splotycode.mosaik.util.io.PathUtil;
 import lombok.Getter;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -47,23 +47,24 @@ public class FileSystemImpl<D> implements FileSystem<D> {
 
     @Override
     public D getEntry(String fileKey, D def) {
-        return getEntry(new File(root, fileKey + ".kv"), def);
+        return getEntry(getFile(fileKey), def);
+    }
+
+    protected File getFile(String key) {
+        if (PathUtil.validAndNoUpwardTravel(root, key)) {
+            return new File(root, key + ".kv");
+        }
+        throw new IllegalArgumentException("Invalid key");
     }
 
     @Override
     public void deleteEntry(String key) {
-        File file = new File(root, key + ".kv");
-        FileUtil.delete(file);
+        FileUtil.delete(getFile(key));
     }
 
     @Override
     public void putEntry(String entryKey, D entry) {
-        try {
-            File file = new File(root, entryKey + ".kv");
-            FileUtil.writeToFile(file, entryParser.fromObject(entry));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        FileUtil.writeToFile(getFile(entryKey), entryParser.fromObject(entry));
     }
 
     @Override

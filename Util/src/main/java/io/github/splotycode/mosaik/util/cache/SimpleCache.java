@@ -1,12 +1,20 @@
 package io.github.splotycode.mosaik.util.cache;
 
 import io.github.splotycode.mosaik.util.listener.DefaultListenerHandler;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
+import lombok.NoArgsConstructor;
 
+/**
+ * Very simple Cache.
+ * This Cache has no providers or validations.
+ */
+@AllArgsConstructor
+@NoArgsConstructor
 public class SimpleCache<T> implements Cache<T> {
 
-    private ListenerHandler<CacheListener<T>> handler = new DefaultListenerHandler<>();
+    private final ListenerHandler<CacheListener<T>> handler = new DefaultListenerHandler<>();
 
     @Getter private T value;
 
@@ -17,7 +25,7 @@ public class SimpleCache<T> implements Cache<T> {
     }
 
     @Override
-    public ListenerHandler getHandler() {
+    public ListenerHandler<CacheListener<T>> getHandler() {
         return handler;
     }
 }

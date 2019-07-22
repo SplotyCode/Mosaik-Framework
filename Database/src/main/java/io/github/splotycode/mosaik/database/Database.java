@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.database;
 
-import io.github.splotycode.mosaik.database.connection.Connection;
+import io.github.splotycode.mosaik.database.connection.ConnectionProvider;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,8 +10,6 @@ public class Database {
 
     private Database() {}
 
-    @Getter @Setter private Connection<?> defaultConnection;
-
-
+    @Getter @Setter private ConnectionProvider<?, ?> defaultConnection;
 
 }

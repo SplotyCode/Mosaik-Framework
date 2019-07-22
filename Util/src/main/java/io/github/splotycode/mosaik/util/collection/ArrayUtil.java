@@ -20,6 +20,15 @@ public final class ArrayUtil {
     public static final boolean[] EMPTY_BOOLEAN_ARRAY = new boolean[0];
     public static final float[] EMPTY_FLOAT_ARRAY = new float[0];
 
+    public static final Byte[] EMPTY_BYTE_OBJECT_ARRAY = new Byte[0];
+    public static final Short[] EMPTY_SHORT_OBJECT_ARRAY = new Short[0];
+    public static final Character[] EMPTY_CHAR_OBJECT_ARRAY = new Character[0];
+    public static final Integer[] EMPTY_INT_OBJECT_ARRAY = new Integer[0];
+    public static final Long[] EMPTY_LONG_OBJECT_ARRAY = new Long[0];
+    public static final Double[] EMPTY_DOUBLE_OBJECT_ARRAY = new Double[0];
+    public static final Boolean[] EMPTY_BOOLEAN_OBJECT_ARRAY = new Boolean[0];
+    public static final Float[] EMPTY_FLOAT_OBJECT_ARRAY = new Float[0];
+
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
@@ -319,6 +328,116 @@ public final class ArrayUtil {
             return EMPTY_FLOAT_ARRAY;
         }
         final float[] result = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    /*
+     * --------------------------------
+     * --------- toObject ----------
+     * --------------------------------
+     */
+
+    public static Integer[] toObject(final int[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_INT_OBJECT_ARRAY;
+        }
+        final Integer[] result = new Integer[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Short[] toObject(final short[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_SHORT_OBJECT_ARRAY;
+        }
+        final Short[] result = new Short[array.length];
+        for (short i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Long[] toObject(final long[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_LONG_OBJECT_ARRAY;
+        }
+        final Long[] result = new Long[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Boolean[] toObject(final boolean[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_BOOLEAN_OBJECT_ARRAY;
+        }
+        final Boolean[] result = new Boolean[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Character[] toObject(final char[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_CHAR_OBJECT_ARRAY;
+        }
+        final Character[] result = new Character[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Byte[] toObject(final byte[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_BYTE_OBJECT_ARRAY;
+        }
+        final Byte[] result = new Byte[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Double[] toObject(final double[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_DOUBLE_OBJECT_ARRAY;
+        }
+        final Double[] result = new Double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Float[] toObject(final float[] array) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return EMPTY_FLOAT_OBJECT_ARRAY;
+        }
+        final Float[] result = new Float[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = array[i];
         }
@@ -1810,37 +1929,27 @@ public final class ArrayUtil {
 
     public static int average(int[] input) {
         if (input.length == 0) return 0;
-        int sum = 0;
-        for (int num : input) sum += num;
-        return sum / input.length;
+        return sum(input) / input.length;
     }
 
     public static long average(long[] input) {
         if (input.length == 0) return 0;
-        long sum = 0;
-        for (long num : input) sum += num;
-        return sum / input.length;
+        return sum(input) / input.length;
     }
 
     public static double average(double[] input) {
         if (input.length == 0) return 0;
-        double sum = 0;
-        for (double num : input) sum += num;
-        return sum / input.length;
+        return sum(input) / input.length;
     }
 
     public static float average(float[] input) {
         if (input.length == 0) return 0;
-        float sum = 0;
-        for (float num : input) sum += num;
-        return sum / input.length;
+        return sum(input) / input.length;
     }
 
     public static short average(short[] input) {
         if (input.length == 0) return 0;
-        short sum = 0;
-        for (short num : input) sum += num;
-        return (short) (sum / input.length);
+        return (short) (sum(input) / input.length);
     }
 
     public static boolean average(boolean[] input, boolean def) {
@@ -1854,16 +1963,114 @@ public final class ArrayUtil {
 
     public static byte average(byte[] input) {
         if (input.length == 0) return 0;
-        byte sum = 0;
-        for (byte num : input) sum += num;
-        return (byte) (sum / input.length);
+        return (byte) (sum(input) / input.length);
     }
 
     public static char average(char[] input) {
         if (input.length == 0) return 0;
+        return (char) (sum(input) / input.length);
+    }
+
+    /*
+     * --------------------------------
+     * ----------- SUM ------------
+     * --------------------------------
+     */
+
+    public static int sum(int[] input) {
+        int sum = 0;
+        for (int num : input) sum += num;
+        return sum;
+    }
+
+    public static long sum(long[] input) {
+        long sum = 0;
+        for (long num : input) sum += num;
+        return sum;
+    }
+
+    public static double sum(double[] input) {
+        double sum = 0;
+        for (double num : input) sum += num;
+        return sum;
+    }
+
+    public static float sum(float[] input) {
+        float sum = 0;
+        for (float num : input) sum += num;
+        return sum;
+    }
+
+    public static short sum(short[] input) {
+        short sum = 0;
+        for (short num : input) sum += num;
+        return sum;
+    }
+
+    public static int sum(boolean[] input) {
+        int sum = 0;
+        for (boolean bool : input) {
+            if (bool) {
+                sum++;
+            }
+        }
+        return sum;
+    }
+
+    public static byte sum(byte[] input) {
+        byte sum = 0;
+        for (byte num : input) sum += num;
+        return sum;
+    }
+
+    public static char sum(char[] input) {
+        if (input.length == 0) return 0;
         char sum = 0;
         for (char num : input) sum += num;
-        return (char) (sum / input.length);
+        return sum;
+    }
+
+    /*
+     * --------------------------------
+     * --------- collect -------------
+     * --------------------------------
+     */
+
+
+    public final <T> T[] collect(T... array) {
+        return array;
+    }
+
+    public final int[] collect(int... array) {
+        return array;
+    }
+
+    public final long[] collect(long... array) {
+        return array;
+    }
+
+    public final short[] collect(short... array) {
+        return array;
+    }
+
+    public final double[] collect(double... array) {
+        return array;
+    }
+
+    public final float[] collect(float... array) {
+        return array;
+    }
+
+    public final byte[] collect(byte... array) {
+        return array;
+    }
+
+    public final char[] collect(char... array) {
+        return array;
+    }
+
+    public final boolean[] collect(boolean... array) {
+        return array;
     }
 
 

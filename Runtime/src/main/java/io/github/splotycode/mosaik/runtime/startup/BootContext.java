@@ -15,6 +15,19 @@ public class BootContext {
 
     private String[] args;
     private long startTime;
+    private ClassLoaderProvider classLoaderProvider;
+
+    public static ClassLoaderProvider createProvider(String[] args) {
+        if (args.length > 1 && args[0].equalsIgnoreCase("-cl")) {
+            try {
+                return (ClassLoaderProvider) Class.forName(args[1]).newInstance();
+            } catch (ReflectiveOperationException e) {
+                System.err.println("Failed to load ClassLoaderProvider");
+                e.printStackTrace();
+            }
+        }
+        return ClassLoaderProvider.DefaultClassLoaderProvider.INSTANCE;
+    }
 
     public void applyArgs(Object obj) {
         LinkBase.getInstance().getLink(Links.ARG_PARSER).parseArgs(obj, args);

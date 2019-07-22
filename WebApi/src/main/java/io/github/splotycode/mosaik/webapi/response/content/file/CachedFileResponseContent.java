@@ -46,7 +46,7 @@ public class CachedFileResponseContent implements ManipulateableContent<CachedFi
                 files.put(file, content);
             }
             manipulator = new StringManipulator(content).setCashing(true);
-        } catch (IOException e) {
+        } catch (Throwable e) {
             throw new HandleRequestException("Could not find file: " + file.getAbsolutePath(), e);
         }
     }

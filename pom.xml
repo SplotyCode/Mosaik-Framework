@@ -7,16 +7,14 @@
     <groupId>io.github.splotycode.mosaik</groupId>
     <artifactId>Mosaik-Framework</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.9</version>
+    <version>2.3-Prerelease1</version>
     <modules>
         <module>Console</module>
-        <module>Netty</module>
+        <module>Networking</module>
         <module>Database</module>
         <module>Automatisation</module>
-        <module>GameEngine</module>
         <module>WebApi</module>
         <module>ValueTransformer</module>
-        <module>SpigotLib</module>
         <module>ArgParser</module>
         <module>DomParsing</module>
         <module>StartUp</module>
@@ -28,6 +26,7 @@
         <module>Mosaik-All</module>
         <module>ArgParser-Impl</module>
         <module>DomParsing-Impl</module>
+        <module>Networking-Web</module>
     </modules>
 
     <properties>
@@ -42,27 +41,30 @@
         <!-- Dependency Versions -->
         <mosaik.slf4j.version>1.7.25</mosaik.slf4j.version>
         <mosaik.log4j.version>1.2.17</mosaik.log4j.version>
-        <mosaik.lombok.version>1.16.20</mosaik.lombok.version>
-        <mosaik.typetools.version>0.6.0</mosaik.typetools.version>
+        <mosaik.lombok.version>1.18.8</mosaik.lombok.version>
         <mosaik.guava.version>21.0</mosaik.guava.version>
-        <mosaik.netty.version>4.1.32.Final</mosaik.netty.version>
-        <mosaik.undertow.version>2.0.1.Final</mosaik.undertow.version>
+        <mosaik.netty.version>4.1.37.Final</mosaik.netty.version>
+        <mosaik.undertow.version>2.0.22.Final</mosaik.undertow.version>
         <mosaik.mongo.version>3.4.0</mosaik.mongo.version>
-        <mosaik.reflections.version>0.9.11</mosaik.reflections.version>
+        <mosaik.gson.version>2.8.5</mosaik.gson.version>
+        <mosaik.snakeyaml.version>1.24</mosaik.snakeyaml.version>
+        <mosaik.junit.version>5.1.0</mosaik.junit.version>
+        <mosaik.junit_platform.version>1.1.0</mosaik.junit_platform.version>
 
-        <!-- Plugin Utils -->
-        <mosaik.plugin.jar>2.4</mosaik.plugin.jar>
-        <mosaik.plugin.compile>3.5.1</mosaik.plugin.compile>
+        <!-- Plugin Versions -->
+        <mosaik.plugin.jar>3.1.2</mosaik.plugin.jar>
+        <mosaik.plugin.compile>3.8.1</mosaik.plugin.compile>
         <mosaik.plugin.assembly>3.1.1</mosaik.plugin.assembly>
-        <mosaik.plugin.gpg>1.5</mosaik.plugin.gpg>
-        <mosaik.plugin.nexus-staging>1.6.7</mosaik.plugin.nexus-staging>
-        <mosaik.plugin.source>2.2.1</mosaik.plugin.source>
+        <mosaik.plugin.gpg>1.6</mosaik.plugin.gpg>
+        <mosaik.plugin.nexus-staging>1.6.8</mosaik.plugin.nexus-staging>
+        <mosaik.plugin.source>3.1.0</mosaik.plugin.source>
         <mosaik.plugin.codehaus-buildnumber>1.4</mosaik.plugin.codehaus-buildnumber>
-        <mosaik.plugin.javadoc>3.0.1</mosaik.plugin.javadoc>
+        <mosaik.plugin.javadoc>3.1.1</mosaik.plugin.javadoc>
+        <mosaik.plugin.surefire>2.19.1</mosaik.plugin.surefire>
     </properties>
 
     <name>Mosaik-Framework</name>
-    <description>General Java Libary</description>
+    <description>General Java Library</description>
     <url>https://github.com/SplotyCode/Mosaik-Framework</url>
     <licenses>
         <license>
@@ -159,31 +161,14 @@
         </profile>
     </profiles>
 
-
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${mosaik.plugin.compile}</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${mosaik.lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -201,7 +186,6 @@
             <version>${mosaik.log4j.version}</version>
         </dependency>
     </dependencies>
-
     <distributionManagement>
         <site>
             <id>api.wiki</id>

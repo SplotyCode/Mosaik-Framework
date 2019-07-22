@@ -1,11 +1,11 @@
 package io.github.splotycode.mosaik.util.listener;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Consumer;
 
 public interface ListenerHandler<L extends Listener> {
 
-    List<L> getListeners();
+    Collection<L> getListeners();
     void call(Consumer<L> consumer);
 
     default void addListener(L listener) {

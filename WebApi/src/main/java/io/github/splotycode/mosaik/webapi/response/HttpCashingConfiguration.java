@@ -1,6 +1,8 @@
 package io.github.splotycode.mosaik.webapi.response;
 
 import io.github.splotycode.mosaik.util.CodecUtil;
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
+import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.Cache;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,8 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 
 @Getter
@@ -35,6 +37,24 @@ public class HttpCashingConfiguration {
                 .setETagMode(DefaultETagMode.SHA_1);
     }
 
+    public static HttpCashingConfiguration fromCache(Cache cache) {
+        return new HttpCashingConfiguration(
+                cache.expires(),
+                cache.noCache(),
+                cache.noStore(),
+                cache.noTransform(),
+                cache.onlyIfCashed(),
+                cache.mustRevalidate(),
+                cache.isPublic(),
+                cache.isPrivate(),
+                cache.maxAge(),
+                cache.maxStale(),
+                cache.minFresh(),
+                CollectionUtil.newHashSet(cache.modes()),
+                cache.eTagMode()
+        );
+    }
+
     private long expires = -1;
     private boolean noCache, noStore, noTransform, onlyIfCashed, mustRevalidate, isPublic, isPrivate;
     private long maxAge = -1, maxStale = -1, minFresh = -1;
@@ -45,8 +65,7 @@ public class HttpCashingConfiguration {
     public void apply(Response response) {
         response.cashingConfiguration = this;
         if (expires != -1) {
-            Date date = new Date(expires * 1000L + System.currentTimeMillis());
-            response.setHeader(ResponseHeader.EXPIRES, Response.DATE_FORMAT.format(date));
+            response.setHeader(ResponseHeader.EXPIRES, LocalDateTime.now(Response.ZONE_ID).plusNanos(expires * 1000 * 1000).format(Response.DATE_FORMAT));
         }
         StringBuilder sb = new StringBuilder();
         appendBoolean(sb, noCache, "no-cache");

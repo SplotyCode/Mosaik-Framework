@@ -1,22 +1,27 @@
-import io.github.splotycode.mosaik.database.table.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import io.github.splotycode.mosaik.database.connection.impl.MySQLConnection;
-import io.github.splotycode.mosaik.database.connection.sql.SQLDriverConnection;
+import io.github.splotycode.mosaik.database.connection.sql.JDBCConnectionProvider;
+import io.github.splotycode.mosaik.database.connection.sql.SQLConnectionProviders;
 import io.github.splotycode.mosaik.database.repo.Filters;
 import io.github.splotycode.mosaik.database.repo.SQLExecutor;
 import io.github.splotycode.mosaik.database.repo.TableExecutor;
+import io.github.splotycode.mosaik.database.table.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.sql.*;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Example {
 
     @Test
+    @Disabled
     public void exaple() {
-        new MySQLConnection().connect("localhost", "database").makeDefault();
+        SQLConnectionProviders.mysql().connect("localhost", "database").makeDefault();
 
-        TableExecutor<User, SQLDriverConnection> executor = new SQLExecutor<>(User.class);
+        TableExecutor<User, JDBCConnectionProvider> executor = new SQLExecutor<>(User.class);
 
         User user = executor.selectFirst(Filters.and(Filters.eq("a", "ads"), Filters.eq("a", "a")));
         executor.save(user);
@@ -48,12 +53,11 @@ public class Example {
     public class User {
 
         @Column(name = "a", type = ColumnType.TEXT, typeParameters = {255})
-        @Primary
-        @AutoIncrement
-        @NotNull
         private String name;
 
         @Column
+        @Primary
+        @AutoIncrement
         private long id;
 
         @Column

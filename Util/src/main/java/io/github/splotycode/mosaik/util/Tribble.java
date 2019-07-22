@@ -2,6 +2,9 @@ package io.github.splotycode.mosaik.util;
 
 import lombok.*;
 
+/**
+ * Holds tree Objects
+ */
 @Getter
 @Setter
 @AllArgsConstructor

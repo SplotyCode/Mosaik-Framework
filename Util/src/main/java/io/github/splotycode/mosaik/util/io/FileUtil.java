@@ -5,24 +5,30 @@ import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.info.SystemInfo;
 import io.github.splotycode.mosaik.util.logger.Logger;
+import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
+import io.github.splotycode.mosaik.util.reflection.ClassPath;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.DosFileAttributes;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FileUtil {
 
+    public static final File[] EMPTY_FILE_ARRAY = new File[0];
+
     private static File tempDirectory;
     private static final Logger logger = Logger.getInstance(FileUtil.class);
 
-    public static File createTempFile(String prefix, String suffix, boolean deleteOnExit) throws IOException {
+    public static File createTempFile(String prefix, String suffix, boolean deleteOnExit) {
         final File dir = getTempDirectory();
 
         dir.mkdirs();
@@ -41,12 +47,12 @@ public final class FileUtil {
 
         while (true) {
             String prefixName = prefix +  (i == 0 ? "" : i);
-            if (prefix.endsWith(".") && suffix.startsWith(".")) {
-                prefix = prefix.substring(0, prefix.length() - 1);
+            if (prefixName.endsWith(".") && prefixName.startsWith(".")) {
+                prefixName = prefixName.substring(0, prefixName.length() - 1);
             }
-            String name = prefix + suffix;
+            String name = prefixName + suffix;
             file = new File(dir, name);
-            boolean success = file.createNewFile();
+            boolean success = create(file);
             if (success) {
                 break;
             }
@@ -57,6 +63,15 @@ public final class FileUtil {
             file.deleteOnExit();
         }
         return file;
+    }
+
+    private static boolean create(File file) {
+        try {
+            return file.createNewFile();
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
+            return false;
+        }
     }
 
     private static File getTempDirectory() {
@@ -70,45 +85,63 @@ public final class FileUtil {
         return new File(System.getProperty("java.io.tmpdir"));
     }
 
-    public static void setExecutableAttribute(String path, boolean executableFlag) throws IOException {
+    public static void setExecutableAttribute(String path, boolean executableFlag) {
         File file = new File(path);
         if (!file.setExecutable(executableFlag) && file.canExecute() != executableFlag) {
             logger.warn("Setting Executable for '" + path + "' failed");
         }
     }
 
-    public static String loadFile(File file) throws IOException {
-        return loadFile(file, null);
+    public static void resourceToFile(final String name, final File file) {
+        try {
+            writeToFile(file, IOUtil.resourceToURL(name).openStream());
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
+        }
     }
 
-    public static String loadFile(File file, String encoding) throws IOException {
-        InputStream stream = new FileInputStream(file);
-        Reader reader = encoding == null ? new InputStreamReader(stream) : new InputStreamReader(stream, encoding);
-        try {
+    public static String loadFile(File file) {
+        return loadFile(file, (Charset) null);
+    }
+
+    public static String loadFile(File file, String charset) {
+        return loadFile(file, charset == null? null : Charset.forName(charset));
+    }
+
+    public static String loadFile(File file, Charset encoding) {
+        try (InputStream stream = new FileInputStream(file);
+             Reader reader = encoding == null ?
+                     new InputStreamReader(stream) :
+                     new InputStreamReader(stream, encoding)) {
             return IOUtil.loadText(reader, (int) file.length());
-        } finally {
-            reader.close();
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
+            return null;
         }
     }
 
-    public static List<String> loadLines(File file) throws IOException {
-        return loadLines(file, null);
+    public static List<String> loadLines(File file) {
+        return loadLines(file, (Charset) null);
     }
 
-    public static List<String> loadLines(File file, String encoding) throws IOException {
-        InputStream stream = new FileInputStream(file);
-        try {
-            InputStreamReader in = encoding == null ? new InputStreamReader(stream) : new InputStreamReader(stream, encoding);
-            BufferedReader reader = new BufferedReader(in);
-            try {
-                return IOUtil.loadLines(reader);
-            }
-            finally {
-                reader.close();
-            }
+    public static List<String> loadLines(File file, Charset charset) {
+        try (InputStream stream = new FileInputStream(file)) {
+            return IOUtil.loadLines(stream, charset);
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
+            return null;
         }
-        finally {
-            stream.close();
+    }
+
+    public static void loadLines(File file, Consumer<String> callback) {
+        loadLines(file, callback, null);
+    }
+
+    public static void loadLines(File file, Consumer<String> callback, Charset charset) {
+        try (InputStream stream = new FileInputStream(file)) {
+            IOUtil.loadLines(stream, callback, charset);
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
         }
     }
 
@@ -116,13 +149,13 @@ public final class FileUtil {
         try {
             Files.walkFileTree(file.toPath(), new SimpleFileVisitor<Path>() {
                 @Override
-                public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
+                public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) {
                     delete(path);
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
-                public FileVisitResult postVisitDirectory(Path path, IOException e) throws IOException {
+                public FileVisitResult postVisitDirectory(Path path, IOException e) {
                     delete(path);
                     return FileVisitResult.CONTINUE;
                 }
@@ -134,24 +167,28 @@ public final class FileUtil {
         return true;
     }
 
-    private static void delete(Path path) throws IOException {
+    private static void delete(Path path) {
         boolean result = false;
         try {
-            Files.deleteIfExists(path);
-        } catch (AccessDeniedException ex) {
+            Throwable error = null;
             try {
-                File file = path.toFile();
-                if (file == null) {
-                    result = false;
-                } else if (file.delete() || !file.exists()) {
-                    result = true;
+                result = Files.deleteIfExists(path);
+            } catch (AccessDeniedException ex) {
+                error = ex;
+                try {
+                    File file = path.toFile();
+                    if (file != null && (file.delete() || !file.exists())) {
+                        result = true;
+                    }
+                } catch (Throwable throwable) {
+                    error = throwable;
                 }
-            } catch (Throwable throwable) {
-                result = false;
             }
-        }
-        if (!result) {
-            throw new IOException("Failed to delete " + path.toString());
+            if (!result) {
+                throw new IOException("Failed to delete " + path.toString(), error);
+            }
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
         }
     }
 
@@ -190,7 +227,7 @@ public final class FileUtil {
     }
 
 
-    public static void copy(File fromFile, File toFile) throws IOException {
+    public static void copy(File fromFile, File toFile) {
         if (!ensureCanCreateFile(toFile)) {
             return;
         }
@@ -199,6 +236,8 @@ public final class FileUtil {
             try (FileInputStream fis = new FileInputStream(fromFile)) {
                 IOUtil.copy(fis, fos);
             }
+        } catch (IOException ex) {
+            ExceptionUtil.throwRuntime(ex);
         }
 
         long timeStamp = fromFile.lastModified();
@@ -209,8 +248,8 @@ public final class FileUtil {
         }
     }
 
-    public static byte[] loadFileBytes(File file) throws IOException {
-        byte[] bytes;
+    public static byte[] loadFileBytes(File file) {
+        byte[] bytes = null;
         try (InputStream stream = new FileInputStream(file)) {
             final long len = file.length();
             if (len < 0) {
@@ -222,11 +261,13 @@ public final class FileUtil {
             }
 
             bytes = IOUtil.loadBytes(stream, (int) len);
+        } catch (IOException ex) {
+            ExceptionUtil.throwRuntime(ex);
         }
         return bytes;
     }
 
-    public static void copyFileOrDir(File from, File to) throws IOException {
+    public static void copyFileOrDir(File from, File to) {
         if (from.isDirectory()) {
             copyDir(from, to, Conditions.alwaysTrue());
         } else {
@@ -234,17 +275,17 @@ public final class FileUtil {
         }
     }
 
-    public static void ensureExists(File dir) throws IOException {
+    public static void ensureExists(File dir) {
         if (!dir.exists() && !dir.mkdirs()) {
-            throw new IOException("Ensure existent failed");
+            ExceptionUtil.throwRuntime(new IOException("Ensure existent failed"));
         }
     }
 
-    public static void copyDir(File fromDir, File toDir, Predicate<File> filter) throws IOException {
+    public static void copyDir(File fromDir, File toDir, Predicate<File> filter) {
         ensureExists(toDir);
         File[] files = fromDir.listFiles();
-        if (files == null) throw new IOException("Could not list files from " + fromDir.getAbsolutePath());
-        if (!fromDir.canRead()) throw new IOException("Can not read file");
+        if (files == null) ExceptionUtil.throwRuntime(new IOException("Could not list files from " + fromDir.getAbsolutePath()));
+        if (!fromDir.canRead()) ExceptionUtil.throwRuntime(new IOException("Can not read file"));
         for (File file : files) {
             if (filter != null && !filter.test(file)) {
                 continue;
@@ -258,12 +299,12 @@ public final class FileUtil {
         }
     }
 
-    public static boolean rename(File source, String newName) throws IOException {
+    public static boolean rename(File source, String newName) {
         File target = new File(source.getParent(), newName);
         return source.renameTo(target);
     }
 
-    public static void rename(File source, File target) throws IOException {
+    public static void rename(File source, File target) {
         if (source.renameTo(target)) return;
         if (!source.exists()) return;
 
@@ -294,41 +335,47 @@ public final class FileUtil {
         }
     }
 
-    public static void appendToFile(File file, String text) throws IOException {
+    public static void appendToFile(File file, String text) {
         writeToFile(file, text.getBytes(StandardCharsets.UTF_8), true);
     }
 
-    public static void writeToFile(File file, byte[] text) throws IOException {
+    public static void writeToFile(File file, byte[] text) {
         writeToFile(file, text, false);
     }
 
-    public static void writeToFile(File file, String text) throws IOException {
+    public static void writeToFile(File file, String text) {
         writeToFile(file, text, false);
     }
-    public static void writeToFile(File file, String text, boolean append) throws IOException {
+    public static void writeToFile(File file, String text, boolean append) {
         writeToFile(file, text.getBytes(StandardCharsets.UTF_8), append);
     }
 
-    public static void writeToFile(File file, InputStream stream) throws IOException {
+    public static void writeToFile(File file, InputStream stream) {
         createParentDirs(file);
 
-        Files.copy(stream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        try {
+            Files.copy(stream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
+        }
     }
 
-    private static void writeToFile(File file, byte[] text, boolean append) throws IOException {
+    private static void writeToFile(File file, byte[] text, boolean append) {
         createParentDirs(file);
 
         if (!file.exists()) {
-            file.createNewFile();
+            create(file);
         }
 
         try (FileOutputStream stream = new FileOutputStream(file, append)) {
             stream.write(text);
+        } catch (IOException ex) {
+            ExceptionUtil.throwRuntime(ex);
         }
     }
 
     public static boolean processFilesRecursively(File root, Predicate<File> processor, final Predicate<File> directoryFilter) {
-        final LinkedList<File> queue = new LinkedList<File>();
+        final LinkedList<File> queue = new LinkedList<>();
         queue.add(root);
         while (!queue.isEmpty()) {
             final File file = queue.removeFirst();
@@ -354,7 +401,7 @@ public final class FileUtil {
         return null;
     }
 
-    public static void setLastModified(File file, long timeStamp) throws IOException {
+    public static void setLastModified(File file, long timeStamp) {
         if (!file.setLastModified(timeStamp)) {
             logger.warn(file.getPath());
         }
@@ -378,18 +425,67 @@ public final class FileUtil {
     }
 
 
-    public static Map<String, String> loadProperties(Reader reader) throws IOException {
+    public static Map<String, String> loadProperties(Reader reader) {
         final Map<String, String> map = new HashMap<>();
 
-        new Properties() {
-            @Override
-            public synchronized Object put(Object key, Object value) {
-                map.put(String.valueOf(key), String.valueOf(value));
-                return super.put(key, value);
-            }
-        }.load(reader);
+        try {
+            new Properties() {
+                @Override
+                public synchronized Object put(Object key, Object value) {
+                    map.put(String.valueOf(key), String.valueOf(value));
+                    return super.put(key, value);
+                }
+            }.load(reader);
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
+        }
 
         return map;
+    }
+
+
+    public static void copyResource(String resource, File destination) {
+        copyResource(resource, destination, null);
+    }
+
+    public static void copyResource(String resource, File destination, ClassLoader loader) {
+        try (InputStream is = IOUtil.resourceToURL(resource, loader).openStream()) {
+            writeToFile(destination, is);
+        } catch (IOException e) {
+            ExceptionUtil.throwRuntime(e);
+        }
+    }
+
+    public static void listFiles(File root, boolean recursive, Consumer<File> callback) {
+        if (recursive) {
+            try {
+                Files.walkFileTree(root.toPath(), new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) {
+                        callback.accept(path.toFile());
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+            } catch (IOException e) {
+                /* impossible */
+                ExceptionUtil.throwRuntime(e);
+            }
+        } else {
+            File[] files = root.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    callback.accept(file);
+                }
+            }
+        }
+    }
+
+    public static void copyResources(String path, File root, boolean recursive) {
+        new ClassPath(ClassFinderHelper.getClassLoader()).resources(resource -> {
+            if (resource.inPackage(path) && (recursive || !resource.getPath().substring(path.length()).contains("/"))) {
+                resource.export(new File(root, resource.getPath()));
+            }
+        });
     }
 
 }

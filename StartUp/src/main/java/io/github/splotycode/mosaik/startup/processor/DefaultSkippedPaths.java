@@ -29,11 +29,16 @@ import io.github.splotycode.mosaik.annotations.skippedpath.SkipPath;
         "org.codehaus",
         "netscape.javascript",
         "org.junit",
+        "junit.framework",
         "org.opentest4j",
         "META-INF",
         "org.apiguardian.api",
         "org.reflections",
-        "com.avaje"})
+        "com.avaje",
+        "org.json",
+        "module-info",
+        "org.slf4j",
+        "org.hamcrest"})
 public class DefaultSkippedPaths {
 
 }

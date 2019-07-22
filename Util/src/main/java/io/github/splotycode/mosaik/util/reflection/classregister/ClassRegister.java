@@ -1,22 +1,22 @@
 package io.github.splotycode.mosaik.util.reflection.classregister;
 
-import com.google.common.reflect.ClassPath;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.ClassCollector;
+import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public interface ClassRegister<T> {
+public interface ClassRegister<T> extends RawClassRegister<Class<? extends T>> {
 
-    Logger logger = Logger.getInstance(ClassRegister.class);
+    Logger LOGGER = Logger.getInstance(ClassRegister.class);
 
     void register(T obj);
     void unRegister(T obj);
 
     Collection<T> getAll();
 
+    @Override
     default void register(Class<? extends T> clazz) {
         try {
             register(clazz.newInstance());
@@ -25,6 +25,7 @@ public interface ClassRegister<T> {
         }
     }
 
+    @Override
     default void unRegister(Class<? extends T> clazz) {
         for (T obj : new ArrayList<>(getAll())) {
             if (obj.getClass().equals(clazz)) {
@@ -33,47 +34,7 @@ public interface ClassRegister<T> {
         }
     }
 
-    default void register(String clazz) {
-        try {
-            register((T) Class.forName(clazz));
-        } catch (ClassNotFoundException e) {
-            logger.warn("Class " + clazz + " is not found by class loader");
-        }
-    }
-
-    default void unRegister(String clazz) {
-        for (T obj : new ArrayList<>(getAll())) {
-            if (obj.getClass().getSimpleName().equals(clazz)) {
-                unRegister(obj);
-            }
-        }
-    }
-
-    Class<T> getObjectClass();
-
-    default void registerAll(ClassCollector collector) {
-        for (Class clazz : collector.collectAll()) {
-            if (getObjectClass().isAssignableFrom(clazz)) {
-                register(clazz);
-            } else {
-                logger.warn(clazz.getName() + " can not be registered because collector type is: " + getObjectClass().getName());
-            }
-        }
-    }
-
-    default void registerPackage(String path) {
-        try {
-            for (ClassPath.ClassInfo classInfo : ClassPath.from(getClass().getClassLoader()).getTopLevelClassesRecursive(path)) {
-                Class<?> clazz = classInfo.load();
-                if (getObjectClass().isAssignableFrom(clazz)) {
-                    register((Class<? extends T>) clazz);
-                }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
+    @Override
     default void unRegisterPackage(String path) {
         for (T obj : new ArrayList<>(getAll())) {
             if (obj.getClass().getSimpleName().startsWith(path)) {

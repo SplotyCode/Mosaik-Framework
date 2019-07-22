@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.util.cache.map;
 
-import io.github.splotycode.mosaik.util.Destroyable;
+import io.github.splotycode.mosaik.util.commoni.Destroyable;
 import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.CacheListener;
 import io.github.splotycode.mosaik.util.listener.DefaultListenerHandler;

@@ -1,52 +1,70 @@
 package io.github.splotycode.mosaik.util.reflection;
 
-import com.google.common.reflect.ClassPath;
-import io.github.splotycode.mosaik.util.ExceptionUtil;
-import io.github.splotycode.mosaik.util.cache.complex.resolver.CacheValueResolver;
-import io.github.splotycode.mosaik.util.cache.complex.validator.TimeValidator;
-import lombok.AccessLevel;
-import lombok.Getter;
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.cache.CacheBuilder;
 import io.github.splotycode.mosaik.util.cache.complex.ComplexCache;
+import io.github.splotycode.mosaik.util.cache.complex.resolver.CacheValueResolver;
+import io.github.splotycode.mosaik.util.cache.complex.validator.TimeValidator;
 import io.github.splotycode.mosaik.util.logger.Logger;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ClassFinderHelper {
 
     private static Logger logger = Logger.getInstance(ClassFinderHelper.class);
 
+    private static ClassLoader classLoader;
+
+    public static void setClassLoader(ClassLoader classLoader) {
+        ClassFinderHelper.classLoader = classLoader;
+    }
+
     private static Set<String> nonUserPrefixes = new HashSet<>();
     @Getter private static long totalClassCount;
 
+    private static boolean debugUserClasses = !StringUtil.isEmpty(System.getenv("debug-user-classes"));
+
+    public static ClassLoader getClassLoader() {
+        if (classLoader == null) {
+            ClassLoader thread = Thread.currentThread().getContextClassLoader();
+            if (thread == null) {
+                return ClassFinderHelper.class.getClassLoader();
+            }
+            return thread;
+        }
+        return classLoader;
+    }
+
+    private static boolean skip(String path) {
+        for (String prefix : nonUserPrefixes) {
+            if (path.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static ComplexCache<Collection<Class<?>>> userClassesCache = new CacheBuilder<Collection<Class<?>>>().normal().setValidator(new TimeValidator<>(2 * 60 * 1000)).setResolver((CacheValueResolver<Collection<Class<?>>>) cache -> {
         Collection<Class<?>> list = new ArrayList<>();
-        try {
-            for (ClassPath.ClassInfo classInfo : ClassPath.from(Thread.currentThread().getContextClassLoader()).getAllClasses()) {
-                totalClassCount++;
-                boolean skip = false;
-                String packageName = classInfo.getPackageName();
-                for (String prefix : nonUserPrefixes) {
-                    if (packageName.startsWith(prefix)) {
-                        skip = true;
-                        break;
-                    }
-                }
-                if (skip) continue;
-                try {
-                    list.add(classInfo.load());
-                } catch (UnsupportedClassVersionError ex) {
-                    logger.warn(classInfo.getName() + " has an unsupported class version (" + ex.getMessage() + ")");
-                }catch (Throwable ex) {
-                    new FailedToLoadClassException("Failed to load class '" + classInfo.getName() + "'if you want to skip it use @SkipPath", ex).printStackTrace();
-                }
+        new ClassPath(getClassLoader()).classes(resource -> {
+            totalClassCount++;
+            String name = resource.javaName();
+            if (skip(name)) return;
+            try {
+                list.add(resource.load());
+            } catch (UnsupportedClassVersionError ex) {
+                logger.warn(name + " has an unsupported class version (" + ex.getMessage() + ")");
+            } catch (Throwable ex) {
+                new FailedToLoadClassException("Failed to load class '" + name + "' if you want to skip it use @SkipPath", ex).printStackTrace();
             }
-        } catch (IOException e) {
-            ExceptionUtil.throwRuntime(e);
-        }
+        });
         return list;
     }).build();
 

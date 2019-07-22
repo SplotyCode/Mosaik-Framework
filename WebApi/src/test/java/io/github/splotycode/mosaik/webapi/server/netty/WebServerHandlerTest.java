@@ -2,13 +2,11 @@ package io.github.splotycode.mosaik.webapi.server.netty;
 
 import io.github.splotycode.mosaik.runtime.application.Application;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
-import io.github.splotycode.mosaik.runtime.startup.StartUpInvoke;
 import io.github.splotycode.mosaik.webapi.WebApplicationType;
 import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
-import org.junit.jupiter.api.Test;
 
 public class WebServerHandlerTest {
 
@@ -41,12 +39,6 @@ public class WebServerHandlerTest {
         public String getName() {
             return "test app";
         }
-    }
-
-    @Test
-    public void testSSL() {
-        StartUpInvoke.invokeTestSuite();
-       // ThreadUtil.sleep(1000 * 30);
     }
 
 }

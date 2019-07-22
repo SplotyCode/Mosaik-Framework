@@ -5,7 +5,7 @@
     <parent>
         <artifactId>Mosaik-Framework</artifactId>
         <groupId>io.github.splotycode.mosaik</groupId>
-        <version>2.2.9</version>
+        <version>2.3-Prerelease1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -19,14 +19,14 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/versioninformation.kv</include>
+                    <include>**/mosaikversion.kv</include>
                 </includes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>**/versioninformation.kv</exclude>
+                    <exclude>**/mosaikversion.kv</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -53,22 +53,22 @@
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>Util</artifactId>
-            <version>2.2.9</version>
+            <version>2.3-Prerelease1</version>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>IUI</artifactId>
-            <version>2.2.9</version>
+            <version>2.3-Prerelease1</version>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>ArgParser</artifactId>
-            <version>2.2.9</version>
+            <version>2.3-Prerelease1</version>
         </dependency>
         <dependency>
             <groupId>io.github.splotycode.mosaik</groupId>
             <artifactId>DomParsing</artifactId>
-            <version>2.2.9</version>
+            <version>2.3-Prerelease1</version>
         </dependency>
     </dependencies>
 

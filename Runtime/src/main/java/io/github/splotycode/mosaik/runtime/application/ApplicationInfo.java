@@ -18,7 +18,7 @@ public class ApplicationInfo {
    }
 
     private static void loadInfo() {
-        Document document = LinkBase.getInstance().getLink(Links.PARSING_MANAGER).parseResourceFile("/versioninformation.kv");
+        Document document = LinkBase.getInstance().getLink(Links.PARSING_MANAGER).parseResourceFile("/mosaikversion.kv");
         buildNumber = document.getFirstTextFromNode("number");
         buildDate = document.getFirstTextFromNode("date");
         version = document.getFirstTextFromNode("version");
@@ -29,7 +29,7 @@ public class ApplicationInfo {
 
    public static String getImplementingName() {
        boolean running = LinkBase.getInstance().getLink(Links.STARTUP_MANAGER).running();
-       boolean runningChanged = wasRunning == AlmostBoolean.MAYBE || wasRunning.decide(false) != running;
+       boolean runningChanged = wasRunning.isMaybe() || wasRunning.decide(false) != running;
        wasRunning = AlmostBoolean.fromBoolean(running);
        if (implementingName != null && !runningChanged) return implementingName;
 

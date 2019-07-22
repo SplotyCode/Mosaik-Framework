@@ -25,6 +25,8 @@ public class NettyRequest extends AbstractRequest {
     private ChannelHandlerContext ctx;
 
     private QueryStringDecoder uri = null;
+    private String prettyPath = null;
+
     private Method method = null;
     private byte[] content = null;
     private String address = null;
@@ -46,6 +48,14 @@ public class NettyRequest extends AbstractRequest {
             uri = new QueryStringDecoder(request.uri());
         }
         return uri.path();
+    }
+
+    @Override
+    public String getSimplifiedPath() {
+        if (prettyPath == null) {
+            prettyPath = super.getSimplifiedPath();
+        }
+        return prettyPath;
     }
 
     @Override

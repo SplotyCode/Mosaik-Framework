@@ -1,21 +1,22 @@
 package io.github.splotycode.mosaik.console;
 
 import io.github.splotycode.mosaik.iui.INamedTaskBar;
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
+import lombok.Setter;
 
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Creates a Process Bar in the console
- * //TODO add the \r again
  */
 public class ProcessBar implements INamedTaskBar {
 
-    private int max;
+    private int max, min;
     private Logger logger;
     private String prefix;
     private int value;
+    @Setter private boolean sameLine = true;
 
     private long startTime;
 
@@ -36,17 +37,22 @@ public class ProcessBar implements INamedTaskBar {
 
     private void draw() {
         String eta = getETaAsString();
-        int percent = value * 100 / max;
-        String string =//.append('\r')
-                prefix +
-                        String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")) +
+        double range = max - min;
+        double realValue = value - min;
+        int percent = (int) Math.round(realValue / range * 100);
+        String prefix = this.prefix;
+        if (sameLine) {
+            prefix = '\r' + prefix;
+        }
+        String string = prefix +
+                        StringUtil.repeat(" ", percent == 0 ? 2 : 2 - (int) (Math.log10(percent))) +
                         String.format(" %d%% [", percent) +
-                        String.join("", Collections.nCopies(percent, "=")) +
+                        StringUtil.repeat("=", percent) +
                         '>' +
-                        String.join("", Collections.nCopies(100 - percent, " ")) +
+                        StringUtil.repeat(" ", 100 - percent) +
                         ']' +
-                        String.join("", Collections.nCopies((int) (Math.log10(max)) - (int) (Math.log10(value)), " ")) +
-                        String.format(" %d/%d, %s", value, max, eta);
+                        StringUtil.repeat(" ", (int) (Math.log10(range)) - (int) (Math.log10(realValue))) +
+                        String.format(" %d/%d, %s", value - min, max - min, eta);
         logger.info(string);
     }
 
@@ -108,6 +114,11 @@ public class ProcessBar implements INamedTaskBar {
     @Override
     public int max() {
         return max;
+    }
+
+    @Override
+    public int min() {
+        return min;
     }
 
     @Override

@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.util.reflection;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -14,6 +15,21 @@ import java.util.*;
 public final class ReflectionUtil {
 
     private static CallerClass callerClazz = new CallerClass();
+    private static Unsafe unsafe;
+
+    public static Unsafe getUnsafe() {
+        if (unsafe == null) {
+            Field f;
+            try {
+                f = Unsafe.class.getDeclaredField("theUnsafe");
+                f.setAccessible(true);
+                unsafe = (Unsafe) f.get(null);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                unsafe = null;
+            }
+        }
+        return unsafe;
+    }
 
     /**
      * @deprecated use {@link ClassCollector} instead

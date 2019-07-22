@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.runtime.startup;
 
 import io.github.splotycode.mosaik.util.ExceptionUtil;
+import io.github.splotycode.mosaik.util.StringUtil;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -24,6 +25,14 @@ public class StartUpInvoke {
         }
     }
 
+    public static void inokeIfNotInitialised(StartUpConfiguration configuration) {
+        try {
+            clazz.getMethod("mainIfNotInitialised", StartUpConfiguration.class).invoke(null, configuration);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            ExceptionUtil.throwRuntime(e);
+        }
+    }
+
     public static void inokeIfNotInitialised(String... args) {
         try {
             clazz.getMethod("mainIfNotInitialised", String[].class).invoke(null, new Object[] {args});
@@ -32,7 +41,11 @@ public class StartUpInvoke {
         }
     }
 
-    public static void invokeTestSuite() {
-        inokeIfNotInitialised("-mosaik.appname", "tests", "-debug:log_file");
+    public static boolean invokeTestSuite() {
+        if (StringUtil.isEmpty(System.getenv("TRAVIS"))) {
+            inokeIfNotInitialised("-mosaik.appname", "tests", "-debug:log_file");
+            return true;
+        }
+        return false;
     }
 }

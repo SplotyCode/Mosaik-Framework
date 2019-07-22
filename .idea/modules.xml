@@ -11,15 +11,12 @@
       <module fileurl="file://$PROJECT_DIR$/Database/Database.iml" filepath="$PROJECT_DIR$/Database/Database.iml" />
       <module fileurl="file://$PROJECT_DIR$/DomParsing/DomParsing.iml" filepath="$PROJECT_DIR$/DomParsing/DomParsing.iml" />
       <module fileurl="file://$PROJECT_DIR$/DomParsing-Impl/DomParsing-Impl.iml" filepath="$PROJECT_DIR$/DomParsing-Impl/DomParsing-Impl.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Examples/firstapp/Examle-FirstApp.iml" filepath="$PROJECT_DIR$/Examples/firstapp/Examle-FirstApp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Examples/papa/Examle-Papa.iml" filepath="$PROJECT_DIR$/Examples/papa/Examle-Papa.iml" />
-      <module fileurl="file://$PROJECT_DIR$/GameEngine/GameEngine.iml" filepath="$PROJECT_DIR$/GameEngine/GameEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/IUI/IUI.iml" filepath="$PROJECT_DIR$/IUI/IUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/Mosaik-All/Mosaik-All.iml" filepath="$PROJECT_DIR$/Mosaik-All/Mosaik-All.iml" />
       <module fileurl="file://$PROJECT_DIR$/Mosaik-Framework.iml" filepath="$PROJECT_DIR$/Mosaik-Framework.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Netty/Netty.iml" filepath="$PROJECT_DIR$/Netty/Netty.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Networking/Networking.iml" filepath="$PROJECT_DIR$/Networking/Networking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Networking-Web/Networking-Web.iml" filepath="$PROJECT_DIR$/Networking-Web/Networking-Web.iml" />
       <module fileurl="file://$PROJECT_DIR$/Runtime/Runtime.iml" filepath="$PROJECT_DIR$/Runtime/Runtime.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SpigotLib/SpigotLib.iml" filepath="$PROJECT_DIR$/SpigotLib/SpigotLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/StartUp/StartUp.iml" filepath="$PROJECT_DIR$/StartUp/StartUp.iml" />
       <module fileurl="file://$PROJECT_DIR$/Util/Util.iml" filepath="$PROJECT_DIR$/Util/Util.iml" />
       <module fileurl="file://$PROJECT_DIR$/ValueTransformer/ValueTransformer.iml" filepath="$PROJECT_DIR$/ValueTransformer/ValueTransformer.iml" />

@@ -1,12 +1,13 @@
 package io.github.splotycode.mosaik.valuetransformer.stringtoprimary;
 
+import io.github.splotycode.mosaik.util.ValueTransformer;
+import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.valuetransformer.TransformException;
-import io.github.splotycode.mosaik.valuetransformer.ValueTransformer;
 
 public class StringToDouble extends ValueTransformer<String, Double> {
 
     @Override
-    public Double transform(String input) throws TransformException {
+    public Double transform(String input, DataFactory info) throws TransformException {
         try {
             return Double.valueOf(input);
         } catch (NumberFormatException ex) {

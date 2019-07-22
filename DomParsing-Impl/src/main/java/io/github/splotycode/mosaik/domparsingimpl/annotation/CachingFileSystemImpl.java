@@ -44,7 +44,7 @@ public class CachingFileSystemImpl<D> extends FileSystemImpl<D> {
     public void putEntry(String entryKey, D entry) {
         CachedFile file = files.get(entryKey);
         if (file == null) {
-            file = new CachedFile(new File(root, entryKey + ".kv"), entry);
+            file = new CachedFile(getFile(entryKey), entry);
             files.put(entryKey, file);
             taskExecutor.runTask(file);
         } else if (file.deleted) {

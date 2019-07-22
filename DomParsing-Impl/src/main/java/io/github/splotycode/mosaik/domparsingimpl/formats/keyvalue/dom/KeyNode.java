@@ -1,22 +1,23 @@
 package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom;
 
-import io.github.splotycode.mosaik.domparsing.dom.attribute.Attribute;
-import io.github.splotycode.mosaik.domparsing.dom.Node;
+import io.github.splotycode.mosaik.util.node.Childable;
+import io.github.splotycode.mosaik.util.node.NameableNode;
+import lombok.Getter;
 
-import java.util.*;
+import java.util.List;
 
-public class KeyNode implements Node {
+public class KeyNode implements NameableNode, Childable<NameableNode> {
 
     private String name;
-    private List<Node> values;
+    @Getter private List<NameableNode> childes;
 
     public KeyNode(String name) {
-        this(name, new ArrayList<>());
+        this.name = name;
     }
 
-    public KeyNode(String name, List<Node> values) {
+    public KeyNode(String name, List<NameableNode> childes) {
         this.name = name;
-        this.values = values;
+        this.childes = childes;
     }
 
     @Override
@@ -24,23 +25,4 @@ public class KeyNode implements Node {
         return name;
     }
 
-    @Override
-    public Map<String, Attribute> attributes() {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public Node parent() {
-        return null;
-    }
-
-    @Override
-    public Collection<Node> childs() {
-        return values;
-    }
-
-    @Override
-    public void addChild(Node node) {
-        values.add(node);
-    }
 }

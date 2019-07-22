@@ -11,8 +11,8 @@ public class MultipleListenerHandler<L extends Listener> implements ListenerHand
 
     @Getter private List<L> listeners = new ArrayList<>();
 
-    public void call(Class<? extends L> clazz, Consumer<L> consumer){
-        listeners.stream().filter(ClassConditions.assignableClass(clazz)).forEach(consumer);
+    public <I extends L> void call(Class<? extends I> clazz, Consumer<I> consumer){
+        listeners.stream().filter(ClassConditions.assignableClass(clazz)).forEach(l -> consumer.accept((I) l));
     }
 
     public void call(Consumer<L> consumer){

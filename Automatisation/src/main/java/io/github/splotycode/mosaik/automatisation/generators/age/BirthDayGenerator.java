@@ -1,9 +1,10 @@
 package io.github.splotycode.mosaik.automatisation.generators.age;
 
+import io.github.splotycode.mosaik.automatisation.generators.Generator;
+import io.github.splotycode.mosaik.util.time.TimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import io.github.splotycode.mosaik.automatisation.generators.Generator;
 
 import java.time.Year;
 import java.util.concurrent.ThreadLocalRandom;
@@ -13,24 +14,6 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 @AllArgsConstructor
 public class BirthDayGenerator implements Generator<BirthDayGenerator.BirthDay> {
-
-    /**
-     * Checks is a year is a leap year
-     * @param year the year as an number (for example 2004)
-     * @return true if the year is an leap year or else false
-     * TODO: Move to Utils
-     */
-    public static boolean isLeapYear(int year) {
-        if (year % 4 != 0) {
-            return false;
-        } else if (year % 400 == 0) {
-            return true;
-        } else if (year % 100 == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     private AgeGenerator ageGenerator;
 
@@ -49,7 +32,7 @@ public class BirthDayGenerator implements Generator<BirthDayGenerator.BirthDay> 
         Month month = Month.values()[ThreadLocalRandom.current().nextInt(0, 11)];
         int day = ThreadLocalRandom.current().nextInt(1, month.getMaxDays(year));
 
-        return new BirthDay(year, day, month, isLeapYear(year));
+        return new BirthDay(year, day, month, TimeUtil.isLeapYear(year));
     }
 
     @Data
@@ -75,7 +58,7 @@ public class BirthDayGenerator implements Generator<BirthDayGenerator.BirthDay> 
         FEBRUARY {
             @Override
             int getMaxDays(int year) {
-                return isLeapYear(year) ? 29 : 28;
+                return TimeUtil.isLeapYear(year) ? 29 : 28;
             }
         },
         MARCH {

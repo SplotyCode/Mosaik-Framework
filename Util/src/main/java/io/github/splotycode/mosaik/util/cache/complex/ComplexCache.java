@@ -9,6 +9,11 @@ import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.CacheListener;
 import io.github.splotycode.mosaik.util.cache.complex.resolver.CacheResolver;
 
+/**
+ * This cache implantation's is for single values.
+ * It has resolvers and validation.
+ * @param <T> the cached type
+ */
 public class ComplexCache<T> implements Cache<T> {
 
     @Setter @Getter private ListenerHandler<CacheListener<T>> handler = new DefaultListenerHandler<>();

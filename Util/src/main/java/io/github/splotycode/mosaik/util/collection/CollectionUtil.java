@@ -86,7 +86,7 @@ public final class CollectionUtil {
         return newHashSet(elements.iterator());
     }
 
-    public static <T> HashSet<T> newHashSet(T[] elements) {
+    public static <T> HashSet<T> newHashSet(T... elements) {
         return new HashSet<>(Arrays.asList(elements));
     }
 

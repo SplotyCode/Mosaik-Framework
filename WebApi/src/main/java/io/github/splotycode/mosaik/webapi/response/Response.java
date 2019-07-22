@@ -18,8 +18,10 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Getter
@@ -31,12 +33,11 @@ public class Response {
     private static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
     private static final String HTTP_DATE_GMT_TIMEZONE = "GMT";
     private static final Calendar CALENDAR = new GregorianCalendar();
+    public static final ZoneId ZONE_ID = ZoneId.of(HTTP_DATE_GMT_TIMEZONE);
 
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);
-
-    static {
-        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(HTTP_DATE_GMT_TIMEZONE));
-    }
+    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter
+                                                .ofPattern(HTTP_DATE_FORMAT, Locale.US)
+                                                .withZone(ZONE_ID);
 
     @Getter private HttpVersion httpVersion = HttpVersion.VERSION_1_1;
     private Map<CharSequence, CharSequence> headers = new HashMap<>();
@@ -52,7 +53,7 @@ public class Response {
         setContentType(ContentType.TEXT_HTML);
 
         /* Default Headers */
-        setHeader(ResponseHeader.DATE, DATE_FORMAT.format(CALENDAR.getTime()));
+        setHeader(ResponseHeader.DATE, DATE_FORMAT.format(LocalDateTime.now()));
         setHeader("x-xss-protection", "1; mode=block");
         setHeader("X-Content-Type-Options", "nosniff");
         setHeader("X-Powered-By", "Mosaik WebApi");
@@ -112,15 +113,19 @@ public class Response {
                 long lastModified = content.lastModified();
                 if (lastModified != -1) {
                     String rawLastModified = request.getHeader(RequestHeader.IF_MODIFIED_SINCE);
-                    if (rawLastModified != null && DATE_FORMAT.parse(rawLastModified).getTime() <= lastModified) {
-                        responseCode = HttpResponseStatus.NOT_MODIFIED.code();
-                        return;
-                    } else {
-                        setHeader(ResponseHeader.LAST_MODIFIED, DATE_FORMAT.format(new Date(lastModified)));
+                    try {
+                        if (rawLastModified != null && LocalDateTime.parse(rawLastModified, DATE_FORMAT).atZone(ZONE_ID).toInstant().toEpochMilli() <= lastModified) {
+                            responseCode = HttpResponseStatus.NOT_MODIFIED.code();
+                            return;
+                        } else {
+                            setHeader(ResponseHeader.LAST_MODIFIED, Instant.ofEpochMilli(lastModified).atZone(ZONE_ID).format(DATE_FORMAT));
+                        }
+                    } catch (NumberFormatException ex) {
+                        throw new ContentException("Failed to parse " + rawLastModified + " as last modified", ex);
                     }
                 }
             }
-        } catch (IOException | ParseException ex) {
+        } catch (IOException ex) {
             throw new ContentException("Could not handle last-/cache modified", ex);
         }
 
@@ -132,8 +137,8 @@ public class Response {
                     if (rawContent == null) {
                         try {
                             rawContent = new ByteArrayInputStream(IOUtil.toByteArray(loadContent()));
-                        } catch (IOException ex) {
-                            throw new ContentException("Failed to convert stream to byte array");
+                        } catch (Throwable ex) {
+                            throw new ContentException("Failed to convert stream to byte array", ex);
                         }
                     }
                     return new ByteArrayInputStream(((ByteArrayInputStream)rawContent).getOriginal());

@@ -1,5 +1,7 @@
 package io.github.splotycode.mosaik.webapi.response.content.manipulate;
 
+import io.github.splotycode.mosaik.util.commoni.Nameable;
+import io.github.splotycode.mosaik.util.node.Parentable;
 import io.github.splotycode.mosaik.util.prettyprint.IgnorePrint;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -131,7 +133,7 @@ public class ManipulateData {
     }
 
     @Getter
-    public static class ManipulatePattern {
+    public static class ManipulatePattern implements Parentable<ManipulatePattern>, Nameable {
 
         @Setter private int start;
         @Setter private int end;
@@ -153,18 +155,6 @@ public class ManipulateData {
             return 3 + name.length() + start;
         }
 
-        public List<ManipulatePattern> getAllParents() {
-            if(parent == null) return Collections.emptyList();
-            List<ManipulatePattern> parents = new ArrayList<>();
-
-            ManipulatePattern current = parent;
-            while (current != null) {
-                parents.add(current);
-                current = current.getParent();
-            }
-            return parents;
-        }
-
         public int getAbsoulteStart() {
             int prefix = 0;
             for (ManipulatePattern parent : getAllParents()) {
@@ -181,6 +171,9 @@ public class ManipulateData {
             return prefix + end;
         }
 
-
+        @Override
+        public String name() {
+            return name;
+        }
     }
 }

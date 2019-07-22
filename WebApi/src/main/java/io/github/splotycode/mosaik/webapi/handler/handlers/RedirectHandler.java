@@ -2,11 +2,13 @@ package io.github.splotycode.mosaik.webapi.handler.handlers;
 
 import io.github.splotycode.mosaik.annotations.Disabled;
 import io.github.splotycode.mosaik.util.Pair;
+import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.UrlPattern;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
@@ -16,7 +18,10 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RedirectHandler implements HttpHandler {
 
+    private static final DataKey<Pair<String, Integer>> REDIRECT = new DataKey<>(RedirectHandler.class.getName() + ".redirect");
+
     private HashMap<UrlPattern, Pair<String, Integer>> redirects = new HashMap<>();
+    @Getter private boolean blockIfRedirect;
 
     public static RedirectHandler createSimple(Pair<String, String>... redirects) {
         RedirectHandler handler = new RedirectHandler();
@@ -60,19 +65,26 @@ public class RedirectHandler implements HttpHandler {
         redirects.put(new UrlPattern(origin), new Pair<>(destination, errorCode));
     }
 
+    public RedirectHandler setBlockIfRedirect(boolean blockIfRedirect) {
+        this.blockIfRedirect = blockIfRedirect;
+        return this;
+    }
+
     @Override
     public boolean valid(Request request) throws HandleRequestException {
-        return redirects.keySet().stream().anyMatch(url -> url.match(request.getPath()).isMatch());
+        for (Map.Entry<UrlPattern, Pair<String, Integer>> redirect : redirects.entrySet()) {
+            if (redirect.getKey().match(request.getPath()).isMatch()) {
+                request.getDataFactory().putData(REDIRECT, redirect.getValue());
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean handle(Request request) throws HandleRequestException {
-        for (Map.Entry<UrlPattern, Pair<String, Integer>> redirect : redirects.entrySet()) {
-            if (redirect.getKey().match(request.getPath()).isMatch()) {
-                request.getResponse().redirect(redirect.getValue().getOne(), redirect.getValue().getTwo());
-                return false;
-            }
-        }
-        return false;
+        Pair<String, Integer> redirect = request.getDataFactory().getData(REDIRECT);
+        request.getResponse().redirect(redirect.getOne(), redirect.getTwo());
+        return blockIfRedirect;
     }
 }

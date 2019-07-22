@@ -1,16 +1,16 @@
 package io.github.splotycode.mosaik.domparsingimpl.annotation.parsing;
 
-import io.github.splotycode.mosaik.domparsing.annotation.EntryParseExcpetion;
+import io.github.splotycode.mosaik.domparsing.annotation.EntryParseException;
 import io.github.splotycode.mosaik.domparsing.annotation.parsing.ReflectiveEntryData;
 import io.github.splotycode.mosaik.domparsing.annotation.parsing.ReflectiveParsingEntry;
 import io.github.splotycode.mosaik.domparsing.dom.Document;
-import io.github.splotycode.mosaik.domparsing.dom.Node;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomStreamInput;
 import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.KeyValueHandle;
 import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyValueDocument;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
+import io.github.splotycode.mosaik.util.node.NameableNode;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -47,7 +47,7 @@ public final class ReflectiveParsingHelper {
             Class clazz = Class.forName(document.getFirstTextFromNode("__clazz__"));
             Object obj = clazz.newInstance();
 
-            for (Node node : document.getNodes()) {
+            for (NameableNode node : document.getNodes()) {
                 if (node.name().equals("__clazz__")) continue;
                 String key = node.name();
                 String value = document.getFirstTextFromNode(key);
@@ -59,7 +59,7 @@ public final class ReflectiveParsingHelper {
             stream.close();
             return obj;
         } catch (Exception ex) {
-            throw new EntryParseExcpetion("Failed to provide Object", ex);
+            throw new EntryParseException("Failed to provide Object", ex);
         }
     }
 
@@ -75,7 +75,7 @@ public final class ReflectiveParsingHelper {
 
             return LinkBase.getInstance().getLink(Links.PARSING_MANAGER).writeToText(document, KeyValueHandle.class).getBytes();
         } catch (ReflectiveOperationException ex) {
-            throw new EntryParseExcpetion("Failed to parse Obect to byte[]", ex);
+            throw new EntryParseException("Failed to parse Obect to byte[]", ex);
         }
     }
 

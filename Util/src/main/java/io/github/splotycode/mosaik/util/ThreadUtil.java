@@ -5,13 +5,25 @@ import lombok.NoArgsConstructor;
 
 import java.util.concurrent.*;
 
+/**
+ * General Utils for threads
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ThreadUtil {
 
+    /**
+     * Let the thread sleeps
+     * @param delay time to sleep in milliseconds
+     */
     public static void sleep(long delay) {
         sleep(delay, false);
     }
 
+    /**
+     * Let the thread sleeps
+     * @param ignore should we ignore InterruptedException's that happen while sleeping
+     * @param delay time to sleep in milliseconds
+     */
     public static void sleep(long delay, boolean ignore) {
         try {
             Thread.sleep(delay);
@@ -22,6 +34,12 @@ public final class ThreadUtil {
         }
     }
 
+    /**
+     * Runs a Task with a specific timeout
+     * @param runnable the runnable to run
+     * @param timeout the timeout in milliseconds
+     * @throws Exception if the timeout is reached or a exception happens in the runnable
+     */
     public static void runWithTimeout(final Runnable runnable, long timeout) throws Exception {
         runWithTimeout(() -> {
             runnable.run();
@@ -29,6 +47,12 @@ public final class ThreadUtil {
         }, timeout);
     }
 
+    /**
+     * Runs a Task with a specific timeout
+     * @param callable the runnable to run
+     * @param timeout the timeout in milliseconds
+     * @throws Exception if the timeout is reached or a exception happens in the runnable
+     */
     public static <T> T runWithTimeout(Callable<T> callable, long timeout) throws Exception {
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         final Future<T> future = executor.submit(callable);
@@ -39,14 +63,8 @@ public final class ThreadUtil {
             future.cancel(true);
             throw e;
         } catch (ExecutionException e) {
-            Throwable t = e.getCause();
-            if (t instanceof Error) {
-                throw (Error) t;
-            } else if (t instanceof Exception) {
-                throw (Exception) t;
-            } else {
-                throw new IllegalStateException(t);
-            }
+            ExceptionUtil.throwRuntime(e);
+            return null;
         }
     }
 

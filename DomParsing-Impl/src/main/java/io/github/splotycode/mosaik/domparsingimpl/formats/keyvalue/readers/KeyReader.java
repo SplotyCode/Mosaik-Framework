@@ -1,12 +1,11 @@
 package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.readers;
 
+import io.github.splotycode.mosaik.domparsing.parsing.DomParseException;
+import io.github.splotycode.mosaik.domparsing.parsing.DomReader;
 import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.KeyValueParser;
 import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyNode;
 import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.ValueNode;
-import io.github.splotycode.mosaik.domparsing.parsing.DomParseException;
-import io.github.splotycode.mosaik.domparsing.parsing.DomReader;
-import io.github.splotycode.mosaik.domparsing.dom.Node;
-import io.github.splotycode.mosaik.util.StringUtil;
+import io.github.splotycode.mosaik.util.node.NameableNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class KeyReader implements DomReader<KeyValueParser> {
 
     @Override
     public void readNext(char c, KeyValueParser parser) throws RuntimeException {
-        boolean whiteSpace = StringUtil.isWhiteSpace(c);
+        boolean whiteSpace = Character.isWhitespace(c);
 
         switch (state) {
             case BEFORE_NAME:
@@ -57,7 +56,7 @@ public class KeyReader implements DomReader<KeyValueParser> {
                 break;
             case VALUE:
                 if (whiteSpace) {
-                    List<Node> nodes = new ArrayList<>();
+                    List<NameableNode> nodes = new ArrayList<>();
                     KeyNode key = new KeyNode(name, nodes);
                     nodes.add(new ValueNode(key, value));
 

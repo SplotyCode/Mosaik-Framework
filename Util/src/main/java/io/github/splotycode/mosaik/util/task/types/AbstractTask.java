@@ -1,8 +1,9 @@
 package io.github.splotycode.mosaik.util.task.types;
 
 import io.github.splotycode.mosaik.util.task.Task;
-import io.github.splotycode.mosaik.util.task.TaskType;
+import io.github.splotycode.mosaik.util.task.TaskExecutor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -10,30 +11,40 @@ import java.util.concurrent.locks.ReentrantLock;
 @Getter
 public abstract class AbstractTask implements Task {
 
-    private TaskType type;
-    private String displayNme;
-    private Runnable runnable;
+    @Setter protected String displayNme;
+    protected Runnable runnable;
     private Lock lock = new ReentrantLock();
+    private volatile boolean used;
 
-    public AbstractTask(TaskType type) {
-        this(type, (Runnable) null);
+    public AbstractTask() {
+        this((Runnable) null);
     }
 
-    public AbstractTask(TaskType type, Runnable runnable) {
-        this.type = type;
+    public AbstractTask(Runnable runnable) {
         this.runnable = runnable;
         displayNme = getClass().getName();
     }
 
-    public AbstractTask(TaskType type, String displayNme) {
-        this.type = type;
+    public AbstractTask(String displayNme) {
         this.displayNme = displayNme;
     }
 
-    public AbstractTask(TaskType type, String displayNme, Runnable runnable) {
-        this.type = type;
+    public AbstractTask(String displayNme, Runnable runnable) {
         this.displayNme = displayNme;
         this.runnable = runnable;
+    }
+
+    @Override
+    public void onInstall(TaskExecutor executor) {
+        if (used) {
+            throw new IllegalStateException("Already used");
+        }
+        used = true;
+    }
+
+    @Override
+    public void onUnInstall(TaskExecutor executor) {
+        used = false;
     }
 
     @Override

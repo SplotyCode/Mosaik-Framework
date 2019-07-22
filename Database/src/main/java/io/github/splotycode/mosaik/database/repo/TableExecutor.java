@@ -1,8 +1,8 @@
 package io.github.splotycode.mosaik.database.repo;
 
-import io.github.splotycode.mosaik.database.table.ColumnNameResolver;
 import io.github.splotycode.mosaik.database.Database;
-import io.github.splotycode.mosaik.database.connection.Connection;
+import io.github.splotycode.mosaik.database.connection.ConnectionProvider;
+import io.github.splotycode.mosaik.database.table.ColumnNameResolver;
 
 import java.util.Arrays;
 
@@ -11,7 +11,7 @@ import java.util.Arrays;
  * @param <T> the repo
  * @param <C> the connection
  */
-public interface TableExecutor<T, C extends Connection> {
+public interface TableExecutor<T, C extends ConnectionProvider> {
 
     /**
      * Deletes this repo
