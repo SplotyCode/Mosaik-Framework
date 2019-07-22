@@ -13,7 +13,6 @@
         <module>Networking</module>
         <module>Database</module>
         <module>Automatisation</module>
-        <module>GameEngine</module>
         <module>WebApi</module>
         <module>ValueTransformer</module>
         <module>ArgParser</module>

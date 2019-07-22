@@ -38,4 +38,18 @@ public final class TimeUtil {
         return number.substring(0, number.length() - 1);
     }
 
+    /**
+     * Checks is a year is a leap year
+     * @param year the year as an number (for example 2004)
+     * @return true if the year is an leap year or else false
+     */
+    public static boolean isLeapYear(int year) {
+        if (year % 4 != 0) {
+            return false;
+        } else if (year % 400 == 0) {
+            return true;
+        }
+        return year % 100 != 0;
+    }
+
 }
