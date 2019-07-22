@@ -8,12 +8,13 @@ public class ClassPathTest {
     @Test(expected = RuntimeException.class)
     public void test() {
         if (!StringUtil.isEmpty(System.getenv("TRAVIS"))) {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            if (classLoader != null) {
-                test(new ClassPath(classLoader));
-            }
-            test(new ClassPath(ClassPathTest.class.getClassLoader()));
+            throw new RuntimeException();
         }
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if (classLoader != null) {
+            test(new ClassPath(classLoader));
+        }
+        test(new ClassPath(ClassPathTest.class.getClassLoader()));
     }
 
     private void test(ClassPath path) {
