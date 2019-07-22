@@ -9,7 +9,7 @@ public class StorageService implements SingleComponentService {
 
     @Override
     public CloudKit kit() {
-
+        return null;
     }
 
     @Override
