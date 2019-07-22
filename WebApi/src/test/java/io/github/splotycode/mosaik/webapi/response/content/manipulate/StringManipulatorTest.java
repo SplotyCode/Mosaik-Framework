@@ -15,36 +15,39 @@ class StringManipulatorTest {
 
     @Test
     void testGetResult() {
-        StartUpInvoke.invokeTestSuite();
-        StringManipulator manipulator = new StringManipulator("Hallo my friend $name$");
-        manipulator.getReplacements().add(new StringManipulator.Replacement(2, 3, "no"));
-        assertEquals("Hanolo my friend $name$",manipulator.getResult());
-        manipulator.reset();
-        manipulator.getReplacements().add(new StringManipulator.Replacement(4, 8, "ok"));
-        assertEquals("Hallok friend $name$", manipulator.getResult());
-        manipulator.reset();
-        manipulator.getReplacements().add(new StringManipulator.Replacement(2, 3, "no"));
-        manipulator.getReplacements().add(new StringManipulator.Replacement(4, 8, "ok"));
-        assertEquals("Hanolok friend $name$", manipulator.getResult());
+        if (StartUpInvoke.invokeTestSuite()) {
+            StringManipulator manipulator = new StringManipulator("Hallo my friend $name$");
+            manipulator.getReplacements().add(new StringManipulator.Replacement(2, 3, "no"));
+            assertEquals("Hanolo my friend $name$", manipulator.getResult());
+            manipulator.reset();
+            manipulator.getReplacements().add(new StringManipulator.Replacement(4, 8, "ok"));
+            assertEquals("Hallok friend $name$", manipulator.getResult());
+            manipulator.reset();
+            manipulator.getReplacements().add(new StringManipulator.Replacement(2, 3, "no"));
+            manipulator.getReplacements().add(new StringManipulator.Replacement(4, 8, "ok"));
+            assertEquals("Hanolok friend $name$", manipulator.getResult());
+        }
     }
 
     @Test
     void testVariables() {
-        StartUpInvoke.invokeTestSuite();
-        StringManipulator manipulator = new StringManipulator("Hallo my friend $name$");
-        manipulator.variable("name", 33);
-        assertEquals(manipulator.getResult(), "Hallo my friend 33");
+        if (StartUpInvoke.invokeTestSuite()) {
+            StringManipulator manipulator = new StringManipulator("Hallo my friend $name$");
+            manipulator.variable("name", 33);
+            assertEquals(manipulator.getResult(), "Hallo my friend 33");
+        }
     }
 
     @Test
     void testMultipleVariables() {
-        StartUpInvoke.invokeTestSuite();
-        StringManipulator manipulator = new StringManipulator("Hallo my friend $name$, $name1$, $name2$ and $name3$");
-        manipulator.variable("name", "hallo");
-        manipulator.variable("name1", "duuu222222");
-        manipulator.variable("name2", "anntonn");
-        manipulator.variable("name3", "ahllooouuuuuu");
-        assertEquals(manipulator.getResult(), "Hallo my friend hallo, duuu222222, anntonn and ahllooouuuuuu");
+        if (StartUpInvoke.invokeTestSuite()) {
+            StringManipulator manipulator = new StringManipulator("Hallo my friend $name$, $name1$, $name2$ and $name3$");
+            manipulator.variable("name", "hallo");
+            manipulator.variable("name1", "duuu222222");
+            manipulator.variable("name2", "anntonn");
+            manipulator.variable("name3", "ahllooouuuuuu");
+            assertEquals(manipulator.getResult(), "Hallo my friend hallo, duuu222222, anntonn and ahllooouuuuuu");
+        }
     }
 
     @AllArgsConstructor
@@ -56,22 +59,24 @@ class StringManipulatorTest {
 
     @Test
     void testPatterns() {
-        StartUpInvoke.invokeTestSuite();
-        StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $name$ 333 $age$ $@@$hasdasdas");
-        manipulator.pattern(new Pat());
-        assertEquals("hallo dasd david 333 14 hasdasdas", manipulator.getResult());
+        if (StartUpInvoke.invokeTestSuite()) {
+            StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $name$ 333 $age$ $@@$hasdasdas");
+            manipulator.pattern(new Pat());
+            assertEquals("hallo dasd david 333 14 hasdasdas", manipulator.getResult());
+        }
     }
 
     @Test
     void testPatternList() {
-        StartUpInvoke.invokeTestSuite();
-        StringManipulator manipulator = new StringManipulator("hallo$@pat$ Name: $name$ <br> Age: $age$ <br><br> $@@$hasdasdas");
-        List<Pat> data = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            data.add(new Pat("david", i + 10));
+        if (StartUpInvoke.invokeTestSuite()) {
+            StringManipulator manipulator = new StringManipulator("hallo$@pat$ Name: $name$ <br> Age: $age$ <br><br> $@@$hasdasdas");
+            List<Pat> data = new ArrayList<>();
+            for (int i = 0; i < 12; i++) {
+                data.add(new Pat("david", i + 10));
+            }
+            manipulator.patternList(data);
+            assertEquals("hallo Name: david <br> Age: 14 <br><br>  Name: david <br> Age: 19 <br><br>  Name: david <br> Age: 20 <br><br>  Name: david <br> Age: 21 <br><br>  Name: david <br> Age: 18 <br><br>  Name: david <br> Age: 10 <br><br>  Name: david <br> Age: 12 <br><br>  Name: david <br> Age: 17 <br><br>  Name: david <br> Age: 11 <br><br>  Name: david <br> Age: 16 <br><br>  Name: david <br> Age: 15 <br><br>  Name: david <br> Age: 13 <br><br> hasdasdas", manipulator.getResult());
         }
-        manipulator.patternList(data);
-        assertEquals("hallo Name: david <br> Age: 14 <br><br>  Name: david <br> Age: 19 <br><br>  Name: david <br> Age: 20 <br><br>  Name: david <br> Age: 21 <br><br>  Name: david <br> Age: 18 <br><br>  Name: david <br> Age: 10 <br><br>  Name: david <br> Age: 12 <br><br>  Name: david <br> Age: 17 <br><br>  Name: david <br> Age: 11 <br><br>  Name: david <br> Age: 16 <br><br>  Name: david <br> Age: 15 <br><br>  Name: david <br> Age: 13 <br><br> hasdasdas", manipulator.getResult());
     }
 
     private static class Computer {
@@ -96,26 +101,26 @@ class StringManipulatorTest {
 
     @Test
     void testPatternInPattern() {
-        StartUpInvoke.invokeTestSuite();
+        if (StartUpInvoke.invokeTestSuite()) {
 
-        List<Computer> computers = new ArrayList<>();
-        for (int i = 0; i < 4 * 3; i+=3) {
-            Computer computer = new Computer("Computer-" + i / 3, i);
-            computers.add(computer);
-            for (int z = i; z < i + 3;z++) {
-                computer.hardDrives.add(new HardDrive("Drive-" + z));
+            List<Computer> computers = new ArrayList<>();
+            for (int i = 0; i < 4 * 3; i += 3) {
+                Computer computer = new Computer("Computer-" + i / 3, i);
+                computers.add(computer);
+                for (int z = i; z < i + 3; z++) {
+                    computer.hardDrives.add(new HardDrive("Drive-" + z));
+                }
             }
+
+            StringManipulator manipulator = new StringManipulator("$@computers$ Name: $name$, ID: $id$ <br><br> $@drives$ Drive: $drivename$ <br>$@@$ <br><br><br><br> $@@$");
+            PatternCommand command = PatternCommand.create("computers").createSecondaries(pair -> {
+                pair.getTwo().createChild("drives").createSecondaries(drive -> {
+                    drive.getTwo().addCostom("drivename", drive.getOne().name);
+                }, pair.getOne().hardDrives);
+            }, computers);
+            manipulator.pattern(command);
+            assertEquals(EXPECTED_PATTERN_IN_PATTERN, manipulator.getResult());
         }
-
-        StringManipulator manipulator = new StringManipulator("$@computers$ Name: $name$, ID: $id$ <br><br> $@drives$ Drive: $drivename$ <br>$@@$ <br><br><br><br> $@@$");
-        PatternCommand command = PatternCommand.create("computers").createSecondaries(pair -> {
-            pair.getTwo().createChild("drives").createSecondaries(drive -> {
-                drive.getTwo().addCostom("drivename", drive.getOne().name);
-            }, pair.getOne().hardDrives);
-        }, computers);
-        manipulator.pattern(command);
-        assertEquals(EXPECTED_PATTERN_IN_PATTERN, manipulator.getResult());
     }
-
 
 }

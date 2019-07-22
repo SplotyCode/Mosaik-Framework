@@ -38,23 +38,26 @@ class ManipulateDataTest {
 
     @Test
     void testVariablePositions() {
-        StartUpInvoke.invokeTestSuite();
-        StringManipulator manipulator = new StringManipulator("Hallo my friend $name$, $name1$, $name2$ and $name3$");
-        Assertions.assertEquals(EXPECTED_VAR, new PrettyPrint(manipulator.getManipulateData().getVariableMap()).prettyPrintType());
+        if (StartUpInvoke.invokeTestSuite()) {
+            StringManipulator manipulator = new StringManipulator("Hallo my friend $name$, $name1$, $name2$ and $name3$");
+            Assertions.assertEquals(EXPECTED_VAR, new PrettyPrint(manipulator.getManipulateData().getVariableMap()).prettyPrintType());
+        }
     }
 
     @Test
     void testPatternPositions() {
-        StartUpInvoke.invokeTestSuite();
-        StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $name$ 333 $age$ $@@$hasdasdas");
-        Assertions.assertEquals(EXPECTED, new PrettyPrint(manipulator.getManipulateData().getPatternMap()).prettyPrintType());
+        if (StartUpInvoke.invokeTestSuite()) {
+            StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $name$ 333 $age$ $@@$hasdasdas");
+            Assertions.assertEquals(EXPECTED, new PrettyPrint(manipulator.getManipulateData().getPatternMap()).prettyPrintType());
+        }
     }
 
     @Test
     void testPatternInPatternPositions() {
-        StartUpInvoke.invokeTestSuite();
-        StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $@pat2$ $adsd$ $eee$ $@@$ $name$ 333 $age$ $@@$hasdasdas");
-        System.out.println(new PrettyPrint(manipulator.getManipulateData().getPatternMap()).prettyPrintType());
+        if (StartUpInvoke.invokeTestSuite()) {
+            StringManipulator manipulator = new StringManipulator("hallo$@pat$ dasd $@pat2$ $adsd$ $eee$ $@@$ $name$ 333 $age$ $@@$hasdasdas");
+            System.out.println(new PrettyPrint(manipulator.getManipulateData().getPatternMap()).prettyPrintType());
+        }
     }
 
 }
