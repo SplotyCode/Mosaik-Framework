@@ -146,6 +146,7 @@ public class StringUtilTest {
     public void repeat() {
         assertEquals("hahahaha", StringUtil.repeat("ha", 4));
         assertEquals("jjjjj", StringUtil.repeat("j", 5));
+        assertEquals("", StringUtil.repeat("hallo", 0));
 
         assertNull(StringUtil.repeat(null, 4));
     }
@@ -187,6 +188,7 @@ public class StringUtilTest {
         assertEquals("", StringUtil.getLast("hallo", 0));
         assertEquals("", StringUtil.getLast("hallo", -2));
         assertEquals("", StringUtil.getLast(null, 2));
+        assertEquals("hallo", StringUtil.getLast("hallo", 100));
         assertEquals("lo", StringUtil.getLast("hallo", 2));
     }
 }

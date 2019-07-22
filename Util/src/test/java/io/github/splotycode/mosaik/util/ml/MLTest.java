@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.util.ml;
 
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -8,6 +9,7 @@ import java.util.Random;
 public class MLTest {
 
     @Test
+    @Disabled
     public void test() {
         Random random = new Random();
         int[][] xorInputs = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };

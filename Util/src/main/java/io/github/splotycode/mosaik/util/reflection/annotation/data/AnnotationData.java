@@ -29,4 +29,8 @@ public class AnnotationData implements IAnnotationData {
         priority = AnnotationHelper.getPriority(annotations);
     }
 
+    @Override
+    public String toString() {
+        return getDisplayName();
+    }
 }

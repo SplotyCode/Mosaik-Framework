@@ -578,8 +578,8 @@ public final class StringUtil {
      */
     public static String repeat(String str, int times) {
         if (str == null) return null;
-        if (str.isEmpty()) return "";
-        if (times <= 0) throw new IllegalArgumentException("Times need to be greater then 0");
+        if (str.isEmpty() || times == 0) return "";
+        if (times < 0) throw new IllegalArgumentException("Times need to be greater then 0");
 
         int length = str.length();
         boolean singleChar = length == 1;
@@ -642,7 +642,8 @@ public final class StringUtil {
      * @param places the number of chars
      */
     public static String getLast(String str, int places) {
-        if (str == null || str.length() < places) return "";
+        if (str == null || places < 0) return "";
+        if (places > str.length()) return str;
         return str.substring(str.length() - places);
     }
 

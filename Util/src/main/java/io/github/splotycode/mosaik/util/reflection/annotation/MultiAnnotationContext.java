@@ -76,6 +76,7 @@ public abstract class MultiAnnotationContext<C extends MultiAnnotationContext, D
         for (Method method : clazz.getMethods()) {
             if (!methodPredicate().test(method)) continue;
             D data = construct(methodDataClass(), "Method");
+            sub.add(data);
             dataError(data, () -> {
                 prepareMethodData(data, method);
                 initHandlers(data, method);
