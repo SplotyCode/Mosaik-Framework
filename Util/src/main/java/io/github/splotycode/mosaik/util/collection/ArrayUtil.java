@@ -837,15 +837,17 @@ public final class ArrayUtil {
      */
 
     public static <T> T[] reverse(T[] array) {
-        T[] newArray = array.clone();
-        for (int i = 0; i < array.length; i++) {
-            newArray[array.length - i - 1] = array[i];
+        int length = array.length;
+        T[] newArray = createArray(array.getClass().getComponentType(), length);
+        for (int i = 0; i < length; i++) {
+            newArray[length - i - 1] = array[i];
         }
         return newArray;
     }
 
     public static int[] reverse(int[] array) {
-        int[] newArray = array.clone();
+        int length = array.length;
+        int[] newArray = newIntArray(length);
         for (int i = 0; i < array.length; i++) {
             newArray[array.length - i - 1] = array[i];
         }
@@ -853,7 +855,8 @@ public final class ArrayUtil {
     }
 
     public static long[] reverse(long[] array) {
-        long[] newArray = array.clone();
+        int length = array.length;
+        long[] newArray = newLongArray(length);
         for (int i = 0; i < array.length; i++) {
             newArray[array.length - i - 1] = array[i];
         }
@@ -861,7 +864,8 @@ public final class ArrayUtil {
     }
 
     public static short[] reverse(short[] array) {
-        short[] newArray = array.clone();
+        int length = array.length;
+        short[] newArray = newShortArray(length);
         for (int i = 0; i < array.length; i++) {
             newArray[array.length - i - 1] = array[i];
         }
@@ -869,7 +873,8 @@ public final class ArrayUtil {
     }
 
     public static double[] reverse(double[] array) {
-        double[] newArray = array.clone();
+        int length = array.length;
+        double[] newArray = newDoubleArray(length);
         for (int i = 0; i < array.length; i++) {
             newArray[array.length - i - 1] = array[i];
         }
@@ -877,7 +882,8 @@ public final class ArrayUtil {
     }
 
     public static float[] reverse(float[] array) {
-        float[] newArray = array.clone();
+        int length = array.length;
+        float[] newArray = newFloatArray(length);
         for (int i = 0; i < array.length; i++) {
             newArray[array.length - i - 1] = array[i];
         }
@@ -885,7 +891,8 @@ public final class ArrayUtil {
     }
 
     public static char[] reverse(char[] array) {
-        char[] newArray = array.clone();
+        int length = array.length;
+        char[] newArray = newCharArray(length);
         for (int i = 0; i < array.length; i++) {
             newArray[array.length - i - 1] = array[i];
         }
@@ -893,7 +900,8 @@ public final class ArrayUtil {
     }
 
     public static byte[] reverse(byte[] array) {
-        byte[] newArray = array.clone();
+        int length = array.length;
+        byte[] newArray = newByteArray(length);
         for (int i = 0; i < array.length; i++) {
             newArray[array.length - i - 1] = array[i];
         }
@@ -901,7 +909,8 @@ public final class ArrayUtil {
     }
 
     public static boolean[] reverse(boolean[] array) {
-        boolean[] newArray = array.clone();
+        int length = array.length;
+        boolean[] newArray = newBooleanArray(length);
         for (int i = 0; i < array.length; i++) {
             newArray[array.length - i - 1] = array[i];
         }
