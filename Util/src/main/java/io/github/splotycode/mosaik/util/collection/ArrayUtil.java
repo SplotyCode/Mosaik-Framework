@@ -754,6 +754,84 @@ public final class ArrayUtil {
 
     /*
      * --------------------------------
+     * ----------- INSERT -------------
+     * --------------------------------
+     */
+
+    public static <T> T[] insert(T[] array, int idx, T element) {
+        int length = array.length;
+        T[] result = createArray(array.getClass().getComponentType(), length + 1);
+        System.arraycopy(array, 0, result, 0, idx);
+        result[idx] = element;
+        System.arraycopy(array, idx, result, idx + 1, length - idx);
+        return result;
+    }
+
+    public static int[] insert(int[] array, int idx, int element) {
+        int length = array.length;
+        int[] result = newIntArray(length + 1);
+        System.arraycopy(array, 0, result, 0, idx);
+        result[idx] = element;
+        System.arraycopy(array, idx, result, idx + 1, length - idx);
+        return result;
+    }
+
+    public static short[] insert(short[] array, int idx, short element) {
+        int length = array.length;
+        short[] result = newShortArray(length + 1);
+        System.arraycopy(array, 0, result, 0, idx);
+        result[idx] = element;
+        System.arraycopy(array, idx, result, idx + 1, length - idx);
+        return result;
+    }
+
+    public static long[] insert(long[] array, int idx, long element) {
+        int length = array.length;
+        long[] result = newLongArray(length + 1);
+        System.arraycopy(array, 0, result, 0, idx);
+        result[idx] = element;
+        System.arraycopy(array, idx, result, idx + 1, length - idx);
+        return result;
+    }
+
+    public static byte[] insert(byte[] array, int idx, byte element) {
+        int length = array.length;
+        byte[] result = newByteArray(length + 1);
+        System.arraycopy(array, 0, result, 0, idx);
+        result[idx] = element;
+        System.arraycopy(array, idx, result, idx + 1, length - idx);
+        return result;
+    }
+
+    public static boolean[] insert(boolean[] array, int idx, boolean element) {
+        int length = array.length;
+        boolean[] result = newBooleanArray(length + 1);
+        System.arraycopy(array, 0, result, 0, idx);
+        result[idx] = element;
+        System.arraycopy(array, idx, result, idx + 1, length - idx);
+        return result;
+    }
+
+    public static double[] insert(double[] array, int idx, double element) {
+        int length = array.length;
+        double[] result = newDoubleArray(length + 1);
+        System.arraycopy(array, 0, result, 0, idx);
+        result[idx] = element;
+        System.arraycopy(array, idx, result, idx + 1, length - idx);
+        return result;
+    }
+
+    public static float[] insert(float[] array, int idx, float element) {
+        int length = array.length;
+        float[] result = newFloatArray(length + 1);
+        System.arraycopy(array, 0, result, 0, idx);
+        result[idx] = element;
+        System.arraycopy(array, idx, result, idx + 1, length - idx);
+        return result;
+    }
+
+    /*
+     * --------------------------------
      * ----------- REVERSE ------------
      * --------------------------------
      */
@@ -2036,42 +2114,119 @@ public final class ArrayUtil {
      * --------------------------------
      */
 
-
-    public final <T> T[] collect(T... array) {
+    public static  <T> T[] collect(T... array) {
         return array;
     }
 
-    public final int[] collect(int... array) {
+    public static int[] collectInt(int... array) {
         return array;
     }
 
-    public final long[] collect(long... array) {
+    public static long[] collectLong(long... array) {
         return array;
     }
 
-    public final short[] collect(short... array) {
+    public static short[] collectShort(short... array) {
         return array;
     }
 
-    public final double[] collect(double... array) {
+    public static double[] collectDouble(double... array) {
         return array;
     }
 
-    public final float[] collect(float... array) {
+    public static float[] collectFloat(float... array) {
         return array;
     }
 
-    public final byte[] collect(byte... array) {
+    public static byte[] collectByte(byte... array) {
         return array;
     }
 
-    public final char[] collect(char... array) {
+    public static char[] collectChar(char... array) {
         return array;
     }
 
-    public final boolean[] collect(boolean... array) {
+    public static boolean[] collectBoolean(boolean... array) {
         return array;
     }
 
+    /*
+     * --------------------------------
+     * --------- remove last -------------
+     * --------------------------------
+     */
+
+    public static  <T> T[] removeLast(T[] array, int end) {
+        return resize(array, array.length - end);
+    }
+
+    public static int[] removeLast(int[] array, int end) {
+        return resize(array, array.length - end);
+    }
+
+    public static long[] removeLast(long[] array, int end) {
+        return resize(array, array.length - end);
+    }
+
+    public static short[] removeLast(short[] array, int end) {
+        return resize(array, array.length - end);
+    }
+
+    public static double[] removeLast(double[] array, int end) {
+        return resize(array, array.length - end);
+    }
+
+    public static float[] removeLast(float[] array, int end) {
+        return resize(array, array.length - end);
+    }
+
+    public static byte[] removeLast(byte[] array, int end) {
+        return resize(array, array.length - end);
+    }
+
+    public static char[] removeLast(char[] array, int end) {
+        return resize(array, array.length - end);
+    }
+
+    public static boolean[] removeLast(boolean[] array, int end) {
+        return resize(array, array.length - end);
+    }
+
+
+    public static  <T> T[] removeLast(T[] array) {
+        return removeLast(array, 1);
+    }
+
+    public static int[] removeLast(int[] array) {
+        return removeLast(array, 1);
+    }
+
+    public static long[] removeLast(long[] array) {
+        return removeLast(array, 1);
+    }
+
+    public static short[] removeLast(short[] array) {
+        return removeLast(array, 1);
+    }
+
+    public static double[] removeLast(double[] array) {
+        return removeLast(array, 1);
+    }
+
+    public static float[] removeLast(float[] array) {
+        return removeLast(array, 1);
+    }
+
+    public static byte[] removeLast(byte[] array) {
+        return removeLast(array, 1);
+    }
+
+    public static char[] removeLast(char[] array) {
+        return removeLast(array, 1);
+    }
+
+    public static boolean[] removeLast(boolean[] array) {
+        return removeLast(array, 1);
+    }
 
 }
