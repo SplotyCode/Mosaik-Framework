@@ -68,22 +68,30 @@ public final class ReflectionUtil {
         return fields;
     }
 
-    public static Set<Method> getAllMethods(Class clazz) {
-        Set<Method> methods = new HashSet<>();
+    public static ArrayList<Method> getAllMethods(Class clazz) {
+        ArrayList<Method> methods = new ArrayList<>();
         while (clazz != Object.class) {
             collectMethodsInInterfaces(true, clazz, methods);
-            methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (!methods.contains(method)) {
+                    methods.add(method);
+                }
+            }
             clazz = clazz.getSuperclass();
         }
         return methods;
     }
 
-    private static void collectMethodsInInterfaces(boolean base, Class clazz, Set<Method> methods) {
+    private static void collectMethodsInInterfaces(boolean base, Class clazz, ArrayList<Method> methods) {
         for (Class inter : clazz.getInterfaces()) {
             collectMethodsInInterfaces(false, inter, methods);
         }
         if (!base) {
-            methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (!methods.contains(method)) {
+                    methods.add(method);
+                }
+            }
         }
     }
 
