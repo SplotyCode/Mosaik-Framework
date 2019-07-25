@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.collection;
 
+import io.github.splotycode.mosaik.util.math.RandomUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -806,6 +807,15 @@ public final class ArrayUtil {
     public static boolean[] insert(boolean[] array, int idx, boolean element) {
         int length = array.length;
         boolean[] result = newBooleanArray(length + 1);
+        System.arraycopy(array, 0, result, 0, idx);
+        result[idx] = element;
+        System.arraycopy(array, idx, result, idx + 1, length - idx);
+        return result;
+    }
+
+    public static char[] insert(char[] array, int idx, char element) {
+        int length = array.length;
+        char[] result = newCharArray(length + 1);
         System.arraycopy(array, 0, result, 0, idx);
         result[idx] = element;
         System.arraycopy(array, idx, result, idx + 1, length - idx);
@@ -2236,6 +2246,85 @@ public final class ArrayUtil {
 
     public static boolean[] removeLast(boolean[] array) {
         return removeLast(array, 1);
+    }
+
+    /*
+     * --------------------------------
+     * ----------- PICK ---------------
+     * --------------------------------
+     */
+
+    public static <T> int pickIndex(T[] array) {
+        return RandomUtil.fastRandom(0, array.length - 1);
+    }
+
+    public static int pickIndex(long[] array) {
+        return RandomUtil.fastRandom(0, array.length - 1);
+    }
+
+    public static int pickIndex(int[] array) {
+        return RandomUtil.fastRandom(0, array.length - 1);
+    }
+
+    public static int pickIndex(short[] array) {
+        return RandomUtil.fastRandom(0, array.length - 1);
+    }
+
+    public static int pickIndex(double[] array) {
+        return RandomUtil.fastRandom(0, array.length - 1);
+    }
+
+    public static int pickIndex(float[] array) {
+        return RandomUtil.fastRandom(0, array.length - 1);
+    }
+
+    public static int pickIndex(byte[] array) {
+        return RandomUtil.fastRandom(0, array.length - 1);
+    }
+
+    public static int pickIndex(char[] array) {
+        return RandomUtil.fastRandom(0, array.length - 1);
+    }
+
+    public static int pickIndex(boolean[] array) {
+
+        return RandomUtil.fastRandom(0, array.length - 1);
+    }
+
+    public static <T> T pick(T[] array) {
+        return array[pickIndex(array)];
+    }
+
+    public static long pick(long[] array) {
+        return array[pickIndex(array)];
+    }
+
+    public static int pick(int[] array) {
+        return array[pickIndex(array)];
+    }
+
+    public static short pick(short[] array) {
+        return array[pickIndex(array)];
+    }
+
+    public static double pick(double[] array) {
+        return array[pickIndex(array)];
+    }
+
+    public static float pick(float[] array) {
+        return array[pickIndex(array)];
+    }
+
+    public static byte pick(byte[] array) {
+        return array[pickIndex(array)];
+    }
+
+    public static char pick(char[] array) {
+        return array[pickIndex(array)];
+    }
+
+    public static boolean pick(boolean[] array) {
+        return array[pickIndex(array)];
     }
 
 }

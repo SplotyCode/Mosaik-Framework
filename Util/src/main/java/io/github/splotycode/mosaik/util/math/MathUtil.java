@@ -1,6 +1,5 @@
 package io.github.splotycode.mosaik.util.math;
 
-import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -14,22 +13,11 @@ public final class MathUtil {
      * Returns a random number
      * @param values the possible numbers
      * @param probability probability for each value
+     * @deprecated {@link RandomUtil#weightedRandom(double[], double[])}
      */
-    public double weightedRandomn(double[] values, double[] probability) {
-        if (values == null) throw new IllegalArgumentException("values");
-        if (probability == null) throw new IllegalArgumentException("probability");
-        if (values.length != probability.length) throw new IllegalArgumentException(values.length + "!=" + probability.length);
-
-        double rand = Math.random();
-        double ratio = 1f / ArrayUtil.sum(probability);
-        double tempDist = 0;
-        for (int c = 0; c < values.length;c++) {
-            tempDist += probability[c];
-            if (rand / ratio <= tempDist) {
-                return values[c];
-            }
-        }
-        return 0;
+    @Deprecated
+    public static double weightedRandom(double[] values, double[] probability) {
+        return RandomUtil.weightedRandom(values, probability);
     }
 
     /**

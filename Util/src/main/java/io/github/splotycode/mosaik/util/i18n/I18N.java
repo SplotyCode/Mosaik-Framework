@@ -15,7 +15,7 @@ public class I18N {
 
     protected String getTranslation(String key) {
         String value = map.get(key);
-        if (value == null) {
+        if (value == null && fallback != null) {
             value = fallback.map.get(key);
         }
         return value;
