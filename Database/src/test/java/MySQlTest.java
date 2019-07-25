@@ -3,6 +3,7 @@ import io.github.splotycode.mosaik.database.connection.sql.SQLConnectionProvider
 import io.github.splotycode.mosaik.database.repo.Filters;
 import io.github.splotycode.mosaik.database.repo.SQLExecutor;
 import io.github.splotycode.mosaik.database.repo.TableExecutor;
+import io.github.splotycode.mosaik.database.repo.UnsecuredSQLExecutor;
 import io.github.splotycode.mosaik.database.table.*;
 import io.github.splotycode.mosaik.runtime.startup.StartUpInvoke;
 import io.github.splotycode.mosaik.util.EnumUtil;
@@ -19,18 +20,22 @@ public class MySQlTest {
         if (StartUpInvoke.invokeTestSuite()) {
             SQLConnectionProviders.mysql().connect("localhost", "root", "1234", "test").makeDefault();
 
-            TableExecutor<Person, JDBCConnectionProvider> repo = new SQLExecutor<>(Person.class);
-            repo.drop();
-            repo.createIfNotExists();
-            repo.save(new Person("aa", "bbb", 2, "dasd@asd.ed"), Access.FIRST_NAME, Access.LAST_NAME);
-            repo.save(new Person("aaa", "bbasb", 3, "dasd@asd.ed"));
-            repo.save(new Person("aaa", "bbasb", 4, "dasd@asd.ed"));
-            repo.save(new Person("aadsad", "bbbsdfd", 8, "dasd@asfdddd.ed"));
-            System.out.println(new PrettyPrint(repo.selectAll()).prettyPrintType());
-            System.out.println(new PrettyPrint(repo.selectFirst(
-                    Filters.and(Filters.eq("firstName", "aaa"), Filters.gte("id", 4)))
-            ).prettyPrint());
+            testExecuor(new SQLExecutor<>(Person.class));
+            testExecuor(new UnsecuredSQLExecutor<>(Person.class));
         }
+    }
+
+    private void testExecuor(TableExecutor<Person, JDBCConnectionProvider> repo) {
+        repo.drop();
+        repo.createIfNotExists();
+        repo.save(new Person("aa", "bbb", 2, "dasd@asd.ed"), Access.FIRST_NAME, Access.LAST_NAME);
+        repo.save(new Person("aaa", "bbasb", 3, "dasd@asd.ed"));
+        repo.save(new Person("aaa", "bbasb", 4, "dasd@asd.ed"));
+        repo.save(new Person("aadsad", "bbbsdfd", 8, "dasd@asfdddd.ed"));
+        System.out.println(new PrettyPrint(repo.selectAll()).prettyPrintType());
+        System.out.println(new PrettyPrint(repo.selectFirst(
+                Filters.and(Filters.eq("firstName", "aaa"), Filters.gte("id", 4)))
+        ).prettyPrint());
     }
 
     enum  Access implements ColumnNameResolver {

@@ -34,7 +34,7 @@ public abstract class AbstractExecutor<T, C extends ConnectionProvider> implemen
         Field field = fieldObject.getField();
         field.setAccessible(true);
         try {
-            return TransformerManager.getInstance().transform(field.get(instance), String.class);
+            return doTransform(field.get(instance), String.class);
         } catch (IllegalAccessException e) {
             throw new RepoException("Could not getvalue for " + field.getName(), e);
         }
@@ -43,7 +43,11 @@ public abstract class AbstractExecutor<T, C extends ConnectionProvider> implemen
     public void setValue(String fieldName, Object value, T instance) throws IllegalAccessException {
         Field field = fields.get(fieldName).getField();
         field.setAccessible(true);
-        field.set(instance, TransformerManager.getInstance().transform(value, field.getType()));
+        field.set(instance, doTransform(value, field.getType()));
+    }
+
+    protected <R> R doTransform(Object input, Class<R> result) {
+        return TransformerManager.getInstance().transform(input, result);
     }
 
     public AbstractExecutor(Class<?> clazz) {
