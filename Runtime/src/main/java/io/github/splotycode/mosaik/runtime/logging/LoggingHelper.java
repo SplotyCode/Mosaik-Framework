@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.runtime.logging;
 
-import io.github.splotycode.mosaik.runtime.application.ApplicationInfo;
 import io.github.splotycode.mosaik.runtime.application.Application;
+import io.github.splotycode.mosaik.runtime.application.ApplicationInfo;
 import io.github.splotycode.mosaik.runtime.debug.DebugProvider;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.info.EnvironmentInformation;
@@ -43,12 +43,12 @@ public final class LoggingHelper {
     }
 
     public static void loggingStartUp() {
-        printImportantSection("Api Start");
+        printImportantSection("Mosaik Start");
     }
 
     public static void registerShutdownLogging() {
-        Application.getGlobalShutdownManager().addFirstShutdownTask(() -> printImportantSection("Api Shutdown Starting"));
-        Application.getGlobalShutdownManager().addShutdownTask(() -> printImportantSection("Api Shutdown Completed"));
+        Application.getGlobalShutdownManager().addFirstShutdownTask(() -> printImportantSection("Mosaik Shutdown Starting"));
+        Application.getGlobalShutdownManager().addShutdownTask(() -> printImportantSection("Mosaik Shutdown Completed"));
     }
 
     public static void printInfo() {
