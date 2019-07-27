@@ -27,6 +27,10 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
     //TODO: if we have a transformer that transforms int to string and a transformer that transforms string to short it should be possible to transform int to shorts
 
     public <T> T transform(Object input, Class<T> result, Collection<ValueTransformer> transformers) {
+        return transform(new DataFactory(), input, result, transformers);
+    }
+
+    public <T> T transform(DataFactory info, Object input, Class<T> result, Collection<ValueTransformer> transformers) {
         if (input == null) return null;
         if (ReflectionUtil.isAssignable(result, input.getClass())) return (T) input;
         //List<Class<?>> possibleResults = getPossibleResults(input.getClass());
@@ -34,7 +38,6 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
         for (ValueTransformer transformer : transformers) {
             if (transformer.valid(input, result)) {
                 try {
-                    DataFactory info = new DataFactory();
                     info.putData(CommonData.RESULT, result);
                     return (T) transformer.transform(input, info);
                 } catch (Throwable throwable) {
@@ -54,9 +57,19 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
         return transform(input, result, currentTransformers);
     }
 
+    public <T> T transformWithAdditional(DataFactory info, Object input, Class<T> result, Collection<ValueTransformer> additional) {
+        ArrayList<ValueTransformer> currentTransformers = new ArrayList<>(additional);
+        currentTransformers.addAll(transformers);
+        return transform(input, result, currentTransformers);
+    }
+
 
     public <T> T transform(Object input, Class<T> result) {
         return transform(input, result, transformers);
+    }
+
+    public <T> T transform(DataFactory info, Object input, Class<T> result) {
+        return transform(info, input, result, transformers);
     }
 
     private List<Class<?>> getPossibleResults(Class<?> input) {

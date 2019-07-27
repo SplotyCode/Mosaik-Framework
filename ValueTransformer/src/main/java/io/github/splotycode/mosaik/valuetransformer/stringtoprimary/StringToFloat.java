@@ -11,7 +11,7 @@ public class StringToFloat extends ValueTransformer<String, Float> {
         try {
             return Float.valueOf(input);
         } catch (NumberFormatException ex) {
-            throw new TransformException("Wrong Number Format: " + input, ex);
+            throw TransformException.createTranslated(info, "string_to_float", "{0} is not a in float format", ex, input);
         }
     }
 

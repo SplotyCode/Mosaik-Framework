@@ -13,7 +13,7 @@ public class StringToURL extends ValueTransformer<String, URL> {
         try {
             return new URL(input);
         } catch (MalformedURLException e) {
-            throw new TransformException("Syntax error in URL", e);
+            throw TransformException.createTranslated(info, "string_to_url", "Syntax error in URL", e);
         }
     }
 }

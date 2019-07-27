@@ -11,7 +11,7 @@ public class StringToDouble extends ValueTransformer<String, Double> {
         try {
             return Double.valueOf(input);
         } catch (NumberFormatException ex) {
-            throw new TransformException("Wrong Number Format: " + input, ex);
+            throw TransformException.createTranslated(info, "string_to_double", "{0} is not a in double format", ex, input);
         }
     }
 

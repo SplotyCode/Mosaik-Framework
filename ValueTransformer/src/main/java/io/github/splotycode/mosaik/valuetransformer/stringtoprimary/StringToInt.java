@@ -11,7 +11,7 @@ public class StringToInt extends ValueTransformer<String, Integer> {
         try {
             return Integer.valueOf(input);
         } catch (NumberFormatException ex) {
-            throw new TransformException("Wrong Number Format: " + input, ex);
+            throw TransformException.createTranslated(info, "string_to_int", "{0} is not a in integer format", ex, input);
         }
     }
 

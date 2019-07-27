@@ -14,7 +14,7 @@ public class StringToURI extends ValueTransformer<String, URI> {
         try {
             return new URI(input);
         } catch (URISyntaxException e) {
-            throw new TransformException("Syntax error in URI", e);
+            throw TransformException.createTranslated(info, "string_to_uri", "Syntax error in URI", e);
         }
     }
 

@@ -11,7 +11,7 @@ public class StringToShort extends ValueTransformer<String, Short> {
         try {
             return Short.valueOf(input);
         } catch (NumberFormatException ex) {
-            throw new TransformException("Wrong Number Format: " + input, ex);
+            throw TransformException.createTranslated(info, "string_to_short", "{0} is not a in short format", ex, input);
         }
     }
 

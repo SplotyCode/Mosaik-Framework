@@ -11,7 +11,7 @@ public class StringToLong extends ValueTransformer<String, Long> {
         try {
             return Long.valueOf(input);
         } catch (NumberFormatException ex) {
-            throw new TransformException("Wrong Number Format: " + input, ex);
+            throw TransformException.createTranslated(info, "string_to_long", "{0} is not a in long format", ex, input);
         }
     }
 

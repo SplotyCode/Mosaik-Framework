@@ -7,10 +7,11 @@ import lombok.Getter;
 
 import java.lang.reflect.Type;
 
+@Getter
 public abstract class ValueTransformer<I, O> {
 
-    @Getter private Class<I> inputClass;
-    @Getter private Class<O> outputClass;
+    private Class<I> inputClass;
+    private Class<O> outputClass;
 
     /**
      * Transforms a object
