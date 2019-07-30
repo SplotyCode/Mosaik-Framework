@@ -43,6 +43,7 @@ public class I18N {
     }
 
     protected String format(String value, Object... objects) {
+        if (value == null) return null;
         MessageFormat format = formatThreadLocal.get();
         format.applyPattern(value);
         return format.format(objects);
