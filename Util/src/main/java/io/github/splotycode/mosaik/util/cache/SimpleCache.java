@@ -16,7 +16,7 @@ public class SimpleCache<T> implements Cache<T> {
 
     private final ListenerHandler<CacheListener<T>> handler = new DefaultListenerHandler<>();
 
-    @Getter private T value;
+    @Getter protected T value;
 
     @Override
     public void setValue(T value) {
