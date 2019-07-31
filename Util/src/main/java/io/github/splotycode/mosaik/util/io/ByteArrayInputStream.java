@@ -17,6 +17,10 @@ public class ByteArrayInputStream extends java.io.ByteArrayInputStream {
         original = bytes;
     }
 
+    /**
+     * @deprecated use {@link io.github.splotycode.mosaik.util.io.ByteArrayInputStream#getOriginal()}
+     **/
+    @Deprecated
     public byte[] getBuf() {
         return buf;
     }

@@ -160,4 +160,66 @@ public final class BinaryUtil {
         bytes[offset + 1] = (byte) ((value) & 0xFF);
     }
 
+    public static String readString(byte[] bytes) {
+        return readString(bytes, 0);
+    }
+
+    public static String readString(byte[] bytes, int offset) {
+        checkArraySize(2, offset, bytes);
+        short length = readShort(bytes, offset);
+        char[] chars = new char[length];
+        offset += 2;
+        checkStringArraySize(length, offset, bytes);
+
+        for (int i = 0; i < length; i++) {
+            chars[i] = readChar(bytes, offset);
+            offset += 2;
+        }
+        return new String(chars);
+    }
+
+    public static byte[] writeString(String value) {
+        byte[] bytes = new byte[calculateStringSize(value)];
+        writeString(bytes, value);
+        return bytes;
+    }
+
+    public static void writeString(byte[] bytes, String value) {
+        writeString(bytes, 0, value);
+    }
+
+    public static int calculateStringSize(String str) {
+        return calculateStringSize(str.length());
+    }
+
+    public static int calculateStringSize(int length) {
+        return 2 + length * 2;
+    }
+
+    private static void checkStringArraySize(int length, int offset, byte[] array) {
+        checkArraySize(calculateStringSize(length), offset, array);
+    }
+
+    private static void checkArraySize(int length, int offset, byte[] array) {
+        int diff = (length + offset) - array.length;
+        if (diff < 0) {
+            throw new IllegalArgumentException("Byte array is to short need " + diff + " more bytes actual bytes: " + array.length);
+        }
+    }
+
+    public static void writeString(byte[] bytes, int offset, String value) {
+        int length = value.length();
+        if (length > Short.MAX_VALUE) {
+            throw new IllegalArgumentException("String is larger then " + Short.MAX_VALUE);
+        }
+        checkStringArraySize(length, offset, bytes);
+        writeShort(bytes, offset, (short) length);
+        offset += 2;
+
+        for (int i = 0; i < length; i++) {
+            writeChar(bytes, offset, value.charAt(i));
+            offset += 2;
+        }
+    }
+
 }
