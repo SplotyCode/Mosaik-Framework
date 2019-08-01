@@ -1,15 +1,50 @@
 package io.github.splotycode.mosaik.database.repo;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import io.github.splotycode.mosaik.database.connection.ConnectionProvider;
 import io.github.splotycode.mosaik.database.table.*;
+import io.github.splotycode.mosaik.util.ValueTransformer;
+import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
+import io.github.splotycode.mosaik.valuetransformer.CommonData;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
+import io.github.splotycode.mosaik.valuetransformer.TransformerNotFoundException;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractExecutor<T, C extends ConnectionProvider> implements TableExecutor<T, C> {
+
+    private GsonBuilder builder = new GsonBuilder().disableHtmlEscaping();
+    private Gson gson;
+
+    {
+        for (ValueTransformer<?, ?> transformer : TransformerManager.getInstance().getList()) {
+            Class obj = String.class.isAssignableFrom(transformer.getInputClass())
+                    ? transformer.getOutputClass() :
+                    (String.class.isAssignableFrom(transformer.getOutputClass()) ? transformer.getInputClass() : null);
+            if (obj != null) {
+                builder.registerTypeAdapter(obj, new TypeAdapter() {
+                    @Override
+                    public void write(JsonWriter out, Object value) throws IOException {
+                        out.value(doSave(value));
+                    }
+
+                    @Override
+                    public Object read(JsonReader in) throws IOException {
+                        return doParse(in.nextString(), obj);
+                    }
+                });
+            }
+        }
+        gson = builder.create();
+    }
 
     protected Class<?> clazz;
     protected Table table;
@@ -34,7 +69,7 @@ public abstract class AbstractExecutor<T, C extends ConnectionProvider> implemen
         Field field = fieldObject.getField();
         field.setAccessible(true);
         try {
-            return doTransform(field.get(instance), String.class);
+            return doSave(field.get(instance));
         } catch (IllegalAccessException e) {
             throw new RepoException("Could not getvalue for " + field.getName(), e);
         }
@@ -43,11 +78,33 @@ public abstract class AbstractExecutor<T, C extends ConnectionProvider> implemen
     public void setValue(String fieldName, Object value, T instance) throws IllegalAccessException {
         Field field = fields.get(fieldName).getField();
         field.setAccessible(true);
-        field.set(instance, doTransform(value, field.getType()));
+        field.set(instance, doParse(value, field.getType()));
     }
 
-    protected <R> R doTransform(Object input, Class<R> result) {
-        return TransformerManager.getInstance().transform(input, result);
+    protected DataFactory getConfig() {
+        DataFactory config = new DataFactory();
+        config.putData(CommonData.AVOID_NULL, true);
+        config.putData(CommonData.SERIALIZATION, true);
+        return config;
+    }
+
+    protected String doSave(Object input) {
+        DataFactory config = getConfig();
+        config.putData(CommonData.AVOID_TOSTRING, true);
+
+        try {
+            return TransformerManager.getInstance().transform(config, input, String.class);
+        } catch (TransformerNotFoundException ex) {
+            return gson.toJson(input);
+        }
+    }
+
+    protected <P> P doParse(Object input, Class<P> clazz) {
+        try {
+            return TransformerManager.getInstance().transform(getConfig(), input, clazz);
+        } catch (TransformerNotFoundException ex) {
+            return gson.fromJson(input.toString(), clazz);
+        }
     }
 
     public AbstractExecutor(Class<?> clazz) {

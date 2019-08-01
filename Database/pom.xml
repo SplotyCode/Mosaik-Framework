@@ -56,6 +56,11 @@
             <version>2.3-Dev</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${mosaik.gson.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
