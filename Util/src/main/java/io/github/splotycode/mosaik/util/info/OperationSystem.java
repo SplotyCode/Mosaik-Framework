@@ -1,9 +1,15 @@
 package io.github.splotycode.mosaik.util.info;
 
+import io.github.splotycode.mosaik.util.io.LineSeparator;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum OperationSystem {
 
-    WINDOWS,
-    LINUX;
+    WINDOWS(LineSeparator.CRLF),
+    LINUX(LineSeparator.LF);
 
     private static OperationSystem current = null;
 
@@ -18,5 +24,7 @@ public enum OperationSystem {
         }
         return current;
     }
+
+    private LineSeparator separator;
 
 }
