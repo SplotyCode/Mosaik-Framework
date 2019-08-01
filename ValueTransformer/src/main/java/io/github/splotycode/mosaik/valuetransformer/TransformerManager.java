@@ -32,21 +32,37 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
 
     public <T> T transform(DataFactory info, Object input, Class<T> result, Collection<ValueTransformer> transformers) {
         if (input == null) return null;
-        if (ReflectionUtil.isAssignable(result, input.getClass())) return (T) input;
-        //List<Class<?>> possibleResults = getPossibleResults(input.getClass());
+        Class<?> inputClass = input.getClass();
+        if (ReflectionUtil.isAssignable(result, inputClass)) return (T) input;
 
-        for (ValueTransformer transformer : transformers) {
-            if (transformer.valid(input, result)) {
-                try {
-                    info.putData(CommonData.RESULT, result);
-                    return (T) transformer.transform(input, info);
-                } catch (Throwable throwable) {
-                    throw new TransformException("Failed to transform with " + transformer.getClass().getName(), throwable);
-                }
+        info.putData(CommonData.RESULT, result);
+
+        ValueTransformer<Object, T> transformer = getTransformer(input, result, transformers);
+        if (transformer != null) {
+            try {
+                return transformer.transform(input, info);
+            } catch (Throwable throwable) {
+                throw new TransformException("Failed to transform with " + transformer.getClass().getName(), throwable);
             }
         }
         if (String.class.isAssignableFrom(result)) {
-            return (T) input.toString();
+            String str = input.toString();
+            if (!info.getDataDefault(CommonData.AVOID_TOSTRING, false) ||
+                    getTransformer(str, input.getClass(), transformers) != null) {
+                return (T) str;
+            }
+        }
+        if (info.getDataDefault(CommonData.AVOID_NULL)) {
+            throw new TransformerNotFoundException("No transformer found to convert " + inputClass.getName() + " to " + result.getName());
+        }
+        return null;
+    }
+
+    private <I, O> ValueTransformer<I, O> getTransformer(I input, Class<O> result, Collection<ValueTransformer> transformers) {
+        for (ValueTransformer transformer : transformers) {
+            if (transformer.valid(input, result)) {
+                return transformer;
+            }
         }
         return null;
     }
