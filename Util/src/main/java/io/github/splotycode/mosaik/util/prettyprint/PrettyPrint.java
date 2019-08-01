@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.prettyprint;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.util.*;
@@ -18,11 +19,11 @@ public class PrettyPrint {
         this.prefix = prefix;
     }
 
-    public String prettyPrint(){
+    public String prettyPrint() {
         return prettyPrint(0);
     }
 
-    public String prettyPrintType(){
+    public String prettyPrintType() {
         try {
             return getValue(object, 0);
         } catch (IllegalAccessException e) {
@@ -65,6 +66,9 @@ public class PrettyPrint {
     private String getValue(Object o, int tab) throws IllegalAccessException {
         if (o == null)
             return "null";
+        if (Thread.currentThread().getStackTrace().length > 70) {
+            return "[infinitive recursion]";
+        }
         //System.out.println(field.getName() + " : " + o.toString());
         Class<?> arrayType = o.getClass().getComponentType();
         if (arrayType != null && o.getClass().isArray()) {
@@ -91,7 +95,9 @@ public class PrettyPrint {
             }
         } else if(o.getClass().isEnum()){
             return o.getClass().getName().toUpperCase() + "." + o.toString() + "(enum)";
-        }else if (o instanceof Collection) {
+        } else if(o instanceof File) {
+            return ((File) o).getAbsolutePath();
+        } else if (o instanceof Collection) {
             Collection<Object> collection = (Collection<Object>) o;
             ArrayList<String> list = new ArrayList<>(collection.size());
             for(Object obj: collection) {
