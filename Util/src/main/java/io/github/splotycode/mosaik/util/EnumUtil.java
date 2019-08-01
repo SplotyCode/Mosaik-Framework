@@ -30,7 +30,16 @@ public final class EnumUtil {
      * @param firstUpper should the first char be uppercase
      */
     public static String toDisplayName(Enum enumm, String separator, boolean firstUpper) {
-        return StringUtil.camelCase(enumm.name(), "_", firstUpper).replace("_", separator);
+        return toDisplayName(enumm.name(), separator, firstUpper);
+    }
+
+    /**
+     * Gets a human readable display name from a enum name
+     * @param separator the separator that should be used (My-Name-Is-David or My Name Is David)
+     * @param firstUpper should the first char be uppercase
+     */
+    public static String toDisplayName(String enumm, String separator, boolean firstUpper) {
+        return StringUtil.camelCase(enumm, "_", firstUpper).replace("_", separator);
     }
 
 }
