@@ -146,6 +146,7 @@ public final class FileUtil {
     }
 
     public static boolean delete(File file) {
+        if (!file.exists()) return true;
         try {
             Files.walkFileTree(file.toPath(), new SimpleFileVisitor<Path>() {
                 @Override
