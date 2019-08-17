@@ -13,6 +13,13 @@ import java.util.Arrays;
  */
 public interface TableExecutor<T, C extends ConnectionProvider> {
 
+    Class<?> getRepoClass();
+
+    @SuppressWarnings("unchecked")
+    default C getDefaultConnection() {
+        return (C) Database.getInstance().getDefaultConnection();
+    }
+
     /**
      * Deletes this repo
      * @param connection the connection that will be used
@@ -122,131 +129,131 @@ public interface TableExecutor<T, C extends ConnectionProvider> {
 
 
     default void drop() {
-        drop((C) Database.getInstance().getDefaultConnection());
+        drop(getDefaultConnection());
     }
 
     default void create() {
-        create((C) Database.getInstance().getDefaultConnection());
+        create(getDefaultConnection());
     }
 
     default void createIfNotExists() {
-        createIfNotExists((C) Database.getInstance().getDefaultConnection());
+        createIfNotExists(getDefaultConnection());
     }
 
     default void save(T entry) {
-        save((C) Database.getInstance().getDefaultConnection(), entry);
+        save(getDefaultConnection(), entry);
     }
 
     default void save(T entry, String... fields) {
-        save((C) Database.getInstance().getDefaultConnection(), entry, fields);
+        save(getDefaultConnection(), entry, fields);
     }
 
     default void save(T entry, ColumnNameResolver... fields) {
-        save((C) Database.getInstance().getDefaultConnection(), entry, fields);
+        save(getDefaultConnection(), entry, fields);
     }
 
     /*default void delete(T entity) {
-        delete((C) Database.getInstance().getDefaultConnection(), entity);
+        delete(getDefaultConnection(), entity);
     }
 
     default void deletePrimary(Object primary) {
-        deletePrimary((C) Database.getInstance().getDefaultConnection(), primary);
+        deletePrimary(getDefaultConnection(), primary);
     }*/
 
     default void deleteFirst(Filters.Filter filter) {
-        deleteFirst((C) Database.getInstance().getDefaultConnection(), filter);
+        deleteFirst(getDefaultConnection(), filter);
     }
 
     default void deleteAll(Filters.Filter filter) {
-        deleteAll((C) Database.getInstance().getDefaultConnection(), filter);
+        deleteAll(getDefaultConnection(), filter);
     }
 
     /*default boolean exists(Object primary) {
-        return exists((C) Database.getInstance().getDefaultConnection(), primary);
+        return exists(getDefaultConnection(), primary);
     }*/
 
     default boolean exists(Filters.Filter filter) {
-        return exists((C) Database.getInstance().getDefaultConnection(), filter);
+        return exists(getDefaultConnection(), filter);
     }
 
     default Iterable<T> selectAll(String... fields) {
-        return selectAll((C) Database.getInstance().getDefaultConnection(), fields);
+        return selectAll(getDefaultConnection(), fields);
     }
 
     /*default Iterable<T> select(Object value) {
-        return select((C) Database.getInstance().getDefaultConnection(), value);
+        return select(getDefaultConnection(), value);
     }*/
 
     default Iterable<T> select(Filters.Filter filter, String... fields) {
-        return select((C) Database.getInstance().getDefaultConnection(), filter, fields);
+        return select(getDefaultConnection(), filter, fields);
     }
 
     /*default T selectFirst(Object value) {
-        return selectFirst((C) Database.getInstance().getDefaultConnection(), value);
+        return selectFirst(getDefaultConnection(), value);
     }*/
 
     default T selectFirst(Filters.Filter filter, String... fields) {
-        return selectFirst((C) Database.getInstance().getDefaultConnection(), filter, fields);
+        return selectFirst(getDefaultConnection(), filter, fields);
     }
 
     default long count() {
-        return count((C) Database.getInstance().getDefaultConnection());
+        return count(getDefaultConnection());
     }
 
     default long count(Filters.Filter filter) {
-        return count((C) Database.getInstance().getDefaultConnection(), filter);
+        return count(getDefaultConnection(), filter);
     }
 
     /*default void update(T entity, Object object) {
-        update((C) Database.getInstance().getDefaultConnection(), entity, object);
+        update(getDefaultConnection(), entity, object);
     }*/
 
     default void update(T entity, Filters.Filter filter) {
-        update((C) Database.getInstance().getDefaultConnection(), entity, filter);
+        update(getDefaultConnection(), entity, filter);
     }
 
     default void update(T entity, String... fields) {
-        update((C) Database.getInstance().getDefaultConnection(), entity, fields);
+        update(getDefaultConnection(), entity, fields);
     }
 
     /*default void update(T entity, Object object, String... fields) {
-        update((C) Database.getInstance().getDefaultConnection(), entity, object, fields);
+        update(getDefaultConnection(), entity, object, fields);
     }*/
 
     default void update(T entity, Filters.Filter filter, String... fields) {
-        update((C) Database.getInstance().getDefaultConnection(), entity, filter, fields);
+        update(getDefaultConnection(), entity, filter, fields);
     }
 
     default void update(T entity, ColumnNameResolver... fields) {
-        update((C) Database.getInstance().getDefaultConnection(), entity, fields);
+        update(getDefaultConnection(), entity, fields);
     }
 
     default void update(T entity, Filters.Filter filter, ColumnNameResolver... fields) {
-        update((C) Database.getInstance().getDefaultConnection(), entity, filter, fields);
+        update(getDefaultConnection(), entity, filter, fields);
     }
 
     default Iterable<T> selectAll(ColumnNameResolver... fields) {
-        return selectAll((C) Database.getInstance().getDefaultConnection(), fields);
+        return selectAll(getDefaultConnection(), fields);
     }
 
     default Iterable<T> select(Filters.Filter filter, ColumnNameResolver... fields) {
-        return select((C) Database.getInstance().getDefaultConnection(), filter, fields);
+        return select(getDefaultConnection(), filter, fields);
     }
 
     default T selectFirst(Filters.Filter filter, ColumnNameResolver... fields) {
-        return selectFirst((C) Database.getInstance().getDefaultConnection(), filter, fields);
+        return selectFirst(getDefaultConnection(), filter, fields);
     }
 
     default Iterable<T> selectAll() {
-        return selectAll((C) Database.getInstance().getDefaultConnection());
+        return selectAll(getDefaultConnection());
     }
 
     default Iterable<T> select(Filters.Filter filter) {
-        return select((C) Database.getInstance().getDefaultConnection(), filter);
+        return select(getDefaultConnection(), filter);
     }
 
     default T selectFirst(Filters.Filter filter) {
-        return selectFirst((C) Database.getInstance().getDefaultConnection(), filter);
+        return selectFirst(getDefaultConnection(), filter);
     }
 
 }

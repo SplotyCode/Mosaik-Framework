@@ -26,6 +26,11 @@ public class AsyncExecutor<T, C extends ConnectionProvider> implements TableExec
     }
 
     @Override
+    public Class<?> getRepoClass() {
+        return backing.getRepoClass();
+    }
+
+    @Override
     public void drop(C connection) {
         drop(connection, null);
     }

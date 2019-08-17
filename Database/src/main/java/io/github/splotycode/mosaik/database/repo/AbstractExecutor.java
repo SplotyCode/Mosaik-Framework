@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import io.github.splotycode.mosaik.database.Database;
+import io.github.splotycode.mosaik.database.DatabaseApplicationType;
 import io.github.splotycode.mosaik.database.connection.ConnectionProvider;
 import io.github.splotycode.mosaik.database.table.*;
 import io.github.splotycode.mosaik.util.ValueTransformer;
@@ -23,6 +25,8 @@ public abstract class AbstractExecutor<T, C extends ConnectionProvider> implemen
 
     private GsonBuilder builder = new GsonBuilder().disableHtmlEscaping();
     private Gson gson;
+    private C defaultConnection;
+    private DatabaseApplicationType defaultApplication;
 
     {
         for (ValueTransformer<?, ?> transformer : TransformerManager.getInstance().getList()) {
@@ -107,6 +111,17 @@ public abstract class AbstractExecutor<T, C extends ConnectionProvider> implemen
         }
     }
 
+    public AbstractExecutor(Class<?> clazz, DatabaseApplicationType defaultApplication) {
+        this(clazz);
+        this.defaultApplication = defaultApplication;
+    }
+
+
+    public AbstractExecutor(Class<?> clazz, C defaultConnection) {
+        this(clazz);
+        this.defaultConnection = defaultConnection;
+    }
+
     public AbstractExecutor(Class<?> clazz) {
         this.clazz = clazz;
         if (!clazz.isAnnotationPresent(Table.class)) {
@@ -141,4 +156,24 @@ public abstract class AbstractExecutor<T, C extends ConnectionProvider> implemen
         resolveAllResolvers();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public C getDefaultConnection() {
+        if (defaultConnection != null) {
+            return defaultConnection;
+        }
+        try {
+            if (defaultApplication != null) {
+                return (C) defaultApplication.getDefaultConnection();
+            }
+            return (C) Database.getInstance().getDefaultConnection();
+        } catch (ClassCastException ex) {
+            throw new RepoException("Default Connection has the wrong type", ex);
+        }
+    }
+
+    @Override
+    public Class<?> getRepoClass() {
+        return clazz;
+    }
 }
