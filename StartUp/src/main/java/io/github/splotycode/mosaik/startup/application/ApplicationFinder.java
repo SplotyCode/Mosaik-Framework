@@ -35,7 +35,7 @@ public class ApplicationFinder {
                         application.getApplicationTypes().add((Class<ApplicationType>) type);
                     }
                 }
-            } catch (InstantiationException | IllegalAccessException ex) {
+            } catch (Throwable ex) {
                 throw new BootException("Could not create Instance of " + clazz.getSimpleName(), ex);
             }
         }
