@@ -5,7 +5,7 @@ import io.github.splotycode.mosaik.networkingweb.localdebug.LocalDebugService;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.webapi.handler.anotation.check.Mapping;
 import io.github.splotycode.mosaik.webapi.response.content.ResponseContent;
-import io.github.splotycode.mosaik.webapi.response.content.file.FileResponseContent;
+import io.github.splotycode.mosaik.webapi.response.content.manipulate.ManipulateableContent;
 
 public class ServiceHandler {
 
@@ -13,7 +13,7 @@ public class ServiceHandler {
 
     @Mapping("services")
     public ResponseContent view() {
-        FileResponseContent content = service.getUnpackingHelper().response("services.html");
+        ManipulateableContent content =  service.getUnpackingHelper().response("services.html");
         for (Service service : service.getKit().getServices()) {
             content.manipulate().patternCostomName("services",
                     new Pair<>("name", service.displayName()),
