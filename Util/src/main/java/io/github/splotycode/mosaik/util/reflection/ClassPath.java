@@ -41,6 +41,10 @@ public class ClassPath {
             return PathUtil.getFileNameWithoutEx(path).replace('/', '.');
         }
 
+        public String name() {
+            return PathUtil.getFileName(path);
+        }
+
         public boolean inPackage(String path) {
             return this.path.startsWith(path);
         }

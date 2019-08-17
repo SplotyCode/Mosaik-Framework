@@ -3,7 +3,7 @@ package io.github.splotycode.mosaik.util.io;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.exception.ResourceNotFoundException;
-import io.github.splotycode.mosaik.util.logger.Logger;
+import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -26,20 +26,18 @@ public final class IOUtil {
     public static final int THREAD_LOCAL_BUFFER_LENGTH = 1024 * 20;
     private static final ThreadLocal<byte[]> BUFFER = ThreadLocal.withInitial(() -> new byte[THREAD_LOCAL_BUFFER_LENGTH]);
 
-    private static Logger logger = Logger.getInstance(IOUtil.class);
-
     public static String loadText(Reader reader, int length) {
         char[] chars = new char[length];
         int count = 0;
         while (count < chars.length) {
-            int n = 0;
             try {
-                n = reader.read(chars, count, chars.length - count);
+                int n = reader.read(chars, count, chars.length - count);
+                if (n > 0) {
+                    count += n;
+                }
             } catch (IOException e) {
                 ExceptionUtil.throwRuntime(e);
             }
-            if (n <= 0) break;
-            count += n;
         }
         if (count == chars.length) {
             return new String(chars);
@@ -238,12 +236,21 @@ public final class IOUtil {
         return resourceToURL(name, null);
     }
 
-    public static URL resourceToURL(String name, final ClassLoader classLoader) {
-        if (!name.startsWith("/")) name = "/" + name;
-        final URL resource = classLoader == null ?
+    public static URL resourceToURL(String name, ClassLoader classLoader) {
+        if (!name.startsWith("/") && classLoader == null) name = "/" + name;
+        boolean triedUser = classLoader == null && ClassFinderHelper.getClassLoader() != null;
+        if (triedUser) {
+            classLoader = ClassFinderHelper.getClassLoader();
+        }
+        URL resource = classLoader == null ?
                 IOUtil.class.getResource(name) :
                 classLoader.getResource(name);
-        if (resource == null) throw new RuntimeException("Resource not found: " + name);
+        if (resource == null) {
+            if (triedUser && (resource = IOUtil.class.getResource(name)) != null) {
+                return resource;
+            }
+            throw new RuntimeException("Resource not found: " + name);
+        }
         return resource;
     }
 

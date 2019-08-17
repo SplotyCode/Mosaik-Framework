@@ -483,7 +483,7 @@ public final class FileUtil {
     public static void copyResources(String path, File root, boolean recursive) {
         new ClassPath(ClassFinderHelper.getClassLoader()).resources(resource -> {
             if (resource.inPackage(path) && (recursive || !resource.getPath().substring(path.length()).contains("/"))) {
-                resource.export(new File(root, resource.getPath()));
+                resource.export(new File(root, resource.name()));
             }
         });
     }
