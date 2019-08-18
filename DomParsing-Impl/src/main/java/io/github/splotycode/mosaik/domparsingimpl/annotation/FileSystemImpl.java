@@ -37,21 +37,19 @@ public class FileSystemImpl<D> implements FileSystem<D> {
 
     private D getEntry(File file, D def) {
         try {
-            if (!file.exists()) return def;
             return (D) entryParser.toObject(new FileInputStream(file));
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
             return def;
         }
     }
 
     @Override
     public D getEntry(String fileKey, D def) {
-        return getEntry(getFile(fileKey), def);
+        return getEntry(getFile(fileKey, false), def);
     }
 
-    protected File getFile(String key) {
-        if (PathUtil.validAndNoUpwardTravel(root, key)) {
+    protected File getFile(String key, boolean validate) {
+        if (!validate || PathUtil.validAndNoUpwardTravel(root, key)) {
             return new File(root, key + ".kv");
         }
         throw new IllegalArgumentException("Invalid key");
@@ -59,12 +57,12 @@ public class FileSystemImpl<D> implements FileSystem<D> {
 
     @Override
     public void deleteEntry(String key) {
-        FileUtil.delete(getFile(key));
+        FileUtil.delete(getFile(key, false));
     }
 
     @Override
     public void putEntry(String entryKey, D entry) {
-        FileUtil.writeToFile(getFile(entryKey), entryParser.fromObject(entry));
+        FileUtil.writeToFile(getFile(entryKey, true), entryParser.fromObject(entry));
     }
 
     @Override
