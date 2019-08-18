@@ -81,6 +81,11 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
         return sessionSystems.getList();
     }
 
+    @Override
+    public void installSessionSystem(SessionSystem sessionSystem) {
+        getSessionLoader().register(sessionSystem);
+    }
+
     public Collection<RequestContentHandler> getContentHandlers() {
         return contentHandlerRegister.combind(application == null ? null : application.getContentHandlerRegister());
     }

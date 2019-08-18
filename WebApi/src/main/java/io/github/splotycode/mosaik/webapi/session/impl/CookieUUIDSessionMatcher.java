@@ -12,19 +12,22 @@ public class CookieUUIDSessionMatcher extends AbstractUUIDSessionMatcher {
     private final CookieKey mostKey, leastKey;
 
     public CookieUUIDSessionMatcher() {
-        this("_api_identifier");
+        this("api_identifier", true);
     }
 
-    public CookieUUIDSessionMatcher(String cookieName) {
-        mostKey = new CookieKey(cookieName + "_most", true, true);
-        leastKey = new CookieKey(cookieName + "_least", true, true);
+    public CookieUUIDSessionMatcher(String cookieName, boolean secure) {
+        mostKey = new CookieKey(cookieName + "_most", secure, true);
+        leastKey = new CookieKey(cookieName + "_least", secure, true);
     }
 
     @Override
     public UUID getUUID(Request request) {
-        long most = Long.valueOf(request.getCookie(mostKey));
-        long least = Long.valueOf(request.getCookie(leastKey));
-        return new UUID(most, least);
+        String mostStr = request.getCookie(mostKey);
+        String leastStr = request.getCookie(leastKey);
+        if (leastStr != null && mostStr != null) {
+            return new UUID(Long.parseLong(mostStr), Long.parseLong(leastStr));
+        }
+        return null;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class CookieUUIDSessionMatcher extends AbstractUUIDSessionMatcher {
         UUID uuid = UUID.randomUUID();
         request.getResponse().setCookie(mostKey, String.valueOf(uuid.getMostSignificantBits()));
         request.getResponse().setCookie(leastKey, String.valueOf(uuid.getLeastSignificantBits()));
-        return null;
+        return uuid;
     }
 
 }

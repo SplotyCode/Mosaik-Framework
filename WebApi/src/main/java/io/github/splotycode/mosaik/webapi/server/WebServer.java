@@ -35,8 +35,8 @@ public interface WebServer {
     IListClassRegister<HttpHandler> getHttpHandlerRegister();
 
     IListClassRegister<SessionSystem> getSessionLoader();
-
     Collection<SessionSystem> getSessionSystems();
+    void installSessionSystem(SessionSystem sessionSystem);
 
     Collection<ParameterResolver> getParameterResolvers();
 

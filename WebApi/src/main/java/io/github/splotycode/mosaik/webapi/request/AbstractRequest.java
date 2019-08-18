@@ -101,7 +101,6 @@ public abstract class AbstractRequest implements Request {
                     }
                 }
             }
-            return null;
         }
         return session;
     }

@@ -16,7 +16,11 @@ public abstract class AbstractUUIDSessionMatcher implements SessionMatcher {
 
     @Override
     public Session getSession(Request request) {
-        return sessions.get(getUUID(request));
+        UUID uuid = getUUID(request);
+        if (uuid == null) {
+            return null;
+        }
+        return sessions.get(uuid);
     }
 
     @Override
