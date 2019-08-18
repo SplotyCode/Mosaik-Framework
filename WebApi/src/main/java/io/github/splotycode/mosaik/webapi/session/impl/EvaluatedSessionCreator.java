@@ -16,6 +16,11 @@ public abstract class EvaluatedSessionCreator implements SessionCreator {
         return evaluator.valid(null, request) ? newSession(request) : null;
     }
 
+    @Override
+    public boolean autoCreate() {
+        return true;
+    }
+
     public abstract Session newSession(Request request);
 
 }

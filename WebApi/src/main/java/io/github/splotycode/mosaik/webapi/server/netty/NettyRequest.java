@@ -1,16 +1,17 @@
 package io.github.splotycode.mosaik.webapi.server.netty;
 
+import io.github.splotycode.mosaik.util.AlmostBoolean;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
+import io.github.splotycode.mosaik.webapi.request.AbstractRequest;
+import io.github.splotycode.mosaik.webapi.request.Method;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
-import io.github.splotycode.mosaik.util.AlmostBoolean;
-import io.github.splotycode.mosaik.webapi.request.AbstractRequest;
-import io.github.splotycode.mosaik.webapi.request.Method;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -77,7 +78,13 @@ public class NettyRequest extends AbstractRequest {
     @Override
     public byte[] getBody() {
         if (content == null) {
-            content = request.content().array();
+            ByteBuf buf = request.content();
+            if (buf.hasArray()) {
+                content =  buf.array();
+            } else {
+                content = new byte[buf.readableBytes()];
+                buf.getBytes(buf.readerIndex(), content);
+            }
         }
         return content;
     }
@@ -111,6 +118,7 @@ public class NettyRequest extends AbstractRequest {
 
     @Override
     public Map<String, ? extends Collection<String>> getPost() {
+        ensureRequestContent();
         return post;
     }
 

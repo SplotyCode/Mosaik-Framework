@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.request;
 
+import io.github.splotycode.mosaik.util.EnumUtil;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.webapi.request.body.RequestBodyHelper;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContent;
@@ -7,10 +8,11 @@ import io.github.splotycode.mosaik.webapi.response.CookieKey;
 import io.github.splotycode.mosaik.webapi.response.Response;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import io.github.splotycode.mosaik.webapi.session.Session;
+import io.github.splotycode.mosaik.webapi.session.SessionCreator;
+import io.github.splotycode.mosaik.webapi.session.SessionSystem;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import io.github.splotycode.mosaik.util.EnumUtil;
-import io.github.splotycode.mosaik.webapi.session.SessionSystem;
+import lombok.Setter;
 
 import java.util.Collection;
 
@@ -23,7 +25,7 @@ public abstract class AbstractRequest implements Request {
     private WebServer webServer;
 
     private boolean checkedSession;
-    private Session session = null;
+    @Setter private Session session = null;
     private String fullUrl;
 
     protected DataFactory dataFactory = new DataFactory();
@@ -33,11 +35,15 @@ public abstract class AbstractRequest implements Request {
         this.fullUrl = fullUrl;
     }
 
-    @Override
-    public RequestContent getContent() {
+    protected void ensureRequestContent() {
         if (content == null) {
             content = RequestBodyHelper.getRequestContent(this, webServer);
         }
+    }
+
+    @Override
+    public RequestContent getContent() {
+        ensureRequestContent();
         return content;
     }
 
@@ -77,21 +83,22 @@ public abstract class AbstractRequest implements Request {
     public Session getSession() {
         if (!checkedSession) {
             checkedSession = true;
-            for (SessionSystem sessionSystem : webServer.getSessionSystems()) {
-                Session matcher = sessionSystem.getSessionMatcher().getSession(this);
-                if (matcher == null) {
-                    Session newSession = sessionSystem.getSessionCreator().createSession(this);
-                    if (newSession != null) {
-                        session = newSession;
-                        session.onInit(this);
-                        sessionSystem.getSessionMatcher().register(session, this);
+            for (SessionSystem system : webServer.getSessionSystems()) {
+                Session matched = system.getSessionMatcher().getSession(this);
+                if (matched != null) {
+                    if (system.getSessionEvaluator().valid(matched, this)) {
+                        session = matched;
+                        session.onRefresh(this);
+                    } else {
+                        system.destroy(this, matched);
                     }
-                } else if (sessionSystem.getSessionEvaluator().valid(matcher, this)) {
-                    session = matcher;
-                    session.onRefresh(this);
-                } else {
-                    matcher.onDestruction();
-                    sessionSystem.getSessionMatcher().unregister(matcher, this);
+                }
+                SessionCreator creator = system.getSessionCreator();
+                if (session == null && creator.autoCreate()) {
+                    Session newSession = creator.createSession(this);
+                    if (newSession != null) {
+                        system.start(this);
+                    }
                 }
             }
             return null;

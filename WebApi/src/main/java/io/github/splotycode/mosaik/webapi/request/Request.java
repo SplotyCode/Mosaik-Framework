@@ -57,5 +57,6 @@ public interface Request extends DataFactoryComponent {
     void setPost(Map<String, ? extends Collection<String>> parameters);
 
     Session getSession();
+    void setSession(Session session);
 
 }

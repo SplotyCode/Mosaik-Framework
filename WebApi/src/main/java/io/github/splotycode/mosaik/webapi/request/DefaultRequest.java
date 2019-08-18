@@ -102,4 +102,8 @@ public class DefaultRequest implements Request {
         return null;
     }
 
+    @Override
+    public void setSession(Session session) {
+        throw new UnsupportedOperationException();
+    }
 }
