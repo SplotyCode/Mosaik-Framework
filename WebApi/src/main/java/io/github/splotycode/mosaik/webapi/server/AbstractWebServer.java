@@ -123,8 +123,15 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     }
 
     public Response handleRequest(Request request) {
-        List<HttpHandler> handlers = allHandlers.stream().filter(handler -> handler.valid(request)).sorted(Comparator.comparingInt(HttpHandler::priority)).collect(Collectors.toList());
+        List<HttpHandler> handlers = allHandlers.stream().sorted(Comparator.comparingInt(HttpHandler::priority)).collect(Collectors.toList());
         for (HttpHandler handler : handlers) {
+            try {
+                if (!handler.valid(request)) {
+                    continue;
+                }
+            } catch (Throwable throwable) {
+                throw new HandleRequestException("Error while validating " + handler.getClass().getName(), throwable);
+            }
             try {
                 if (handler.handle(request)) {
                     break;
