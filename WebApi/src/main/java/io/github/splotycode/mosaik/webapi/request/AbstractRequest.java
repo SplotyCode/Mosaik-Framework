@@ -64,11 +64,15 @@ public abstract class AbstractRequest implements Request {
     }
 
     public String getFirstGetParameter(String name) {
-        return getGetParameter(name).iterator().next();
+        Collection<String> parameter = getGetParameter(name);
+        if (parameter == null) return null;
+        return parameter.iterator().next();
     }
 
     public String getFirstPostParameter(String name) {
-        return getPostParameter(name).iterator().next();
+        Collection<String> parameter = getPostParameter(name);
+        if (parameter == null) return null;
+        return parameter.iterator().next();
     }
 
     public boolean isGet() {

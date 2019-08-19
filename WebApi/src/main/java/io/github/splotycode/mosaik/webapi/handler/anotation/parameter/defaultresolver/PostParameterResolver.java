@@ -1,7 +1,6 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation.parameter.defaultresolver;
 
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
-import io.github.splotycode.mosaik.util.reflection.annotation.exception.ParameterResolveException;
 import io.github.splotycode.mosaik.util.reflection.annotation.parameter.AnnotatedParameterResolver;
 import io.github.splotycode.mosaik.webapi.handler.anotation.AnnotationHttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.Post;
@@ -19,9 +18,6 @@ public class PostParameterResolver extends AnnotatedParameterResolver<Post, Obje
     protected Object transformAnnotation(AnnotationHttpHandler context, Post annotation, Parameter parameter, DataFactory dataFactory) {
         Request request = dataFactory.getData(AnnotationHttpHandler.REQUEST);
         String strValue = request.getFirstPostParameter(annotation.value());
-        Object value = context.parameterValue(dataFactory.getData(AnnotationHttpHandler.SUP), parameter, strValue);
-
-        if (value == null) throw new ParameterResolveException("Invalid Data Type");
-        return value;
+        return context.parameterValue(dataFactory.getData(AnnotationHttpHandler.SUP), parameter, strValue);
     }
 }

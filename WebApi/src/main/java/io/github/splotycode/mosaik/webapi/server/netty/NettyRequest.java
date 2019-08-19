@@ -13,10 +13,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class NettyRequest extends AbstractRequest {
 
@@ -119,6 +116,9 @@ public class NettyRequest extends AbstractRequest {
     @Override
     public Map<String, ? extends Collection<String>> getPost() {
         ensureRequestContent();
+        if (post == null) {
+            post = Collections.emptyMap();
+        }
         return post;
     }
 
@@ -126,8 +126,13 @@ public class NettyRequest extends AbstractRequest {
     public Map<String, String> getCookies() {
         if (cookies == null) {
             cookies = new HashMap<>();
-            Set<Cookie> cookieSet = ServerCookieDecoder.LAX.decode(request.headers().get("Cookie"));
-            cookieSet.forEach(cookie -> cookies.put(cookie.name(), cookie.value()));
+            String cookieHeader = request.headers().get("Cookie");
+            if (cookieHeader == null) {
+                cookies = Collections.emptyMap();
+            } else {
+                Set<Cookie> cookieSet = ServerCookieDecoder.LAX.decode(request.headers().get("Cookie"));
+                cookieSet.forEach(cookie -> cookies.put(cookie.name(), cookie.value()));
+            }
         }
         return cookies;
     }
