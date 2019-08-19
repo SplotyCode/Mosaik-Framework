@@ -19,14 +19,16 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttpHandler, AnnotationHandlerData> implements HttpHandler {
 
-    public static DataKey<Request> REQUEST = new DataKey<>("web.request");
-    public static DataKey<AnnotationHandlerData> GLOBAL = new DataKey<>("web.global");
-    public static DataKey<AnnotationHandlerData.SupAnnotationHandlerData> SUP = new DataKey<>("web.sup");
+    private static final DataKey<List<AnnotationHandlerData>> SUPS = new DataKey<>("annotation.sups");
+    public static final DataKey<Request> REQUEST = new DataKey<>("web.request");
+    public static final DataKey<AnnotationHandlerData> GLOBAL = new DataKey<>("web.global");
+    public static final DataKey<AnnotationHandlerData.SupAnnotationHandlerData> SUP = new DataKey<>("web.sup");
 
     private Collection<AnnotationHandler<AnnotationHttpHandler, ? extends Annotation, AnnotationHandlerData>> costom = new ArrayList<>();
 
@@ -53,7 +55,22 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
 
     @Override
     public boolean valid(Request request) {
-        return data.valid(request) && sub.stream().anyMatch(sub -> sub.valid(request));
+        if (data.valid(request)) {
+            List<AnnotationHandlerData> subs = sub.stream()
+                    .filter(sub -> {
+                        boolean valid = sub.valid(request);
+                        if (valid) {
+                            String permission = sub.getNeedPermission() == null ? data.getNeedPermission() : sub.getNeedPermission();
+                            return permission == null || request.hasPermission(permission);
+                        }
+                        return false;
+                    })
+                    .sorted(Comparator.comparingInt(AnnotationHandlerData::getPriority))
+                    .collect(Collectors.toList());
+            request.getDataFactory().putData(SUPS, subs);
+            return !subs.isEmpty();
+        }
+        return false;
     }
 
     @Override
@@ -64,7 +81,7 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
         data.applyCashingConfiguration(request.getResponse());
         data.applyContentType(request.getResponse());
 
-        for (AnnotationHandlerData data : sub.stream().filter(sub -> sub.valid(request)).sorted(Comparator.comparingInt(AnnotationHandlerData::getPriority)).collect(Collectors.toList())) {
+        for (AnnotationHandlerData data : request.getDataFactory().getData(SUPS)) {
             AnnotationHandlerData.SupAnnotationHandlerData sup = (AnnotationHandlerData.SupAnnotationHandlerData) data;
 
             sup.applyCashingConfiguration(request.getResponse());

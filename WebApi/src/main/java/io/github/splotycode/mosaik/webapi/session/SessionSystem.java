@@ -24,6 +24,17 @@ public interface SessionSystem {
         return false;
     }
 
+    default boolean hasPermission(Request request, String permission) {
+        Session session = request.getSession();
+        if (session == null) {
+            return false;
+        }
+        if (permission.isEmpty()) {
+            return true;
+        }
+        return session.hasPermission(request, permission);
+    }
+
     SessionCreator getSessionCreator();
 
     SessionMatcher getSessionMatcher();

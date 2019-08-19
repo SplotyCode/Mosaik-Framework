@@ -11,4 +11,12 @@ public interface Session {
     long lastRefresh();
     String startedIpAddress();
 
+    default boolean hasPermission(String permission) {
+        return hasPermission(null, permission);
+    }
+
+    default boolean hasPermission(Request request, String permission) {
+        return false;
+    }
+
 }

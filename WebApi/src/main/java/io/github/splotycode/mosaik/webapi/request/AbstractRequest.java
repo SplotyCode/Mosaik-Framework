@@ -110,6 +110,16 @@ public abstract class AbstractRequest implements Request {
     }
 
     @Override
+    public boolean hasPermission(String permission) {
+        for (SessionSystem system : webServer.getSessionSystems()) {
+            if (!system.hasPermission(this, permission)) {
+                return false;
+            }
+        }
+        return !webServer.getSessionSystems().isEmpty();
+    }
+
+    @Override
     public String getCookie(String name) {
         return getCookies().get(name);
     }

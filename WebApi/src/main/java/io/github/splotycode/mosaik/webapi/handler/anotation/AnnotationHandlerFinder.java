@@ -36,7 +36,7 @@ public class AnnotationHandlerFinder extends ListClassRegister<Object> implement
             NeedGetMethod.class, NeedGetParameter.class,
             NeedMethod.class, NeedPostMethod.class,
             NeedPostParameter.class, PostMustBe.class,
-            ResponseContentType.class
+            ResponseContentType.class, NeedPermission.class
     };
     @Getter private AbstractWebServer webServer;
 

@@ -106,4 +106,9 @@ public class DefaultRequest implements Request {
     public void setSession(Session session) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public boolean hasPermission(String permission) {
+        return true;
+    }
 }

@@ -28,10 +28,11 @@ import java.util.*;
 @Setter
 public class AnnotationHandlerData extends AnnotationData {
 
-    private UrlPattern mapping = null;
-    private String httpMethod = null;
-    private boolean costomMethod = false;
+    private UrlPattern mapping;
+    private String httpMethod;
+    private boolean costomMethod;
     private String host;
+    private String needPermission;
     private List<String> neededGet = new ArrayList<>(), neededPost = new ArrayList<>();
     private HashMap<String, String> getMustBe = new HashMap<>(), postMustBe = new HashMap<>();
     private HttpCashingConfiguration cashingConfiguration;
@@ -72,6 +73,8 @@ public class AnnotationHandlerData extends AnnotationData {
                 cashingConfiguration = HttpCashingConfiguration.fromCache((Cache) annotation);
             } else if (annotation instanceof ResponseContentType) {
                 contentType = ((ResponseContentType) annotation).value();
+            } else if (annotation instanceof NeedPermission) {
+                needPermission = ((NeedPermission) annotation).value();
             }
         }
     }

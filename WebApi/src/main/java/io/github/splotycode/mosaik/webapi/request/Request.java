@@ -58,5 +58,6 @@ public interface Request extends DataFactoryComponent {
 
     Session getSession();
     void setSession(Session session);
+    boolean hasPermission(String permission);
 
 }
