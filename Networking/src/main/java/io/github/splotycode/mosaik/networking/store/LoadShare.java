@@ -1,5 +1,7 @@
 package io.github.splotycode.mosaik.networking.store;
 
+import io.github.splotycode.mosaik.util.collection.ArrayUtil;
+import io.github.splotycode.mosaik.util.math.MathUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,6 +11,15 @@ public class LoadShare {
 
     private int min, max;
     private float[] weights;
+
+    /* Max change for a weight per update */
+    private float maxChange;
+
+    /*
+     * When value ranges are over after update because of maxChange
+     * should the overflow be distributed by their part?
+     */
+    private boolean overFlowPercent;
 
     public LoadShare(int min, int max, int size) {
         this.min = min;
@@ -42,19 +53,38 @@ public class LoadShare {
     }
 
     public void update(long[] hits) {
-        if (hits.length != weights.length) {
+        update(hits, ArrayUtil.sum(hits));
+    }
+
+    public void update(long[] hits, long total) {
+        int length = hits.length;
+        if (length != weights.length) {
             throw new IllegalArgumentException("Statistic size match does not equal Share size");
         }
-        double total = 0;
-        for (long data : hits) {
-            total += data - min;
-        }
+
         int range = max - min;
         float last = 0;
-        for (int i = 0; i < hits.length; i++) {
-            float weight = last + ((float) (hits[i] / total) * range + min);
-            weights[i] = weight;
-            last = weight;
+        float overFlow = 0;
+        for (int i = 0; i < length; i++) {
+            float current = weights[i];
+            float newValue = last + min;
+            if (maxChange != 0) {
+                float beforeClamp = newValue;
+                newValue = MathUtil.clamp(newValue, current - maxChange, maxChange + current);
+                overFlow += newValue - beforeClamp;
+            }
+            weights[i] = newValue;
+            last += (hits[i] / (float) total) * range;
+        }
+        if (overFlowPercent) {
+            for (int i = 0; i < length; i++) {
+                weights[i] = ((weights[i] - min) / range * overFlow);
+            }
+        } else {
+            overFlow /= length;
+            for (int i = 0; i < length; i++) {
+                weights[i] += overFlow;
+            }
         }
     }
 
