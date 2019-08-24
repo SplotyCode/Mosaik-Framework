@@ -1,35 +1,71 @@
 package io.github.splotycode.mosaik.networking.store;
 
+import io.github.splotycode.mosaik.networking.config.ConfigProvider;
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.math.MathUtil;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class LoadShare {
+
+    public static LoadShare fromConfig(int size, ConfigProvider config) {
+        return fromConfig(size, "", config);
+    }
+
+    public static LoadShare fromConfig(float[] weights, ConfigProvider config) {
+        return fromConfig(weights, "", config);
+    }
+
+    public static LoadShare fromConfig(float[] weights, String prefix, ConfigProvider config) {
+        return fromConfig0(weights, false, prefix, config);
+    }
+
+    public static LoadShare fromConfig(int size, String prefix, ConfigProvider config) {
+        return fromConfig0(new float[size], true, prefix, config);
+    }
+
+    private static LoadShare fromConfig0(float[] weights, boolean loadDefaults, String prefix, ConfigProvider config) {
+        if (!StringUtil.isEmpty(prefix) && !prefix.endsWith(".")) {
+            prefix += '.';
+        }
+        LoadShare share = new LoadShare(weights,
+                config.getValue(prefix + "min", int.class, 0),
+                config.getValue(prefix + "max", int.class),
+                config.getValue(prefix + "maxChange", float.class, 0f),
+                config.getValue(prefix + "maxChangePercent", boolean.class, false),
+                config.getValue(prefix + "sluggish", float.class, 1f),
+                config.getValue(prefix + "overFlowPercent", boolean.class, true));
+        if (loadDefaults) {
+            share.loadDefaults(weights.length);
+        }
+        return share;
+    }
 
     private int min, max;
     private float[] weights;
 
     /* Max change for a weight per update */
-    private float maxChange;
-    private boolean maxChangePercent;
+    @Setter private float maxChange;
+    @Setter private boolean maxChangePercent;
 
-    private float sluggish;
+    @Setter private float sluggish;
 
     /*
      * When value ranges are over after update because of maxChange
      * should the overflow be distributed by their part?
      */
-    private boolean overFlowPercent;
+    @Setter private boolean overFlowPercent;
 
-    public LoadShare(int min, int max, int size,
+    public LoadShare(int size, int min, int max,
                      float maxChange, boolean maxChangePercent,
                      float sluggish, boolean overFlowPercent) {
         this(min, max, maxChange, maxChangePercent, sluggish, overFlowPercent);
         loadDefaults(size);
     }
 
-    public LoadShare(int min, int max, float[] weights,
+    public LoadShare(float[] weights, int min, int max,
                      float maxChange, boolean maxChangePercent,
                      float sluggish, boolean overFlowPercent) {
         this(min, max, maxChange, maxChangePercent, sluggish, overFlowPercent);
@@ -54,14 +90,14 @@ public class LoadShare {
         }
     }
 
-    public LoadShare(int min, int max, float[] weights) {
+    public LoadShare(float[] weights, int min, int max) {
         this.min = min;
         this.max = max;
         sluggish = 1;
         this.weights = weights;
     }
 
-    public LoadShare(int min, int max, int size) {
+    public LoadShare(int size, int min, int max) {
         this.min = min;
         this.max = max;
         sluggish = 1;
@@ -85,12 +121,16 @@ public class LoadShare {
         weights = newWeighs;
     }
 
-    protected void loadDefaults(int size) {
-        weights = new float[size];
+    protected void loadDefaults0(int size) {
         float percent = (max - min) / size;
         for (int i = 0; i < size; i++) {
             weights[i] = percent * i + min;
         }
+    }
+
+    protected void loadDefaults(int size) {
+        weights = new float[size];
+        loadDefaults(size);
     }
 
     public void update(long[] hits) {
