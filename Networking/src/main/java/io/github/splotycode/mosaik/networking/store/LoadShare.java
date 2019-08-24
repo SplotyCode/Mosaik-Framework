@@ -14,6 +14,7 @@ public class LoadShare {
 
     /* Max change for a weight per update */
     private float maxChange;
+    private boolean maxChangePercent;
 
     /*
      * When value ranges are over after update because of maxChange
@@ -56,6 +57,13 @@ public class LoadShare {
         update(hits, ArrayUtil.sum(hits));
     }
 
+    private float calcMaxChange(float current) {
+        if (maxChangePercent) {
+            return current * maxChange;
+        }
+        return maxChange;
+    }
+
     public void update(long[] hits, long total) {
         int length = hits.length;
         if (length != weights.length) {
@@ -70,12 +78,14 @@ public class LoadShare {
             float newValue = last + min;
             if (maxChange != 0) {
                 float beforeClamp = newValue;
-                newValue = MathUtil.clamp(newValue, current - maxChange, maxChange + current);
+                float maxChange = calcMaxChange(current);
+                newValue = MathUtil.clamp(newValue, current - maxChange, current + maxChange);
                 overFlow += newValue - beforeClamp;
             }
             weights[i] = newValue;
             last += (hits[i] / (float) total) * range;
         }
+
         if (overFlowPercent) {
             for (int i = 0; i < length; i++) {
                 weights[i] = ((weights[i] - min) / range * overFlow);
