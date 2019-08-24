@@ -17,21 +17,21 @@ public interface ConfigProvider {
     String getRawConfig();
     void setRawConfig(String config);
 
-    default <T> T getConfigValue(ConfigKey<T> key) {
-        return getConfigValue(key.getName(), key.getType(), key.getDef());
+    default <T> T getValue(ConfigKey<T> key) {
+        return getValue(key.getName(), key.getType(), key.getDef());
     }
 
     default <T> void setConfigValue(ConfigKey<T> key, T obj) {
         set(key.getName(), obj);
     }
 
-    default <T> T getConfigValue(String key, Class<T> clazz) {
-        T result = getConfigValue(key, clazz, null);
+    default <T> T getValue(String key, Class<T> clazz) {
+        T result = getValue(key, clazz, null);
         if (result == null) throw new IllegalArgumentException("Config: " + key);
         return result;
     }
 
-    default <T> T getConfigValue(String key, Class<T> clazz, T def) {
+    default <T> T getValue(String key, Class<T> clazz, T def) {
         ConfigEntry entry = getEntry(key);
         if (entry == null) return def;
         T value = entry.getValue(clazz);

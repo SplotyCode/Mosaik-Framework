@@ -22,12 +22,12 @@ public class InstanceInvigilator {
     public static InstanceInvigilator fromConfig(MasterInstanceService service, String prefix) {
         ConfigProvider provider = service.kit.getConfigProvider();
         return new InstanceInvigilator(service,
-                provider.getConfigValue(prefix + ".startupInstances", int.class),
-                provider.getConfigValue(prefix + ".optimalConnections", int.class),
-                provider.getConfigValue(prefix + ".maxInstances", int.class),
-                provider.getConfigValue(prefix + ".stopThreshold", int.class),
-                provider.getConfigValue(prefix + ".maxStop", double.class),
-                provider.getConfigValue(prefix + ".minimumRam", long.class));
+                provider.getValue(prefix + ".startupInstances", int.class),
+                provider.getValue(prefix + ".optimalConnections", int.class),
+                provider.getValue(prefix + ".maxInstances", int.class),
+                provider.getValue(prefix + ".stopThreshold", int.class),
+                provider.getValue(prefix + ".maxStop", double.class),
+                provider.getValue(prefix + ".minimumRam", long.class));
     }
 
     private MasterInstanceService service;

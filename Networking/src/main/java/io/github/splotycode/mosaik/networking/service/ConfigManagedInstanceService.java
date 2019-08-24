@@ -17,9 +17,9 @@ public abstract class ConfigManagedInstanceService<C> implements ManagedInstance
         this.prefix = prefix;
         this.kit = kit;
         portSupplier = PortSupplier.fromConfig(kit.getConfigProvider(), prefix);
-        optimalInstances = kit.getConfigProvider().getConfigValue(prefix + ".optimal_instances", int.class, -1);
-        startupInstances = kit.getConfigProvider().getConfigValue(prefix + ".startup_instances", int.class, -1);
-        maxInstances = kit.getConfigProvider().getConfigValue(prefix + ".max_instances", int.class, -1);
+        optimalInstances = kit.getConfigProvider().getValue(prefix + ".optimal_instances", int.class, -1);
+        startupInstances = kit.getConfigProvider().getValue(prefix + ".startup_instances", int.class, -1);
+        maxInstances = kit.getConfigProvider().getValue(prefix + ".max_instances", int.class, -1);
     }
 
     @Override

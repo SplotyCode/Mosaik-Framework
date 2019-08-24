@@ -23,17 +23,17 @@ public class PortSupplier implements Supplier<Integer> {
 
     public static PortSupplier fromConfig(ConfigProvider provider, String prefix) {
         PortSupplier supplier = new PortSupplier(
-                provider.getConfigValue(prefix + ".min_port", int.class, 0),
-                provider.getConfigValue(prefix + ".max_port", int.class, 0)
+                provider.getValue(prefix + ".min_port", int.class, 0),
+                provider.getValue(prefix + ".max_port", int.class, 0)
         );
         if (supplier.maxPort == 0 || supplier.minPort == 0) {
             throw new ConfigurationException("Invalid port configuration");
         }
-        Integer[] preferredPorts = provider.getConfigValue(prefix + ".preferred", Integer[].class, null);
+        Integer[] preferredPorts = provider.getValue(prefix + ".preferred", Integer[].class, null);
         if (preferredPorts != null) {
             supplier.addPreferedPorts(preferredPorts);
         }
-        Integer[] blockedPorts = provider.getConfigValue(prefix + ".blocked", Integer[].class, null);
+        Integer[] blockedPorts = provider.getValue(prefix + ".blocked", Integer[].class, null);
         if (preferredPorts != null) {
             supplier.addBlockedPorts(blockedPorts);
         }

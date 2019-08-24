@@ -147,7 +147,7 @@ public class CloudKit {
 
     public <T> T getConfig(ConfigKey<T> key) {
         checkConfigProvider();
-        return configProvider.getConfigValue(key);
+        return configProvider.getValue(key);
     }
 
     public MosaikAddress localAddress() {

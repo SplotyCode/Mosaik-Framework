@@ -28,7 +28,7 @@ public abstract class MasterInstanceService<C extends INetworkProcess> implement
     protected long delay;
 
     public MasterInstanceService(CloudKit kit, String prefix) {
-        this(kit.getConfigProvider().getConfigValue(prefix + ".update", long.class, 16 * 1000L),
+        this(kit.getConfigProvider().getValue(prefix + ".update", long.class, 16 * 1000L),
                 kit, PortSupplier.fromConfig(kit.getConfigProvider(), prefix),
                 (MasterService) kit.getServiceByName("Master Sync"),
                 null, null);

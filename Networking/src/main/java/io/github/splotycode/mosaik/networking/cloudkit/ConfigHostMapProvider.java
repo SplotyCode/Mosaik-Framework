@@ -20,7 +20,7 @@ public class ConfigHostMapProvider extends HostMapProvider implements ConfigChan
 
     @Override
     protected void fill() {
-        for (Object host : kit.getConfigProvider().getConfigValue(configpath, Iterable.class, null)) {
+        for (Object host : kit.getConfigProvider().getValue(configpath, Iterable.class, null)) {
             String address = host.toString();
             if (!kit.localAddress().equals(address)) {
                 addHost(kit.getHostProvider().provide(kit, host.toString()));
