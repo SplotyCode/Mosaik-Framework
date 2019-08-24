@@ -2,11 +2,9 @@ package io.github.splotycode.mosaik.networking.store;
 
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.math.MathUtil;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class LoadShare {
 
     private int min, max;
@@ -16,15 +14,57 @@ public class LoadShare {
     private float maxChange;
     private boolean maxChangePercent;
 
+    private float sluggish;
+
     /*
      * When value ranges are over after update because of maxChange
      * should the overflow be distributed by their part?
      */
     private boolean overFlowPercent;
 
+    public LoadShare(int min, int max, int size,
+                     float maxChange, boolean maxChangePercent,
+                     float sluggish, boolean overFlowPercent) {
+        this(min, max, maxChange, maxChangePercent, sluggish, overFlowPercent);
+        loadDefaults(size);
+    }
+
+    public LoadShare(int min, int max, float[] weights,
+                     float maxChange, boolean maxChangePercent,
+                     float sluggish, boolean overFlowPercent) {
+        this(min, max, maxChange, maxChangePercent, sluggish, overFlowPercent);
+        this.weights = weights;
+    }
+
+    protected LoadShare(int min, int max,
+                        float maxChange, boolean maxChangePercent,
+                        float sluggish, boolean overFlowPercent) {
+        this.min = min;
+        this.max = max;
+        this.maxChange = maxChange;
+        this.maxChangePercent = maxChangePercent;
+        this.sluggish = sluggish;
+        this.overFlowPercent = overFlowPercent;
+        checkConfiguration();
+    }
+
+    protected void checkConfiguration() {
+        if (maxChange != 0 && sluggish != 1 && maxChangePercent) {
+            throw new IllegalArgumentException("Invalid configuration");
+        }
+    }
+
+    public LoadShare(int min, int max, float[] weights) {
+        this.min = min;
+        this.max = max;
+        sluggish = 1;
+        this.weights = weights;
+    }
+
     public LoadShare(int min, int max, int size) {
         this.min = min;
         this.max = max;
+        sluggish = 1;
         loadDefaults(size);
     }
 
@@ -76,6 +116,10 @@ public class LoadShare {
         for (int i = 0; i < length; i++) {
             float current = weights[i];
             float newValue = last + min;
+            if (sluggish != 1) {
+                float groundCurrent = current - min;
+                newValue = (sluggish * (last - groundCurrent)) + groundCurrent + min;
+            }
             if (maxChange != 0) {
                 float beforeClamp = newValue;
                 float maxChange = calcMaxChange(current);
