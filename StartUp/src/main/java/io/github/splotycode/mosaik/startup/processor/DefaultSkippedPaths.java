@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.startup.processor;
 
-import io.github.splotycode.mosaik.annotations.skippedpath.SkipPath;
+import io.github.splotycode.mosaik.annotations.SkipPath;
 
 @SkipPath({"org.eclipse",
         "io.undertow",

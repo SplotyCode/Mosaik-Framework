@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.annotationprocessors;
 
-import io.github.splotycode.mosaik.annotations.skippedpath.SkipPath;
+import io.github.splotycode.mosaik.annotations.SkipPath;
 import io.github.splotycode.mosaik.util.StringUtil;
 
 import javax.annotation.processing.AbstractProcessor;

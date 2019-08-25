@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.annotations.skippedpath;
+package io.github.splotycode.mosaik.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
