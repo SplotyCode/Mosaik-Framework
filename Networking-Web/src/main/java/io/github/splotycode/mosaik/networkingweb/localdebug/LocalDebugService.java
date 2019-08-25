@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.networkingweb.localdebug;
 
+import io.github.splotycode.mosaik.annotations.visibility.VisibilityLevel;
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.service.Service;
@@ -20,7 +21,7 @@ public class LocalDebugService implements Service {
     private UnpackingHelper unpackingHelper = new UnpackingHelper("debug/local/dynamic", false, true);
 
     {
-        webServer.getConfig().putData(WebConfig.SEARCH_ANNOTATION_HANDLERS, false);
+        webServer.getConfig().putData(WebConfig.SEARCH_ANNOTATION_HANDLERS_VISIBILITY, VisibilityLevel.NONE);
     }
 
     public LocalDebugService(CloudKit kit) {
