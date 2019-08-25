@@ -3,10 +3,14 @@ package io.github.splotycode.mosaik.annotations;
 import io.github.splotycode.mosaik.annotations.priority.First;
 import io.github.splotycode.mosaik.annotations.priority.Last;
 import io.github.splotycode.mosaik.annotations.priority.Priority;
+import io.github.splotycode.mosaik.annotations.visibility.Invisible;
+import io.github.splotycode.mosaik.annotations.visibility.VisibilityLevel;
+import io.github.splotycode.mosaik.annotations.visibility.Visible;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 
 /**
  * Helper Tools for Mosaik Annotations
@@ -66,6 +70,27 @@ public final class AnnotationHelper {
      */
     public static int getPriority(Object object) {
         return getPriority(object.getClass().getAnnotations());
+    }
+
+    /**
+     * Checks if a element is visible
+     * @param level on with level should we check te visibility
+     * @param element the element to check
+     * @return true if the element is visible
+     */
+    public static boolean isVisible(VisibilityLevel level, AnnotatedElement element) {
+        switch (level) {
+            case FORCE_ALL:
+                return true;
+            case NONE:
+                return false;
+            case ONLY_VISIBLE:
+                return element.getAnnotation(Visible.class) != null;
+            case NOT_INVISIBLE:
+                return element.getAnnotation(Invisible.class) == null;
+            default:
+                throw new IllegalStateException("Unknown VisibilityLevel: " + level.name());
+        }
     }
 
 }
