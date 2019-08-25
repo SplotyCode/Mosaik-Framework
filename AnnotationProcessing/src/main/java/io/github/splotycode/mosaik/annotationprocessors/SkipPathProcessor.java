@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@SupportedAnnotationTypes("io.github.splotycode.mosaik.annotations.skippedpath.SkipPath")
+@SupportedAnnotationTypes("io.github.splotycode.mosaik.annotations.SkipPath")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class SkipPathProcessor extends AbstractProcessor {
 
