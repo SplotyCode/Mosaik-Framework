@@ -130,7 +130,7 @@ public class LoadShare {
 
     protected void loadDefaults(int size) {
         weights = new float[size];
-        loadDefaults(size);
+        loadDefaults0(size);
     }
 
     public void update(long[] hits) {
@@ -167,7 +167,11 @@ public class LoadShare {
                 overFlow += newValue - beforeClamp;
             }
             weights[i] = newValue;
-            last += (hits[i] / (float) total) * range;
+            if (total == 0) {
+                last += range / length + min;
+            } else {
+                last += (hits[i] / (float) total) * range;
+            }
         }
 
         if (overFlowPercent) {
