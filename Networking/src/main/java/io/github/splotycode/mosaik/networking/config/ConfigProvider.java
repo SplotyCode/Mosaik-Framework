@@ -12,6 +12,10 @@ public interface ConfigProvider {
     Iterable<ConfigEntry> getEntries();
     Iterable<Map.Entry<String, Object>> getRawEntries();
 
+    default ConfigSection getSection(String key) {
+        return new ConfigSection(this, key);
+    }
+
     StringListenerHandler<ConfigChangeListener> handler();
 
     String getRawConfig();
