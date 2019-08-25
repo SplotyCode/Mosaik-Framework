@@ -1,6 +1,8 @@
 package io.github.splotycode.mosaik.util.condition;
 
+import io.github.splotycode.mosaik.annotations.AnnotationHelper;
 import io.github.splotycode.mosaik.annotations.Disabled;
+import io.github.splotycode.mosaik.annotations.visibility.VisibilityLevel;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -133,6 +135,15 @@ public final class ClassConditions {
      */
     public static Predicate<Class> allMethods(Predicate<Method> methodCondition) {
         return item -> Arrays.stream(item.getDeclaredMethods()).anyMatch(methodCondition);
+    }
+
+    /**
+     * The Predicate will check if a element is visible
+     * @param level on with level should we check te visibility
+     * @see io.github.splotycode.mosaik.annotations.AnnotationHelper#isVisible(VisibilityLevel, AnnotatedElement)
+     */
+    public static Predicate<AnnotatedElement> visisble(VisibilityLevel level) {
+        return element -> AnnotationHelper.isVisible(level, element);
     }
 
 }

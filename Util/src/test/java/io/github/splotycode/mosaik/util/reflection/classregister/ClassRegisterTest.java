@@ -12,7 +12,7 @@ public class ClassRegisterTest {
     @Disabled
     public void testRegisterAll() {
         ClassCollector collector = ClassCollector.newInstance()
-                .setNoDisableds(true)
+                .setNoDisable(true)
                 .setInPackage("io.github.splotycode.mosaik.util.reflection")
                 .setNeedAssignable(Object.class);
         ListClassRegister<Object> register = new ListClassRegister<>(new ArrayList<>(), Object.class);

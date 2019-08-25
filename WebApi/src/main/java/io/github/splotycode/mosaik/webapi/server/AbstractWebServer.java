@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.server;
 
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.LinkedDataFactory;
 import io.github.splotycode.mosaik.util.init.InitialisedOnce;
@@ -108,7 +109,7 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
     public void addFinder(HandlerFinder finder) {
         if (initialised) throw new IllegalStateException("Can not add finder if WebServer is already initialised");
         Collection<? extends HttpHandler> handlers = finder.search();
-        logger.info(finder.getClass().getName() + " has registered " + handlers.size() + " handlers");
+        logger.info(finder.getClass().getSimpleName() + " has registered " + handlers.size() + " handlers: " + StringUtil.join(handlers, HttpHandler::displayName));
         allHandlers.addAll(handlers);
     }
 

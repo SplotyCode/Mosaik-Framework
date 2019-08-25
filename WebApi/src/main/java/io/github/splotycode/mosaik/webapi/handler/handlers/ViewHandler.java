@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.webapi.handler.handlers;
 
-import io.github.splotycode.mosaik.annotations.Disabled;
+import io.github.splotycode.mosaik.annotations.visibility.Invisible;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.request.HandleRequestException;
 import io.github.splotycode.mosaik.webapi.request.Request;
@@ -11,7 +11,7 @@ import lombok.Getter;
 
 import java.io.File;
 
-@Disabled
+@Invisible
 @AllArgsConstructor
 @Getter
 public class ViewHandler implements HttpHandler  {

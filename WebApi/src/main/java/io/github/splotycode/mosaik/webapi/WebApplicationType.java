@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi;
 
+import io.github.splotycode.mosaik.annotations.visibility.VisibilityLevel;
 import io.github.splotycode.mosaik.runtime.application.ApplicationType;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
@@ -27,19 +28,21 @@ public interface WebApplicationType extends ApplicationType {
     DataKey<IListClassRegister<RequestContentHandler>> CONTENT_HANDLER_REGISTER = new DataKey<>("web.content_handler_register");
 
     ClassCollector PARAMETER_RESOLVER_COLLECTOR = ClassCollector.newInstance()
-                                                    .setNoDisableds(true)
+                                                    .setNoDisable(true)
+                                                    .setVisibility(VisibilityLevel.NOT_INVISIBLE)
                                                     .setInPackage("io.github.splotycode.mosaik.webapi.handler.anotation.parameter.defaultresolver")
                                                     .setNeedAssignable(ParameterResolver.class);
 
     ClassCollector CONTENT_HANDLER_COLLECTOR = ClassCollector.newInstance()
-                                                    .setNoDisableds(true)
+                                                    .setNoDisable(true)
+                                                    .setVisibility(VisibilityLevel.NOT_INVISIBLE)
                                                     .setInPackage("io.github.splotycode.mosaik.webapi.request.body")
                                                     .setNeedAssignable(RequestContentHandler.class)
                                                     .setOnlyClasses(true);
 
     static void setDefaults(DataFactory dataFactory) {
-        dataFactory.putData(WebConfig.SEARCH_ANNOTATION_HANDLERS, true);
-        dataFactory.putData(WebConfig.SEARCH_HANDLERS, false);
+        dataFactory.putData(WebConfig.SEARCH_ANNOTATION_HANDLERS_VISIBILITY, VisibilityLevel.NOT_INVISIBLE);
+        dataFactory.putData(WebConfig.SEARCH_HANDLERS_VISIBILITY, VisibilityLevel.ONLY_VISIBLE);
         dataFactory.putData(WebConfig.FORCE_HTTPS, true);
     }
 

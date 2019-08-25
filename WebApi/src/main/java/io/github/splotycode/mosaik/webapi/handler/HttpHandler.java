@@ -5,6 +5,10 @@ import io.github.splotycode.mosaik.webapi.request.Request;
 
 public interface HttpHandler {
 
+    default String displayName() {
+        return getClass().getSimpleName();
+    }
+
     boolean valid(Request request) throws HandleRequestException;
 
     /**s

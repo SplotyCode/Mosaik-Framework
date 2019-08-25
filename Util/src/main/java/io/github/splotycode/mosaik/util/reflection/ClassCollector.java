@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util.reflection;
 
+import io.github.splotycode.mosaik.annotations.visibility.VisibilityLevel;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -111,9 +112,9 @@ public final class ClassCollector implements Predicate<Class> {
         return this;
     }
 
-    public ClassCollector setNoDisableds(boolean noDisableds) {
+    public ClassCollector setNoDisable(boolean noDisable) {
         reset();
-        if (noDisableds) {
+        if (noDisable) {
             conditions.put(3, ClassConditions.NO_DISABLE_ANNOTATION);
         } else {
             conditions.remove(3);
@@ -122,6 +123,7 @@ public final class ClassCollector implements Predicate<Class> {
     }
 
     public ClassCollector setInPackage(String packageName) {
+        reset();
         if (packageName == null) {
             conditions.remove(4);
         } else {
@@ -130,7 +132,18 @@ public final class ClassCollector implements Predicate<Class> {
         return this;
     }
 
+    public ClassCollector setVisibility(VisibilityLevel level) {
+        reset();
+        if (level == null || level == VisibilityLevel.FORCE_ALL) {
+            conditions.remove(5);
+        } else {
+            conditions.put(5, ClassConditions.visisble(level));
+        }
+        return this;
+    }
+
     public ClassCollector addCostom(Predicate<Class> condition) {
+        reset();
         conditions.put(100 + costomCounter, condition);
         costomCounter++;
         return this;

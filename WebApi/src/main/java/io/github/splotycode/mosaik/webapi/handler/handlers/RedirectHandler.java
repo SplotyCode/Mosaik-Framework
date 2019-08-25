@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.webapi.handler.handlers;
 
-import io.github.splotycode.mosaik.annotations.Disabled;
+import io.github.splotycode.mosaik.annotations.visibility.Invisible;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import java.util.HashMap;
 import java.util.Map;
 
-@Disabled
+@Invisible
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RedirectHandler implements HttpHandler {
 

@@ -1,6 +1,8 @@
 package io.github.splotycode.mosaik.util.reflection;
 
+import io.github.splotycode.mosaik.annotations.HandleAsField;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
+import io.github.splotycode.mosaik.util.Pair;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import sun.misc.Unsafe;
@@ -10,6 +12,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Consumer;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ReflectionUtil {
@@ -43,7 +46,7 @@ public final class ReflectionUtil {
         return ClassCollector.newInstance()
                 .setAbstracation(AlmostBoolean.fromBoolean(!noAbstraction))
                 .setOnlyClasses(true)
-                .setNoDisableds(disableAnnotation)
+                .setNoDisable(disableAnnotation)
                 .setNeedAssignable(other).test(clazz);
     }
 

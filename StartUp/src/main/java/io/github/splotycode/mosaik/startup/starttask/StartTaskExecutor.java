@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.startup.starttask;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
 import io.github.splotycode.mosaik.annotations.AnnotationHelper;
+import io.github.splotycode.mosaik.annotations.visibility.VisibilityLevel;
 import io.github.splotycode.mosaik.runtime.startup.StartupTask;
 import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
 import io.github.splotycode.mosaik.startup.exception.FrameworkStartException;
@@ -24,7 +25,8 @@ public class StartTaskExecutor {
 
     private static ClassCollector classCollector = ClassCollector.newInstance()
                                                     .setOnlyClasses(true)
-                                                    .setNoDisableds(true)
+                                                    .setNoDisable(true)
+                                                    .setVisibility(VisibilityLevel.NOT_INVISIBLE)
                                                     .setNeedAssignable(StartupTask.class);
 
     private TreeMultimap<Integer, StartupTask> tasks = TreeMultimap.create(Ordering.natural().reverse(), Ordering.natural());

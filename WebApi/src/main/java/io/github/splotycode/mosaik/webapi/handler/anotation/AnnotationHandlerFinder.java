@@ -1,6 +1,5 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation;
 
-import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.condition.ClassConditions;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.logger.Logger;
@@ -15,14 +14,17 @@ import io.github.splotycode.mosaik.webapi.server.AbstractWebServer;
 import lombok.Getter;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class AnnotationHandlerFinder extends ListClassRegister<Object> implements HandlerFinder {
 
     private static Logger logger = Logger.getInstance(AnnotationHandlerFinder.class);
 
     private ClassCollector classCollector = ClassCollector.newInstance()
-                                            .setNoDisableds(true)
+                                            .setNoDisable(true)
                                             .setOnlyClasses(true)
                                             .addCostom(Conditions.or(
                                                     item -> Arrays.stream(handlerAnnotation).anyMatch(item::isAnnotationPresent),
@@ -48,15 +50,13 @@ public class AnnotationHandlerFinder extends ListClassRegister<Object> implement
     @Override
     public Collection<? extends HttpHandler> search() {
         List<AnnotationHttpHandler> handlers = new ArrayList<>();
-        if (webServer.getConfig().getData(WebConfig.SEARCH_ANNOTATION_HANDLERS)) {
-            for (Class clazz : classCollector.collectAll()) {
-                handlers.add(new AnnotationHttpHandler(clazz, webServer));
-            }
+        classCollector.setVisibility(webServer.getConfig().getData(WebConfig.SEARCH_ANNOTATION_HANDLERS_VISIBILITY));
+        for (Class clazz : classCollector.collectAll()) {
+            handlers.add(new AnnotationHttpHandler(clazz, webServer));
         }
         for (Object obj : getAll()) {
             handlers.add(new AnnotationHttpHandler(obj, webServer));
         }
-        logger.info("Found Annotation Handlers (" + handlers.size() + "/" + classCollector.totalResults() + "): " + StringUtil.join(handlers, handler -> handler.getClazz().getSimpleName(), ", "));
         return handlers;
     }
 

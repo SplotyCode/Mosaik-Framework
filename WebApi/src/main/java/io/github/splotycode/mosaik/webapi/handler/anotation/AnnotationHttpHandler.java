@@ -140,4 +140,9 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
     public Collection<AnnotationHandler<AnnotationHttpHandler, ? extends Annotation, AnnotationHandlerData>> getAnnotationHandlers() {
         return costom;
     }
+
+    @Override
+    public String displayName() {
+        return getClazz().getSimpleName();
+    }
 }

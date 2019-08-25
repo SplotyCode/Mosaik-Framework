@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.startup.application;
 
+import io.github.splotycode.mosaik.annotations.visibility.VisibilityLevel;
 import io.github.splotycode.mosaik.startup.processbar.StartUpProcessHandler;
 import io.github.splotycode.mosaik.runtime.application.Application;
 import io.github.splotycode.mosaik.runtime.application.ApplicationState;
@@ -12,7 +13,8 @@ public class ApplicationFinder {
 
     private static ClassCollector classCollector = ClassCollector.newInstance()
                                                     .setOnlyClasses(true)
-                                                    .setNoDisableds(true)
+                                                    .setNoDisable(true)
+                                                    .setVisibility(VisibilityLevel.NOT_INVISIBLE)
                                                     .setAbstracation(AlmostBoolean.NO)
                                                     .setNeedAssignable(Application.class);
 

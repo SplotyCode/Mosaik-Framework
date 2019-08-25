@@ -13,7 +13,7 @@ import java.util.HashSet;
 @Getter
 public class StaticHandlerFinder extends ListClassRegister<HttpHandler> implements HandlerFinder {
 
-    private static final ClassCollector collector = ClassCollector.newInstance()
+    private ClassCollector collector = ClassCollector.newInstance()
             .setAbstracation(AlmostBoolean.NO)
             .setOnlyClasses(true)
             .setNeedAssignable(HttpHandler.class);
@@ -27,10 +27,8 @@ public class StaticHandlerFinder extends ListClassRegister<HttpHandler> implemen
 
     @Override
     public Collection<HttpHandler> search() {
-        if (webServer.getConfig().getData(WebConfig.SEARCH_HANDLERS)) {
-            return combind(collector.collectAllInstances());
-        }
-        return getAll();
+        collector.setVisibility(webServer.getConfig().getData(WebConfig.SEARCH_HANDLERS_VISIBILITY));
+        return combind(collector.collectAllInstances());
     }
 
 }
