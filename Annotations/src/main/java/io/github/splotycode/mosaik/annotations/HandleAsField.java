@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.webapi.response.content.manipulate;
+package io.github.splotycode.mosaik.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

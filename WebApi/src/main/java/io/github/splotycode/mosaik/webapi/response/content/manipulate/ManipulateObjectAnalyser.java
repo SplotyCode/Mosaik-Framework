@@ -26,7 +26,7 @@ public class ManipulateObjectAnalyser {
     public static class AnalysedObject {
 
         private Map<String, Field> fields = new HashMap<>();
-        private Map<String, Method> methods = new HashMap<>();
+        private Map<String, Method> methods;
 
         private Class clazz;
 
@@ -39,17 +39,7 @@ public class ManipulateObjectAnalyser {
                 }
                 fields.put(name, field);
             }
-            for (Method method : ReflectionUtil.getAllMethods(clazz)) {
-                HandleAsField anno = method.getAnnotation(HandleAsField.class);
-                if (anno != null) {
-                    if (method.getParameterCount() != 0) throw new ManipulationException("Methods with @HandleAsField may not have parameters");
-                    String name = method.getName();
-                    if (!anno.name().isEmpty()) {
-                        name = anno.name();
-                    }
-                    methods.put(name, method);
-                }
-            }
+            methods = ReflectionUtil.getMethodFields(clazz);
         }
 
         public Object getValueByName(Object obj, String varName) throws IllegalAccessException, InvocationTargetException {

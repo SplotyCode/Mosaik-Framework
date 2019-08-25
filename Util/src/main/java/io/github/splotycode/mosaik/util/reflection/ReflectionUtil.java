@@ -95,6 +95,28 @@ public final class ReflectionUtil {
         }
     }
 
+    public static void collectMethodFields(Class<?> clazz, Consumer<Pair<String, Method>> callback) {
+        for (Method method : ReflectionUtil.getAllMethods(clazz)) {
+            HandleAsField annotation = method.getAnnotation(HandleAsField.class);
+            if (annotation != null) {
+                if (method.getParameterCount() != 0) {
+                    throw new IllegalStateException("Methods with @HandleAsField may not have parameters");
+                }
+                String name = annotation.name();
+                if (name.isEmpty()) {
+                    name = method.getName();
+                }
+                callback.accept(new Pair<>(name, method));
+            }
+        }
+    }
+
+    public static Map<String, Method> getMethodFields(Class<?> clazz) {
+        HashMap<String, Method> methods = new HashMap<>();
+        collectMethodFields(clazz, method -> methods.put(method.getOne(), method.getTwo()));
+        return methods;
+    }
+
     public static Field getField(Class clazz, String name) {
         while (clazz != Object.class) {
             try {
