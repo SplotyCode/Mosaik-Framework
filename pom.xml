@@ -46,6 +46,7 @@
         <mosaik.netty.version>4.1.37.Final</mosaik.netty.version>
         <mosaik.gson.version>2.8.5</mosaik.gson.version>
         <mosaik.snakeyaml.version>1.24</mosaik.snakeyaml.version>
+
         <mosaik.junit.version>5.1.0</mosaik.junit.version>
         <mosaik.junit_platform.version>1.1.0</mosaik.junit_platform.version>
 

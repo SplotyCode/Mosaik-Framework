@@ -52,7 +52,9 @@ public class ApplicationHandleImpl implements ApplicationHandle {
         application.getApplicationTypes().forEach(type -> {
             try {
                 application.getClass().getMethod("initType", BootContext.class, type).invoke(application, bootContext, null);
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+            } catch (NoSuchMethodException ignored) {
+
+            } catch (IllegalAccessException | InvocationTargetException ex) {
                 throw new BootException("Could not init Application Type " + type.getSimpleName() + " in " + application.getName(), ex);
             }
         });
