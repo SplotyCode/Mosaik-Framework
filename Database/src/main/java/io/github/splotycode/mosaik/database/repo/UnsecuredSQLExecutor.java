@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.database.repo;
 
+import io.github.splotycode.mosaik.database.DatabaseApplicationType;
 import io.github.splotycode.mosaik.database.connection.sql.JDBCConnection;
 import io.github.splotycode.mosaik.database.connection.sql.JDBCConnectionProvider;
 import io.github.splotycode.mosaik.database.table.ColumnNameResolver;
@@ -24,6 +25,14 @@ public class UnsecuredSQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionP
 
     public UnsecuredSQLExecutor(Class<?> clazz) {
         super(clazz);
+    }
+
+    public UnsecuredSQLExecutor(Class<?> clazz, JDBCConnectionProvider defaultConnection) {
+        super(clazz, defaultConnection);
+    }
+
+    public UnsecuredSQLExecutor(Class<?> clazz, DatabaseApplicationType defaultApplication) {
+        super(clazz, defaultApplication);
     }
 
     static {
