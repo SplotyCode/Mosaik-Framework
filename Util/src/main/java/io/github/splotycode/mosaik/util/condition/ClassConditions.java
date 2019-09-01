@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.util.condition;
 import io.github.splotycode.mosaik.annotations.AnnotationHelper;
 import io.github.splotycode.mosaik.annotations.Disabled;
 import io.github.splotycode.mosaik.annotations.visibility.VisibilityLevel;
+import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -58,9 +59,16 @@ public final class ClassConditions {
     }
 
     /**
-     * The Predicate will return true if the given class is a instance of a specific class
+     * The Predicate will return true if the given object is a instance of a specific class
      */
-    public static Predicate<Class> instanceOf(Class clazz) {
+    public static Predicate<Class> instanceOf(Object obj) {
+        return clazz -> clazz.isInstance(obj);
+    }
+
+    /**
+     * The Predicate will return true if the given Class is a instance of a specific object
+     */
+    public static Predicate<Object> instanceOf(Class clazz) {
         return clazz::isInstance;
     }
 
@@ -126,7 +134,7 @@ public final class ClassConditions {
      * @param methodCondition the filter for the methods
      */
     public static Predicate<Class> anyMethod(Predicate<Method> methodCondition) {
-        return item -> Arrays.stream(item.getDeclaredMethods()).anyMatch(methodCondition);
+        return item -> ReflectionUtil.getAllMethods(item).stream().anyMatch(methodCondition);
     }
 
     /**
@@ -134,7 +142,7 @@ public final class ClassConditions {
      * @param methodCondition the filter for the methods
      */
     public static Predicate<Class> allMethods(Predicate<Method> methodCondition) {
-        return item -> Arrays.stream(item.getDeclaredMethods()).anyMatch(methodCondition);
+        return item -> ReflectionUtil.getAllMethods(item).stream().allMatch(methodCondition);
     }
 
     /**
