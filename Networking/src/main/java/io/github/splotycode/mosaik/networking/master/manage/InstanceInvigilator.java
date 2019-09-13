@@ -4,6 +4,7 @@ import io.github.splotycode.mosaik.networking.config.ConfigProvider;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.master.host.MasterHost;
 import io.github.splotycode.mosaik.networking.statistics.CloudStatistics;
+import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
 import io.github.splotycode.mosaik.networking.statistics.Instance;
 import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
 import io.github.splotycode.mosaik.util.logger.Logger;
@@ -22,12 +23,13 @@ public class InstanceInvigilator {
     public static InstanceInvigilator fromConfig(MasterInstanceService service, String prefix) {
         ConfigProvider provider = service.kit.getConfigProvider();
         return new InstanceInvigilator(service,
-                provider.getValue(prefix + ".startupInstances", int.class),
+                provider.getValue(prefix + ".startupInstances", int.class, 0),
                 provider.getValue(prefix + ".optimalConnections", int.class),
                 provider.getValue(prefix + ".maxInstances", int.class),
                 provider.getValue(prefix + ".stopThreshold", int.class),
                 provider.getValue(prefix + ".maxStop", double.class),
-                provider.getValue(prefix + ".minimumRam", long.class));
+                provider.getValue(prefix + ".minimumRam", long.class),
+                provider.getValue(prefix + ".onePerMaster", boolean.class, false));
     }
 
     private MasterInstanceService service;
@@ -40,10 +42,15 @@ public class InstanceInvigilator {
 
     private long minimumRam;
 
+    private boolean onePerMaster;
+
     protected void startNewInstance() {
         Optional<Host> oHost = service.getKit().getHosts().stream().filter(host -> {
             if (host instanceof MasterHost) {
-                return ((StatisticalHost) host).getStatistics().getFreeRam() >= minimumRam;
+                HostStatistics statistics =  ((MasterHost) host).getStatistics();
+                if (!onePerMaster || statistics.getInstances(service) == 0) {
+                    return ((StatisticalHost) host).getStatistics().getFreeRam() >= minimumRam;
+                }
             }
             return false;
         }).max(Comparator.comparingDouble(o -> ((StatisticalHost) o).getStatistics().getCpu()));
