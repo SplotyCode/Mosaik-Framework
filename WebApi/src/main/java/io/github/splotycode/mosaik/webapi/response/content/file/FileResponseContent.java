@@ -38,7 +38,7 @@ public class FileResponseContent implements ManipulateableContent<FileResponseCo
         try {
             manipulator = new StringManipulator(FileUtil.loadFile(file, encoding));
         } catch (Throwable e) {
-            throw new HandleRequestException("Could not find file: " + file.getAbsolutePath(), e);
+            throw new HandleRequestException("Could not find file: " + file.getAbsolutePath(), e, 404);
         }
     }
 

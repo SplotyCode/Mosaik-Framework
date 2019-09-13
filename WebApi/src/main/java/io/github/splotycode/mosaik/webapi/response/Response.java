@@ -121,7 +121,7 @@ public class Response {
                             setHeader(ResponseHeader.LAST_MODIFIED, Instant.ofEpochMilli(lastModified).atZone(ZONE_ID).format(DATE_FORMAT));
                         }
                     } catch (NumberFormatException ex) {
-                        throw new ContentException("Failed to parse " + rawLastModified + " as last modified", ex);
+                        throw new ContentException("Failed to parse " + rawLastModified + " as last modified", ex, 400);
                     }
                 }
             }
