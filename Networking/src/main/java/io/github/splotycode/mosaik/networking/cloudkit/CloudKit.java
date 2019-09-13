@@ -98,6 +98,9 @@ public class CloudKit {
 
     public CloudKit startService(Service service) {
         services.add(service);
+        if (service instanceof CloudKitService) {
+            ((CloudKitService) service).initialize(this);
+        }
         handler.addListener(service);
         service.start();
         if (service instanceof ConfigProvider) {

@@ -29,7 +29,7 @@ public class RemoteMasterHost implements MasterHost {
     private MasterHealthCheck healthCheck = new MasterHealthCheck();
     @Getter private HostStatistics statistics;
 
-    @Getter private CloudKit cloudKit;
+    private CloudKit cloudKit;
     private MosaikAddress address;
 
     @Setter @Getter private Channel channel;
@@ -71,6 +71,11 @@ public class RemoteMasterHost implements MasterHost {
     @Override
     public void stopService(String service, int port) {
         channel.writeAndFlush(new StopInstancePacket(service, port));
+    }
+
+    @Override
+    public CloudKit cloudKit() {
+        return cloudKit;
     }
 
     private class MasterHealthCheck implements HealthCheck {

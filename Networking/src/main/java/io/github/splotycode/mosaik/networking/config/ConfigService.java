@@ -4,10 +4,7 @@ import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
 import io.github.splotycode.mosaik.networking.component.NetworkComponent;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPClient;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPServer;
-import io.github.splotycode.mosaik.networking.config.packets.ConfigNoUpdate;
-import io.github.splotycode.mosaik.networking.config.packets.ConfigRequestUpdate;
 import io.github.splotycode.mosaik.networking.config.packets.ConfigUpdate;
-import io.github.splotycode.mosaik.networking.config.packets.KAUpdate;
 import io.github.splotycode.mosaik.networking.packet.PacketRegistry;
 import io.github.splotycode.mosaik.networking.packet.handle.AnnotationContentHandler;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
@@ -42,7 +39,7 @@ public class ConfigService extends StaticConfigProvider implements SingleCompone
     }
 
     @Override
-    public CloudKit kit() {
+    public CloudKit cloudKit() {
         return kit;
     }
 

@@ -25,7 +25,7 @@ public class MasterServerHandler extends SelfAnnotationHandler<SerializedPacket>
         if (rHost instanceof StatisticalHost) {
             StatisticalHost host = (StatisticalHost) rHost;
             host.update(statistics);
-            service.kit().getHandler().call(HostStatisticListener.class, listener -> listener.update(host));
+            service.cloudKit().getHandler().call(HostStatisticListener.class, listener -> listener.update(host));
         } else {
             throw new IllegalStateException("Got Update packet from a non statistical host");
         }
@@ -35,7 +35,7 @@ public class MasterServerHandler extends SelfAnnotationHandler<SerializedPacket>
     public void onPacketDistribute(DistributePacket packet, ChannelHandlerContext ctx) {
         SerializedPacket distribute = packet.body();
         service.sendSelf(distribute);
-        service.kit().getHosts().forEach(host -> {
+        service.cloudKit().getHosts().forEach(host -> {
             if (host instanceof RemoteMasterHost) {
                 RemoteMasterHost remoteHost = (RemoteMasterHost) host;
                 if (remoteHost.getChannel() != ctx.channel()) {

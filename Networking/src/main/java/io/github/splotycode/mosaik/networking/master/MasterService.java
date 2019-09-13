@@ -10,8 +10,6 @@ import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.master.packets.DestroyPacket;
 import io.github.splotycode.mosaik.networking.master.packets.DistributePacket;
-import io.github.splotycode.mosaik.networking.master.packets.StartInstancePacket;
-import io.github.splotycode.mosaik.networking.master.packets.StopInstancePacket;
 import io.github.splotycode.mosaik.networking.packet.PacketRegistry;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
@@ -189,7 +187,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     }
 
     @Override
-    public CloudKit kit() {
+    public CloudKit cloudKit() {
         return kit;
     }
 

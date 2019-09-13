@@ -14,7 +14,6 @@ import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.DefaultCaches;
 import io.github.splotycode.mosaik.util.listener.DummyListenerHandler;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
-import lombok.Getter;
 
 public class MasterSelfHost implements MasterHost {
 
@@ -25,7 +24,7 @@ public class MasterSelfHost implements MasterHost {
     private StaticHealthCheck healthCheck = new StaticHealthCheck(true);
     private IpResolver resolver;
     private Cache<HostStatistics> statistic;
-    @Getter private CloudKit cloudKit;
+    private CloudKit cloudKit;
     private HostStatistics set;
 
     public MasterSelfHost(CloudKit cloudKit) {
@@ -84,9 +83,14 @@ public class MasterSelfHost implements MasterHost {
 
     @Override
     public void stopService(String rawService, int port) {
-        Service service = getCloudKit().getServiceByName(rawService);
+        Service service = cloudKit.getServiceByName(rawService);
         if (service instanceof MasterInstanceService) {
             ((MasterInstanceService) service).getLocalManager().stop(port);
         }
+    }
+
+    @Override
+    public CloudKit cloudKit() {
+        return cloudKit;
     }
 }
