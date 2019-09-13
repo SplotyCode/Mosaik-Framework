@@ -8,6 +8,7 @@ import io.github.splotycode.mosaik.webapi.handler.HttpHandler;
 import io.github.splotycode.mosaik.webapi.response.error.ErrorFactory;
 import io.github.splotycode.mosaik.webapi.session.SessionSystem;
 
+import java.net.SocketAddress;
 import java.util.Collection;
 
 public interface WebServer {
@@ -25,8 +26,10 @@ public interface WebServer {
         listen(port, false);
     }
 
-    void shutdown();
+    SocketAddress address();
+    int port();
 
+    void shutdown();
     boolean isRunning();
 
     void installErrorFactory(ErrorFactory factory);

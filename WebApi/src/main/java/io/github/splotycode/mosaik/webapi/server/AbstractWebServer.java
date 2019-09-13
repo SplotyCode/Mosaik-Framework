@@ -24,6 +24,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -166,4 +167,13 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
         if (isRunning()) throw new ServerAlreadyRunningException();
     }
 
+    @Override
+    public SocketAddress address() {
+        return address;
+    }
+
+    @Override
+    public int port() {
+        return address.getPort();
+    }
 }
