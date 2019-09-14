@@ -48,6 +48,6 @@ stages:
   - name: build_test
   - name: deploy
     # require the branch name to be master
-    if: branch = master
+    if: branch = master AND type != cron
 
 
