@@ -46,12 +46,12 @@ public class Histogram {
         return Long.MIN_VALUE;
     }
 
-    public long getAverage() {
+    public double getAverage() {
         long count = this.count.sum();
         if (count == 0) {
             return 0;
         }
-        return sum.sum() / count;
+        return sum.sum() / (double) count;
     }
 
     public double getMedian() {
@@ -90,6 +90,12 @@ public class Histogram {
             sum.add(value);
         }
         buckets.floorEntry(value).getValue().increment();
+    }
+
+    public void clear() {
+        count.reset();
+        sum.reset();
+        buckets.values().forEach(LongAdder::reset);
     }
 
     public long getSize() {
