@@ -74,14 +74,14 @@ public class Histogram {
             if (current == null) {
                 return Long.MIN_VALUE;
             }
-            return current.getValue().sum();
+            return current.getKey();
         }
         if (current == null) {
-            return previus.getValue().sum();
+            return previus.getKey();
         }
-        long firstOption = previus.getValue().sum();
-        long lastOption = current.getValue().sum();
-        return firstOption + (lastOption - firstOption) * (needed - firstOption) / (double) (currentSum - lastSum);
+        long firstOption = previus.getKey();
+        long lastOption = current.getKey();
+        return firstOption + (lastOption - firstOption) * (needed - lastSum) / (double) (currentSum - lastSum);
     }
 
     public void update(long value) {
