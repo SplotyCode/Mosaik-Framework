@@ -9,18 +9,18 @@ public class ConfigHostMapProvider extends HostMapProvider implements ConfigChan
 
     public static final ConfigKey<Long> MAX_CACHE = new ConfigKey<>("hosts.max_cache", long.class, 30 * 1000L);
 
-    private String configpath;
+    private String configPath;
 
     public ConfigHostMapProvider(CloudKit kit, String configPath) {
         super(kit, kit.getConfig(MAX_CACHE));
-        this.configpath = configPath;
+        this.configPath = configPath;
         newConfigProvider(null, kit.getConfigProvider());
         kit.getHandler().addListener(this);
     }
 
     @Override
     protected void fill() {
-        for (Object host : kit.getConfigProvider().getValue(configpath, Iterable.class, null)) {
+        for (Object host : kit.getConfigProvider().getValue(configPath, Iterable.class, null)) {
             String address = host.toString();
             if (!kit.localAddress().equals(address)) {
                 addHost(kit.getHostProvider().provide(kit, host.toString()));

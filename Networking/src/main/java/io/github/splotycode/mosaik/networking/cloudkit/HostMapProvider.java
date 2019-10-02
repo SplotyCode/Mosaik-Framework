@@ -12,6 +12,7 @@ import lombok.Setter;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+//TODO: why not use cache from util
 public abstract class HostMapProvider implements Cache<TreeMap<MosaikAddress, Host>>, AddressChangeListener {
 
     protected CloudKit kit;
@@ -19,6 +20,7 @@ public abstract class HostMapProvider implements Cache<TreeMap<MosaikAddress, Ho
     public HostMapProvider(CloudKit kit, long maxDelay) {
         this.kit = kit;
         this.maxDelay = maxDelay;
+        kit.getHandler().addListener(this);
     }
 
     protected TreeMap<MosaikAddress, Host> hosts = new TreeMap<>();
@@ -29,7 +31,6 @@ public abstract class HostMapProvider implements Cache<TreeMap<MosaikAddress, Ho
     protected abstract void fill();
 
     public void addHost(Host host) {
-        host.handler().addListener(this);
         hosts.put(host.address(), host);
     }
 
@@ -42,7 +43,7 @@ public abstract class HostMapProvider implements Cache<TreeMap<MosaikAddress, Ho
     @Override
     public TreeMap<MosaikAddress, Host> getValue() {
         lastClear.getAndUpdate(last -> {
-            if (last + maxDelay > System.currentTimeMillis()) {
+            if (last + maxDelay < System.currentTimeMillis()) {
                 reFill();
                 return System.currentTimeMillis();
             }
@@ -59,7 +60,6 @@ public abstract class HostMapProvider implements Cache<TreeMap<MosaikAddress, Ho
 
     @Override
     public void clear() {
-        hosts.values().forEach(host -> host.handler().removeListener(this));
         hosts.clear();
     }
 
