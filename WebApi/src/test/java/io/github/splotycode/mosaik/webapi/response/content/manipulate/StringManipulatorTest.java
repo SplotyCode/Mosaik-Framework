@@ -75,7 +75,7 @@ class StringManipulatorTest {
                 data.add(new Pat("david", i + 10));
             }
             manipulator.patternList(data);
-            assertEquals("hallo Name: david <br> Age: 14 <br><br>  Name: david <br> Age: 19 <br><br>  Name: david <br> Age: 20 <br><br>  Name: david <br> Age: 21 <br><br>  Name: david <br> Age: 18 <br><br>  Name: david <br> Age: 10 <br><br>  Name: david <br> Age: 12 <br><br>  Name: david <br> Age: 17 <br><br>  Name: david <br> Age: 11 <br><br>  Name: david <br> Age: 16 <br><br>  Name: david <br> Age: 15 <br><br>  Name: david <br> Age: 13 <br><br> hasdasdas", manipulator.getResult());
+            assertEquals("hallo Name: david <br> Age: 10 <br><br>  Name: david <br> Age: 11 <br><br>  Name: david <br> Age: 12 <br><br>  Name: david <br> Age: 13 <br><br>  Name: david <br> Age: 14 <br><br>  Name: david <br> Age: 15 <br><br>  Name: david <br> Age: 16 <br><br>  Name: david <br> Age: 17 <br><br>  Name: david <br> Age: 18 <br><br>  Name: david <br> Age: 19 <br><br>  Name: david <br> Age: 20 <br><br>  Name: david <br> Age: 21 <br><br> hasdasdas", manipulator.getResult());
         }
     }
 
@@ -97,7 +97,7 @@ class StringManipulatorTest {
         String name;
     }
 
-    private static final String EXPECTED_PATTERN_IN_PATTERN = " Name: Computer-3, ID: 9 <br><br>  Drive: Drive-9 <br> Drive: Drive-10 <br> Drive: Drive-11 <br> <br><br><br><br>  Name: Computer-1, ID: 3 <br><br>  Drive: Drive-5 <br> Drive: Drive-4 <br> Drive: Drive-3 <br> <br><br><br><br>  Name: Computer-2, ID: 6 <br><br>  Drive: Drive-8 <br> Drive: Drive-6 <br> Drive: Drive-7 <br> <br><br><br><br>  Name: Computer-0, ID: 0 <br><br>  Drive: Drive-0 <br> Drive: Drive-1 <br> Drive: Drive-2 <br> <br><br><br><br> ";
+    private static final String EXPECTED_PATTERN_IN_PATTERN = " Name: Computer-0, ID: 0 <br><br>  Drive: Drive-0 <br> Drive: Drive-1 <br> Drive: Drive-2 <br> <br><br><br><br>  Name: Computer-1, ID: 3 <br><br>  Drive: Drive-3 <br> Drive: Drive-4 <br> Drive: Drive-5 <br> <br><br><br><br>  Name: Computer-2, ID: 6 <br><br>  Drive: Drive-6 <br> Drive: Drive-7 <br> Drive: Drive-8 <br> <br><br><br><br>  Name: Computer-3, ID: 9 <br><br>  Drive: Drive-9 <br> Drive: Drive-10 <br> Drive: Drive-11 <br> <br><br><br><br> ";
 
     @Test
     void testPatternInPattern() {

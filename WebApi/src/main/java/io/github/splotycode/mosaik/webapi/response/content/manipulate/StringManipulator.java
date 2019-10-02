@@ -23,7 +23,7 @@ public class StringManipulator implements ResponseManipulator<StringManipulator>
 
     private ManipulateData processedData;
     @Getter private String input;
-    @Getter private Set<Replacement> replacements = new HashSet<>();
+    @Getter private ArrayList<Replacement> replacements = new ArrayList<>();
 
     @Getter private boolean cashing;
 
@@ -90,8 +90,8 @@ public class StringManipulator implements ResponseManipulator<StringManipulator>
         replacements.add(new Replacement(pattern.getStart(), pattern.getStart(), result, "replace pattern instance: " + name));
     }
 
-    private Set<Replacement> createPatternReplacements(ManipulateData.ManipulatePattern pattern, boolean needFind, Function<String, Object> valueFunc) {
-        Set<Replacement> repVars = new HashSet<>();
+    private ArrayList<Replacement> createPatternReplacements(ManipulateData.ManipulatePattern pattern, boolean needFind, Function<String, Object> valueFunc) {
+        ArrayList<Replacement> repVars = new ArrayList<>();
 
         for (Map.Entry<String, List<ManipulateData.ManipulateVariable>> varibles : pattern.getVariables().entrySet()) {
             try {
@@ -136,7 +136,7 @@ public class StringManipulator implements ResponseManipulator<StringManipulator>
         return this;
     }
 
-    private void handlePatternCommand(PatternCommand command, Set<Replacement> replacements) {
+    private void handlePatternCommand(PatternCommand command, ArrayList<Replacement> replacements) {
         List<PatternAction> actions = new ArrayList<>();
         if (command.getPrimary() != null) {
             actions.add(command.getPrimary());
@@ -174,7 +174,7 @@ public class StringManipulator implements ResponseManipulator<StringManipulator>
     }
 
     private String patternAction(PatternAction action, ManipulateData.ManipulatePattern pattern) {
-        HashSet<Replacement> repl = new HashSet<>();
+        ArrayList<Replacement> repl = new ArrayList<>();
 
         repl.addAll(createPatternReplacements(pattern, true, name -> {
             for (Object object : action.getObjects()) {
@@ -290,7 +290,7 @@ public class StringManipulator implements ResponseManipulator<StringManipulator>
         return applyReplacements(replacements, input);
     }
 
-    private String applyReplacements(Set<Replacement> replacements, String str) {
+    private String applyReplacements(ArrayList<Replacement> replacements, String str) {
         StringBuilder buffer = new StringBuilder(str);
         int delta = 0;
         for (Replacement replacement : replacements.stream().sorted(Comparator.comparingInt(replacement -> replacement.end)).collect(Collectors.toList())) {
