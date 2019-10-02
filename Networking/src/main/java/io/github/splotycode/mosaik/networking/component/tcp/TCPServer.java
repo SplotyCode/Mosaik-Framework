@@ -32,7 +32,7 @@ public class TCPServer<S extends TCPServer<S>> extends AbstractServer<S> impleme
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .option(ChannelOption.SO_BACKLOG, 1000)
 
-                .childOption(ChannelOption.AUTO_READ, false)
+                //.childOption(ChannelOption.AUTO_READ, false)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)

@@ -30,8 +30,8 @@ public class TCPClient<S extends TCPClient<S>> extends AbstractClient<S> impleme
 
     @Override
     protected void doDefaults() {
-        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
-                .option(ChannelOption.AUTO_READ, false);
+        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000);
+               // .option(ChannelOption.AUTO_READ, false);
     }
 
 }
