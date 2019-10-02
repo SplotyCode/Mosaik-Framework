@@ -10,14 +10,20 @@ import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket
 import io.github.splotycode.mosaik.networking.statistics.HostStatisticListener;
 import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
 import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
+import io.github.splotycode.mosaik.networking.statistics.UpdateSlavesTask;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-public class MasterServerHandler extends SelfAnnotationHandler<SerializedPacket> {
+@ChannelHandler.Sharable
+public class MasterServerHandler extends SelfAnnotationHandler<SerializedPacket> implements MasterChangeListener {
 
     protected final MasterService service;
+    private long taskID = -1;
+
+    public MasterServerHandler(MasterService service) {
+        this.service = service;
+    }
 
     @PacketTarget
     public void onStatusUpdate(HostStatistics statistics, ChannelHandlerContext ctx) {
@@ -33,7 +39,7 @@ public class MasterServerHandler extends SelfAnnotationHandler<SerializedPacket>
 
     @PacketTarget
     public void onPacketDistribute(DistributePacket packet, ChannelHandlerContext ctx) {
-        SerializedPacket distribute = packet.body();
+        SerializedPacket distribute = packet.body(service);
         service.sendSelf(distribute);
         service.cloudKit().getHosts().forEach(host -> {
             if (host instanceof RemoteMasterHost) {
@@ -45,6 +51,12 @@ public class MasterServerHandler extends SelfAnnotationHandler<SerializedPacket>
         });
     }
 
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        super.exceptionCaught(ctx, cause);
+        cause.printStackTrace();
+    }
+
     @PacketTarget
     public void onDestroy(DestroyPacket packet) {
         service.getServer().shutdown();
@@ -54,4 +66,12 @@ public class MasterServerHandler extends SelfAnnotationHandler<SerializedPacket>
         service.createClient(new MosaikAddress(packet.getBetterRoot()));
     }
 
+    @Override
+    public void onChange(boolean own, MosaikAddress current, MosaikAddress last) {
+        if (own) {
+            taskID = service.cloudKit().getLocalTaskExecutor().runTask(new UpdateSlavesTask(service));
+        } else {
+            service.cloudKit().getLocalTaskExecutor().stopTask(taskID);
+        }
+    }
 }

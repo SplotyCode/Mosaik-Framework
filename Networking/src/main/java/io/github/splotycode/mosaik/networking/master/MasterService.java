@@ -32,6 +32,7 @@ import java.util.Map;
 public class MasterService extends RepeatableTask implements SingleComponentService {
 
     public static final ConfigKey<Long> DAEMON_STATS_DELAY = new ConfigKey<>("master.daemon_upload_stats", long.class, 15 * 1000L);
+    public static final ConfigKey<Long> MASTER_UPDATE_SLAVE_DELAY = new ConfigKey<>("master.master_update_slaves", long.class, 20 * 1000L);
 
     public static final ConfigKey<Long> MASTER_UPDATE_DELAY = new ConfigKey<>("master.update_delay", long.class,  8 * 1000L);
     public static final ConfigKey<Integer> PORT = new ConfigKey<>("master.port", int.class, -1);
@@ -73,6 +74,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         this.kit = kit;
         clientHandler = new MasterClientHandler(kit);
         statistics = new CloudStatistics(kit);
+        kit.getHandler().addListener(serverHandler);
     }
 
     @Override

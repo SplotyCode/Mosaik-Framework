@@ -1,14 +1,25 @@
 package io.github.splotycode.mosaik.networking.master;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
+import io.github.splotycode.mosaik.networking.host.Host;
+import io.github.splotycode.mosaik.networking.master.packets.UpdateSlavesPacket;
+import io.github.splotycode.mosaik.networking.packet.handle.PacketTarget;
 import io.github.splotycode.mosaik.networking.packet.handle.SelfAnnotationHandler;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
+import io.github.splotycode.mosaik.networking.statistics.HostStatisticListener;
+import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
+import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
 import io.github.splotycode.mosaik.networking.statistics.UpdateLocalStatisticsTask;
-import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
+import io.github.splotycode.mosaik.networking.util.MosaikAddress;
+import io.github.splotycode.mosaik.util.logger.Logger;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.Map;
+
 public class MasterClientHandler extends SelfAnnotationHandler<SerializedPacket> {
+
+    private static final Logger LOGGER = Logger.getInstance(MasterClientHandler.class);
 
     protected final CloudKit kit;
     protected long updateID;
@@ -18,16 +29,30 @@ public class MasterClientHandler extends SelfAnnotationHandler<SerializedPacket>
         this.kit = kit;
     }
 
+    @PacketTarget
+    public void onSlaveUpdate(UpdateSlavesPacket packet) {
+        for (Map.Entry<MosaikAddress, HostStatistics> data : packet.getStatistics().entrySet()) {
+            Host rHost = kit.hostMap().get(data.getKey());
+            if (rHost instanceof StatisticalHost) {
+                StatisticalHost host = (StatisticalHost) rHost;
+                host.update(data.getValue());
+                kit.getHandler().call(HostStatisticListener.class, listener -> listener.update(host));
+            } else {
+                throw new IllegalStateException("Tried to update non statistical host " + rHost);
+            }
+        }
+    }
+
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        super.channelRegistered(ctx);
         channel = ctx.channel();
         updateID = kit.getLocalTaskExecutor().runTask(new UpdateLocalStatisticsTask(kit, channel));
-        super.channelRegistered(ctx);
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        kit.getLocalTaskExecutor().stopTask(updateID);
         super.channelUnregistered(ctx);
+        kit.getLocalTaskExecutor().stopTask(updateID);
     }
 }
