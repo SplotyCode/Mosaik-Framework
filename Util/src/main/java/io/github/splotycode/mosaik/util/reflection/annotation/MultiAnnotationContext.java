@@ -64,6 +64,7 @@ public abstract class MultiAnnotationContext<C extends MultiAnnotationContext, D
     }
 
     public void feedObject(Object object) {
+        this.object = object;
         this.clazz = object.getClass();
         constructGlobal();
         try {
