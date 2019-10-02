@@ -38,7 +38,11 @@ public class PacketRegistry<P extends Packet> implements RawClassRegister<Class<
     }
 
     public int getIdByPacket(Class<? extends P> clazz) {
-        return packetClasses.get(clazz);
+        Integer integer = packetClasses.get(clazz);
+        if (integer == null) {
+            return -1;
+        }
+        return integer;
     }
 
     public int forceIdByPacket(Class<? extends P> clazz) {
