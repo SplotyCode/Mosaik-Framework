@@ -10,15 +10,16 @@ import java.net.SocketAddress;
 
 @Getter
 @AllArgsConstructor
+@Setter
 public class PingingHealthCheck implements HealthCheck {
 
-    public static ThresholdHealthCheck createThresHold(SocketAddress address, int timeout, TaskExecutor executor, int interval,
-                                                     int successThreshold, int failThreshold) {
+    public static ThresholdHealthCheck createThreshold(SocketAddress address, int timeout, TaskExecutor executor, int interval,
+                                                       int successThreshold, int failThreshold) {
         return new ThresholdHealthCheck(new PingingHealthCheck(address, timeout), executor, interval, successThreshold, failThreshold);
     }
 
-    private final SocketAddress address;
-    @Setter private int timeout;
+    private SocketAddress address;
+    private int timeout;
 
     @Override
     public boolean isOnline() {
