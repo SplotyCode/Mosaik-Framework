@@ -8,6 +8,7 @@ import io.github.splotycode.mosaik.networking.service.Service;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.lang.management.ManagementFactory;
 import java.util.Collection;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 @Getter
 public class HostStatistics implements SerializedPacket {

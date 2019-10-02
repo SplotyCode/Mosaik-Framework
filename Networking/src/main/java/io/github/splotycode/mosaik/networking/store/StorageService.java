@@ -8,7 +8,7 @@ import io.github.splotycode.mosaik.networking.statistics.SingleComponentService;
 public class StorageService implements SingleComponentService {
 
     @Override
-    public CloudKit kit() {
+    public CloudKit cloudKit() {
         return null;
     }
 
