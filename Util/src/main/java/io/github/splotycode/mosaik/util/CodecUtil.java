@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util;
 
+import io.github.splotycode.mosaik.util.concurrent.ConcurrentInstance;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -12,14 +13,12 @@ import java.security.NoSuchAlgorithmException;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CodecUtil {
 
-    public static final MessageDigest MD_5, SHA_1, SHA_256, SHA_512;
-
-    static {
-        MD_5 = getDigest("MD5");
-        SHA_1 = getDigest("SHA-1");
-        SHA_256 = getDigest("SHA-256");
-        SHA_512 = getDigest("SHA-512");
-    }
+    private static final int INSTANCES = 12;
+    public static final ConcurrentInstance<MessageDigest> MD_5 =
+            new ConcurrentInstance<>(INSTANCES, () -> getDigest("MD5")),
+            SHA_1 = new ConcurrentInstance<>(INSTANCES, () -> getDigest("SHA-1")),
+            SHA_256 = new ConcurrentInstance<>(INSTANCES, () -> getDigest("SHA-256")),
+            SHA_512 = new ConcurrentInstance<>(INSTANCES, () -> getDigest("SHA-512"));
 
     /**
      * Gets a MessageDigest by Name
@@ -47,7 +46,24 @@ public final class CodecUtil {
             digest.update(buffer, 0, read);
         }
 
-        return digest.digest();
+        byte[] result = digest.digest();
+        digest.reset();
+        return result;
+    }
+
+    /**
+     * Decodes a InputStream to a byte array
+     * @param provider the digest that should be used when decoding
+     * @param data the InputStream that should be decoded
+     * @return the decoded byte array
+     */
+    public static byte[] toBytes(ConcurrentInstance<MessageDigest> provider, InputStream data) throws IOException {
+        MessageDigest digest = provider.acquireInstance();
+        try {
+            return toBytes(digest, data);
+        } finally {
+            provider.releaseInstance(digest);
+        }
     }
 
     private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
@@ -88,7 +104,13 @@ public final class CodecUtil {
      * @param data the data that should encoded
      */
     public static byte[] md5(byte[] data) {
-        return MD_5.digest(data);
+        MessageDigest md5 = MD_5.acquireInstance();
+        try {
+            return md5.digest(data);
+        } finally {
+            md5.reset();
+            MD_5.releaseInstance(md5);
+        }
     }
 
     /**
@@ -142,7 +164,13 @@ public final class CodecUtil {
      * @param data the data that should encoded
      */
     public static byte[] sha1(byte[] data) {
-        return SHA_1.digest(data);
+        MessageDigest sha1 = SHA_1.acquireInstance();
+        try {
+            return sha1.digest(data);
+        } finally {
+            sha1.reset();
+            SHA_1.releaseInstance(sha1);
+        }
     }
 
     /**
@@ -196,7 +224,13 @@ public final class CodecUtil {
      * @param data the data that should encoded
      */
     public static byte[] sha256(byte[] data) {
-        return SHA_256.digest(data);
+        MessageDigest sha256 = SHA_256.acquireInstance();
+        try {
+            return sha256.digest(data);
+        } finally {
+            sha256.reset();
+            SHA_256.releaseInstance(sha256);
+        }
     }
 
     /**
@@ -250,7 +284,13 @@ public final class CodecUtil {
      * @param data the data that should encoded
      */
     public static byte[] sha512(byte[] data) {
-        return SHA_512.digest(data);
+        MessageDigest sha512 = SHA_512.acquireInstance();
+        try {
+            return sha512.digest(data);
+        } finally {
+            sha512.reset();
+            SHA_512.releaseInstance(sha512);
+        }
     }
 
     /**
