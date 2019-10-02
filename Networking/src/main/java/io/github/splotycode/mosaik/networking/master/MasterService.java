@@ -15,12 +15,14 @@ import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
 import io.github.splotycode.mosaik.networking.statistics.CloudStatistics;
+import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
 import io.github.splotycode.mosaik.networking.statistics.SingleComponentService;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.listener.Listener;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
+import io.github.splotycode.mosaik.util.time.TimeUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
@@ -43,6 +45,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
     {
         masterRegistry.registerPackage(DestroyPacket.class);
+        masterRegistry.register(HostStatistics.class);
     }
 
     private MosaikAddress currentBest;
@@ -98,13 +101,15 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
             currentBest = best;
 
             for (Map.Entry<MosaikAddress, Host> root : kit.hostMap().entrySet()) {
-                if (root.getKey().hashCode() > currentBest.hashCode() && root.getValue().healthCheck().isOnline()) {
+                if (root.getKey().hashCode() > currentBest.hashCode() &&
+                        root != kit.getSelfHost() &&
+                        root.getValue().healthCheck().isOnline()) {
                     logger.info("Sending Destroy packet to " + root.getKey());
                     destroyMaster(root.getKey());
                 }
             }
         } else {
-            logger.info("Sync has not changed in the last " + (delay / 1000) + " seconds");
+            logger.info("Sync has not changed in the last " + TimeUtil.formatDelay(delay));
         }
     }
 
