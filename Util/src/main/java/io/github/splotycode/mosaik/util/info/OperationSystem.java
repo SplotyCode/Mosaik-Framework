@@ -8,8 +8,18 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum OperationSystem {
 
-    WINDOWS(LineSeparator.CRLF),
-    LINUX(LineSeparator.LF);
+    WINDOWS(LineSeparator.CRLF) {
+        @Override
+        protected String generatePingString(String remote, long timeout) {
+            return "ping -n 1 -w " + timeout + " " + remote;
+        }
+    },
+    LINUX(LineSeparator.LF) {
+        @Override
+        protected String generatePingString(String remote, long timeout) {
+            return "ping -c 1 -W " + timeout / 1000 + " " + remote;
+        }
+    };
 
     private static OperationSystem current = null;
 
@@ -26,5 +36,7 @@ public enum OperationSystem {
     }
 
     private LineSeparator separator;
+
+    protected abstract String generatePingString(String remote, long timeout);
 
 }
