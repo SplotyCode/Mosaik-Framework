@@ -4,6 +4,7 @@ import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
 import io.github.splotycode.mosaik.networking.cloudkit.HostProvider;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
+import io.github.splotycode.mosaik.networking.healthcheck.PingingHealthCheck;
 import io.github.splotycode.mosaik.networking.host.AddressChangeListener;
 import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.master.packets.StartInstancePacket;
@@ -25,17 +26,19 @@ public class RemoteMasterHost implements MasterHost {
 
     public static final ConfigKey<Long> HEALTH_THRESHOLD = new ConfigKey<>("master.host.health_threshold", long.class, 8 * 1000L);
 
-    @Getter private long lastUpdate;
-    private MasterHealthCheck healthCheck = new MasterHealthCheck();
-    @Getter private HostStatistics statistics;
-
     private CloudKit cloudKit;
     private MosaikAddress address;
+
+    @Getter private long lastUpdate;
+    private MasterHealthCheck healthCheck = new MasterHealthCheck();
+    private PingingHealthCheck backupHealthCheck;
+    @Getter private HostStatistics statistics;
 
     @Setter @Getter private Channel channel;
 
     public RemoteMasterHost(CloudKit cloudKit, String address) {
         this.cloudKit = cloudKit;
+        backupHealthCheck = new PingingHealthCheck(null, cloudKit.getConfig(HEALTH_THRESHOLD).intValue());
         changeAddress(address);
     }
 
@@ -43,6 +46,7 @@ public class RemoteMasterHost implements MasterHost {
         MosaikAddress address = new MosaikAddress(rawAddress);
         handler.call(AddressChangeListener.class, (Consumer<AddressChangeListener>) listener -> listener.onChange(this.address, address));
         this.address = address;
+        backupHealthCheck.setAddress(address.asSocketAddress(cloudKit.getServiceByClass(MasterService.class).getPort()));
     }
 
     private MultipleListenerHandler handler = new MultipleListenerHandler();
@@ -82,6 +86,9 @@ public class RemoteMasterHost implements MasterHost {
 
         @Override
         public boolean isOnline() {
+            if (lastUpdate == 0) {
+                return backupHealthCheck.isOnline();
+            }
             long delay = System.currentTimeMillis() - lastUpdate;
             return delay <= cloudKit.getConfig(HEALTH_THRESHOLD) + cloudKit.getConfig(MasterService.DAEMON_STATS_DELAY);
         }
@@ -99,6 +106,6 @@ public class RemoteMasterHost implements MasterHost {
 
     @Override
     public ListenerHandler handler() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
