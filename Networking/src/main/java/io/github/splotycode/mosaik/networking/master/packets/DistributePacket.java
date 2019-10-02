@@ -19,7 +19,7 @@ public class DistributePacket implements SerializedPacket {
         this.service = service;
     }
 
-    public SerializedPacket body() {
+    public SerializedPacket body(MasterService service) {
         if (body == null) {
             if (toRead == null) {
                 throw new IllegalStateException("Body has to be set in the constructor or packet has to be read");
@@ -29,6 +29,8 @@ public class DistributePacket implements SerializedPacket {
                 body.read(toRead);
             } catch (Exception ex) {
                 ExceptionUtil.throwRuntime(ex, "Failed to post read packet");
+            } finally {
+                toRead.release();
             }
         }
         return body;
@@ -36,6 +38,7 @@ public class DistributePacket implements SerializedPacket {
 
     @Override
     public void read(PacketSerializer packet) throws Exception {
+        packet.retain();
         toRead = packet;
     }
 
