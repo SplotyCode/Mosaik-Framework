@@ -21,7 +21,6 @@ public class MasterSelfHost implements MasterHost {
 
     public static final ConfigKey<Long> CACHE_TIME = new ConfigKey<>("master.self_stats_cache", long.class, 2000L);
 
-    private StaticHealthCheck healthCheck = new StaticHealthCheck(true);
     private IpResolver resolver;
     private Cache<HostStatistics> statistic;
     private CloudKit cloudKit;
@@ -47,9 +46,11 @@ public class MasterSelfHost implements MasterHost {
     }
 
     private void createCache() {
-        statistic = DefaultCaches.getTimeCache(cache -> HostStatistics.current(cloudKit), cloudKit.getConfig(CACHE_TIME));
-        if (set != null) {
-            statistic.setValue(set);
+        if (statistic == null) {
+            statistic = DefaultCaches.getTimeCache(cache -> HostStatistics.current(cloudKit), cloudKit.getConfig(CACHE_TIME));
+            if (set != null) {
+                statistic.setValue(set);
+            }
         }
     }
 
@@ -61,7 +62,7 @@ public class MasterSelfHost implements MasterHost {
 
     @Override
     public HealthCheck healthCheck() {
-        return healthCheck;
+        return StaticHealthCheck.TRUE;
     }
 
     @Override
