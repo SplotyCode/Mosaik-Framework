@@ -7,8 +7,10 @@ import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.webapi.handler.anotation.check.Mapping;
 import io.github.splotycode.mosaik.webapi.response.content.ResponseContent;
 import io.github.splotycode.mosaik.webapi.response.content.manipulate.ManipulateableContent;
+import lombok.AllArgsConstructor;
 
 @Invisible
+@AllArgsConstructor
 public class ServiceHandler {
 
     private LocalDebugService service;
@@ -16,7 +18,7 @@ public class ServiceHandler {
     @Mapping("services")
     public ResponseContent view() {
         ManipulateableContent content =  service.getUnpackingHelper().response("services.html");
-        for (Service service : service.getKit().getServices()) {
+        for (Service service : service.cloudKit().getServices()) {
             content.manipulate().patternCostomName("services",
                     new Pair<>("name", service.displayName()),
                     new Pair<>("status", service.getStatus()),
