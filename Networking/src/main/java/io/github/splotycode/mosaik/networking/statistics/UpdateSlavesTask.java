@@ -2,9 +2,12 @@ package io.github.splotycode.mosaik.networking.statistics;
 
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.master.MasterService;
+import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.master.packets.UpdateSlavesPacket;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
+import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
+import io.netty.channel.Channel;
 
 import java.util.HashMap;
 
@@ -19,12 +22,27 @@ public class UpdateSlavesTask extends RepeatableTask {
 
     @Override
     public void run() {
+        Logger.getInstance(getClass()).info("update slave");
         HashMap<MosaikAddress, HostStatistics> statistics = new HashMap<>();
         for (Host host : service.cloudKit().getHosts()) {
             if (host instanceof StatisticalHost) {
-                statistics.put(host.address(), ((StatisticalHost) host).getStatistics());
+                HostStatistics stats = ((StatisticalHost) host).getStatistics();
+                if (stats != null) {
+                    statistics.put(host.address(), stats);
+                }
             }
         }
-        service.getServer().nettyFuture().channel().writeAndFlush(new UpdateSlavesPacket(statistics));
+        for (Host host : service.cloudKit().getHosts()) {
+            if (host instanceof RemoteMasterHost) {
+                Channel channel = ((RemoteMasterHost) host).getChannel();
+                if (channel != null) {
+                    HostStatistics stats = statistics.remove(host.address());
+                    channel.writeAndFlush(new UpdateSlavesPacket(statistics));
+                    if (stats != null) {
+                        statistics.put(host.address(), stats);
+                    }
+                }
+            }
+        }
     }
 }

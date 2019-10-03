@@ -109,7 +109,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
                 }
             }
         } else {
-            logger.info("Sync has not changed in the last " + TimeUtil.formatDelay(delay));
+            logger.debug("Sync has not changed in the last " + TimeUtil.formatDelay(delay));
         }
     }
 
@@ -155,6 +155,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
         currentBest = getBestRoot();
         self = currentBest.equals(kit.getLocalIpResolver().getIpAddress());
         logger.info("Best Root is " + currentBest + " Self: " + self);
+        kit.getHandler().call(MasterChangeListener.class, listener -> listener.onChange(self, currentBest, null));
         if (self) {
             server = createServer();
         } else {
