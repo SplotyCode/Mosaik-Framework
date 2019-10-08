@@ -9,6 +9,7 @@ import io.github.splotycode.mosaik.util.listener.DummyListenerHandler;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -17,27 +18,38 @@ public abstract class HostMapProvider implements Cache<TreeMap<MosaikAddress, Ho
 
     protected CloudKit kit;
 
+    protected TreeMap<MosaikAddress, Host> hosts = new TreeMap<>();
+
     public HostMapProvider(CloudKit kit, long maxDelay) {
         this.kit = kit;
         this.maxDelay = maxDelay;
         kit.getHandler().addListener(this);
     }
 
-    protected TreeMap<MosaikAddress, Host> hosts = new TreeMap<>();
-
     protected volatile AtomicLong lastClear = new AtomicLong(-1);
     @Setter protected long maxDelay;
 
-    protected abstract void fill();
+    protected abstract List<String> fill();
+
+    public void addHost(String host) {
+        addHost(kit.getHostProvider().provide(kit, host));
+    }
 
     public void addHost(Host host) {
         hosts.put(host.address(), host);
     }
 
     protected final void reFill() {
-        clear();
-        addHost(kit.getSelfHost());
-        fill();
+        List<String> list = fill();
+        for (String host : list) {
+            hosts.putIfAbsent(new MosaikAddress(host), kit.getHostProvider().provide(kit, host));
+        }
+        hosts.entrySet().removeIf(host -> !list.contains(host.getKey().asString()));
+
+        Host self = kit.getSelfHost();
+        if (self != null) {
+            hosts.putIfAbsent(self.address(), self);
+        }
     }
 
     @Override
@@ -63,7 +75,10 @@ public abstract class HostMapProvider implements Cache<TreeMap<MosaikAddress, Ho
         hosts.clear();
     }
 
-    @Override public void setValue(TreeMap<MosaikAddress, Host> value) {}
+    @Override
+    public void setValue(TreeMap<MosaikAddress, Host> value) {
+        hosts = value;
+    }
 
     @Override
     public ListenerHandler<CacheListener<TreeMap<MosaikAddress, Host>>> getHandler() {

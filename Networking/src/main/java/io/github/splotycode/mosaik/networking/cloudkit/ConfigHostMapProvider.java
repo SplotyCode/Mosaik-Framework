@@ -5,6 +5,9 @@ import io.github.splotycode.mosaik.networking.config.ConfigEntry;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.config.ConfigProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ConfigHostMapProvider extends HostMapProvider implements ConfigChangeListener, ConfigProviderChangeListener {
 
     public static final ConfigKey<Long> MAX_CACHE = new ConfigKey<>("hosts.max_cache", long.class, 30 * 1000L);
@@ -19,13 +22,15 @@ public class ConfigHostMapProvider extends HostMapProvider implements ConfigChan
     }
 
     @Override
-    protected void fill() {
+    protected List<String> fill() {
+        List<String> hosts = new ArrayList<>();
         for (Object host : kit.getConfigProvider().getValue(configPath, Iterable.class, null)) {
             String address = host.toString();
             if (!kit.localAddress().equals(address)) {
-                addHost(kit.getHostProvider().provide(kit, host.toString()));
+                hosts.add(address);
             }
         }
+        return hosts;
     }
 
     @Override
