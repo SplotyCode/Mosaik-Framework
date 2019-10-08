@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Getter
-public class HostStatistics implements SerializedPacket {
+public class HostStatistics implements SerializedPacket, Cloneable {
 
     public static double getCpuLoad() {
         return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad() * 100;
@@ -128,6 +128,11 @@ public class HostStatistics implements SerializedPacket {
             statistics.read(packet);
             connections.put(name, statistics);
         }
+    }
+
+    @Override
+    public HostStatistics clone() {
+        return new HostStatistics(host, cpu, freeRam, connections);
     }
 
     @Override

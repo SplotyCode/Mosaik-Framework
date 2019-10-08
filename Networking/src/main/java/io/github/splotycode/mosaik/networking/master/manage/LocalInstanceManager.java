@@ -11,9 +11,6 @@ public class LocalInstanceManager<C extends INetworkProcess> {
 
     private MasterInstanceService<C> service;
 
-    public HashMap<Integer, C> getInstances() {
-        return instances;
-    }
 
     @Getter
     protected final HashMap<Integer, C> instances = new HashMap<>();

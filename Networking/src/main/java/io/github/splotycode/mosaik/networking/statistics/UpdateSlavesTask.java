@@ -5,7 +5,6 @@ import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.master.packets.UpdateSlavesPacket;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
-import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
 import io.netty.channel.Channel;
 
@@ -22,7 +21,6 @@ public class UpdateSlavesTask extends RepeatableTask {
 
     @Override
     public void run() {
-        Logger.getInstance(getClass()).info("update slave");
         HashMap<MosaikAddress, HostStatistics> statistics = new HashMap<>();
         for (Host host : service.cloudKit().getHosts()) {
             if (host instanceof StatisticalHost) {

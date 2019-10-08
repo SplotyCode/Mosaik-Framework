@@ -30,7 +30,7 @@ public class MasterServerHandler extends SelfAnnotationHandler<SerializedPacket>
         Host rHost = service.getHostByCtx(ctx);
         if (rHost instanceof StatisticalHost) {
             StatisticalHost host = (StatisticalHost) rHost;
-            host.update(statistics);
+            host.update(statistics.clone());
             service.cloudKit().getHandler().call(HostStatisticListener.class, listener -> listener.update(host));
         } else {
             throw new IllegalStateException("Got Update packet from a non statistical host");
