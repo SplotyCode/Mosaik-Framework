@@ -11,15 +11,14 @@ import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
 import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
 import io.github.splotycode.mosaik.networking.statistics.UpdateLocalStatisticsTask;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
-import io.github.splotycode.mosaik.util.logger.Logger;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Map;
 
+@ChannelHandler.Sharable
 public class MasterClientHandler extends SelfAnnotationHandler<SerializedPacket> {
-
-    private static final Logger LOGGER = Logger.getInstance(MasterClientHandler.class);
 
     protected final CloudKit kit;
     protected long updateID;
@@ -37,6 +36,8 @@ public class MasterClientHandler extends SelfAnnotationHandler<SerializedPacket>
                 StatisticalHost host = (StatisticalHost) rHost;
                 host.update(data.getValue());
                 kit.getHandler().call(HostStatisticListener.class, listener -> listener.update(host));
+            } else if (rHost == null) {
+                throw new IllegalStateException("Could not find host  " + data.getKey() + " present hosts: " + kit.hostMap());
             } else {
                 throw new IllegalStateException("Tried to update non statistical host " + rHost);
             }
