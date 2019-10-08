@@ -70,7 +70,7 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
 
     protected Map<ChannelOption, Object> channelOptions;
 
-    private HandlerHolder handlers = new HandlerHolder();
+    protected final HandlerHolder handlers = new HandlerHolder();
 
     protected void newLoop() {
         loopGroup = nThreads == -1 ? channelSystem.newLoopGroup() : channelSystem.newLoopGroup(nThreads);
@@ -252,7 +252,9 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
     }
 
     public S shutdown() {
-        loopGroup.shutdownGracefully();
+        if (loopGroup != null) {
+            loopGroup.shutdownGracefully();
+        }
         return self();
     }
 
@@ -288,16 +290,38 @@ public abstract class NetworkComponent<B extends AbstractBootstrap<B, ? extends 
 
     @Override
     public S handler(int priority, String name, ChannelHandler handler) {
-        handlers.addHandler(priority, name, handler);
+        synchronized (handlers) {
+            handlers.addHandler(priority, name, handler);
+        }
+        return self();
+    }
+
+    @Override
+    public S removeHandler(Class<? extends ChannelHandler> clazz) {
+        synchronized (handlers) {
+            handlers.removeHandler(clazz);
+        }
+        return self();
+    }
+
+    @Override
+    public S removeHandler(int priority) {
+        synchronized (handlers) {
+            handlers.removeHandler(priority);
+        }
         return self();
     }
 
     public <H extends ChannelHandler> H getHandler(Class<H> clazz) {
-        return handlers.getHandler(clazz);
+        synchronized (handlers) {
+            return handlers.getHandler(clazz);
+        }
     }
 
     public String getHandlerName(Class<? extends ChannelHandler> clazz) {
-        return handlers.getHandlerName(clazz);
+        synchronized (handlers) {
+            return handlers.getHandlerName(clazz);
+        }
     }
 
     @Override

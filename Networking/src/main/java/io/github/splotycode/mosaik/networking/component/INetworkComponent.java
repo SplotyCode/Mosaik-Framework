@@ -29,6 +29,8 @@ public interface INetworkComponent<S extends INetworkComponent> {
     S removeListener(Listener listener);
 
     S handler(int priority, String name, ChannelHandler handler);
+    S removeHandler(int priority);
+    S removeHandler(Class<? extends ChannelHandler> clazz);
 
     S channelSystem(ChannelSystem channelSystem);
 

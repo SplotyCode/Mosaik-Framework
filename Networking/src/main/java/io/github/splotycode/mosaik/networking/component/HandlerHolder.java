@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.function.Supplier;
 
 public class HandlerHolder {
@@ -59,13 +60,12 @@ public class HandlerHolder {
 
     }
 
-    private TreeMap<Integer, AbstractHandlerData> sorted = new TreeMap<>();
+    private ConcurrentSkipListMap<Integer, AbstractHandlerData> sorted = new ConcurrentSkipListMap<>();
     private HashMap<Class<? extends ChannelHandler>, AbstractHandlerData> map = new HashMap<>();
 
     public Collection<AbstractHandlerData> getHandlerData() {
         return sorted.values();
     }
-
 
     public Iterator<ChannelHandler> getHandlers() {
         Iterator<AbstractHandlerData> iterator = sorted.values().iterator();
@@ -99,10 +99,29 @@ public class HandlerHolder {
             if (old != null) {
                 LOGGER.warn("Already registered handler with class" + data.clazz.getName());
             }
-            if (old != null) {
+            if (oldSorted != null) {
                 LOGGER.warn("Already registered handler with priority" + data.priority);
             }
         }
+    }
+
+    public void removeHandler(Class<? extends ChannelHandler> clazz) {
+        AbstractHandlerData removed = map.remove(clazz);
+        if (removed != null) {
+            sorted.remove(removed.priority);
+        }
+    }
+
+    public void removeHandler(int priority) {
+        AbstractHandlerData removed = sorted.remove(priority);
+        if (removed != null) {
+            map.remove(removed.clazz);
+        }
+    }
+
+    public void clear() {
+        sorted.clear();
+        map.clear();
     }
 
     public <H extends ChannelHandler> H getHandler(Class<H> clazz) {

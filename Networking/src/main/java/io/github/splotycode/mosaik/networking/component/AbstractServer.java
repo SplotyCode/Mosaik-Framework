@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public abstract class AbstractServer<S extends AbstractServer<S>> extends NetworkComponent<ServerBootstrap, ServerChannel, S> {
 
     protected Map<ChannelOption, Object> childOptions;
-    protected HandlerHolder childHandlers = new HandlerHolder();
+    protected final HandlerHolder childHandlers = new HandlerHolder();
 
     public S sslSelfSigned() {
         try {
@@ -92,23 +92,30 @@ public abstract class AbstractServer<S extends AbstractServer<S>> extends Networ
     }
 
     public S childHandler(int priority, String name, ChannelHandler handler) {
-        childHandlers.addHandler(priority, name, handler);
+        synchronized (childHandlers) {
+            childHandlers.addHandler(priority, name, handler);
+        }
         return self();
     }
 
     public S childHandler(int priority, String name, Class<? extends ChannelHandler> clazz, Supplier<ChannelHandler> obj) {
-        childHandlers.addHandler(priority, name, clazz, obj);
+        synchronized (childHandlers) {
+            childHandlers.addHandler(priority, name, clazz, obj);
+        }
         return self();
     }
 
     public <H extends ChannelHandler> H getChildHandler(Class<H> clazz) {
-        return childHandlers.getHandler(clazz);
+        synchronized (childHandlers) {
+            return childHandlers.getHandler(clazz);
+        }
     }
 
     public String getChildHandlerName(Class<? extends ChannelHandler> clazz) {
-        return childHandlers.getHandlerName(clazz);
+        synchronized (childHandlers) {
+            return childHandlers.getHandlerName(clazz);
+        }
     }
-
 
     @Override
     public S usePacketSystem(int priority, PacketSystem system) {
