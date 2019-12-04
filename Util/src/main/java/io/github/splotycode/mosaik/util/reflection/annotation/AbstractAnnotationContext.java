@@ -173,10 +173,11 @@ public abstract class AbstractAnnotationContext<C extends AnnotationContext, D e
         try {
             int i = 0;
             for (Pair<ParameterResolver, Parameter> pair : mData.getAllParameters()) {
+                Parameter parameter = pair.getTwo();
                 try {
-                    parameters[i] = pair.getOne().transform(self(), pair.getTwo(), additionalInfo);
+                    parameters[i] = pair.getOne().transform(self(), parameter, additionalInfo);
                 } catch (ParameterResolveException ex) {
-                    throw new ParameterTransformException("Failed to transform parameter", ex);
+                    throw new ParameterTransformException("Failed to transform parameter " + parameter.getName(), ex);
                 }
                 i++;
             }
