@@ -31,7 +31,9 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
     }
 
     public <T> T transform(DataFactory info, Object input, Class<T> result, Collection<ValueTransformer> transformers) {
+        Objects.requireNonNull(info, "info");
         if (input == null) return null;
+
         Class<?> inputClass = input.getClass();
         if (ReflectionUtil.isAssignable(result, inputClass)) return (T) input;
 
@@ -52,7 +54,7 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
                 return (T) str;
             }
         }
-        if (info.getDataDefault(CommonData.AVOID_NULL)) {
+        if (info.getDataDefault(CommonData.AVOID_NULL, false)) {
             throw new TransformerNotFoundException("No transformer found to convert " + inputClass.getName() + " to " + result.getName());
         }
         return null;
