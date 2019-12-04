@@ -28,7 +28,7 @@ public class LinkedDataFactory extends DataFactory {
 
     @Override
     public Map<String, Object> getMap() {
-        return CollectionUtil.combind(getRawMap(), linked.getMap());
+        return CollectionUtil.mergeMaps(getRawMap(), linked.getMap());
     }
 
 }

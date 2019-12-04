@@ -8,9 +8,11 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CollectionUtil {
 
+    @SuppressWarnings("unchecked")
     public static <K, V, M extends Map<K, V>> M copyWithType(final M source) throws Exception {
         final M newMap = (M) source.getClass().newInstance();
         newMap.putAll(source);
@@ -33,6 +35,7 @@ public final class CollectionUtil {
         return map;
     }
 
+    @SafeVarargs
     public static <K, V> Map<K, V> newHashMap(Pair<K, ? extends V>... entries) {
         Map<K, V> map = new HashMap<>(entries.length + 1);
         for (Pair<K, ? extends V> entry : entries) {
@@ -41,6 +44,7 @@ public final class CollectionUtil {
         return map;
     }
 
+    @SafeVarargs
     public static <T> LinkedList<T> newLinkedList(T... elements) {
         final LinkedList<T> list = new LinkedList<>();
         Collections.addAll(list, elements);
@@ -51,21 +55,17 @@ public final class CollectionUtil {
         return copy(new LinkedList<>(), elements);
     }
 
+    @SafeVarargs
     public static <T> ArrayList<T> newArrayList(T... elements) {
         ArrayList<T> list = new ArrayList<>(elements.length);
         Collections.addAll(list, elements);
         return list;
     }
 
-    public static <K, V> Map<K, V> combind(Map<K, V> map1, Map<K, V> map2) {
-        Map<K, V> map3 = new HashMap<>(map1);
-        map3.putAll(map2);
-        return map3;
-    }
-
+    @SuppressWarnings("unchecked")
     public static <T> ArrayList<T> newArrayList(Iterable<? extends T> elements) {
         if (elements instanceof Collection) {
-            Collection<? extends T> collection = (Collection<? extends T>)elements;
+            Collection<? extends T> collection = (Collection<? extends T>) elements;
             return new ArrayList<>(collection);
         }
         return copy(new ArrayList<>(), elements);
@@ -78,6 +78,7 @@ public final class CollectionUtil {
         return collection;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> HashSet<T> newHashSet(Iterable<? extends T> elements) {
         if (elements instanceof Collection) {
             Collection<? extends T> collection = (Collection<? extends T>)elements;
@@ -86,6 +87,7 @@ public final class CollectionUtil {
         return newHashSet(elements.iterator());
     }
 
+    @SafeVarargs
     public static <T> HashSet<T> newHashSet(T... elements) {
         return new HashSet<>(Arrays.asList(elements));
     }
@@ -117,7 +119,7 @@ public final class CollectionUtil {
             return Collections.emptyList();
         }
 
-        List<V> result = new ArrayList<V>(collection.size());
+        List<V> result = new ArrayList<>(collection.size());
         for (T t : collection) {
             final V o = mapping.apply(t);
             if (o != null) {
@@ -217,7 +219,18 @@ public final class CollectionUtil {
         return -1;
     }
 
-    public static <E> List<E> mergeLists(List<E> one, List<E> two) {
+    /**
+     * @deprecated please use {@link CollectionUtil#mergeMaps(Map, Map)}
+     */
+    @Deprecated
+    @SuppressWarnings("all")
+    public static <K, V> Map<K, V> combind(Map<K, V> map1, Map<K, V> map2) {
+        Map<K, V> map3 = new HashMap<>(map1);
+        map3.putAll(map2);
+        return map3;
+    }
+
+    public static <E> List<E> mergeCollections(Collection<E> one, Collection<E> two) {
         if (one.isEmpty() && two.isEmpty()) {
             return Collections.emptyList();
         }
@@ -227,10 +240,11 @@ public final class CollectionUtil {
         return result;
     }
 
-    public static <E> List<E> mergeLists(List<E>... lists) {
+    @SafeVarargs
+    public static <E> List<E> mergeCollections(Collection<E>... lists) {
         int size = 0;
-        for (int i = 0; i < lists.length; i++) {
-            size += lists[i].size();
+        for (Collection<E> es : lists) {
+            size += es.size();
         }
 
         if (size == 0) {
@@ -238,8 +252,36 @@ public final class CollectionUtil {
         }
 
         ArrayList<E> result = new ArrayList<>(size);
-        for (int i = 0; i < lists.length; i++) {
-            result.addAll(lists[i]);
+        for (Collection<E> list : lists) {
+            result.addAll(list);
+        }
+        return result;
+    }
+
+    public static <K, V> Map<K, V> mergeMaps(Map<K, V> one, Map<K, V> two) {
+        if (one.isEmpty() && two.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        HashMap<K, V> result = new HashMap<>(one.size() + two.size());
+        result.putAll(one);
+        result.putAll(two);
+        return result;
+    }
+
+    @SafeVarargs
+    public static <K, V> Map<K, V> mergeMaps(Map<K, V>... maps) {
+        int size = 0;
+        for (Map<K, V> map : maps) {
+            size += map.size();
+        }
+
+        if (size == 0) {
+            return Collections.emptyMap();
+        }
+
+        HashMap<K, V> result = new HashMap<>(size);
+        for (Map<K, V> map : maps) {
+            result.putAll(map);
         }
         return result;
     }
