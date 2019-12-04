@@ -133,7 +133,7 @@ public class AnnotationHttpHandler extends MultiAnnotationContext<AnnotationHttp
 
     @Override
     public Object rawTransform(String input, Class<?> clazz, Collection<ValueTransformer> transformers) {
-        return TransformerManager.getInstance().transform(input, clazz, transformers);
+        return TransformerManager.getInstance().transformWithAdditional(input, clazz, transformers);
     }
 
     @Override
