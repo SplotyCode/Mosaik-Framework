@@ -90,6 +90,18 @@ public abstract class ComponentTemplate<S extends ComponentTemplate, I extends N
     }
 
     @Override
+    public S removeHandler(Class<? extends ChannelHandler> clazz) {
+        tasks.add(i -> i.removeHandler(clazz));
+        return self();
+    }
+
+    @Override
+    public S removeHandler(int priority) {
+        tasks.add(i -> i.removeHandler(priority));
+        return self();
+    }
+
+    @Override
     public S channelSystem(ChannelSystem channelSystem) {
         tasks.add(i -> i.channelSystem(channelSystem));
         return self();
