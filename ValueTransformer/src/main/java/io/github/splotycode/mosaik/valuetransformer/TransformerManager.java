@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.valuetransformer;
 
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.util.ValueTransformer;
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
@@ -70,15 +71,13 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
     }
 
     public <T> T transformWithAdditional(Object input, Class<T> result, Collection<ValueTransformer> additional) {
-        ArrayList<ValueTransformer> currentTransformers = new ArrayList<>(additional);
-        currentTransformers.addAll(transformers);
-        return transform(input, result, currentTransformers);
+        return transformWithAdditional(new DataFactory(), input, result, additional);
     }
 
     public <T> T transformWithAdditional(DataFactory info, Object input, Class<T> result, Collection<ValueTransformer> additional) {
-        ArrayList<ValueTransformer> currentTransformers = new ArrayList<>(additional);
-        currentTransformers.addAll(transformers);
-        return transform(input, result, currentTransformers);
+        /* Use additional first as mergeCollections will append and not override */
+        List<ValueTransformer> currentTransformers = CollectionUtil.mergeCollections(additional, transformers);
+        return transform(info, input, result, currentTransformers);
     }
 
 
