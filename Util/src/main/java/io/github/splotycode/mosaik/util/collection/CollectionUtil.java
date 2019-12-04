@@ -216,5 +216,32 @@ public final class CollectionUtil {
         }
         return -1;
     }
+
+    public static <E> List<E> mergeLists(List<E> one, List<E> two) {
+        if (one.isEmpty() && two.isEmpty()) {
+            return Collections.emptyList();
+        }
+        ArrayList<E> result = new ArrayList<>(one.size() + two.size());
+        result.addAll(one);
+        result.addAll(two);
+        return result;
+    }
+
+    public static <E> List<E> mergeLists(List<E>... lists) {
+        int size = 0;
+        for (int i = 0; i < lists.length; i++) {
+            size += lists[i].size();
+        }
+
+        if (size == 0) {
+            return Collections.emptyList();
+        }
+
+        ArrayList<E> result = new ArrayList<>(size);
+        for (int i = 0; i < lists.length; i++) {
+            result.addAll(lists[i]);
+        }
+        return result;
+    }
     
 }
