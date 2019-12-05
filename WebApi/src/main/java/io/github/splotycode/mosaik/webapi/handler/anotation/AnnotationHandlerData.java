@@ -102,12 +102,11 @@ public class AnnotationHandlerData extends AnnotationData {
     }
 
     public boolean valid(Request request) {
-        String host = request.getHeader(RequestHeader.HOST);
-        if (host == null) {
-            if (this.host != null) return false;
-        } else if (!host.trim().toLowerCase(Locale.ENGLISH).equals(host)) {
-             return false;
+        String requestHost = request.getHeader(RequestHeader.HOST);
+        if (host != null && (requestHost == null || !requestHost.trim().toLowerCase(Locale.ENGLISH).equals(host))) {
+            return false;
         }
+
         if (mapping != null && !mapping.match(request.getPath()).isMatch()) return false;
         if (httpMethod != null && (costomMethod ? request.getMethod().getMethod().matches(httpMethod) : request.getMethod().getMethod().equals(httpMethod))) return false;
 
