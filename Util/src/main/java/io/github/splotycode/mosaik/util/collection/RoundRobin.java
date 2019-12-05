@@ -15,7 +15,7 @@ public class RoundRobin<T> implements Iterable<T> {
     public Iterator<T> iterator() {
         return new Iterator<T>() {
 
-            private AtomicInteger index = new AtomicInteger();
+            private final AtomicInteger index = new AtomicInteger(-1);
 
             @Override
             public boolean hasNext() {
@@ -24,13 +24,17 @@ public class RoundRobin<T> implements Iterable<T> {
 
             @Override
             public T next() {
-                int cIndex = index.getAndUpdate(index -> (index + 1) % list.size());
+                int cIndex = index.updateAndGet(index -> (index + 1) % list.size());
                 return list.get(cIndex);
             }
 
             @Override
             public synchronized void remove() {
-                list.remove(index.get());
+                int currentIndex = index.get();
+                if (currentIndex == -1) {
+                    currentIndex = 0;
+                }
+                list.remove(currentIndex);
             }
 
         };

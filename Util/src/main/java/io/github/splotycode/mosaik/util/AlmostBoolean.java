@@ -36,7 +36,7 @@ public enum AlmostBoolean {
      * @param optimistically should {@link AlmostBoolean#MAYBE} be true or false
      */
     public boolean decide(boolean optimistically) {
-        return optimistically?this != NO:this == YES;
+        return optimistically ? this != NO : this == YES;
     }
 
 }
