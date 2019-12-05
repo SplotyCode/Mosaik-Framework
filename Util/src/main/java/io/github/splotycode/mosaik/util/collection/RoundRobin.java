@@ -14,6 +14,7 @@ public class RoundRobin<T> implements Iterable<T> {
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
+
             private AtomicInteger index = new AtomicInteger();
 
             @Override
@@ -28,8 +29,8 @@ public class RoundRobin<T> implements Iterable<T> {
             }
 
             @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
+            public synchronized void remove() {
+                list.remove(index.get());
             }
 
         };
