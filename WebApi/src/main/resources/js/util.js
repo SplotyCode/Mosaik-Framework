@@ -13,3 +13,6 @@ function is_touch_device() {
   var query = ['(', prefixes.join('touch-enabled),('), 'heartz', ')'].join('');
   return mq(query);
 }
+function isEmpty(str) {
+  return (!str || 0 === str.length);
+}

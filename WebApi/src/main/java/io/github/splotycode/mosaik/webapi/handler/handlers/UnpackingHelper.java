@@ -13,12 +13,20 @@ import java.io.File;
 
 public class UnpackingHelper {
 
+    public static UnpackingHelper getMosaikUnpacker(File destination) {
+        return new UnpackingHelper(destination, "js", false, false);
+    }
+
+    public static UnpackingHelper getMosaikUnpacker(String destination) {
+        return new UnpackingHelper(destination, "js", false, false);
+    }
+
     private File root;
     private boolean recursive;
 
-    public UnpackingHelper(String path, boolean recursive, boolean replaceFileVars) {
+    public UnpackingHelper(File destination, String path, boolean recursive, boolean replaceFileVars) {
         this.recursive = recursive;
-        root = new File(PathManager.getInstance().getMainDirectory(), "web/" + path);
+        root = destination;
 
         FileUtil.delete(root);
         FileUtil.copyResources(path, root, recursive);
@@ -26,6 +34,14 @@ public class UnpackingHelper {
         if (replaceFileVars) {
             HandlerTools.replaceFileVariables(root, recursive);
         }
+    }
+
+    public UnpackingHelper(String destination, String path, boolean recursive, boolean replaceFileVars) {
+        this(new File(PathManager.getInstance().getMainDirectory(), "web/" + destination), path, recursive, replaceFileVars);
+    }
+
+    public UnpackingHelper(String path, boolean recursive, boolean replaceFileVars) {
+        this(path, path, recursive, replaceFileVars);
     }
 
     public File getFile(String name) {
