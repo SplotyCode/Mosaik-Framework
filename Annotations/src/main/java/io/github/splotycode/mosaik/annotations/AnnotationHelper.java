@@ -48,8 +48,8 @@ public final class AnnotationHelper {
      * @see Priority
      */
     public static int getPriority(Annotation annotation) {
-        if (annotation instanceof Last) return Integer.MIN_VALUE;
-        if (annotation instanceof First) return Integer.MAX_VALUE;
+        if (annotation instanceof Last) return Priority.LOWEST;
+        if (annotation instanceof First) return Priority.HIGHEST;
 
         try {
             return ((Priority) annotation).priority();

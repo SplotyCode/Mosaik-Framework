@@ -18,6 +18,10 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Priority {
 
+    int LOWEST = Integer.MIN_VALUE;
+    int NORMAL = 0;
+    int HIGHEST = Integer.MAX_VALUE;
+
     /**
      * Returns the Priority
      * The higher the important's of the class
