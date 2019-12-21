@@ -33,7 +33,7 @@ public class ApplicationInfo {
        wasRunning = AlmostBoolean.fromBoolean(running);
        if (implementingName != null && !runningChanged) return implementingName;
 
-       implementingName = System.getenv("mosaik.appname");
+       implementingName = getProvidedAppName();
        if (implementingName == null) {
            if (running) {
                Application app = LinkBase.getApplicationManager().getApplications().iterator().next();
@@ -42,6 +42,17 @@ public class ApplicationInfo {
            } else implementingName = "Mosaik";
        }
        return implementingName;
+   }
+
+   private static String getProvidedAppName() {
+        String name = System.getenv("mosaik-appname");
+        if (name == null) {
+            name = System.getenv("mosaik.appname");
+            if (name == null) {
+                name = System.getProperty("mosaik-appname");
+            }
+        }
+        return name;
    }
 
 
