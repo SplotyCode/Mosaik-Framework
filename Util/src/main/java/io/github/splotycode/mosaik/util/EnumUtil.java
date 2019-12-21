@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util;
 
+import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -40,6 +41,10 @@ public final class EnumUtil {
      */
     public static String toDisplayName(String enumm, String separator, boolean firstUpper) {
         return StringUtil.camelCase(enumm, "_", firstUpper).replace("_", separator);
+    }
+
+    public static <E extends Enum> E getRandom(Class<E> enumClass) {
+        return ArrayUtil.pick(enumClass.getEnumConstants());
     }
 
 }

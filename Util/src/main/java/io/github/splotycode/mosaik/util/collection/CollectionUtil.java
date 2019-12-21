@@ -19,8 +19,20 @@ public final class CollectionUtil {
         return newMap;
     }
 
+    /**
+     * @deprecated Use {@link HashMap#HashMap(Map)} instead
+     */
     public static <K, V> Map<K, V> copy(final Map<K, V> source) {
         return new HashMap<>(source);
+    }
+
+    public static int getOptimalMapSize(int size, float loadFactor) {
+        float ft = ((float)size / loadFactor) + 1.0F;
+        return (ft < (float)(1 << 30)) ? (int)ft : (1 << 30);
+    }
+
+    public static int getOptimalMapSize(int size) {
+        return getOptimalMapSize(size, 0.75f);
     }
 
     public static <K, V> Map<K, V> newHashMap(List<K> keys, List<V> values) {
@@ -28,7 +40,7 @@ public final class CollectionUtil {
             throw new IllegalArgumentException("Lists need to have the same lengths");
         }
 
-        Map<K, V> map = new HashMap<>(keys.size());
+        Map<K, V> map = new HashMap<>(getOptimalMapSize(keys.size()));
         for (int i = 0; i < keys.size(); ++i) {
             map.put(keys.get(i), values.get(i));
         }
@@ -37,7 +49,7 @@ public final class CollectionUtil {
 
     @SafeVarargs
     public static <K, V> Map<K, V> newHashMap(Pair<K, ? extends V>... entries) {
-        Map<K, V> map = new HashMap<>(entries.length + 1);
+        Map<K, V> map = new HashMap<>(getOptimalMapSize(entries.length));
         for (Pair<K, ? extends V> entry : entries) {
             map.put(entry.getOne(), entry.getTwo());
         }
@@ -98,6 +110,10 @@ public final class CollectionUtil {
         return set;
     }
 
+    /**
+     * @deprecated {@link CollectionUtil#addIfNotNull(Collection, Object)}
+     */
+    @Deprecated
     public static <T> void addIfNotNull(T element, Collection<T> result) {
         if (element != null) {
             result.add(element);
@@ -225,7 +241,8 @@ public final class CollectionUtil {
     @Deprecated
     @SuppressWarnings("all")
     public static <K, V> Map<K, V> combind(Map<K, V> map1, Map<K, V> map2) {
-        Map<K, V> map3 = new HashMap<>(map1);
+        Map<K, V> map3 = new HashMap<>(getOptimalMapSize(map1.size() + map2.size()));
+        map3.putAll(map1);
         map3.putAll(map2);
         return map3;
     }
@@ -262,7 +279,7 @@ public final class CollectionUtil {
         if (one.isEmpty() && two.isEmpty()) {
             return Collections.emptyMap();
         }
-        HashMap<K, V> result = new HashMap<>(one.size() + two.size());
+        HashMap<K, V> result = new HashMap<>(getOptimalMapSize(one.size() + two.size()));
         result.putAll(one);
         result.putAll(two);
         return result;
@@ -279,7 +296,7 @@ public final class CollectionUtil {
             return Collections.emptyMap();
         }
 
-        HashMap<K, V> result = new HashMap<>(size);
+        HashMap<K, V> result = new HashMap<>(getOptimalMapSize(size));
         for (Map<K, V> map : maps) {
             result.putAll(map);
         }
