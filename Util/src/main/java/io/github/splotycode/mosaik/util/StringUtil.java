@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * General Utils for strings
@@ -161,6 +161,38 @@ public final class StringUtil {
             return false;
         }
         return true;
+    }
+
+    public static OptionalDouble parseDouble(String str) {
+        try {
+            return OptionalDouble.of(Double.parseDouble(str));
+        } catch (NumberFormatException ex) {
+            return OptionalDouble.empty();
+        }
+    }
+
+    public static OptionalLong parseLong(String str) {
+        try {
+            return OptionalLong.of(Long.parseLong(str));
+        } catch (NumberFormatException ex) {
+            return OptionalLong.empty();
+        }
+    }
+
+    public static OptionalInt parseInteger(String str) {
+        try {
+            return OptionalInt.of(Integer.parseInt(str));
+        } catch (NumberFormatException ex) {
+            return OptionalInt.empty();
+        }
+    }
+
+    public static Optional<Float> parseFloat(String str) {
+        try {
+            return Optional.of(Float.parseFloat(str));
+        } catch (NumberFormatException ex) {
+            return Optional.empty();
+        }
     }
 
     /**
