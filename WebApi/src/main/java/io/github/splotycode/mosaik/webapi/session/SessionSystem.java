@@ -5,7 +5,10 @@ import io.github.splotycode.mosaik.webapi.request.Request;
 public interface SessionSystem {
 
     default void destroy(Request request) {
-        destroy(request, request.getSession());
+        Session session = request.getSession();
+        if (session != null) {
+            destroy(request, session);
+        }
     }
 
     default void destroy(Request request, Session session) {
