@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.util;
 
+import io.github.splotycode.mosaik.util.info.OperationSystem;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -120,6 +121,23 @@ public final class NetworkUtil {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Checks if a host is online
+     * @param preferINetReachable should we prefer {@link InetAddress#isReachable(int)}? This method <b>needs root</b>!
+     * @param host the host to check
+     * @param timeout after witch time (in milliseconds) should we assume that the host is offline?
+     */
+    public static boolean isOnline(boolean preferINetReachable, String host, int timeout) {
+        if (preferINetReachable) {
+            try {
+                return InetAddress.getByName(host).isReachable(timeout);
+            } catch (IOException e) {
+                /* Just use OperationSystem to determine host  */
+            }
+        }
+        return OperationSystem.isHostOnline(host, timeout);
     }
 
 }

@@ -4,6 +4,8 @@ import io.github.splotycode.mosaik.util.io.LineSeparator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.IOException;
+
 @Getter
 @AllArgsConstructor
 public enum OperationSystem {
@@ -38,5 +40,19 @@ public enum OperationSystem {
     private LineSeparator separator;
 
     protected abstract String generatePingString(String remote, long timeout);
+
+    public static boolean isHostOnline(String remote, long timeout) {
+        return current().pingHost(remote, timeout);
+    }
+
+    public boolean pingHost(String remote, long timeout) {
+        try {
+            Process process = Runtime.getRuntime().exec(generatePingString(remote, timeout));
+            process.waitFor();
+            return process.exitValue() == 0;
+        } catch (IOException | InterruptedException e) {
+            return false;
+        }
+    }
 
 }
