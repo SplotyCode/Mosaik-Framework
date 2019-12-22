@@ -698,4 +698,63 @@ public final class StringUtil {
         return getLast(str) <= ' ' || str.charAt(0) <= ' ';
     }
 
+    /**
+     * Counts how often a String contains a Character
+     * @param str the string in witch we will search
+     * @param ch the character that is counted
+     * @param offset the index on with we start counting matches (inclusive)
+     * @param end the index on with we stop counting matches (exclusive)
+     * @return how often ch is included in str
+     */
+    public static int countMatches(String str, char ch, int offset, int end) {
+        int matches = 0;
+        for (; offset < end; offset++) {
+            if (ch == str.charAt(offset)) {
+                matches++;
+            }
+        }
+        return matches;
+    }
+
+    /**
+     * Counts how often a String contains a Character
+     * @param str the string in witch we will search
+     * @param ch the character that is counted
+     * @return how often ch is included in str
+     */
+    public static int countMatches(String str, char ch) {
+        return countMatches(str, ch, 0, str.length());
+    }
+
+    /**
+     * Counts how often a String is included in another string
+     * @param str the string in witch we will search
+     * @param match the String that is counted
+     * @param offset the index on with we start counting matches (inclusive)
+     * @param end the index on with we stop counting matches (exclusive)
+     * @return how often match is included in str
+     */
+    public static int countMatches(String str, String match, int offset, int end) {
+        int matches = 0;
+        while (offset < end) {
+            int index = str.indexOf(match, offset);
+            if (index == -1 || index > end - 1) {
+                break;
+            }
+            offset += index + 1;
+            matches++;
+        }
+        return matches;
+    }
+
+    /**
+     * Counts how often a String is included in another string
+     * @param str the string in witch we will search
+     * @param match the String that is counted
+     * @return how often match is included in str
+     */
+    public static int countMatches(String str, String match) {
+        return countMatches(str, match, 0, str.length());
+    }
+
 }

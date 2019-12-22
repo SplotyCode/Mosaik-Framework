@@ -191,4 +191,18 @@ public class StringUtilTest {
         assertEquals("hallo", StringUtil.getLast("hallo", 100));
         assertEquals("lo", StringUtil.getLast("hallo", 2));
     }
+
+    @Test
+    public void countMatches() {
+        assertEquals(0, StringUtil.countMatches("aaa", 'b'));
+        assertEquals(2, StringUtil.countMatches("bab", 'b'));
+        assertEquals(0, StringUtil.countMatches("", 'b'));
+
+        assertEquals(0, StringUtil.countMatches("aaa", "b"));
+        assertEquals(2, StringUtil.countMatches("bab", "b"));
+        assertEquals(0, StringUtil.countMatches("", "b"));
+        assertEquals(3, StringUtil.countMatches("aaaaaa", "aa"));
+        assertEquals(2, StringUtil.countMatches("abbaaabababba", "bb"));
+    }
+
 }
