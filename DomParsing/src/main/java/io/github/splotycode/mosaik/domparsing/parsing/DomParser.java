@@ -11,11 +11,12 @@ public interface DomParser<O extends Document, R extends DomParser> {
     int getIndex();
     char getChar();
     char getChar(int next);
-    void rehandle();
+    void reHandle();
 
     DomReader<R>[] getReaders();
-    List<DomReader<R>> getActivReaders();
+    List<DomReader<R>> getActiveReaders();
     void disableReader(DomReader<R> reader);
+    void enableReader(DomReader<R> reader);
 
     void skip(int i);
     void skip();

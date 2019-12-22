@@ -35,7 +35,7 @@ public class KeyReader implements DomReader<KeyValueParser> {
             case BEFORE_NAME:
                 if (!whiteSpace) {
                     state = NAME;
-                    parser.rehandle();
+                    parser.reHandle();
                 }
                 break;
             case NAME:
@@ -50,7 +50,7 @@ public class KeyReader implements DomReader<KeyValueParser> {
                 break;
             case BEFORE_VALUE:
                 if (!whiteSpace) {
-                    parser.rehandle();
+                    parser.reHandle();
                     state = VALUE;
                 }
                 break;

@@ -1,21 +1,88 @@
 package io.github.splotycode.mosaik.domparsing.parsing;
 
 import io.github.splotycode.mosaik.domparsing.dom.Document;
+import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
+import io.github.splotycode.mosaik.util.StringUtil;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class DefaultStringDomParser<O extends Document, R extends DomParser> implements DomParser<O, R> {
 
-    @Getter protected String content;
-    protected DomReader<R> locked;
+    @Getter private DomReader<R>[] readers;
 
-    @Getter @Setter protected int index = 0, line = 1;
-    @Getter @Setter protected boolean skipThis = false, rehandle = false;
-    @Getter @Setter protected List<DomReader<R>> disabledReaders = new ArrayList<>();
+    @Getter protected String content;
+    @Getter @Setter protected int index, line;
+
+    @Getter @Setter protected boolean skipThis, reHandle;
+    protected DomReader<R> locked;
+    @Getter protected List<DomReader<R>> activeReaders = new ArrayList<>();
+
+    @SafeVarargs
+    protected final void setReaders(DomReader<R>... readers) {
+        this.readers = readers;
+    }
+
+    protected abstract O getResult();
+
+    @SuppressWarnings("unchecked")
+    protected R self() {
+        return (R) this;
+    }
+
+    protected void reset() {
+        content = null;
+        locked = null;
+        index = 0;
+        line = 1;
+        skipThis = reHandle = false;
+        activeReaders.clear();
+
+    }
+
+    protected void setContent(DomInput input) {
+        if (content != null) {
+            reset();
+        }
+
+        Objects.requireNonNull(input, "input");
+        content = Objects.requireNonNull(input.getString(), "content");
+    }
+
+    @Override
+    public O parse(DomInput input) {
+        setContent(input);
+
+        while (index < content.length()) {
+            char c = content.charAt(index);
+            if (isLocked()) {
+                getLocked().readNext(c, self());
+            } else for (DomReader<R> reader : getActiveReaders()) {
+                try {
+                    reader.readNext(c, self());
+                } catch (Throwable throwable) {
+                    throw new DomParseException("Exception in readNext() method", throwable);
+                }
+                if (skipThis) {
+                    skipThis = false;
+                    break;
+                }
+            }
+            if (reHandle) {
+                reHandle = false;
+            } else {
+                if (c == '\n') line++;
+                index++;
+            }
+        }
+        for (DomReader<?> reader : getReaders()) {
+            reader.parseDone();
+        }
+        return getResult();
+    }
 
     @Override
     public char getChar() {
@@ -28,20 +95,18 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
     }
 
     @Override
-    public void rehandle() {
-        rehandle = true;
-    }
-
-    @Override
-    public List<DomReader<R>> getActivReaders() {
-        List<DomReader<R>> readers = new ArrayList<>(Arrays.asList(getReaders()));
-        readers.removeAll(disabledReaders);
-        return readers;
+    public void reHandle() {
+        reHandle = true;
     }
 
     @Override
     public void disableReader(DomReader<R> reader) {
-        disabledReaders.add(reader);
+        activeReaders.remove(reader);
+    }
+
+    @Override
+    public void enableReader(DomReader<R> reader) {
+        activeReaders.add(reader);
     }
 
     @Override
@@ -57,26 +122,28 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
 
     @Override
     public boolean skipIfFollow(String next) {
-        if(index+next.length() > content.length()) return false;
-        for(int i = 0;i < next.length();i++)
-            if (content.charAt(i + index) != next.charAt(i)) return false;
-        line += content.substring(index, index + next.length() - 1).split("\r\n|\r|\n").length;
-        index += next.length()-1;
+        return skipIfFollow(content, false);
+    }
+
+    protected boolean skipIfFollow(String next, boolean ignoreCase) {
+        if (index + next.length() > content.length()) {
+            return false;
+        }
+        if (!content.regionMatches(ignoreCase, index, next, 0, next.length())) {
+            return false;
+        }
+        line += StringUtil.countMatches(content, '\n', index, index + next.length());
+        index += next.length() - 1;
         return true;
     }
 
-    public void setLine(int line) {
+    protected void setLine(int line) {
         this.line = line;
     }
 
     @Override
     public boolean skipIfFollowIgnoreCase(String text) {
-        if(index+text.length() > content.length()) return false;
-        for(int i = 0;i < text.length();i++)
-            if (Character.toLowerCase(content.charAt(i + index)) != text.charAt(i)) return false;
-        line += content.substring(index, index + text.length() - 1).split("\r\n|\r|\n").length;
-        index += text.length()-1;
-        return true;
+        return skipIfFollow(content, true);
     }
 
     @Override
@@ -84,7 +151,8 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
         skipThis = true;
     }
 
-    @Override public void setLocked(DomReader<R> reader) {
+    @Override
+    public void setLocked(DomReader<R> reader) {
         locked = reader;
     }
 
