@@ -56,10 +56,13 @@ public class TaskExecutor extends Thread {
                 service.submit(task);
             } else {
                 service.submit(() -> {
-                    task.run();
-                    task.getLock().unlock();
-                    synchronized (this) {
-                        notify();
+                    try {
+                        task.run();
+                    } finally {
+                        task.getLock().unlock();
+                        synchronized (this) {
+                            notify();
+                        }
                     }
                 });
             }
@@ -69,8 +72,7 @@ public class TaskExecutor extends Thread {
 
     @Override
     public void run() {
-        while (true) {
-            if (interrupt) break;
+        while (!interrupt) {
             long minimumWait = Long.MAX_VALUE;
             for (Map.Entry<Long, Task> pair : runningTasks.entrySet()) {
                 Task task = pair.getValue();
@@ -82,11 +84,7 @@ public class TaskExecutor extends Thread {
             }
             try {
                 synchronized (this) {
-                    if (minimumWait == Long.MAX_VALUE) {
-                        wait();
-                    } else {
-                        wait(minimumWait);
-                    }
+                    wait(minimumWait == Long.MAX_VALUE ? 0 : minimumWait);
                 }
             } catch (InterruptedException e) {
                 ExceptionUtil.throwRuntime(e);
@@ -103,7 +101,7 @@ public class TaskExecutor extends Thread {
     }
 
     /**
-     * Returns all tasks that this TaskExecutor trackets.
+     * Returns all tasks that this TaskExecutor tracks.
      * At soon as a tasks gets added with {@link TaskExecutor#runTask(Task)} it will be in this collection,
      * even though it might to run for 2 hours.
      */
@@ -116,13 +114,18 @@ public class TaskExecutor extends Thread {
      * @return the unique task id so you can stop the task later
      */
     public long runTask(Task task) {
-        task.onInstall(this);
-        long id = currentID.getAndIncrement();
-        runningTasks.put(id, task);
-        synchronized (this) {
-            notify();
+        try {
+            long id = currentID.getAndIncrement();
+
+            task.onInstall(this);
+            runningTasks.put(id, task);
+
+            return id;
+        } finally {
+            synchronized (this) {
+                notify();
+            }
         }
-        return id;
     }
 
     /**
