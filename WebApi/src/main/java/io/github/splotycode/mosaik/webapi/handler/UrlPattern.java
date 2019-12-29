@@ -1,11 +1,16 @@
 package io.github.splotycode.mosaik.webapi.handler;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import io.github.splotycode.mosaik.util.collection.MaxSizeHashMap;
 import io.github.splotycode.mosaik.webapi.handler.anotation.IllegalHandlerException;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @EqualsAndHashCode
 public class UrlPattern {
@@ -25,31 +30,36 @@ public class UrlPattern {
     }
 
     String[] split;
-    private boolean base = false, all = false;
-    private boolean ignoreBegin = false, ignoreEnd = false;
-    private Map<Integer, String> variables = new HashMap<>();
+    private boolean base, all;
+    private boolean ignoreBegin, ignoreEnd;
+    private boolean hasVariables;
+    private String[] variables;
 
-    public UrlPattern(String pattern) {
+    public UrlPattern(String pattern) throws IllegalHandlerException {
         pattern = simplify(pattern);
         split = pattern.split("/");
         base = pattern.equals("/");
         all = pattern.equals("*");
-        boolean first = true;
-        int i = 0;
-        for (String path : split) {
+
+        int length = split.length;
+        variables = new String[length];
+
+        for (int i = 0; i < length; i++) {
+            String path = split[i];
             if (path.startsWith("?") && path.endsWith("?")) {
-                variables.put(i, path.substring(1).substring(0, path.length() - 2));
-            }
-            if (first) {
-                ignoreBegin = path.equals("**");
-                first = false;
-            } else if (i == split.length - 1) {
-                ignoreEnd = path.equals("**");
+                variables[i] = path.substring(1).substring(0, path.length() - 2);
+                hasVariables = true;
             } else if (path.equals("**")) {
-                throw new IllegalHandlerException("** is only aloud as first or last path");
+                if (i == 0) {
+                    ignoreBegin = true;
+                } else if (i == length - 1) {
+                    ignoreEnd = true;
+                } else {
+                    throw new IllegalHandlerException("** is only allowed as first or last path");
+                }
             }
-            i++;
         }
+
         if (ignoreBegin) {
             split = Arrays.copyOfRange(split, 1, split.length);
         }
@@ -72,6 +82,12 @@ public class UrlPattern {
             return cached;
         }
 
+        MatchResult result = match0(url);
+        cachedResults.put(url, result);
+        return result;
+    }
+
+    protected MatchResult match0(String url) {
         String[] pathSplit = url.split("/");
         int skip = 0;
         if (ignoreBegin) {
@@ -80,53 +96,43 @@ public class UrlPattern {
             }
         }
 
-        Map<String, String> currentVariables = new HashMap<>();
+        Map<String, String> currentVariables = hasVariables ? new HashMap<>() : Collections.emptyMap();
 
-        int i = 0;
-        boolean badEnding = false;
-        for (String path : pathSplit) {
-            if (i < skip) {
-                i++;
-                continue;
-            }
-            if (i - skip >= split.length) {
-                badEnding = true;
-                break;
-            }
-            if (variables.containsKey(i - skip)) {
-                currentVariables.put(variables.get(i - skip), path);
+        int length = split.length + skip;
+
+        /* Check for too many elements  */
+        if (!ignoreEnd && length > pathSplit.length) {
+            return EMPTY_FALSE_RESULT;
+        }
+
+        for (int i = skip; i < length; i++) {
+            String path = pathSplit[i];
+            String variable = variables[i - skip];
+            if (variable != null) {
+                currentVariables.put(variable, path);
             } else {
                 String pattern = split[i - skip];
                 if (!path.equals(pattern) && !pattern.equals("*")) {
-                    cachedResults.put(url, EMPTY_FALSE_RESULT);
                     return EMPTY_FALSE_RESULT;
                 }
             }
-            i++;
         }
-        if (badEnding && !ignoreEnd) {
-            cachedResults.put(url, EMPTY_FALSE_RESULT);
-            return EMPTY_FALSE_RESULT;
-        }
-        MatchResult result = new MatchResult(true);
-        result.variables = currentVariables;
-        cachedResults.put(url, result);
-        return result;
+
+        return new MatchResult(true, currentVariables);
     }
 
-    private static final MatchResult EMPTY_TRUE_RESULT = new MatchResult(true);
-    private static final MatchResult EMPTY_FALSE_RESULT = new MatchResult(false);
+    private static final MatchResult EMPTY_TRUE_RESULT = new MatchResult(true, Collections.emptyMap());
+    private static final MatchResult EMPTY_FALSE_RESULT = new MatchResult(false, Collections.emptyMap());
 
     @Getter
+    @ToString
     @EqualsAndHashCode
+    @AllArgsConstructor
     public static class MatchResult {
 
         private final boolean match;
         private Map<String, String> variables;
 
-        public MatchResult(boolean match) {
-            this.match = match;
-        }
     }
 
 }
