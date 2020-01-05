@@ -4,6 +4,7 @@ import io.github.splotycode.mosaik.domparsing.dom.Document;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import lombok.Getter;
 
 public class ApplicationInfo {
@@ -36,7 +37,7 @@ public class ApplicationInfo {
        implementingName = getProvidedAppName();
        if (implementingName == null) {
            if (running) {
-               Application app = LinkBase.getApplicationManager().getApplications().iterator().next();
+               Application app = CollectionUtil.getAny(LinkBase.getApplicationManager().getApplications());
                if (app == null) return null;
                implementingName = app.getName();
            } else implementingName = "Mosaik";

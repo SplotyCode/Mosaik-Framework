@@ -7,6 +7,7 @@ import io.github.splotycode.mosaik.database.table.ColumnNameResolver;
 import io.github.splotycode.mosaik.database.table.ColumnType;
 import io.github.splotycode.mosaik.database.table.FieldObject;
 import io.github.splotycode.mosaik.util.StringUtil;
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.util.collection.EmptyIterable;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
@@ -175,17 +176,13 @@ public class UnsecuredSQLExecutor<T> extends AbstractExecutor<T, JDBCConnectionP
     @Override
     public T selectFirst(JDBCConnectionProvider connection, Filters.Filter filter, ColumnNameResolver... fields) {
         Iterable<T> iterable = select(connection, true, filter, fields);
-        if (iterable != null) {
-            return iterable.iterator().next();
-        }
-        return null;
+        return CollectionUtil.getAny(iterable);
     }
 
     @Override
     public T selectFirst(JDBCConnectionProvider connection, Filters.Filter filter) {
         Iterable<T> iterable = select(connection, true, filter);
-        if (iterable == null) return null;
-        return iterable.iterator().next();
+        return CollectionUtil.getAny(iterable);
     }
 
     @Override

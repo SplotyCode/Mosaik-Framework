@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.webapi.request;
 
 import io.github.splotycode.mosaik.util.EnumUtil;
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.webapi.request.body.RequestBodyHelper;
 import io.github.splotycode.mosaik.webapi.request.body.RequestContent;
@@ -64,15 +65,15 @@ public abstract class AbstractRequest implements Request {
     }
 
     public String getFirstGetParameter(String name) {
-        Collection<String> parameter = getGetParameter(name);
-        if (parameter == null) return null;
-        return parameter.iterator().next();
+        Collection<String> parameters = getGetParameter(name);
+        if (parameters == null) return null;
+        return CollectionUtil.getAny(parameters);
     }
 
     public String getFirstPostParameter(String name) {
-        Collection<String> parameter = getPostParameter(name);
-        if (parameter == null) return null;
-        return parameter.iterator().next();
+        Collection<String> parameters = getPostParameter(name);
+        if (parameters == null) return null;
+        return CollectionUtil.getAny(parameters);
     }
 
     public boolean isGet() {

@@ -302,5 +302,16 @@ public final class CollectionUtil {
         }
         return result;
     }
+
+    public static <T> T getAny(Iterable<T> iterable) {
+        return getAny(iterable.iterator());
+    }
+
+    public static <T> T getAny(Iterator<T> iterator) {
+        if (iterator.hasNext()) {
+            return iterator.next();
+        }
+        return null;
+    }
     
 }

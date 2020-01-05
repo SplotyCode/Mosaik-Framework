@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.request;
 
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.webapi.request.body.RequestBodyHelper;
 import io.github.splotycode.mosaik.webapi.response.CookieKey;
@@ -72,11 +73,11 @@ public class DefaultRequest implements Request {
     }
 
     public String getFirstGetParameter(String name) {
-        return getGetParameter(name).iterator().next();
+        return CollectionUtil.getAny(getGetParameter(name));
     }
 
     public String getFirstPostParameter(String name) {
-        return getPostParameter(name).iterator().next();
+        return CollectionUtil.getAny(getPostParameter(name));
     }
 
     public boolean isGet() {
