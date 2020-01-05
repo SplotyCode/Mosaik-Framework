@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.valuetransformer;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.util.collection.CollectionUtil;
+import io.github.splotycode.mosaik.util.datafactory.DataFactories;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
@@ -28,7 +29,7 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
     //TODO: if we have a transformer that transforms int to string and a transformer that transforms string to short it should be possible to transform int to shorts
 
     public <T> T transform(Object input, Class<T> result, Collection<ValueTransformer> transformers) {
-        return transform(new DataFactory(), input, result, transformers);
+        return transform(DataFactories.EMPTY_DATA_FACTORY, input, result, transformers);
     }
 
     public <T> T transform(DataFactory info, Object input, Class<T> result, Collection<ValueTransformer> transformers) {
@@ -71,7 +72,7 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
     }
 
     public <T> T transformWithAdditional(Object input, Class<T> result, Collection<ValueTransformer> additional) {
-        return transformWithAdditional(new DataFactory(), input, result, additional);
+        return transformWithAdditional(DataFactories.EMPTY_DATA_FACTORY, input, result, additional);
     }
 
     public <T> T transformWithAdditional(DataFactory info, Object input, Class<T> result, Collection<ValueTransformer> additional) {
@@ -98,6 +99,10 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
             }
         }
         return list;
+    }
+
+    public String transformToString(Object input) {
+        return transform(input, String.class);
     }
 
     @Override
