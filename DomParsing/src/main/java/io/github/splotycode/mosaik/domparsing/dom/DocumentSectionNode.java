@@ -2,6 +2,8 @@ package io.github.splotycode.mosaik.domparsing.dom;
 
 import io.github.splotycode.mosaik.domparsing.dom.value.ValueNode;
 import io.github.splotycode.mosaik.util.collection.MultiHashMap;
+import io.github.splotycode.mosaik.util.node.Childable;
+import io.github.splotycode.mosaik.util.node.NameableNode;
 
 import java.util.Collection;
 
@@ -9,6 +11,8 @@ public interface DocumentSectionNode extends ValueNode {
 
     Collection<IdentifierNode> getNodes();
     MultiHashMap<String, IdentifierNode> getNodeMap();
+
+    <T extends NameableNode & Childable<ValueNode>> Collection<T>  getAllNodes(boolean avoidSections, boolean includeAttributes);
 
     ValueNode getNode(String identifier, String depthSeparator);
     ValueNode getNode(String identifier);

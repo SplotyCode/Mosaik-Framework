@@ -1,12 +1,12 @@
 package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue;
 
+import io.github.splotycode.mosaik.domparsing.dom.DefaultDocument;
 import io.github.splotycode.mosaik.domparsing.parsing.DomParser;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingHandle;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
 import io.github.splotycode.mosaik.domparsing.writing.DomWriter;
-import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyValueDocument;
 
-public class KeyValueHandle implements ParsingHandle<KeyValueDocument> {
+public class KeyValueHandle implements ParsingHandle<DefaultDocument> {
 
     private KeyValueWriter writer = new KeyValueWriter();
 
@@ -21,7 +21,7 @@ public class KeyValueHandle implements ParsingHandle<KeyValueDocument> {
     }
 
     @Override
-    public DomParser getParser(DomInput input) {
+    public DomParser<DefaultDocument, KeyValueParser> getParser(DomInput input) {
         return new KeyValueParser();
     }
 

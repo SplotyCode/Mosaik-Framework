@@ -20,9 +20,9 @@ public class ApplicationInfo {
 
     private static void loadInfo() {
         Document document = LinkBase.getInstance().getLink(Links.PARSING_MANAGER).parseResourceFile("/mosaikversion.kv");
-        buildNumber = document.getFirstTextFromNode("number");
-        buildDate = document.getFirstTextFromNode("date");
-        version = document.getFirstTextFromNode("version");
+        buildNumber = document.getString("number");
+        buildDate = document.getString("date");
+        version = document.getString("version");
     }
 
     private static String implementingName = null;

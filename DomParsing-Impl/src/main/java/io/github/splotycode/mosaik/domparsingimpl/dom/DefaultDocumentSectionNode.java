@@ -6,6 +6,8 @@ import io.github.splotycode.mosaik.domparsing.dom.value.*;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.util.collection.MultiHashMap;
+import io.github.splotycode.mosaik.util.node.Childable;
+import io.github.splotycode.mosaik.util.node.NameableNode;
 import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 
 import java.util.Collection;
@@ -23,6 +25,12 @@ public class DefaultDocumentSectionNode implements DocumentSectionNode {
     @Override
     public MultiHashMap<String, IdentifierNode> getNodeMap() {
         return nodes;
+    }
+
+    @Override
+    public <T extends NameableNode & Childable<ValueNode>> Collection<T> getAllNodes(boolean avoidSections, boolean includeAttributes) {
+        /* TODO */
+        return (Collection<T>) getNodes();
     }
 
     @Override

@@ -1,14 +1,10 @@
 package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.readers;
 
+import io.github.splotycode.mosaik.domparsing.dom.value.StringValueNode;
 import io.github.splotycode.mosaik.domparsing.parsing.DomParseException;
 import io.github.splotycode.mosaik.domparsing.parsing.DomReader;
+import io.github.splotycode.mosaik.domparsingimpl.dom.DefaultIdentifierNode;
 import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.KeyValueParser;
-import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyNode;
-import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.ValueNode;
-import io.github.splotycode.mosaik.util.node.NameableNode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.readers.KeyReader.State.*;
 
@@ -56,11 +52,7 @@ public class KeyReader implements DomReader<KeyValueParser> {
                 break;
             case VALUE:
                 if (whiteSpace) {
-                    List<NameableNode> nodes = new ArrayList<>();
-                    KeyNode key = new KeyNode(name, nodes);
-                    nodes.add(new ValueNode(key, value));
-
-                    parser.getDocument().getNodes().add(key);
+                    parser.getDocument().addNode(new DefaultIdentifierNode(name, new StringValueNode(value)));
 
                     value = name = "";
                     state = BEFORE_NAME;

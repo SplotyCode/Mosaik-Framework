@@ -1,21 +1,21 @@
 package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue;
 
+import io.github.splotycode.mosaik.domparsing.dom.DefaultDocument;
 import io.github.splotycode.mosaik.domparsing.parsing.DefaultStringDomParser;
-import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyValueDocument;
 import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.readers.CommentReader;
 import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.readers.KeyReader;
 import lombok.Getter;
 
-public class KeyValueParser extends DefaultStringDomParser<KeyValueDocument, KeyValueParser> {
+public class KeyValueParser extends DefaultStringDomParser<DefaultDocument, KeyValueParser> {
 
-    @Getter private KeyValueDocument document = new KeyValueDocument();
+    @Getter private DefaultDocument document = new DefaultDocument();
 
     public KeyValueParser() {
         setReaders(new KeyReader(), new CommentReader());
     }
 
     @Override
-    protected KeyValueDocument getResult() {
+    protected DefaultDocument getResult() {
         return document;
     }
 }
