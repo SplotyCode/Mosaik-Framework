@@ -5,11 +5,8 @@ import lombok.*;
 /**
  * Holds tree Objects
  */
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Tribble<A, B, C> {
 
     private A a;
