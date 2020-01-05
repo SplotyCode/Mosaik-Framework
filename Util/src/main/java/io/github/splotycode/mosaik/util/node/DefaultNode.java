@@ -10,10 +10,10 @@ import java.util.Collection;
 public class DefaultNode<N extends DefaultNode<N>> implements Parentable<N>, Childable<N>, Node {
 
     @Getter
-    private N parent;
+    protected N parent;
 
     @Getter
-    private Collection<N> childes;
+    protected Collection<N> childes;
 
     public DefaultNode() {
         this(null);

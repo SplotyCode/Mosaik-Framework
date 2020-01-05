@@ -1,5 +1,7 @@
 package io.github.splotycode.mosaik.util.node;
 
+import io.github.splotycode.mosaik.util.collection.CollectionUtil;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -9,6 +11,14 @@ public interface Childable<I> {
 
     default void addChild(I child) {
         getChildes().add(child);
+    }
+
+    default I getAnyChild() {
+        return CollectionUtil.getAny(getChildes());
+    }
+
+    default boolean hasChilds() {
+        return !getChildes().isEmpty();
     }
 
     default Collection<I> getAllChilds() {
