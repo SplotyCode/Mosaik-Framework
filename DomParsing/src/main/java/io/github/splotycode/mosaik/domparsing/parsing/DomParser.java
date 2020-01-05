@@ -14,6 +14,8 @@ public interface DomParser<O extends Document, R extends DomParser> {
     void reHandle();
 
     DomReader<R>[] getReaders();
+    DomReader<R> getInstance(Class<DomReader<R>> clazz);
+
     List<DomReader<R>> getActiveReaders();
     void disableReader(DomReader<R> reader);
     void enableReader(DomReader<R> reader);

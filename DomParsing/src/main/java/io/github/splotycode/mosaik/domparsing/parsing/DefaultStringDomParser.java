@@ -10,16 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 public abstract class DefaultStringDomParser<O extends Document, R extends DomParser> implements DomParser<O, R> {
 
-    @Getter private DomReader<R>[] readers;
+    private DomReader<R>[] readers;
 
-    @Getter protected String content;
-    @Getter @Setter protected int index, line;
+    protected String content;
+    @Setter protected int index, line;
 
-    @Getter @Setter protected boolean skipThis, reHandle;
-    protected DomReader<R> locked;
-    @Getter protected List<DomReader<R>> activeReaders = new ArrayList<>();
+    @Setter protected boolean skipThis, reHandle;
+    @Setter protected DomReader<R> locked;
+    protected List<DomReader<R>> activeReaders = new ArrayList<>();
 
     @SafeVarargs
     protected final void setReaders(DomReader<R>... readers) {
@@ -137,10 +138,6 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
         return true;
     }
 
-    protected void setLine(int line) {
-        this.line = line;
-    }
-
     @Override
     public boolean skipIfFollowIgnoreCase(String text) {
         return skipIfFollow(content, true);
@@ -152,18 +149,17 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
     }
 
     @Override
-    public void setLocked(DomReader<R> reader) {
-        locked = reader;
-    }
-
-    @Override
     public boolean isLocked() {
         return locked != null;
     }
 
     @Override
-    public DomReader<R> getLocked() {
-        return locked;
+    public DomReader<R> getInstance(Class<DomReader<R>> clazz) {
+        for (DomReader<R> reader : readers) {
+            if (clazz.isInstance(reader)) {
+                return reader;
+            }
+        }
+        return null;
     }
-
 }

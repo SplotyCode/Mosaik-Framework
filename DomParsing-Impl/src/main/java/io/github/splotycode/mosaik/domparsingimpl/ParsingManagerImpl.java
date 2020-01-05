@@ -28,7 +28,7 @@ public class ParsingManagerImpl implements ParsingManager {
     @Override
     public <P extends ParsingHandle> P getHandleByClass(Class<P> clazz) {
         for (ParsingHandle handle : handles) {
-            if (clazz == handle.getClass()) {
+            if (clazz.isInstance(handle.getClass())) {
                 return (P) handle;
             }
         }
@@ -132,7 +132,7 @@ public class ParsingManagerImpl implements ParsingManager {
 
     @Override
     public <D extends Document> void writeToFile(D document, File file) throws IOException {
-        writeToFile(document, file, document.getHandle());
+        writeToFile(document, file, getHandle(file));
     }
 
     @Override
