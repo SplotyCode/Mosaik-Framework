@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue;
 
-import io.github.splotycode.mosaik.domparsing.dom.DefaultDocument;
+import io.github.splotycode.mosaik.domparsingimpl.dom.DefaultDocument;
 import io.github.splotycode.mosaik.domparsing.parsing.DomParser;
 import io.github.splotycode.mosaik.domparsing.parsing.ParsingHandle;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;

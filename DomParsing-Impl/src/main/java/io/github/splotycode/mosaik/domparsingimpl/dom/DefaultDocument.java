@@ -1,11 +1,12 @@
-package io.github.splotycode.mosaik.domparsing.dom;
+package io.github.splotycode.mosaik.domparsingimpl.dom;
 
+import io.github.splotycode.mosaik.domparsing.dom.Document;
 import io.github.splotycode.mosaik.util.datafactory.DataFactories;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import lombok.Getter;
 
-public class DefaultDocument extends DefaultIdentifierNode implements Document {
+public class DefaultDocument extends DefaultDocumentSectionNode implements Document {
 
     public static DefaultDocument createNoMetaData() {
         return new DefaultDocument(DataFactories.EMPTY_DATA_FACTORY);

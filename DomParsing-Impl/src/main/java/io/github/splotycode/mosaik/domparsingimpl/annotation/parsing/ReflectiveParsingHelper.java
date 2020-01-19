@@ -6,8 +6,8 @@ import io.github.splotycode.mosaik.domparsing.annotation.parsing.ReflectiveParsi
 import io.github.splotycode.mosaik.domparsing.dom.Document;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
 import io.github.splotycode.mosaik.domparsing.parsing.input.DomStreamInput;
+import io.github.splotycode.mosaik.domparsingimpl.dom.DefaultDocument;
 import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.KeyValueHandle;
-import io.github.splotycode.mosaik.domparsingimpl.formats.keyvalue.dom.KeyValueDocument;
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import io.github.splotycode.mosaik.util.node.NameableNode;
@@ -44,13 +44,13 @@ public final class ReflectiveParsingHelper {
         Document document = LinkBase.getInstance().getLink(Links.PARSING_MANAGER).parseDocument(input, KeyValueHandle.class);
 
         try {
-            Class clazz = Class.forName(document.getFirstTextFromNode("__clazz__"));
+            Class clazz = Class.forName(document.getString("__clazz__"));
             Object obj = clazz.newInstance();
 
             for (NameableNode node : document.getNodes()) {
                 if (node.name().equals("__clazz__")) continue;
                 String key = node.name();
-                String value = document.getFirstTextFromNode(key);
+                String value = document.getString(key);
 
                 Field field = clazz.getDeclaredField(getData(clazz).getFieldName(key));
                 field.setAccessible(true);
@@ -65,17 +65,17 @@ public final class ReflectiveParsingHelper {
 
     public static byte[] fromObject(Object object) {
         try {
-            KeyValueDocument document = new KeyValueDocument();
-            document.addNodeWithInnerText("_clazz__", object.getClass().getName());
+            DefaultDocument document = new DefaultDocument();
+            document.setValue("_clazz__", object.getClass().getName());
             for (Map.Entry<String, String> node : getData(object.getClass()).entrySet()) {
                 Field field = object.getClass().getDeclaredField(node.getValue());
                 field.setAccessible(true);
-                document.addNodeWithInnerText(node.getKey(), LinkBase.getInstance().getLink(TransformerManager.LINK).transform(field.get(object), String.class));
+                document.setValue(node.getKey(), field.get(object));
             }
 
             return LinkBase.getInstance().getLink(Links.PARSING_MANAGER).writeToText(document, KeyValueHandle.class).getBytes();
         } catch (ReflectiveOperationException ex) {
-            throw new EntryParseException("Failed to parse Obect to byte[]", ex);
+            throw new EntryParseException("Failed to parse Object to byte[]", ex);
         }
     }
 

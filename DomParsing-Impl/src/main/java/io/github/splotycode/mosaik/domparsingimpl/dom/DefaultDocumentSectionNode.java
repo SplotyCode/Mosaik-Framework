@@ -12,6 +12,7 @@ import io.github.splotycode.mosaik.valuetransformer.TransformerManager;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 public class DefaultDocumentSectionNode implements DocumentSectionNode {
 
@@ -40,8 +41,13 @@ public class DefaultDocumentSectionNode implements DocumentSectionNode {
 
     protected <T extends ValueNode> T getValueNode(String identifier, String depthSeparator,
                                                    Class<T> type) {
+        Collection<IdentifierNode> nodes = getNodes0(identifier, depthSeparator, false);
+        if (nodes == null) {
+            return null;
+        }
+
         T best = null;
-        for (IdentifierNode node : getNodes0(identifier, depthSeparator, false)) {
+        for (IdentifierNode node : nodes) {
             T value = getType(node, type);
             if (value != null) {
                 if (node.getChildes().size() == 1) {
@@ -102,7 +108,7 @@ public class DefaultDocumentSectionNode implements DocumentSectionNode {
     }
 
     protected Collection<IdentifierNode> getNodes0(String identifier, String depthSeparator, boolean create) {
-        String[] parts = identifier.split(depthSeparator, -1);
+        String[] parts = identifier.split(Pattern.quote(depthSeparator));
         DocumentSectionNode section = getNodesSection(identifier, parts, create);
 
         String identifierName = ArrayUtil.last(parts);
@@ -376,7 +382,7 @@ public class DefaultDocumentSectionNode implements DocumentSectionNode {
 
     @Override
     public void removeNode(String identifier, String depthSeparator) {
-        String[] split = identifier.split(depthSeparator, -1);
+        String[] split = identifier.split(Pattern.quote(depthSeparator));
         DocumentSectionNode section = getNodesSection(identifier, split, false);
         if (section != null) {
             section.getNodeMap().remove(ArrayUtil.last(split));
