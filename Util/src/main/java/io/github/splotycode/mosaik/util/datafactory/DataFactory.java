@@ -8,9 +8,11 @@ import java.util.Map;
 @EqualsAndHashCode
 public class DataFactory implements DataFactoryComponent {
 
-    private Map<String, Object> data = new HashMap<>();
+    protected Map<String, Object> data;
 
-    public DataFactory() {}
+    public DataFactory() {
+        data = new HashMap<>();
+    }
 
     public DataFactory(Map<String, Object> data) {
         this.data = data;
@@ -37,11 +39,9 @@ public class DataFactory implements DataFactoryComponent {
         return getDataDefault(name, key, null);
     }
 
-
-
-    /*
+    /**
      * This will use the name instead of the key name
-     * The Key is only for providing the Generic
+     * @param key only for providing the Generic type <code>T</code>
      */
     @SuppressWarnings("unused")
     public <T> T getData(String name, DataKey<T> key) {

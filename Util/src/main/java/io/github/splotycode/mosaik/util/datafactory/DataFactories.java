@@ -1,7 +1,6 @@
 package io.github.splotycode.mosaik.util.datafactory;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.util.Collections;
@@ -16,7 +15,15 @@ public final class DataFactories {
         return new SingletonDataFactory(key, value);
     }
 
+    public static <T> SingletonDataFactory singletonDataFactory(DataKey<T> key, T value) {
+        return new SingletonDataFactory(key.getName(), value);
+    }
+
     private static class EmptyDataFactory extends DataFactory {
+
+        EmptyDataFactory() {
+            super(Collections.emptyMap());
+        }
 
         @Override
         public boolean isEmpty() {
@@ -35,7 +42,7 @@ public final class DataFactories {
 
         @Override
         public <T> T getDataDefault(String name, DataKey<T> key, T def) {
-            return null;
+            return def;
         }
 
         @Override
@@ -44,21 +51,22 @@ public final class DataFactories {
         }
 
         @Override
-        public Map<String, Object> getRawMap() {
-            return Collections.emptyMap();
-        }
-
-        @Override
         public void setMap(Map<String, Object> map) {
             throw new UnsupportedOperationException();
         }
+
     }
 
-    @AllArgsConstructor
     private static class SingletonDataFactory extends DataFactory {
 
         private String key;
         private Object object;
+
+        public SingletonDataFactory(String key, Object object) {
+            super(null);
+            this.key = key;
+            this.object = object;
+        }
 
         @Override
         public int getDataSize() {
@@ -70,7 +78,7 @@ public final class DataFactories {
             if (name.equals(this.key)) {
                 return (T) object;
             }
-            return null;
+            return def;
         }
 
         @Override
@@ -85,7 +93,10 @@ public final class DataFactories {
 
         @Override
         public Map<String, Object> getRawMap() {
-            return Collections.singletonMap(key, object);
+            if (data == null) {
+                data = Collections.singletonMap(key, object);
+            }
+            return data;
         }
 
         @Override
