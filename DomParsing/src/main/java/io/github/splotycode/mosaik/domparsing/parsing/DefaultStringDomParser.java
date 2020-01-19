@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +26,7 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
     @SafeVarargs
     protected final void setReaders(DomReader<R>... readers) {
         this.readers = readers;
+        Collections.addAll(activeReaders, readers);
     }
 
     protected abstract O getResult();

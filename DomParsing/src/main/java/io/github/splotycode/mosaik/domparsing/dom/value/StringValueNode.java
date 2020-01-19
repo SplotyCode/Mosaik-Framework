@@ -1,16 +1,15 @@
 package io.github.splotycode.mosaik.domparsing.dom.value;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
 @AllArgsConstructor
 public class StringValueNode implements ValueNode {
 
-    private String value;
+    @Getter private String value;
 
     @Override
-    public String name() {
+    public String toString() {
         return value;
     }
 
