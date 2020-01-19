@@ -115,8 +115,7 @@ public class SystemInfo {
     private static int toInt(String string) {
         try {
             return Integer.valueOf(string);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return 0;
         }
     }

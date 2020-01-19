@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.util.info;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @EqualsAndHashCode
 @Getter
 @AllArgsConstructor
+@ToString
 public class JavaVersion implements Comparable<JavaVersion> {
 
     private final int feature, minor, update, build;
@@ -23,8 +25,8 @@ public class JavaVersion implements Comparable<JavaVersion> {
         return current;
     }
 
-    public static JavaVersion parse(String verison) {
-        String str = verison.trim();
+    public static JavaVersion parse(String version) {
+        String str = version.trim();
         if (str.contains("Runtime Environment")) {
             int p = str.indexOf("(build ");
             if (p > 0) str = str.substring(p);
@@ -44,7 +46,6 @@ public class JavaVersion implements Comparable<JavaVersion> {
 
         if (!numbers.isEmpty() && !separators.isEmpty()) {
             int feature = Integer.parseInt(numbers.get(0)), minor = 0, update = 0, build = 0;
-            boolean ea = false;
             p = 1;
             while (p < separators.size() && ".".equals(separators.get(p))) p++;
             if (p > 1 && numbers.size() > 2) {
@@ -66,10 +67,6 @@ public class JavaVersion implements Comparable<JavaVersion> {
             return new JavaVersion(feature, minor, update, build);
         }
         return null;
-    }
-
-    private static boolean startsWithWord(String s, String word) {
-        return s.startsWith(word) && (s.length() == word.length() || !Character.isLetterOrDigit(s.charAt(word.length())));
     }
 
     @Override
