@@ -53,9 +53,9 @@ class UrlPatternTest {
     void testVariables() {
         assertTrue(new UrlPattern("/").match("$name$/$age$").getVariables().isEmpty());
 
-        Map<String, String> variables = new UrlPattern("$name$/test/$age$/list").match("daniel/test/44/list").getVariables();
+        Map<String, String> variables = new UrlPattern("?name?/test/?age?/list").match("daniel/test/44/list").getVariables();
         assertEquals(2, variables.size());
-        assertEquals("name", variables.get("daniel"));
+        assertEquals("daniel", variables.get("name"));
         assertEquals("44", variables.get("age"));
 
         UrlPattern.MatchResult result = new UrlPattern("hey/$name$").match("hey/");

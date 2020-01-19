@@ -19,17 +19,17 @@ public class UrlPattern {
 
     public static String simplify(String url) {
         if (url.length() > 1) {
-            while (url.startsWith("/")) {
+            while (url.startsWith("/") && url.length() > 1) {
                 url = url.substring(1);
             }
-            while (url.endsWith("/")) {
+            while (url.endsWith("/") && url.length() > 1) {
                 url = url.substring(0, url.length() - 1);
             }
         }
         return url;
     }
 
-    String[] split;
+    String[] patternSplit;
     private boolean base, all;
     private boolean ignoreBegin, ignoreEnd;
     private boolean hasVariables;
@@ -37,15 +37,15 @@ public class UrlPattern {
 
     public UrlPattern(String pattern) throws IllegalHandlerException {
         pattern = simplify(pattern);
-        split = pattern.split("/");
+        patternSplit = pattern.split("/", -1);
         base = pattern.equals("/");
         all = pattern.equals("*");
 
-        int length = split.length;
+        int length = patternSplit.length;
         variables = new String[length];
 
         for (int i = 0; i < length; i++) {
-            String path = split[i];
+            String path = patternSplit[i];
             if (path.startsWith("?") && path.endsWith("?")) {
                 variables[i] = path.substring(1).substring(0, path.length() - 2);
                 hasVariables = true;
@@ -55,16 +55,16 @@ public class UrlPattern {
                 } else if (i == length - 1) {
                     ignoreEnd = true;
                 } else {
-                    throw new IllegalHandlerException("** is only allowed as first or last path");
+                    throw new IllegalHandlerException("** is only allowed as first or last element");
                 }
             }
         }
 
         if (ignoreBegin) {
-            split = Arrays.copyOfRange(split, 1, split.length);
+            patternSplit = Arrays.copyOfRange(patternSplit, 1, patternSplit.length);
         }
         if (ignoreEnd) {
-            split = Arrays.copyOf(split, split.length-1);
+            patternSplit = Arrays.copyOf(patternSplit, patternSplit.length - 1);
         }
     }
 
@@ -88,30 +88,38 @@ public class UrlPattern {
     }
 
     protected MatchResult match0(String url) {
-        String[] pathSplit = url.split("/");
+        String[] currentSplit = url.split("/");
+        int currentLength = currentSplit.length;
+
         int skip = 0;
         if (ignoreBegin) {
-            while (skip < pathSplit.length - 1 && !split[0].equals(pathSplit[skip])) {
+            String start = patternSplit[0];
+            while (skip < currentLength - 1 && !start.equals(currentSplit[skip])) {
                 skip++;
             }
         }
 
         Map<String, String> currentVariables = hasVariables ? new HashMap<>() : Collections.emptyMap();
 
-        int length = split.length + skip;
+        int length = patternSplit.length + skip;
 
         /* Check for too many elements  */
-        if (!ignoreEnd && length > pathSplit.length) {
+        if (!ignoreEnd && length < currentLength) {
+            return EMPTY_FALSE_RESULT;
+        }
+
+        /* Check for too few elements */
+        if (length > currentLength) {
             return EMPTY_FALSE_RESULT;
         }
 
         for (int i = skip; i < length; i++) {
-            String path = pathSplit[i];
+            String path = currentSplit[i];
             String variable = variables[i - skip];
             if (variable != null) {
                 currentVariables.put(variable, path);
             } else {
-                String pattern = split[i - skip];
+                String pattern = patternSplit[i - skip];
                 if (!path.equals(pattern) && !pattern.equals("*")) {
                     return EMPTY_FALSE_RESULT;
                 }
