@@ -27,7 +27,7 @@ import java.util.*;
 @Getter
 @EqualsAndHashCode
 public class Response {
-
+    
     private static Map<String, CookieKey> CACHED_COOKIE_KEYS = new HashMap<>();
 
     private static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
@@ -98,6 +98,8 @@ public class Response {
             setHeader(ResponseHeader.CONNECTION, "keep-alive");
         }
 
+        int userResponseCode = responseCode;
+
         /* Content  */
         if (content == null) {
             content = server.getConfig().getDataDefault(WebConfig.NO_CONTENT_RESPONSE);
@@ -107,6 +109,7 @@ public class Response {
         }
 
         /* Last Modified */
+        boolean needUpdate = false;
         try {
             if (request != null && cashingConfiguration != null &&
                     cashingConfiguration.getValidationModes().contains(HttpCashingConfiguration.ValidationMode.MODIFIED)) {
@@ -114,11 +117,11 @@ public class Response {
                 if (lastModified != -1) {
                     String rawLastModified = request.getHeader(RequestHeader.IF_MODIFIED_SINCE);
                     try {
-                        if (rawLastModified != null && LocalDateTime.parse(rawLastModified, DATE_FORMAT).atZone(ZONE_ID).toInstant().toEpochMilli() <= lastModified) {
+                        if (rawLastModified != null && LocalDateTime.parse(rawLastModified, DATE_FORMAT).atZone(ZONE_ID).toInstant().toEpochMilli() == lastModified) {
                             responseCode = HttpResponseStatus.NOT_MODIFIED.code();
-                            return;
                         } else {
                             setHeader(ResponseHeader.LAST_MODIFIED, Instant.ofEpochMilli(lastModified).atZone(ZONE_ID).format(DATE_FORMAT));
+                            needUpdate = true;
                         }
                     } catch (NumberFormatException ex) {
                         throw new ContentException("Failed to parse " + rawLastModified + " as last modified", ex, 400);
@@ -131,7 +134,7 @@ public class Response {
 
         /* E-Tag */
         try {
-            if (request != null && cashingConfiguration != null &&
+            if (request != null && !needUpdate && cashingConfiguration != null &&
                     cashingConfiguration.getValidationModes().contains(HttpCashingConfiguration.ValidationMode.E_TAG)) {
                 String currentETag = content.eTag(request, cashingConfiguration, () -> {
                     if (rawContent == null) {
@@ -144,14 +147,22 @@ public class Response {
                     return new ByteArrayInputStream(((ByteArrayInputStream)rawContent).getOriginal());
                 });
                 String lastETag = request.getHeader(RequestHeader.IF_NONE_MATCH);
-                if (currentETag != null && currentETag.equals(lastETag)) {
-                    responseCode = HttpResponseStatus.NOT_MODIFIED.code();
-                    return;
+                if (currentETag != null) {
+                   if (currentETag.equals(lastETag)) {
+                       responseCode = HttpResponseStatus.NOT_MODIFIED.code();
+                       return;
+                   } else if (responseCode == HttpResponseStatus.NOT_MODIFIED.code()) {
+                        responseCode = userResponseCode;
+                   }
                 }
                 setHeader(ResponseHeader.ETAG, currentETag);
             }
         } catch (Exception ex) {
             throw new ContentException("Could not set E_TAG", ex);
+        }
+
+        if (userResponseCode != responseCode) {
+            return;
         }
 
         /* Load content if not already loaded */

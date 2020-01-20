@@ -5,6 +5,7 @@ import io.github.splotycode.mosaik.util.collection.CollectionUtil;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.Cache;
 import io.github.splotycode.mosaik.webapi.request.Request;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import java.util.HashSet;
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 @AllArgsConstructor
 public class HttpCashingConfiguration {
 
