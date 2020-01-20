@@ -79,6 +79,8 @@ public class ManipulateData {
                         }
                         stack = "";
                         state = 0;
+                    } else if (Character.isWhitespace(ch)) {
+                        state = 0;
                     } else {
                         stack += ch;
                     }
