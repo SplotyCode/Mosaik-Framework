@@ -6,17 +6,17 @@ import java.util.NoSuchElementException;
 public abstract class SimpleIterator<T> implements Iterator<T> {
 
     protected T next;
+    protected boolean hasElement;
 
     protected abstract boolean provideNext();
 
-
     @Override
     public boolean hasNext() {
-        return next != null || provideNext();
+        return hasElement || (hasElement = provideNext());
     }
 
     public T peekNext() {
-        if (next != null || provideNext()) {
+        if (hasNext()) {
             return next;
         }
         throw new NoSuchElementException();
@@ -27,7 +27,7 @@ public abstract class SimpleIterator<T> implements Iterator<T> {
         try {
             return peekNext();
         } finally {
-            next = null;
+            hasElement = false;
         }
     }
 

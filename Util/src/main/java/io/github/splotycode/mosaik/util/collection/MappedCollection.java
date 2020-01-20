@@ -1,10 +1,14 @@
 package io.github.splotycode.mosaik.util.collection;
 
+import lombok.AllArgsConstructor;
+
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
+@AllArgsConstructor
 public class MappedCollection<E, O> extends AbstractCollection<E> {
 
     private Collection<O> original;
@@ -25,7 +29,18 @@ public class MappedCollection<E, O> extends AbstractCollection<E> {
             public E next() {
                 return mapper.apply(delegated.next());
             }
+
+            @Override
+            public void remove() {
+                delegated.remove();
+            }
+
         };
+    }
+
+    @Override
+    public boolean removeIf(Predicate<? super E> filter) {
+        return original.removeIf(o -> filter.test(mapper.apply(o)));
     }
 
     @Override
