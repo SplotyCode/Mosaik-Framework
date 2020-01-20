@@ -24,20 +24,21 @@ import lombok.Setter;
 import javax.net.ssl.SSLException;
 import java.security.cert.CertificateException;
 
+@Getter
 public class NettyWebServer extends AbstractWebServer implements WebServer {
 
-    private ChannelFuture channel;
-    private EventLoopGroup loopGroup;
+    protected ChannelFuture channel;
+    protected EventLoopGroup loopGroup;
     private NettyThread thread = new NettyThread();
 
-    @Getter @Setter
-    private WebServerHandler handler = new WebServerHandler(this);
+   @Setter
+    protected WebServerHandler handler = new WebServerHandler(this);
 
-    @Getter @Setter
-    private SslContext sslContext = null;
+    @Setter
+    protected SslContext sslContext = null;
 
-    @Getter @Setter
-    private NettyChannelInitializer channelInitializer = new NettyChannelInitializer(this);
+    @Setter
+    protected NettyChannelInitializer channelInitializer = new NettyChannelInitializer(this);
 
     public NettyWebServer(WebApplicationType application) {
         super(application);
@@ -62,6 +63,11 @@ public class NettyWebServer extends AbstractWebServer implements WebServer {
             sslContext = null;
         }
         thread.start();
+    }
+
+    @Override
+    public void shutdown(Runnable future) {
+        loopGroup.shutdownGracefully().addListener(nettyFuture -> future.run());
     }
 
     @Override

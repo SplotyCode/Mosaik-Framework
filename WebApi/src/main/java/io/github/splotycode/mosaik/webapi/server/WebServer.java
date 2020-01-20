@@ -31,6 +31,10 @@ public interface WebServer {
 
     void shutdown();
     boolean isRunning();
+    default void shutdown(Runnable future) {
+        shutdown();
+        future.run();
+    }
 
     void installErrorFactory(ErrorFactory factory);
     void uninstallErrorFactory(ErrorFactory factory);
