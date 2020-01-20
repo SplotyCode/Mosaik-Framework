@@ -3,7 +3,6 @@ function createModal(options) {
             title : '',
             body : '',
             remote : false,
-            backdrop : 'static',
             size : false,
             onShow : false,
             onHide : false,
@@ -43,4 +42,5 @@ function createModal(options) {
     }
 
     self.$modal.modal(options);
+    return self.$modal;
 }

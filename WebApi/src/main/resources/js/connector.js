@@ -1,55 +1,71 @@
 var errorHandler;
-
-function showDebug(http, textStatus, message, responseBody) {
-    var body = "Http Error: " + http + "<br>";
-    body += "Text Status: " + textStatus + "<br>";
-    body += "Backend Error: " + message + "<br><br>";
-    body += "<div style='text-align: left !important;'>" + responseBody + "</div>";
-    createModal({
-        title: "Debug Backend Error",
-        body: body,
-        size: "large",
-    });
+var supportsLoader = false;
+var msgInfo = function (msg) {
+    console.log(msg);
 }
 
-function createDebugButton(xhr, textStatus, errorThrown) {
-    var http = errorThrown + " (" + xhr.status + ")";
-    var fun = "showDebug('" + http + "', '" + textStatus + "', '" + xhr.getResponseHeader('message') + "', `" + xhr.responseText + "`)";
+function showDebug(http, textStatus, message, responseBody) {
+    var metaData = "Http Error: " + http + "<br>";
+    metaData += "Text Status: " + textStatus + "<br>";
+    metaData += "Backend Error: " + message + "<br>";
+    var body = createModal({
+        title: "Debug Backend Error",
+        size: "large",
+    }).find(".modal-body");
+    $("<p/>").html(metaData).appendTo(body);
+
+    var errorBody = $(responseBody);
+    var raw = errorBody.find("pre code").remove();
+
+    errorBody.appendTo(body);
+    $("<div/>").css("cssText", "text-align: left !important").text(raw).appendTo(body);
+}
+
+function createDebugButton(message, body, errorType, httpErrorMsg, httpError) {
+    var http = httpErrorMsg + " (" + httpError + ")";
+    var fun = "showDebug('" + http + "', '" + errorType + "', '" + message + "', `" + body + "`)";
     return '<a href="#" onclick="' + fun + ';return false;">Debug</a>';
 }
 
 function setUpAlertifyErrorHandler() {
-    errorHandler = function(xhr, textStatus, errorThrown) {
-        var message;
-        var debug = " " + createDebugButton(xhr, textStatus, errorThrown);
-        if (xhr && !isEmpty(message = xhr.getResponseHeader('message'))) {
+    errorHandler = function(message, body, errorType, httpErrorMsg, httpError) {
+        var debug = " " + createDebugButton(message, body, errorType, httpErrorMsg, httpError);
+        if (!isEmpty(message)) {
             alertify.error(message + debug);
         } else if (errorThrown) {
             alertify.error(errorThrown + debug);
         } else {
             alertify.error("Action failed!" + debug);
         }
+        console.error(message + " stauts: " + errorType + " http: " + httpErrorMsg + "(" + httpError + ")");
+    };
+    msgInfo = function (msg) {
+        alertify.success(msg);
     };
 }
 
 function makeFormSilent(query, data) {
     $(query).each(function() {
-        $(this).on('submit', function(event) {        
+        let element = $(this);
+        element.unbind("submit.silent");
+        element.on("submit.silent", function(event) {
             data = $.extend({
                 type: this.method,
                 data: $(this).serialize(),
                 success: function(data) {
-                    eval($(this).attr("onSuccess"));
+                    handleSilentSucess(element, data);
                 }
             }, data);
-            sendGET(this.action, event, data);
+            cancelAndSendGET(this.action, event, data);
         });
     });
 }
 
 function makeSilent(query, data) {
     $(query).each(function() {
-        $(this).click(function(event) {
+        let element = $(this);
+        element.unbind("click.silent");
+        element.on("click.silent", function(event) {
             var url = $(this).attr("data-href")
             if (url == undefined) {
                 url = $(this).attr("href");
@@ -59,12 +75,28 @@ function makeSilent(query, data) {
             }
             data = $.extend({
                 success: function(data) {
-                    eval($(this).attr("onSuccess"));
+                   handleSilentSucess(element, data); 
                 }
             }, data);
             cancelAndSendGET(url, event, data);
         });
     });
+}
+
+function handleSilentSucess(element, data) {
+    var scope = {
+        scope: this,
+        data: data,
+        element: element
+    }
+    with (scope) {
+       eval(element.attr("data-onSuccess"));
+    }
+    let action = element.attr("data-action");
+    if (action !== undefined) {
+        msgInfo("Successfully " + action)
+    }
+    element.trigger("silentfinished", [data]);
 }
 
 function cancelAndSendGET(url, event, data) {
@@ -79,17 +111,73 @@ function sendGET(url, data) {
         url: url,
         cache: false,
         type: "get",
-        error: function (xhr, textStatus, errorThrown) {
-            window["errorHandler"](xhr, textStatus, errorThrown);
+        error: function (xhr, errorType, httpErrorMsg) {
+            var message = xhr.getResponseHeader("message");
+            var body = xhr.responseText;
+            window["errorHandler"](message, body, errorType, httpErrorMsg, xhr.status);
         }
     }, data);
+
+    var ajax = $.ajax(data);
     
-    $.ajax(data);
+    if (supportsLoader) {
+        var done = false, inLoader = false;
+        ajax.done(function(data) {
+            done = true;
+            if (inLoader) {
+                hideLoader();
+            }
+        });
+        setTimeout(function(){
+            if (!done) {
+                showLoader();
+                inLoader = true;
+            }
+        }, 1200);
+    }
+}
+
+function loadText(url, handler, options) {
+    var done = false, inLoader = false;
+    fetch(url, options).then(function(response) {
+        var message = response.headers.get("message");
+        response.text().then(function(text) {
+            if (response.ok) {
+                handler(text, response);
+            } else {
+                errorHandler(message, text, "http-error", response.statusText, response.status);
+            }
+            done = true;
+            if (inLoader) {
+                hideLoader();
+            }
+        }).catch(function(err) {
+            done = true;
+            if (inLoader) {
+                hideLoader();
+            } 
+            errorHandler(message, undefined, (err ? err : "read-error"), response.statusText, response.status);
+        });
+    }).catch(function(err) {  
+        done = true;
+        if (inLoader) {
+            hideLoader();
+        }
+        errorHandler(undefined, undefined, (err ? err : "connect-error"), undefined, undefined);
+    });
+    if (supportsLoader) {
+        setTimeout(function() {
+            if (!done) {
+                showLoader();
+                inLoader = true;
+            }
+        }, 1200);
+    }
 }
 
 function getWebSocket(url) {
     if (!window.WebSocket) {
-      window.WebSocket = window.MozWebSocket;
+        window.WebSocket = window.MozWebSocket;
     }
     if (window.WebSocket) {
         return new WebSocket(url);
