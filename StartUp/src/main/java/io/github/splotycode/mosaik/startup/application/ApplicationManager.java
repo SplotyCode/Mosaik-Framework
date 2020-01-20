@@ -1,18 +1,36 @@
 package io.github.splotycode.mosaik.startup.application;
 
-import io.github.splotycode.mosaik.startup.processbar.StartUpProcessHandler;
 import io.github.splotycode.mosaik.runtime.application.Application;
 import io.github.splotycode.mosaik.runtime.application.ApplicationHandle;
 import io.github.splotycode.mosaik.runtime.application.ApplicationState;
 import io.github.splotycode.mosaik.runtime.application.IApplicationManager;
+import io.github.splotycode.mosaik.startup.processbar.StartUpProcessHandler;
+import io.github.splotycode.mosaik.util.collection.FilteredCollection;
+import io.github.splotycode.mosaik.util.collection.MappedCollection;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ApplicationManager implements IApplicationManager {
 
     List<ApplicationHandleImpl> handles = new ArrayList<>();
+    private Collection<ApplicationHandle> unmodifiableHandles = Collections.unmodifiableList(handles);
+    @Getter Collection<Application> applications = Collections.unmodifiableCollection(new MappedCollection<>(handles, ApplicationHandleImpl::getApplication));
+
+    @Getter private Collection<ApplicationHandle> loadedHandles = Collections.unmodifiableCollection(
+            new FilteredCollection<>(handles,
+                    handle -> handle.getApplication().getState() == ApplicationState.STARTED
+            )
+    );
+    @Getter private Collection<Application> loadedApplications= Collections.unmodifiableCollection(
+            new FilteredCollection<>(applications,
+                    application -> application.getState() == ApplicationState.STARTED
+            )
+    );
+
     private ApplicationFinder applicationFinder = new ApplicationFinder(this);
 
     public void startUp() {
@@ -35,36 +53,8 @@ public class ApplicationManager implements IApplicationManager {
     }
 
     @Override
-    public Collection<Application> getLoadedApplications() {
-        Collection<Application> applications = getApplications();
-        for (Application application : new ArrayList<>(applications)) {
-            if (application.getState() != ApplicationState.STARTED) {
-                applications.remove(application);
-            }
-        }
-        return applications;
-    }
-
-    @Override
-    public Collection<ApplicationHandle> getLoadedHandles() {
-        Collection<ApplicationHandle> handles = new ArrayList<>(getHandles());
-        for (ApplicationHandle handle : new ArrayList<>(handles)) {
-            if (handle.getApplication().getState() != ApplicationState.STARTED) {
-                handles.remove(handle);
-            }
-        }
-        return handles;
-    }
-
-    @Override
     public int getLoadedApplicationsCount() {
-        int loaded = 0;
-        for (ApplicationHandle handle : handles) {
-            if (handle.getApplication().getState() == ApplicationState.STARTED) {
-                loaded++;
-            }
-        }
-        return loaded;
+        return loadedApplications.size();
     }
 
     @Override
@@ -82,16 +72,8 @@ public class ApplicationManager implements IApplicationManager {
         return (A) getHandleByClass(application).getApplication();
     }
 
-
-    @Override
-    public Collection<Application> getApplications() {
-        List<Application> applications = new ArrayList<>();
-        handles.forEach(handle -> applications.add(handle.getApplication()));
-        return applications;
-    }
-
     @Override
     public Collection<ApplicationHandle> getHandles() {
-        return new ArrayList<>(handles);
+        return unmodifiableHandles;
     }
 }
