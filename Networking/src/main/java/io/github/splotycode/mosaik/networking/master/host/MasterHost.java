@@ -1,8 +1,9 @@
 package io.github.splotycode.mosaik.networking.master.host;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKitComponent;
+import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.service.Service;
-import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
 
 public interface MasterHost extends StatisticalHost, CloudKitComponent {
 
@@ -13,5 +14,7 @@ public interface MasterHost extends StatisticalHost, CloudKitComponent {
     void startNewInstance(Service service);
 
     void stopService(String service, int port);
+
+    void sendPacket(SerializedPacket packet);
 
 }

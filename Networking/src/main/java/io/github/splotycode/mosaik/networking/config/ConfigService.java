@@ -10,7 +10,7 @@ import io.github.splotycode.mosaik.networking.packet.handle.AnnotationContentHan
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
-import io.github.splotycode.mosaik.networking.statistics.SingleComponentService;
+import io.github.splotycode.mosaik.networking.statistics.component.SingleComponentService;
 import io.github.splotycode.mosaik.util.listener.Listener;
 import io.netty.channel.Channel;
 

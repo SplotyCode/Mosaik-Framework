@@ -1,8 +1,10 @@
 package io.github.splotycode.mosaik.networking.statistics;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
+import io.github.splotycode.mosaik.networking.component.INetworkProcess;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.service.Service;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
@@ -14,14 +16,14 @@ public class CloudStatistics {
 
     public interface Cycler {
 
-        boolean cycle(Instance instance);
+        boolean cycle(INetworkProcess instance);
 
     }
 
     public void cycle(Service service, Cycler cycler) {
         for (Host host : kit.getHosts()) {
             if (host instanceof StatisticalHost) {
-                for (Instance instance : ((StatisticalHost) host).getStatistics().getConnection(service)) {
+                for (INetworkProcess instance : ((StatisticalHost) host).statistics().getInstances(service)) {
                     if (cycler.cycle(instance)) {
                         return;
                     }
@@ -30,10 +32,10 @@ public class CloudStatistics {
         }
     }
 
-    public ArrayList<Instance> getInstancesUnder(Service service, int threashold) {
-        ArrayList<Instance> under = new ArrayList<>();
+    public ArrayList<INetworkProcess> getInstancesUnder(Service service, int threshold) {
+        ArrayList<INetworkProcess> under = new ArrayList<>();
         cycle(service, instance -> {
-            if (instance.getConnections() < threashold) {
+            if (instance.connectionCount() < threshold) {
                 under.add(instance);
             }
             return false;
@@ -45,8 +47,9 @@ public class CloudStatistics {
         int minimum = Integer.MAX_VALUE;
         for (Host host : kit.getHosts()) {
             if (host instanceof StatisticalHost) {
-                for (Instance connection : ((StatisticalHost) host).getStatistics().getConnection(service)) {
-                    minimum = Math.min(minimum, connection.getConnections());
+                INetworkProcess instance = ((StatisticalHost) host).statistics().getService(service).lowestConnectionInstance();
+                if (instance != null) {
+                    minimum = Math.min(minimum, instance.connectionCount());
                 }
             }
         }
@@ -57,7 +60,7 @@ public class CloudStatistics {
         int totalinstances = 0;
         for (Host host : kit.getHosts()) {
             if (host instanceof StatisticalHost) {
-                totalinstances += ((StatisticalHost) host).getStatistics().getInstances(service);
+                totalinstances += ((StatisticalHost) host).statistics().totalInstances(service);
             }
         }
         return totalinstances;

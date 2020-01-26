@@ -5,17 +5,15 @@ import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.master.packets.UpdateSlavesPacket;
 import io.github.splotycode.mosaik.networking.packet.handle.PacketTarget;
 import io.github.splotycode.mosaik.networking.packet.handle.SelfAnnotationHandler;
+import io.github.splotycode.mosaik.networking.packet.serialized.PacketSerializer;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.statistics.HostStatisticListener;
-import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
-import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
-import io.github.splotycode.mosaik.networking.statistics.UpdateLocalStatisticsTask;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
+import io.github.splotycode.mosaik.networking.statistics.network.UpdateLocalStatisticsTask;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.util.Map;
 
 @ChannelHandler.Sharable
 public class MasterClientHandler extends SelfAnnotationHandler<SerializedPacket> {
@@ -29,18 +27,27 @@ public class MasterClientHandler extends SelfAnnotationHandler<SerializedPacket>
     }
 
     @PacketTarget
-    public void onSlaveUpdate(UpdateSlavesPacket packet) {
-        for (Map.Entry<MosaikAddress, HostStatistics> data : packet.getStatistics().entrySet()) {
-            Host rHost = kit.hostMap().get(data.getKey());
-            if (rHost instanceof StatisticalHost) {
-                StatisticalHost host = (StatisticalHost) rHost;
-                host.update(data.getValue());
-                kit.getHandler().call(HostStatisticListener.class, listener -> listener.update(host));
-            } else if (rHost == null) {
-                throw new IllegalStateException("Could not find host  " + data.getKey() + " present hosts: " + kit.hostMap());
-            } else {
-                throw new IllegalStateException("Tried to update non statistical host " + rHost);
+    public void onSlaveUpdate(UpdateSlavesPacket packet) throws Exception {
+        try {
+            packet.checkResolvable();
+            PacketSerializer serializer = packet.getUnresolvedBody();
+
+            int length = serializer.readVarInt();
+            for (int i = 0; i < length; i++) {
+                MosaikAddress address = new MosaikAddress(serializer.readString());
+                Host rHost = kit.getHostByAddress(address);
+                if (rHost instanceof StatisticalHost) {
+                    StatisticalHost host = (StatisticalHost) rHost;
+                    host.statistics().read(serializer);
+                    kit.getHandler().call(HostStatisticListener.class, listener -> listener.update(host));
+                } else if (rHost == null) {
+                    throw new IllegalStateException("Could not find host " + address + " present hosts: " + kit.hostMap());
+                } else {
+                    throw new IllegalStateException("Tried to update non statistical host " + rHost);
+                }
             }
+        } finally {
+            packet.resolveDone();
         }
     }
 

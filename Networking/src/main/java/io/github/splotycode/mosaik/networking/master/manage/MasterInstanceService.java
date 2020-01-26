@@ -5,8 +5,9 @@ import io.github.splotycode.mosaik.networking.component.INetworkProcess;
 import io.github.splotycode.mosaik.networking.master.MasterChangeListener;
 import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.statistics.ServiceStatistics;
-import io.github.splotycode.mosaik.networking.statistics.StatisticService;
-import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
+import io.github.splotycode.mosaik.networking.statistics.component.AbstractStatisticalComponent;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalService;
+import io.github.splotycode.mosaik.networking.statistics.local.DefaultLocalServiceStatistics;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.networking.util.PortSupplier;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
@@ -16,7 +17,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @Getter
-public abstract class MasterInstanceService<C extends INetworkProcess> implements StatisticService, MasterChangeListener {
+public abstract class MasterInstanceService<C extends INetworkProcess> extends AbstractStatisticalComponent<ServiceStatistics> implements StatisticalService, MasterChangeListener {
 
     protected CloudKit kit;
     protected MasterService master;
@@ -81,10 +82,9 @@ public abstract class MasterInstanceService<C extends INetworkProcess> implement
     }
 
     @Override
-    public ServiceStatistics statistics() {
-        ServiceStatistics statistics = new ServiceStatistics((StatisticalHost) kit.getSelfHost(), displayName());
-        getLocalInstances().forEach(statistics::addComponent);
-        return statistics;
+    public ServiceStatistics createStatistics() {
+        //noinspection unchecked
+        return new DefaultLocalServiceStatistics(this, (Collection<INetworkProcess>) getLocalInstances());
     }
 
     @Override

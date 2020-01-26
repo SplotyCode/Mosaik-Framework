@@ -1,12 +1,14 @@
 package io.github.splotycode.mosaik.networking.master;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
+import io.github.splotycode.mosaik.networking.cloudkit.StatisticalCloudKitService;
 import io.github.splotycode.mosaik.networking.component.NetworkComponent;
 import io.github.splotycode.mosaik.networking.component.listener.standart.ListStatusListener;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPClient;
 import io.github.splotycode.mosaik.networking.component.tcp.TCPServer;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.host.Host;
+import io.github.splotycode.mosaik.networking.master.host.MasterHost;
 import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.master.packets.DestroyPacket;
 import io.github.splotycode.mosaik.networking.master.packets.DistributePacket;
@@ -14,9 +16,7 @@ import io.github.splotycode.mosaik.networking.packet.PacketRegistry;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
-import io.github.splotycode.mosaik.networking.statistics.CloudStatistics;
-import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
-import io.github.splotycode.mosaik.networking.statistics.SingleComponentService;
+import io.github.splotycode.mosaik.networking.statistics.component.SingleComponentService;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.listener.Listener;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 @Getter
-public class MasterService extends RepeatableTask implements SingleComponentService {
+public class MasterService extends StatisticalCloudKitService implements SingleComponentService, Runnable {
 
     public static final ConfigKey<Long> DAEMON_STATS_DELAY = new ConfigKey<>("master.daemon_upload_stats", long.class, 15 * 1000L);
     public static final ConfigKey<Long> MASTER_UPDATE_SLAVE_DELAY = new ConfigKey<>("master.master_update_slaves", long.class, 20 * 1000L);
@@ -45,7 +45,6 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
     {
         masterRegistry.registerPackage(DestroyPacket.class);
-        masterRegistry.register(HostStatistics.class);
     }
 
     private MosaikAddress currentBest;
@@ -60,34 +59,57 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
     private int port;
 
-    private long taskID;
-
-    private CloudKit kit;
-    private CloudStatistics statistics;
+    private MasterTask selectionTask;
 
     private ServiceStatus status = ServiceStatus.UNKNOWN;
 
     public MasterService(CloudKit kit) {
-        this(kit, kit.getConfig(MASTER_UPDATE_DELAY), kit.getConfig(PORT));
+        this(kit.getConfig(MASTER_UPDATE_DELAY), kit.getConfig(PORT));
     }
 
-    public MasterService(CloudKit kit, long delay, int port) {
-        super("Master Sync", delay);
+    public MasterService(long delay, int port) {
+        selectionTask = new MasterTask(delay);
         this.port = port;
-        this.kit = kit;
-        clientHandler = new MasterClientHandler(kit);
-        statistics = new CloudStatistics(kit);
-        kit.getHandler().addListener(serverHandler);
+    }
+
+    @Override
+    protected void initialize(CloudKit cloudKit) {
+        super.initialize(cloudKit);
+        clientHandler = new MasterClientHandler(cloudKit);
+    }
+
+    class MasterTask extends RepeatableTask {
+
+        private long taskID = -1;
+
+        public MasterTask(long delay) {
+            super("Master Sync", MasterService.this, delay);
+        }
+
+        public void startTask() {
+            if (taskID != -1) {
+                throw new IllegalStateException("Task already running");
+            }
+            taskID = cloudKit.getLocalTaskExecutor().runTask(this);
+        }
+
+        public void stopTask() {
+            if (taskID != -1) {
+                cloudKit.getLocalTaskExecutor().stopTask(taskID);
+                taskID = -1;
+            }
+        }
+
     }
 
     @Override
     public void run() {
         MosaikAddress best = getBestRoot();
         if (!best.equals(currentBest)) {
-            boolean own = best.isLocal(kit);
+            boolean own = best.isLocal(cloudKit);
 
             logger.info("Best Primary Master switched from " +  currentBest + " to " + best);
-            kit.getHandler().call(MasterChangeListener.class, listener -> listener.onChange(own, best, currentBest));
+            cloudKit.getHandler().call(MasterChangeListener.class, listener -> listener.onChange(own, best, currentBest));
 
             if (own) {
                 logger.info("Optimal Primary master is this machine");
@@ -100,26 +122,26 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
             currentBest = best;
 
-            for (Map.Entry<MosaikAddress, Host> root : kit.hostMap().entrySet()) {
+            for (Map.Entry<MosaikAddress, Host> root : cloudKit.hostMap().entrySet()) {
                 if (root.getKey().hashCode() > currentBest.hashCode() &&
-                        root != kit.getSelfHost() &&
+                        root != cloudKit.getSelfHost() &&
                         root.getValue().healthCheck().isOnline()) {
                     logger.info("Sending Destroy packet to " + root.getKey());
                     destroyMaster(root.getKey());
                 }
             }
         } else {
-            logger.debug("Sync has not changed in the last " + TimeUtil.formatDelay(delay));
+            logger.debug("Sync has not changed in the last " + TimeUtil.formatDelay(selectionTask.getDelay()));
         }
     }
 
     private MosaikAddress getBestRoot() {
-        for (Map.Entry<MosaikAddress, Host> root : kit.hostMap().entrySet()) {
+        for (Map.Entry<MosaikAddress, Host> root : cloudKit.hostMap().entrySet()) {
             if (root.getValue().healthCheck().isOnline()) {
                 return root.getKey();
             }
         }
-        return kit.getLocalIpResolver().getIpAddress();
+        return cloudKit.getLocalIpResolver().getIpAddress();
     }
 
     protected TCPServer createServer() {
@@ -127,7 +149,7 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
                 .port(port).setDisplayName("Master")
                 .logging()
                 .usePacketSystem(2, DefaultPacketSystem.createSerialized(masterRegistry))
-                .childHandler(1, "ipFiler", kit.getIpFilter())
+                .childHandler(1, "ipFiler", cloudKit.getIpFilter())
                 .childHandler(5, "packetHandler", serverHandler)
                 .bind(true);
     }
@@ -152,16 +174,18 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
     @Override
     public void start() {
+        cloudKit.getHandler().addListener(serverHandler);
+
         currentBest = getBestRoot();
-        self = currentBest.equals(kit.getLocalIpResolver().getIpAddress());
+        self = currentBest.equals(cloudKit.getLocalIpResolver().getIpAddress());
         logger.info("Best Root is " + currentBest + " Self: " + self);
-        kit.getHandler().call(MasterChangeListener.class, listener -> listener.onChange(self, currentBest, null));
+        cloudKit.getHandler().call(MasterChangeListener.class, listener -> listener.onChange(self, currentBest, null));
         if (self) {
             server = createServer();
         } else {
             client = createClient(currentBest);
         }
-        taskID = kit.getLocalTaskExecutor().runTask(this);
+        selectionTask.startTask();
         status = ServiceStatus.RUNNING;
     }
 
@@ -172,7 +196,8 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
 
     @Override
     public void stop() {
-        kit.getLocalTaskExecutor().stopTask(taskID);
+        cloudKit.getHandler().removeListener(serverHandler);
+        selectionTask.stopTask();
         status = ServiceStatus.STOPPED;
     }
 
@@ -187,16 +212,15 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     }
 
     public Host getHostByChannel(Channel channel) {
-        Host host = kit.hostMap().get(MosaikAddress.from(channel.remoteAddress()));
+        Host host = cloudKit.getHostByAddress(MosaikAddress.from(channel.remoteAddress()));
         if (host instanceof RemoteMasterHost) {
             ((RemoteMasterHost) host).setChannel(channel);
         }
         return host;
     }
 
-    @Override
-    public CloudKit cloudKit() {
-        return kit;
+    public void sendPacket(MosaikAddress address, SerializedPacket packet) {
+        ((MasterHost) cloudKit.getHostByAddress(address)).sendPacket(packet);
     }
 
     public void sendMaster(SerializedPacket packet) {
@@ -208,8 +232,19 @@ public class MasterService extends RepeatableTask implements SingleComponentServ
     }
 
     public void sendAll(SerializedPacket packet) {
-        sendSelf(packet);
-        clientHandler.channel.writeAndFlush(new DistributePacket(packet, this));
+        sendAll(packet, true);
+    }
+
+    public void sendAll(SerializedPacket packet, boolean sendSelf) {
+        if (sendSelf) {
+            sendSelf(packet);
+        }
+        DistributePacket distributePacket = new DistributePacket(packet, this);
+        if (self) {
+            serverHandler.onPacketDistribute(distributePacket, null);
+        } else {
+            clientHandler.channel.writeAndFlush(new DistributePacket(packet, this));
+        }
     }
 
     public void sendSelf(SerializedPacket packet) {

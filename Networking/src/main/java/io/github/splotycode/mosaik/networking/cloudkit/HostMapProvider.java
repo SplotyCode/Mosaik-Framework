@@ -5,7 +5,6 @@ import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.CacheListener;
-import io.github.splotycode.mosaik.util.listener.DummyListenerHandler;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 import lombok.Setter;
 
@@ -18,7 +17,7 @@ public abstract class HostMapProvider implements Cache<TreeMap<MosaikAddress, Ho
 
     protected CloudKit kit;
 
-    protected TreeMap<MosaikAddress, Host> hosts = new TreeMap<>();
+    protected final TreeMap<MosaikAddress, Host> hosts = new TreeMap<>();
 
     public HostMapProvider(CloudKit kit, long maxDelay) {
         this.kit = kit;
@@ -41,12 +40,16 @@ public abstract class HostMapProvider implements Cache<TreeMap<MosaikAddress, Ho
 
     protected final void reFill() {
         List<String> list = fill();
+        Host self = kit.getSelfHost();
+
+        /* Remove invalid hosts */
+        hosts.entrySet().removeIf(host -> !list.contains(host.getKey().asString()) && host != self);
+
+        /* Add new hosts */
         for (String host : list) {
             hosts.putIfAbsent(new MosaikAddress(host), kit.getHostProvider().provide(kit, host));
         }
-        hosts.entrySet().removeIf(host -> !list.contains(host.getKey().asString()));
 
-        Host self = kit.getSelfHost();
         if (self != null) {
             hosts.putIfAbsent(self.address(), self);
         }
@@ -77,11 +80,12 @@ public abstract class HostMapProvider implements Cache<TreeMap<MosaikAddress, Ho
 
     @Override
     public void setValue(TreeMap<MosaikAddress, Host> value) {
-        hosts = value;
+        clear();
+        hosts.putAll(value);
     }
 
     @Override
     public ListenerHandler<CacheListener<TreeMap<MosaikAddress, Host>>> getHandler() {
-        return DummyListenerHandler.dummy();
+        throw new UnsupportedOperationException("Please use the handler from cloudkit");
     }
 }

@@ -1,7 +1,9 @@
-package io.github.splotycode.mosaik.networking.statistics;
+package io.github.splotycode.mosaik.networking.statistics.network;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
 import io.github.splotycode.mosaik.networking.master.MasterService;
+import io.github.splotycode.mosaik.networking.master.packets.UpdateHostPacket;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
 import io.netty.channel.Channel;
 import lombok.Getter;
@@ -24,7 +26,7 @@ public class UpdateLocalStatisticsTask extends RepeatableTask {
 
     @Override
     public void run() {
-        channel.writeAndFlush(HostStatistics.current(kit));
+        channel.writeAndFlush(new UpdateHostPacket(((StatisticalHost) kit.getSelfHost()).statistics()));
     }
 
 

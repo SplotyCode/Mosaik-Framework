@@ -7,7 +7,7 @@ import io.github.splotycode.mosaik.networking.master.manage.MasterInstanceServic
 import io.github.splotycode.mosaik.networking.reverseproxy.StaticClientProxyHandler;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
 import io.github.splotycode.mosaik.networking.statistics.HostStatisticListener;
-import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
 import io.github.splotycode.mosaik.util.task.types.CompressingTask;
 import lombok.Getter;
 
@@ -32,8 +32,6 @@ public class LoadBalancerService extends MasterInstanceService<TCPServer<? exten
 
     private long strategyTaskID;
     private CompressingTask strategyTask = new CompressingTask(displayName() + " strategy", () -> strategy.update(this), 8 * 1000, 5 * 1000);
-
-
 
     @Override
     public void update(StatisticalHost host) {

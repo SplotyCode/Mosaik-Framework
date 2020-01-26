@@ -1,7 +1,6 @@
 package io.github.splotycode.mosaik.networking.errorhandling;
 
 import io.github.splotycode.mosaik.networking.packet.serialized.PacketSerializer;
-import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,11 +12,10 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ReportedError implements SerializedPacket, Cloneable {
+public class ReportedError implements Cloneable {
 
     protected HashMap<MosaikAddress, HashMap<String, String>> servers;
 
-    @Override
     public void read(PacketSerializer packet) throws Exception {
         int length  = packet.readVarInt();
         servers = new HashMap<>(length, 1);
@@ -34,7 +32,6 @@ public class ReportedError implements SerializedPacket, Cloneable {
         }
     }
 
-    @Override
     public void write(PacketSerializer packet) throws Exception {
         packet.writeVarInt(servers.size());
         for (Map.Entry<MosaikAddress, HashMap<String, String>> host : servers.entrySet()) {

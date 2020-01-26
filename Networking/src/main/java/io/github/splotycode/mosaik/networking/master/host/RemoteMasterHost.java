@@ -7,14 +7,17 @@ import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
 import io.github.splotycode.mosaik.networking.healthcheck.PingingHealthCheck;
 import io.github.splotycode.mosaik.networking.host.AddressChangeListener;
 import io.github.splotycode.mosaik.networking.master.MasterService;
+import io.github.splotycode.mosaik.networking.master.packets.DirectContactPacket;
 import io.github.splotycode.mosaik.networking.master.packets.StartInstancePacket;
 import io.github.splotycode.mosaik.networking.master.packets.StopInstancePacket;
+import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.service.Service;
-import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
+import io.github.splotycode.mosaik.networking.statistics.remote.RemoveHostStatistics;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,12 +30,16 @@ public class RemoteMasterHost implements MasterHost {
     public static final ConfigKey<Long> HEALTH_THRESHOLD = new ConfigKey<>("master.host.health_threshold", long.class, 8 * 1000L);
 
     private CloudKit cloudKit;
+    private MasterService masterService;
+
+    private MultipleListenerHandler handler = new MultipleListenerHandler();
+
     private MosaikAddress address;
 
     @Getter private long lastUpdate;
     private MasterHealthCheck healthCheck = new MasterHealthCheck();
     private PingingHealthCheck backupHealthCheck;
-    @Getter private HostStatistics statistics;
+    @Getter private RemoveHostStatistics statistics;
 
     @Setter @Getter private Channel channel;
 
@@ -49,15 +56,13 @@ public class RemoteMasterHost implements MasterHost {
         backupHealthCheck.setAddress(address.asSocketAddress(cloudKit.getServiceByClass(MasterService.class).getPort()));
     }
 
-    private MultipleListenerHandler handler = new MultipleListenerHandler();
-
     @Override
     public String toString() {
         return "External-" + address().asString();
     }
 
     @Override
-    public void update(HostStatistics statistics) {
+    public void update(RemoveHostStatistics statistics) {
        this.statistics = statistics;
        lastUpdate = System.currentTimeMillis();
     }
@@ -75,6 +80,22 @@ public class RemoteMasterHost implements MasterHost {
     @Override
     public void stopService(String service, int port) {
         channel.writeAndFlush(new StopInstancePacket(service, port));
+    }
+
+    @Override
+    public void sendPacket(SerializedPacket packet) {
+        if (channel == null || !channel.isOpen()) {
+            masterService().sendMaster(new DirectContactPacket(packet, masterService(), address()));
+        } else {
+            channel.writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+        }
+    }
+
+    protected MasterService masterService() {
+        if (masterService == null) {
+            masterService = cloudKit.getServiceByClass(MasterService.class);
+        }
+        return masterService;
     }
 
     @Override
@@ -105,7 +126,7 @@ public class RemoteMasterHost implements MasterHost {
     }
 
     @Override
-    public ListenerHandler handler() {
-        throw new UnsupportedOperationException();
+    public MultipleListenerHandler handler() {
+        return handler;
     }
 }

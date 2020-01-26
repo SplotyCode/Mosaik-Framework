@@ -2,70 +2,57 @@ package io.github.splotycode.mosaik.networking.statistics;
 
 import io.github.splotycode.mosaik.networking.component.INetworkProcess;
 import io.github.splotycode.mosaik.networking.packet.serialized.PacketSerializer;
+import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
+import io.github.splotycode.mosaik.networking.statistics.network.CodecNetworkProcess;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-public class ServiceStatistics {
+public interface ServiceStatistics extends IStatistics, SerializedPacket {
 
-    protected Map<Integer, Instance> instances = new HashMap<>();
-    private StatisticalHost host;
-    private String service;
+    int FLAG_COSTOM_CODEC = 0x00000001;
+    int FLAG_RUNNING = 0x00000002;
+    int FLAG_NO_CONNECTION_COUNTER = 0x00000004;
 
-    public ServiceStatistics(StatisticalHost host, String service) {
-        this.host = host;
-        this.service = service;
-    }
+    String serviceName();
 
-    public void read(PacketSerializer serializer) {
-        int instancesSize = serializer.readVarInt();
-        instances = new HashMap<>(instancesSize, 1);
-        for (int i2 = 0; i2 < instancesSize; i2++) {
-            int port = serializer.readVarInt();
-            instances.put(port, new Instance(serializer.readVarInt(), port, host, false, service));
-        }
-    }
+    int totalInstances();
+    int totalConnections();
 
-    public void write(PacketSerializer serializer) {
-        serializer.writeVarInt(getInstancesCount());
-        for (Map.Entry<Integer, Instance> instance : instances.entrySet()) {
-            serializer.writeVarInt(instance.getKey());
-            serializer.writeVarInt(instance.getValue().getConnections());
-        }
-    }
+    INetworkProcess lowestConnectionInstance();
 
-    public int getInstancesCount() {
-        return instances.size();
-    }
+    Collection<INetworkProcess> getInstances();
 
-    public Collection<Instance> getInstances() {
-        return instances.values();
-    }
+    @Override
+    default void write(PacketSerializer packet) throws Exception {
+        packet.writeVarInt(totalInstances());
+        for (INetworkProcess process : getInstances()) {
+            packet.writeVarInt(process.port());
 
-    public Instance getLowestInstance() {
-        Instance lowerst = null;
-        for (Instance instance : instances.values()) {
-            if (lowerst == null || lowerst.getConnections() > instance.getConnections()) {
-                lowerst = instance;
+            boolean costomCodec = process instanceof CodecNetworkProcess;
+            int connections = process.connectionCount();
+
+            /* Write controlByte */
+            int controlByte = costomCodec ? FLAG_COSTOM_CODEC : 0;
+            if (costomCodec) {
+                controlByte |= ((CodecNetworkProcess) process).calculateControlByte();
             }
-        }
-        return lowerst;
-    }
+            if (connections == -1) {
+                controlByte |= FLAG_NO_CONNECTION_COUNTER;
+            }
+            if (process.running()) {
+                controlByte |= FLAG_RUNNING;
+            }
+            packet.writeVarInt(controlByte);
 
-    public int totalConnections() {
-        int counter = 0;
-        for (Instance instance : instances.values()) {
-            counter += instance.getConnections();
-        }
-        return counter;
-    }
+            /* Write Packet Body*/
+            if (connections != -1) {
+                packet.writeVarInt(connections);
+            }
+            if (costomCodec) {
+                ((CodecNetworkProcess) process).write(packet);
+            }
 
-    public ServiceStatistics addComponent(INetworkProcess process) {
-        if (process.running()) {
-            instances.put(process.port(), new Instance(process.connectionCount(), process.port(), host, false, service));
         }
-        return this;
     }
 
 }

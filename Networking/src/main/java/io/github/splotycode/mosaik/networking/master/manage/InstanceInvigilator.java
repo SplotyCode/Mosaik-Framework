@@ -1,12 +1,13 @@
 package io.github.splotycode.mosaik.networking.master.manage;
 
+import io.github.splotycode.mosaik.networking.component.INetworkProcess;
 import io.github.splotycode.mosaik.networking.config.ConfigProvider;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.master.host.MasterHost;
 import io.github.splotycode.mosaik.networking.statistics.CloudStatistics;
 import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
-import io.github.splotycode.mosaik.networking.statistics.Instance;
-import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
+import io.github.splotycode.mosaik.networking.statistics.component.StatefulNetworkProcess;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import lombok.AllArgsConstructor;
 
@@ -47,13 +48,13 @@ public class InstanceInvigilator {
     protected void startNewInstance() {
         Optional<Host> oHost = service.getKit().getHosts().stream().filter(host -> {
             if (host instanceof MasterHost) {
-                HostStatistics statistics =  ((MasterHost) host).getStatistics();
-                if (!onePerMaster || statistics.getInstances(service) == 0) {
-                    return ((StatisticalHost) host).getStatistics().getFreeRam() >= minimumRam;
+                HostStatistics statistics = ((MasterHost) host).statistics();
+                if (!onePerMaster || statistics.totalInstances(service) == 0) {
+                    return ((StatisticalHost) host).statistics().getFreeMemory() >= minimumRam;
                 }
             }
             return false;
-        }).max(Comparator.comparingDouble(o -> ((StatisticalHost) o).getStatistics().getCpu()));
+        }).max(Comparator.comparingDouble(o -> ((StatisticalHost) o).statistics().getCPULoad()));
         if (oHost.isPresent()) {
             MasterHost host = (MasterHost) oHost.get();
             LOGGER.info("New instance for " + service.displayName() + " on " + host.toString());
@@ -64,17 +65,17 @@ public class InstanceInvigilator {
     }
 
     public void updateComponents() {
-        CloudStatistics statistics = service.getMaster().getStatistics();
+        CloudStatistics statistics = service.getKit().getStatistics();
         int instances = statistics.getTotalInstances(service);
-        ArrayList<Instance> under = statistics.getInstancesUnder(service, optimalConnections);
+        ArrayList<INetworkProcess> under = statistics.getInstancesUnder(service, optimalConnections);
 
         if (under.size() >= stopThreshold) {
             int close = (int) Math.min(under.size(), instances * maxStop);
             int closed = 0;
-            Iterator<Instance> iterator = under.iterator();
+            Iterator<INetworkProcess> iterator = under.iterator();
             while (iterator.hasNext() && closed <= close) {
-                Instance instance = iterator.next();
-                if (instance.getHostStatistics().getFreeRam() <= minimumRam && !instance.isShuttingDown()) {
+                INetworkProcess instance = iterator.next();
+                if (instance.hostStatistics().getFreeMemory() <= minimumRam && !((StatefulNetworkProcess) instance).shuttingDown()) {
                     closed++;
                     iterator.remove();
                     instance.stop();
@@ -83,15 +84,16 @@ public class InstanceInvigilator {
             int i = 0;
             while (closed <= close && i < 10_000) {
                 ArrayList<StatisticalHost> hosts = new ArrayList<>();
-                for (Instance instance : under) {
-                    if (!hosts.contains(instance.getHost()) && !instance.isShuttingDown()) {
-                        hosts.add(instance.getHost());
+                for (INetworkProcess instance : under) {
+                    StatisticalHost host = (StatisticalHost) instance.host();
+                    if (!hosts.contains(host) && !((StatefulNetworkProcess) instance).shuttingDown()) {
+                        hosts.add(host);
                     }
                 }
-                hosts.sort(Comparator.comparingDouble(o -> o.getStatistics().getCpu()));
+                hosts.sort(Comparator.comparingDouble(o -> o.statistics().getCPULoad()));
                 for (StatisticalHost host : hosts) {
-                    Instance instance = host.getStatistics().getService(service).getLowestInstance();
-                    if (!instance.isShuttingDown() && instance.getConnections() < optimalConnections) {
+                    INetworkProcess instance = host.statistics().getService(service).lowestConnectionInstance();
+                    if (!((StatefulNetworkProcess) instance).shuttingDown() && instance.connectionCount() < optimalConnections) {
                         closed++;
                         instance.stop();
                     }

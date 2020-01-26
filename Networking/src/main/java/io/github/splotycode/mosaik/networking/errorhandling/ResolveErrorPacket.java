@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.networking.errorhandling;
 
 import io.github.splotycode.mosaik.networking.packet.serialized.PacketSerializer;
+import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,10 +9,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 
+@Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@Data
-public class ResolveErrorPacket extends ReportedError {
+public class ResolveErrorPacket extends ReportedError implements SerializedPacket {
 
     private int callbackId;
     private MosaikAddress requester;
@@ -40,6 +41,10 @@ public class ResolveErrorPacket extends ReportedError {
         packet.writeVarInt(callbackId);
         packet.writeString(requester.asString());
         packet.writeString(currentID);
+    }
+
+    public EndResolvePacket toEnd() {
+        return new EndResolvePacket(servers, callbackId);
     }
 
     @Override

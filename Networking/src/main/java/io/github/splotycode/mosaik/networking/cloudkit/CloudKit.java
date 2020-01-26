@@ -9,9 +9,12 @@ import io.github.splotycode.mosaik.networking.host.SelfHost;
 import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.service.Service;
+import io.github.splotycode.mosaik.networking.statistics.CloudStatistics;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
 import io.github.splotycode.mosaik.networking.util.IpFilterHandler;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
+import io.github.splotycode.mosaik.util.collection.FilteredCollection;
 import io.github.splotycode.mosaik.util.listener.Listener;
 import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
 import io.github.splotycode.mosaik.util.task.TaskExecutor;
@@ -22,7 +25,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,7 +42,7 @@ public class CloudKit {
 
     private MultipleListenerHandler<Listener> handler = new MultipleListenerHandler<>();
 
-    private final HashSet<Service> services = new HashSet<>();
+    private final ServiceManager serviceManager = new ServiceManager(this);
 
     private TaskExecutor localTaskExecutor;
 
@@ -58,11 +60,18 @@ public class CloudKit {
         }
     };
 
+    private CloudStatistics statistics = new CloudStatistics(this);
+    @SuppressWarnings("unchecked")
+    private Collection<StatisticalHost> statisticalHosts = (Collection<StatisticalHost>) (Collection<?>)
+            new FilteredCollection<>(getHosts(), host -> host instanceof StatisticalHost);
+
+    @Deprecated
     public CloudKit startMasterService(long updateDelay, int port) {
-        startService(new MasterService(this, updateDelay, port));
+        startService(new MasterService(updateDelay, port));
         return this;
     }
 
+    @Deprecated
     public CloudKit startMasterService() {
         startService(new MasterService(this));
         return this;
@@ -79,13 +88,16 @@ public class CloudKit {
 
     public CloudKit stopService(Service service) {
         handler.removeListener(service);
-        services.remove(service);
-        service.stop();
+        serviceManager.stop(service);
         return this;
     }
 
     public TreeMap<MosaikAddress, Host> hostMap() {
         return hosts.getValue();
+    }
+
+    public Host getHostByAddress(MosaikAddress address) {
+        return hostMap().get(address);
     }
 
     public Collection<Host> getHosts() {
@@ -97,12 +109,8 @@ public class CloudKit {
     }
 
     public CloudKit startService(Service service) {
-        services.add(service);
-        if (service instanceof CloudKitService) {
-            ((CloudKitService) service).initialize(this);
-        }
-        handler.addListener(service);
-        service.start();
+        serviceManager.start(service, () -> handler.addListener(service));
+
         if (service instanceof ConfigProvider) {
             setConfigProvider0((ConfigProvider) service);
         }
@@ -130,22 +138,24 @@ public class CloudKit {
         return this;
     }
 
+    public Collection<Service> getServices() {
+        return serviceManager.getServiceCollection();
+    }
+
     public <S extends Service> S getServiceByClass(Class<S> clazz) {
-        for (Service service : services) {
-            if (service.getClass() == clazz) {
-                return (S) service;
-            }
-        }
-        return null;
+        return serviceManager.getServiceByClass(clazz);
+    }
+
+    public <S extends Service> S requireServiceByClass(Class<S> clazz) {
+        return serviceManager.requireServiceByClass(clazz);
     }
 
     public Service getServiceByName(String name) {
-        for (Service service : services) {
-            if (service.displayName().equals(name)) {
-                return service;
-            }
-        }
-        return null;
+        return serviceManager.getServiceByName(name);
+    }
+
+    public Service requireServiceByName(String name) {
+        return serviceManager.requireServiceByName(name);
     }
 
     public <T> T getConfig(ConfigKey<T> key) {

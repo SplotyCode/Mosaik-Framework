@@ -1,10 +1,10 @@
 package io.github.splotycode.mosaik.networking.loadbalance;
 
+import io.github.splotycode.mosaik.networking.component.INetworkProcess;
 import io.github.splotycode.mosaik.networking.component.template.ComponentTemplate;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
-import io.github.splotycode.mosaik.networking.statistics.Instance;
-import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
 import io.github.splotycode.mosaik.util.collection.RoundRobin;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.netty.channel.Channel;
@@ -37,7 +37,7 @@ public class CPUBalanceStrategy implements LoadBalanceStrategy {
         this.template = template;
     }
 
-    private volatile Iterator<Instance> iterable;
+    private volatile Iterator<INetworkProcess> iterable;
 
     @Override
     public void update(LoadBalancerService service) {
@@ -45,26 +45,26 @@ public class CPUBalanceStrategy implements LoadBalanceStrategy {
         ArrayList<StatisticalHost> hosts = new ArrayList<>();
         for (Host host : service.getKit().getHosts()) {
             if (host instanceof StatisticalHost) {
-                HostStatistics statistics = ((StatisticalHost) host).getStatistics();
-                if (host.isOnline() && statistics.getFreeRam() >= minRam && statistics.hasService(service.getRedirectService())) {
+                HostStatistics statistics = ((StatisticalHost) host).statistics();
+                if (host.isOnline() && statistics.getFreeMemory() >= minRam && statistics.hasService(service.getRedirectService())) {
                     hosts.add((StatisticalHost) host);
                 }
             }
         }
-        /* Sort by CPU and cut of*/
-        hosts.sort(Comparator.comparingDouble(host -> ((StatisticalHost) host).getStatistics().getCpu()).reversed());
+        /* Sort by CPU and cut of */
+        hosts.sort(Comparator.comparingDouble(host -> ((StatisticalHost) host).statistics().getCPULoad()).reversed());
         hosts.subList(Math.min(roundRobinSize, hosts.size()), hosts.size()).clear();
 
         /* Collect instances */
-        ArrayList<Instance> instances = new ArrayList<>();
+        ArrayList<INetworkProcess> instances = new ArrayList<>();
 
         int cap = optimalConnections;
         int lastCap = 0;
         int capIndex = 0;
         while ((capIndex < maxCapIncrease || instances.size() < minInstances) && cap <= maxConnections) {
             for (StatisticalHost host : hosts) {
-                for (Instance instance : host.getStatistics().getConnection(service.getRedirectService())) {
-                    if (instance.getConnections() > lastCap && instance.getConnections() <= cap) {
+                for (INetworkProcess instance : host.statistics().getInstances(service.getRedirectService())) {
+                    if (instance.connectionCount() > lastCap && instance.connectionCount() <= cap) {
                         instances.add(instance);
                     }
                 }
@@ -78,17 +78,17 @@ public class CPUBalanceStrategy implements LoadBalanceStrategy {
     }
 
 
-    private Map<Instance, Channel> channels = new HashMap<>();
+    private Map<INetworkProcess, Channel> channels = new HashMap<>();
 
-    private Channel getChannel(Instance instance) {
-        return channels.computeIfAbsent(instance, dummy -> template.createComponent().address(instance.getHost().address().asSocketAddress(instance.getPort())).bind(true).nettyFuture().channel());
+    private Channel getChannel(INetworkProcess instance) {
+        return channels.computeIfAbsent(instance, dummy -> template.createComponent().address(instance.host().address().asSocketAddress(instance.port())).bind(true).nettyFuture().channel());
     }
 
     @Override
-    public Channel nextServer() {
+    public synchronized Channel nextServer() {
         while (iterable.hasNext()) {
-            Instance instance = iterable.next();
-            if (instance.getHost().isOnline()) {
+            INetworkProcess instance = iterable.next();
+            if (instance.host().isOnline()) {
                 return getChannel(instance);
             }
         }

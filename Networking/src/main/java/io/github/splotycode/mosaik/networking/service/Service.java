@@ -14,4 +14,8 @@ public interface Service extends Listener {
     ServiceStatus getStatus();
     String statusMessage();
 
+    default boolean singleton() {
+        return true;
+    }
+
 }

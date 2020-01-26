@@ -3,12 +3,17 @@ package io.github.splotycode.mosaik.networking.errorhandling;
 import io.github.splotycode.mosaik.networking.packet.handle.PacketTarget;
 import io.github.splotycode.mosaik.networking.packet.handle.SelfAnnotationHandler;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
+import io.github.splotycode.mosaik.util.logger.Logger;
 import io.netty.channel.ChannelHandler;
 import lombok.AllArgsConstructor;
+
+import java.util.function.Consumer;
 
 @ChannelHandler.Sharable
 @AllArgsConstructor
 public class ErrorServerHandler extends SelfAnnotationHandler<SerializedPacket> {
+
+    private static final Logger LOGGER = Logger.getInstance(ErrorServerHandler.class);
 
     private ErrorService service;
 
@@ -24,13 +29,18 @@ public class ErrorServerHandler extends SelfAnnotationHandler<SerializedPacket> 
                 return;
             }
         }
-        /* send information back to the original requester */
-        //TODO
+        service.getMasterService().sendPacket(packet.getRequester(), packet.toEnd());
     }
 
     @PacketTarget
-    public void onBack() {
-        //TODO call callback based on callbackid
+    public void onBack(EndResolvePacket packet) {
+        int callbackId = packet.getCallbackId();
+        Consumer<ReportedError> callback = service.getCallBacks().remove(callbackId);
+        if (callback == null) {
+            LOGGER.warn("Could not find callback with id " + callbackId);
+        } else {
+            callback.accept(packet);
+        }
     }
 
 }

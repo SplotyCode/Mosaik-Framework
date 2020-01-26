@@ -1,9 +1,11 @@
-package io.github.splotycode.mosaik.networking.statistics;
+package io.github.splotycode.mosaik.networking.statistics.network;
 
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.master.host.RemoteMasterHost;
 import io.github.splotycode.mosaik.networking.master.packets.UpdateSlavesPacket;
+import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
 import io.netty.channel.Channel;
@@ -24,7 +26,7 @@ public class UpdateSlavesTask extends RepeatableTask {
         HashMap<MosaikAddress, HostStatistics> statistics = new HashMap<>();
         for (Host host : service.cloudKit().getHosts()) {
             if (host instanceof StatisticalHost) {
-                HostStatistics stats = ((StatisticalHost) host).getStatistics();
+                HostStatistics stats = ((StatisticalHost) host).statistics();
                 if (stats != null) {
                     statistics.put(host.address(), stats);
                 }
