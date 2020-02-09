@@ -1,20 +1,21 @@
 package io.github.splotycode.mosaik.networking.master.host;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
-import io.github.splotycode.mosaik.networking.cloudkit.HostProvider;
 import io.github.splotycode.mosaik.networking.config.ConfigKey;
 import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
 import io.github.splotycode.mosaik.networking.healthcheck.PingingHealthCheck;
 import io.github.splotycode.mosaik.networking.host.AddressChangeListener;
+import io.github.splotycode.mosaik.networking.host.HostProvider;
 import io.github.splotycode.mosaik.networking.master.MasterService;
 import io.github.splotycode.mosaik.networking.master.packets.DirectContactPacket;
 import io.github.splotycode.mosaik.networking.master.packets.StartInstancePacket;
 import io.github.splotycode.mosaik.networking.master.packets.StopInstancePacket;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.service.Service;
-import io.github.splotycode.mosaik.networking.statistics.remote.RemoveHostStatistics;
+import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
+import io.github.splotycode.mosaik.networking.statistics.component.AbstractStatisticalHost;
+import io.github.splotycode.mosaik.networking.statistics.remote.RemoteHostStatistics;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
-import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 import io.github.splotycode.mosaik.util.listener.MultipleListenerHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -23,7 +24,7 @@ import lombok.Setter;
 
 import java.util.function.Consumer;
 
-public class RemoteMasterHost implements MasterHost {
+public class RemoteMasterHost extends AbstractStatisticalHost implements MasterHost {
 
     public static final HostProvider PROVIDER = RemoteMasterHost::new;
 
@@ -36,16 +37,15 @@ public class RemoteMasterHost implements MasterHost {
 
     private MosaikAddress address;
 
-    @Getter private long lastUpdate;
     private MasterHealthCheck healthCheck = new MasterHealthCheck();
     private PingingHealthCheck backupHealthCheck;
-    @Getter private RemoveHostStatistics statistics;
 
     @Setter @Getter private Channel channel;
 
     public RemoteMasterHost(CloudKit cloudKit, String address) {
         this.cloudKit = cloudKit;
         backupHealthCheck = new PingingHealthCheck(null, cloudKit.getConfig(HEALTH_THRESHOLD).intValue());
+        tryInitialize();
         changeAddress(address);
     }
 
@@ -53,18 +53,15 @@ public class RemoteMasterHost implements MasterHost {
         MosaikAddress address = new MosaikAddress(rawAddress);
         handler.call(AddressChangeListener.class, (Consumer<AddressChangeListener>) listener -> listener.onChange(this.address, address));
         this.address = address;
-        backupHealthCheck.setAddress(address.asSocketAddress(cloudKit.getServiceByClass(MasterService.class).getPort()));
+
+        if (masterService != null) {
+            backupHealthCheck.setAddress(address.asSocketAddress(masterService.getPort()));
+        }
     }
 
     @Override
     public String toString() {
-        return "External-" + address().asString();
-    }
-
-    @Override
-    public void update(RemoveHostStatistics statistics) {
-       this.statistics = statistics;
-       lastUpdate = System.currentTimeMillis();
+        return "Remote-" + address().asString();
     }
 
     @Override
@@ -84,18 +81,21 @@ public class RemoteMasterHost implements MasterHost {
 
     @Override
     public void sendPacket(SerializedPacket packet) {
-        if (channel == null || !channel.isOpen()) {
-            masterService().sendMaster(new DirectContactPacket(packet, masterService(), address()));
-        } else {
+        if (hasConnection()) {
             channel.writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+        } else {
+            masterService.sendMaster(new DirectContactPacket(packet, masterService, address()));
         }
     }
 
-    protected MasterService masterService() {
-        if (masterService == null) {
-            masterService = cloudKit.getServiceByClass(MasterService.class);
-        }
-        return masterService;
+    protected boolean hasConnection() {
+        return channel != null && channel.isOpen();
+    }
+
+    @Override
+    public void initialize(MasterService masterService) {
+        this.masterService = masterService;
+        backupHealthCheck.setAddress(address.asSocketAddress(masterService.getPort()));
     }
 
     @Override
@@ -103,15 +103,26 @@ public class RemoteMasterHost implements MasterHost {
         return cloudKit;
     }
 
+    public long getLastUpdate() {
+        return statistics().lastUpdate();
+    }
+
+    @Override
+    public HostStatistics createStatistics() {
+        return new RemoteHostStatistics(this, cloudKit());
+    }
+
     private class MasterHealthCheck implements HealthCheck {
 
         @Override
         public boolean isOnline() {
-            if (lastUpdate == 0) {
+            long lastUpdate = getLastUpdate();
+            long delay = System.currentTimeMillis() - lastUpdate;
+            boolean online = delay <= cloudKit.getConfig(HEALTH_THRESHOLD) + cloudKit.getConfig(MasterService.DAEMON_STATS_DELAY);
+            if (lastUpdate == 0 || !online) {
                 return backupHealthCheck.isOnline();
             }
-            long delay = System.currentTimeMillis() - lastUpdate;
-            return delay <= cloudKit.getConfig(HEALTH_THRESHOLD) + cloudKit.getConfig(MasterService.DAEMON_STATS_DELAY);
+            return true;
         }
     }
 

@@ -1,8 +1,7 @@
 package io.github.splotycode.mosaik.networking.master.host;
 
 import io.github.splotycode.mosaik.networking.cloudkit.CloudKit;
-import io.github.splotycode.mosaik.networking.cloudkit.SelfHostProvider;
-import io.github.splotycode.mosaik.networking.config.ConfigKey;
+import io.github.splotycode.mosaik.networking.host.SelfHostProvider;
 import io.github.splotycode.mosaik.networking.healthcheck.HealthCheck;
 import io.github.splotycode.mosaik.networking.healthcheck.StaticHealthCheck;
 import io.github.splotycode.mosaik.networking.master.MasterService;
@@ -12,11 +11,8 @@ import io.github.splotycode.mosaik.networking.service.Service;
 import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
 import io.github.splotycode.mosaik.networking.statistics.component.AbstractStatisticalHost;
 import io.github.splotycode.mosaik.networking.statistics.local.LocalHostStatistics;
-import io.github.splotycode.mosaik.networking.statistics.remote.RemoveHostStatistics;
 import io.github.splotycode.mosaik.networking.util.IpResolver;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
-import io.github.splotycode.mosaik.util.cache.Cache;
-import io.github.splotycode.mosaik.util.cache.DefaultCaches;
 import io.github.splotycode.mosaik.util.listener.DummyListenerHandler;
 import io.github.splotycode.mosaik.util.listener.ListenerHandler;
 
@@ -25,50 +21,18 @@ public class MasterSelfHost extends AbstractStatisticalHost implements MasterHos
     public static final SelfHostProvider PROVIDER = MasterSelfHost::new;
 
     private IpResolver resolver;
-    private Cache<RemoveHostStatistics> statistic;
     private CloudKit cloudKit;
-    private RemoveHostStatistics set;
     private MasterService masterService;
 
     public MasterSelfHost(CloudKit cloudKit) {
         this.cloudKit = cloudKit;
         resolver = cloudKit.getLocalIpResolver();
-    }
-
-    protected MasterService masterService() {
-        if (masterService == null) {
-            masterService = cloudKit.getServiceByClass(MasterService.class);
-        }
-        return masterService;
+        tryInitialize();
     }
 
     @Override
     public String toString() {
         return "Local-" + address().asString();
-    }
-
-    @Override
-    public void update(RemoveHostStatistics statistics) {
-        if (this.statistic == null) {
-            set = statistics;
-        } else {
-            this.statistic.setValue(statistics);
-        }
-    }
-
-    private void createCache() {
-        if (statistic == null) {
-            statistic = DefaultCaches.getTimeCache(cache -> RemoveHostStatistics.current(cloudKit), cloudKit.getConfig(CACHE_TIME));
-            if (set != null) {
-                statistic.setValue(set);
-            }
-        }
-    }
-
-    @Override
-    public RemoveHostStatistics getStatistics() {
-        createCache();
-        return statistic.getValue();
     }
 
     @Override
@@ -103,7 +67,13 @@ public class MasterSelfHost extends AbstractStatisticalHost implements MasterHos
 
     @Override
     public void sendPacket(SerializedPacket packet) {
-        masterService().sendSelf(packet);
+        assert masterService != null : "MasterService not ready";
+        masterService.sendSelf(packet);
+    }
+
+    @Override
+    public void initialize(MasterService masterService) {
+        this.masterService = masterService;
     }
 
     @Override

@@ -8,6 +8,8 @@ import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHo
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 public class CloudStatistics {
@@ -56,14 +58,54 @@ public class CloudStatistics {
         return minimum;
     }
 
-    public int getTotalInstances(Service service) {
-        int totalinstances = 0;
+    public Set<String> getAllServices() {
+        Set<String> serviceNames = new HashSet<>();
         for (Host host : kit.getHosts()) {
             if (host instanceof StatisticalHost) {
-                totalinstances += ((StatisticalHost) host).statistics().totalInstances(service);
+                serviceNames.addAll(((StatisticalHost) host).statistics().getServices());
             }
         }
-        return totalinstances;
+        return serviceNames;
+    }
+
+    public int getTotalInstances(Service service) {
+        int totalInstances = 0;
+        for (Host host : kit.getHosts()) {
+            if (host instanceof StatisticalHost) {
+                totalInstances += ((StatisticalHost) host).statistics().totalInstances(service);
+            }
+        }
+        return totalInstances;
+    }
+
+    public int getTotalInstances(String service) {
+        int totalInstances = 0;
+        for (Host host : kit.getHosts()) {
+            if (host instanceof StatisticalHost) {
+                totalInstances += ((StatisticalHost) host).statistics().totalInstances(service);
+            }
+        }
+        return totalInstances;
+    }
+
+    public int getTotalConnections(Service service) {
+        int totalConnections = 0;
+        for (Host host : kit.getHosts()) {
+            if (host instanceof StatisticalHost) {
+                totalConnections += ((StatisticalHost) host).statistics().totalConnections(service);
+            }
+        }
+        return totalConnections;
+    }
+
+    public int getTotalConnections(String service) {
+        int totalConnections = 0;
+        for (Host host : kit.getHosts()) {
+            if (host instanceof StatisticalHost) {
+                totalConnections += ((StatisticalHost) host).statistics().totalConnections(service);
+            }
+        }
+        return totalConnections;
     }
 
 }

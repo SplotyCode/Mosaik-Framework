@@ -76,6 +76,12 @@ public class MasterService extends StatisticalCloudKitService implements SingleC
     protected void initialize(CloudKit cloudKit) {
         super.initialize(cloudKit);
         clientHandler = new MasterClientHandler(cloudKit);
+
+        cloudKit.getHosts().forEach(host -> {
+            if (host instanceof MasterHost) {
+                ((MasterHost) host).initialize(this);
+            }
+        });
     }
 
     class MasterTask extends RepeatableTask {
@@ -122,12 +128,14 @@ public class MasterService extends StatisticalCloudKitService implements SingleC
 
             currentBest = best;
 
-            for (Map.Entry<MosaikAddress, Host> root : cloudKit.hostMap().entrySet()) {
-                if (root.getKey().hashCode() > currentBest.hashCode() &&
-                        root != cloudKit.getSelfHost() &&
-                        root.getValue().healthCheck().isOnline()) {
-                    logger.info("Sending Destroy packet to " + root.getKey());
-                    destroyMaster(root.getKey());
+            for (Map.Entry<MosaikAddress, Host> entry : cloudKit.hostMap().entrySet()) {
+                MosaikAddress address = entry.getKey();
+                Host host = entry.getValue();
+                if (address.hashCode() > currentBest.hashCode() &&
+                        host != cloudKit.getSelfHost() &&
+                        host.healthCheck().isOnline()) {
+                    logger.info("Sending Destroy packet to " + address);
+                    destroyMaster(address);
                 }
             }
         } else {

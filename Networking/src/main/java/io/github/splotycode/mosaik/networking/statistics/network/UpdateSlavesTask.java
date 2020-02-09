@@ -9,6 +9,7 @@ import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHo
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
 import io.github.splotycode.mosaik.util.task.types.RepeatableTask;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 
 import java.util.HashMap;
 
@@ -21,6 +22,7 @@ public class UpdateSlavesTask extends RepeatableTask {
         this.service = service;
     }
 
+    //TODO this method can be improved when the packet rework is finished
     @Override
     public void run() {
         HashMap<MosaikAddress, HostStatistics> statistics = new HashMap<>();
@@ -37,7 +39,7 @@ public class UpdateSlavesTask extends RepeatableTask {
                 Channel channel = ((RemoteMasterHost) host).getChannel();
                 if (channel != null) {
                     HostStatistics stats = statistics.remove(host.address());
-                    channel.writeAndFlush(new UpdateSlavesPacket(statistics));
+                    channel.writeAndFlush(new UpdateSlavesPacket(new HashMap<>(statistics))).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
                     if (stats != null) {
                         statistics.put(host.address(), stats);
                     }

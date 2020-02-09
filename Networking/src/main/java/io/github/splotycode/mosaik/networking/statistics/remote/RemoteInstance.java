@@ -73,8 +73,8 @@ public class RemoteInstance extends AbstractStatefulProcess {
     }
 
     @Override
-    public RemoveHostStatistics hostStatistics() {
-        return (RemoveHostStatistics) host.statistics();
+    public RemoteHostStatistics hostStatistics() {
+        return (RemoteHostStatistics) host.statistics();
     }
 
 }

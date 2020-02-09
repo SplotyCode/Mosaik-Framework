@@ -7,7 +7,6 @@ import io.github.splotycode.mosaik.networking.packet.handle.PacketTarget;
 import io.github.splotycode.mosaik.networking.packet.handle.SelfAnnotationHandler;
 import io.github.splotycode.mosaik.networking.packet.serialized.PacketSerializer;
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
-import io.github.splotycode.mosaik.networking.statistics.HostStatisticListener;
 import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
 import io.github.splotycode.mosaik.networking.statistics.network.UpdateLocalStatisticsTask;
 import io.github.splotycode.mosaik.networking.util.MosaikAddress;
@@ -39,7 +38,6 @@ public class MasterClientHandler extends SelfAnnotationHandler<SerializedPacket>
                 if (rHost instanceof StatisticalHost) {
                     StatisticalHost host = (StatisticalHost) rHost;
                     host.statistics().read(serializer);
-                    kit.getHandler().call(HostStatisticListener.class, listener -> listener.update(host));
                 } else if (rHost == null) {
                     throw new IllegalStateException("Could not find host " + address + " present hosts: " + kit.hostMap());
                 } else {

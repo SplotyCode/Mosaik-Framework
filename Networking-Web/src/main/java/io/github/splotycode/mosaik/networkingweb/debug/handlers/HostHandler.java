@@ -3,7 +3,7 @@ package io.github.splotycode.mosaik.networkingweb.debug.handlers;
 import io.github.splotycode.mosaik.annotations.visibility.Invisible;
 import io.github.splotycode.mosaik.networking.host.Host;
 import io.github.splotycode.mosaik.networking.statistics.HostStatistics;
-import io.github.splotycode.mosaik.networking.statistics.StatisticalHost;
+import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHost;
 import io.github.splotycode.mosaik.networkingweb.debug.DebugService;
 import io.github.splotycode.mosaik.networkingweb.localdebug.LocalDebugService;
 import io.github.splotycode.mosaik.util.Pair;
@@ -28,21 +28,13 @@ public class HostHandler {
         int debugPort = service.cloudKit().getConfig(LocalDebugService.PORT);
 
         ManipulateableContent content =  service.getUnpackingHelper().response("hosts.html");
-        for (Host host : service.cloudKit().hostMap().values()) {
-            String cpu = "-";
-            String freeRam = "-";
-            if (host instanceof StatisticalHost) {
-                HostStatistics statistics = ((StatisticalHost) host).getStatistics();
-                if (statistics != null) {
-                    cpu = CPU_FORMAT.format(statistics.getCpu());
-                    freeRam = StringUtil.humanReadableBytes(statistics.getFreeRam());
-                }
-            }
+        for (Host host : service.cloudKit().getHosts()) {
+            HostStatistics statistics = host instanceof StatisticalHost ? ((StatisticalHost) host).statistics() : null;
             content.manipulate().patternCostomName("hosts",
                     new Pair<>("address", host.address()),
                     new Pair<>("debugPort", debugPort),
-                    new Pair<>("cpu", cpu),
-                    new Pair<>("freeRam", freeRam));
+                    new Pair<>("cpu", statistics == null ? "-" : CPU_FORMAT.format(statistics.getCPULoad() * 100)),
+                    new Pair<>("freeRam", statistics == null ? "-" : StringUtil.humanReadableBytes(statistics.getFreeMemory())));
         }
         return content;
     }

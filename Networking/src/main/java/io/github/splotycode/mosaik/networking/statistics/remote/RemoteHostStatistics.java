@@ -11,12 +11,17 @@ import io.github.splotycode.mosaik.networking.statistics.component.StatisticalHo
 import io.github.splotycode.mosaik.util.cache.Cache;
 import io.github.splotycode.mosaik.util.cache.LazyLoad;
 import io.github.splotycode.mosaik.util.collection.LevelIterable;
+import io.github.splotycode.mosaik.util.logger.Logger;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.*;
 import java.util.function.Consumer;
 
-public class RemoveHostStatistics extends AbstractRemoteStatistics implements HostStatistics {
+@EqualsAndHashCode(callSuper = true)
+public class RemoteHostStatistics extends AbstractRemoteStatistics implements HostStatistics {
+
+    private static final Logger LOGGER = Logger.getInstance(RemoteHostStatistics.class);
 
     @Getter private StatisticalHost host;
     private CloudKit cloudKit;
@@ -52,7 +57,7 @@ public class RemoveHostStatistics extends AbstractRemoteStatistics implements Ho
         }
     };
 
-    public RemoveHostStatistics(StatisticalHost host, CloudKit cloudKit) {
+    public RemoteHostStatistics(StatisticalHost host, CloudKit cloudKit) {
         this.host = host;
         this.cloudKit = cloudKit;
     }
@@ -181,6 +186,17 @@ public class RemoveHostStatistics extends AbstractRemoteStatistics implements Ho
 
         super.triggerUpdate();
 
+        LOGGER.debug("Updated host " + host.address() + ": " + this);
+
         cloudKit.getHandler().call(HostStatisticListener.class, listener -> listener.update(host));
+    }
+
+    @Override
+    public String toString() {
+        return "RemoteHostStatistics{" +
+                "cpu=" + cpu +
+                ", freeRam=" + freeRam +
+                ", services=" + getServices() +
+                '}';
     }
 }

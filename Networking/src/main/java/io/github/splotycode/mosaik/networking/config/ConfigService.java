@@ -10,6 +10,7 @@ import io.github.splotycode.mosaik.networking.packet.handle.AnnotationContentHan
 import io.github.splotycode.mosaik.networking.packet.serialized.SerializedPacket;
 import io.github.splotycode.mosaik.networking.packet.system.DefaultPacketSystem;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
+import io.github.splotycode.mosaik.networking.statistics.ServiceStatistics;
 import io.github.splotycode.mosaik.networking.statistics.component.SingleComponentService;
 import io.github.splotycode.mosaik.util.listener.Listener;
 import io.netty.channel.Channel;
@@ -28,6 +29,7 @@ public class ConfigService extends StaticConfigProvider implements SingleCompone
     private int port;
     private String serverAddress;
 
+    private volatile ServiceStatistics statistics;
     private CloudKit kit;
 
     public ConfigService(File file, boolean keepAlive, int port, String serverAddress, CloudKit kit) {
@@ -91,5 +93,17 @@ public class ConfigService extends StaticConfigProvider implements SingleCompone
     @Override
     public NetworkComponent component() {
         return serverAddress == null ? server : client;
+    }
+
+    @Override
+    public ServiceStatistics statistics() {
+        if (statistics == null) {
+            synchronized (this) {
+                if (statistics == null) {
+                    statistics = createStatistics();
+                }
+            }
+        }
+        return statistics;
     }
 }

@@ -1,16 +1,16 @@
 package io.github.splotycode.mosaik.service;
 
-import io.github.splotycode.mosaik.networking.cloudkit.CloudKitService;
+import io.github.splotycode.mosaik.networking.cloudkit.StatisticalCloudKitService;
 import io.github.splotycode.mosaik.networking.component.INetworkProcess;
 import io.github.splotycode.mosaik.networking.service.ServiceStatus;
-import io.github.splotycode.mosaik.networking.statistics.SingleComponentService;
+import io.github.splotycode.mosaik.networking.statistics.component.SingleComponentService;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
 import lombok.NoArgsConstructor;
 
 import java.util.function.Supplier;
 
 @NoArgsConstructor
-public class SingleWebService extends CloudKitService implements SingleComponentService {
+public class SingleWebService extends StatisticalCloudKitService implements SingleComponentService {
 
     protected WebProcess process;
     private Supplier<WebServer> factory;
