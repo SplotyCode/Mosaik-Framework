@@ -16,6 +16,6 @@ public class CommentReader implements DomReader<KeyValueParser> {
         }
     }
 
-    @Override public void parseDone() {}
+    @Override public void parseDone(KeyValueParser parser) {}
 
 }

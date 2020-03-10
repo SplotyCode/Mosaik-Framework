@@ -62,7 +62,7 @@ public class KeyReader implements DomReader<KeyValueParser> {
     }
 
     @Override
-    public void parseDone() {
+    public void parseDone(KeyValueParser parser) {
         if (state != BEFORE_NAME) throw new DomParseException("Unexpected EOF");
     }
 

@@ -6,6 +6,7 @@ import io.github.splotycode.mosaik.domparsing.parsing.input.DomInput;
 import io.github.splotycode.mosaik.domparsing.writing.DomWriter;
 
 public class JsonHandle implements ParsingHandle {
+
     @Override
     public String[] getFileTypes() {
         return new String[] {"json"};
@@ -18,11 +19,12 @@ public class JsonHandle implements ParsingHandle {
 
     @Override
     public DomParser getParser(DomInput input) {
-        return null;
+        return new JsonParser();
     }
 
     @Override
     public DomWriter getWriter() {
-        return null;
+        throw new UnsupportedOperationException();
     }
+
 }
