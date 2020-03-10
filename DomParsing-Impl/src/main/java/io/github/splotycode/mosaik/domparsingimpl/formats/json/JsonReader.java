@@ -12,7 +12,6 @@ import java.util.Stack;
  *  - Support arrays
  *  - Support null and numbers (also 2e2)
  *  - Support arrays without document
- *  - Support objects in objects
  *  - Support string: hex and escape
  */
 public class JsonReader implements DomReader<JsonParser> {
@@ -20,7 +19,7 @@ public class JsonReader implements DomReader<JsonParser> {
     private Stack<DefaultDocumentSectionNode> openNodes = new Stack<>();
     private DefaultIdentifierNode currentIdentifier;
 
-    private Status status = Status.PRE_DOC;
+    private Status status;
 
     private int marker;
 
@@ -32,7 +31,8 @@ public class JsonReader implements DomReader<JsonParser> {
         POST_KEY,
         PRE_VALUE,
         VALUE,
-        POST_VALUE
+        POST_VALUE,
+        END
 
     }
 
@@ -42,12 +42,6 @@ public class JsonReader implements DomReader<JsonParser> {
             case PRE_DOC:
                 if (c == '{') {
                     status = Status.PRE_KEY;
-                    int open = openNodes.size();
-                    if (open > 1) {
-                        openNodes.push(new DefaultDocumentSectionNode());
-                    } else if (open == 0) {
-                        throw new IllegalStateException("Main Object already created");
-                    }
                 } else if (!Character.isWhitespace(c)) {
                     throw new IllegalStateException("Expected openNodes start ('{')");
                 }
@@ -79,6 +73,11 @@ public class JsonReader implements DomReader<JsonParser> {
                 if (c == '"') {
                     status = Status.VALUE;
                     marker = parser.getIndex() + 1;
+                }  else if (c == '{') {
+                    DefaultDocumentSectionNode section = new DefaultDocumentSectionNode();
+                    currentIdentifier.addChild(section);
+                    openNodes.push(section);
+                    status = Status.PRE_KEY;
                 } else if (!Character.isWhitespace(c)) {
                     throw new IllegalStateException("Expected identifier start ('\"')");
                 }
@@ -86,7 +85,7 @@ public class JsonReader implements DomReader<JsonParser> {
             case VALUE:
                 if (c == '"') {
                     String value = parser.getContent().substring(marker, parser.getIndex());
-                    currentIdentifier.getChildes().add(new StringValueNode(value));
+                    currentIdentifier.addChild(new StringValueNode(value));
                     status = Status.POST_VALUE;
                 }
                 break;
@@ -94,14 +93,23 @@ public class JsonReader implements DomReader<JsonParser> {
                 if (c == ',') {
                     status = Status.PRE_KEY;
                 } else if (c == '}') {
-                    status = Status.PRE_DOC;
+                    int nodeSize = openNodes.size();
+                    if (nodeSize == 1) {
+                        status = Status.END;
+                    }
                     if (openNodes.size() == 0) {
                         throw new IllegalStateException("No Document to close");
                     }
                     openNodes.pop();
                 }  else if (!Character.isWhitespace(c)) {
-                    throw new IllegalStateException("Expected openNodes end ('}') or ,");
+                    throw new IllegalStateException("Expected document end ('}') or , got " + c);
                 }
+                break;
+            case END:
+                if (!Character.isWhitespace(c)) {
+                    throw new IllegalStateException("Main object is closed");
+                }
+                break;
         }
     }
 
@@ -112,9 +120,9 @@ public class JsonReader implements DomReader<JsonParser> {
             message = " " + openNodes.size() + " Objects are not closed";
             openNodes.clear();
         }
-        if (status != Status.PRE_DOC) {
+
+        if (status != Status.END) {
             String finalMsg = "Unexpected end of document (status: " + status + ")";
-            status = Status.PRE_DOC;
             if (message != null) {
                 finalMsg += message;
             }
@@ -126,5 +134,7 @@ public class JsonReader implements DomReader<JsonParser> {
     public void parseInit(JsonParser parser) {
         DefaultDocument document = parser.getDocument();
         openNodes.push(document);
+
+        status = Status.PRE_DOC;
     }
 }
