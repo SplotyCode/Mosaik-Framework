@@ -59,6 +59,10 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
     public O parse(DomInput input) {
         setContent(input);
 
+        for (DomReader<R> reader : getReaders()) {
+            reader.parseInit(self());
+        }
+
         while (index < content.length()) {
             char c = content.charAt(index);
             if (isLocked()) {
@@ -81,8 +85,8 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
                 index++;
             }
         }
-        for (DomReader<?> reader : getReaders()) {
-            reader.parseDone();
+        for (DomReader<R> reader : getReaders()) {
+            reader.parseDone(self());
         }
         return getResult();
     }
@@ -126,6 +130,18 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
     @Override
     public boolean skipIfFollow(String next) {
         return skipIfFollow(content, false);
+    }
+
+    @Override
+    public boolean skipIfFollow(char next) {
+        if (content.length() < index + 1 || content.charAt(index + 1) != next) {
+            return false;
+        }
+        index++;
+        if (next == '\n') {
+            line++;
+        }
+        return false;
     }
 
     protected boolean skipIfFollow(String next, boolean ignoreCase) {

@@ -4,6 +4,7 @@ public interface DomReader<T extends DomParser> {
 
     void readNext(char c, T parser) throws RuntimeException;
 
-    void parseDone();
+    void parseDone(T parser);
+    default void parseInit(T parser) {}
 
 }

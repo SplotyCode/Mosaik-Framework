@@ -22,6 +22,7 @@ public interface DomParser<O extends Document, R extends DomParser> {
 
     void skip(int i);
     void skip();
+    boolean skipIfFollow(char next);
     boolean skipIfFollow(String next);
     boolean skipIfFollowIgnoreCase(String text);
 
