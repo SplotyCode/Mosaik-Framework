@@ -7,6 +7,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class BooleanValueNode implements ValueNode {
 
+    public static final BooleanValueNode TRUE = new BooleanValueNode(true);
+    public static final BooleanValueNode FALSE = new BooleanValueNode(false);
+
     private boolean value;
 
     @Override

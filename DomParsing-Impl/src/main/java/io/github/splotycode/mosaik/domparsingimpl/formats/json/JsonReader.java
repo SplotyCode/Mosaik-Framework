@@ -1,27 +1,36 @@
 package io.github.splotycode.mosaik.domparsingimpl.formats.json;
 
+import io.github.splotycode.mosaik.domparsing.dom.value.BooleanValueNode;
+import io.github.splotycode.mosaik.domparsing.dom.value.NullValueNode;
 import io.github.splotycode.mosaik.domparsing.dom.value.StringValueNode;
 import io.github.splotycode.mosaik.domparsing.parsing.DomReader;
 import io.github.splotycode.mosaik.domparsingimpl.dom.DefaultDocument;
 import io.github.splotycode.mosaik.domparsingimpl.dom.DefaultDocumentSectionNode;
 import io.github.splotycode.mosaik.domparsingimpl.dom.DefaultIdentifierNode;
 
+import java.math.BigInteger;
 import java.util.Stack;
 
 /** TODO:
  *  - Support arrays
- *  - Support null and numbers (also 2e2)
+ *  - Support numbers (also 2e2)
  *  - Support arrays without document
- *  - Support string: hex and escape
  */
 public class JsonReader implements DomReader<JsonParser> {
 
     private Stack<DefaultDocumentSectionNode> openNodes = new Stack<>();
     private DefaultIdentifierNode currentIdentifier;
 
+    private boolean definitelyValid;
+
+    public JsonReader(boolean definitelyValid) {
+        this.definitelyValid = definitelyValid;
+    }
+
     private Status status;
 
     private int marker;
+    private StringBuilder valueCapture = new StringBuilder();
 
     private enum Status {
 
@@ -31,6 +40,7 @@ public class JsonReader implements DomReader<JsonParser> {
         POST_KEY,
         PRE_VALUE,
         VALUE,
+        VALUE_ESCAPE,
         POST_VALUE,
         END
 
@@ -70,24 +80,89 @@ public class JsonReader implements DomReader<JsonParser> {
                 }
                 break;
             case PRE_VALUE:
-                if (c == '"') {
-                    status = Status.VALUE;
-                    marker = parser.getIndex() + 1;
-                }  else if (c == '{') {
-                    DefaultDocumentSectionNode section = new DefaultDocumentSectionNode();
-                    currentIdentifier.addChild(section);
-                    openNodes.push(section);
-                    status = Status.PRE_KEY;
-                } else if (!Character.isWhitespace(c)) {
-                    throw new IllegalStateException("Expected identifier start ('\"')");
+                switch (c) {
+                    case '"':
+                        status = Status.VALUE;
+                        marker = parser.getIndex() + 1;
+                        break;
+                    case '{':
+                        DefaultDocumentSectionNode section = new DefaultDocumentSectionNode();
+                        currentIdentifier.addChild(section);
+                        openNodes.push(section);
+                        status = Status.PRE_KEY;
+                        break;
+                    case 'n':
+                        if (mightCheckKeyword("ull", parser)) {
+                            throw new IllegalStateException("Expected null");
+                        }
+                        currentIdentifier.addChild(NullValueNode.INSTANCE);
+                        status = Status.POST_VALUE;
+                        break;
+                    case 't':
+                        if (mightCheckKeyword("rue", parser)) {
+                            throw new IllegalStateException("Expected true");
+                        }
+                        currentIdentifier.addChild(BooleanValueNode.TRUE);
+                        status = Status.POST_VALUE;
+                        break;
+                    case 'f':
+                        if (mightCheckKeyword("alse", parser)) {
+                            throw new IllegalStateException("Expected false");
+                        }
+                        currentIdentifier.addChild(BooleanValueNode.FALSE);
+                        status = Status.POST_VALUE;
+                        break;
+                    default:
+                        if (!Character.isWhitespace(c)) {
+                            throw new IllegalStateException("Expected identifier start ('\"')");
+                        }
+                        break;
                 }
                 break;
             case VALUE:
                 if (c == '"') {
-                    String value = parser.getContent().substring(marker, parser.getIndex());
+                    valueCapture.append(parser.getContent(), marker, parser.getIndex());
+                    String value = valueCapture.toString();
+                    valueCapture.setLength(0);
                     currentIdentifier.addChild(new StringValueNode(value));
                     status = Status.POST_VALUE;
+                } else if (c == '\\') {
+                    valueCapture.append(parser.getContent(), marker, parser.getIndex());
+                    status = Status.VALUE_ESCAPE;
                 }
+                break;
+            case VALUE_ESCAPE:
+                switch (c) {
+                    case '"':
+                    case '\\':
+                    case '/':
+                        valueCapture.append(c);
+                        break;
+                    case 'b':
+                        valueCapture.append('\b');
+                        break;
+                    case 'f':
+                        valueCapture.append('\f');
+                        break;
+                    case 'n':
+                        valueCapture.append('\n');
+                        break;
+                    case 'r':
+                        valueCapture.append('\r');
+                        break;
+                    case 't':
+                        valueCapture.append('\t');
+                        break;
+                    case 'u':
+                        String unicode = parser.getContent().substring(parser.getIndex() + 1, parser.getIndex() + 5);
+                        parser.skip(4);
+                        valueCapture.append((char) new BigInteger(unicode, 16).intValue());
+                        break;
+                    default:
+                        throw new IllegalStateException("Invalid character after escape: " + c);
+                }
+                marker = parser.getIndex() + 1;
+                status = Status.VALUE;
                 break;
             case POST_VALUE:
                 if (c == ',') {
@@ -113,6 +188,16 @@ public class JsonReader implements DomReader<JsonParser> {
         }
     }
 
+    private boolean mightCheckKeyword(String keyword, JsonParser parser) {
+        if (definitelyValid) {
+            parser.skip(keyword.length());
+            return false;
+        }
+
+        parser.skip();
+        return !parser.skipIfFollow(keyword);
+    }
+
     @Override
     public void parseDone(JsonParser parser) {
         String message = null;
@@ -132,6 +217,9 @@ public class JsonReader implements DomReader<JsonParser> {
 
     @Override
     public void parseInit(JsonParser parser) {
+        /* This is the only reader so we can save performance */
+        parser.setLocked(this);
+
         DefaultDocument document = parser.getDocument();
         openNodes.push(document);
 

@@ -10,7 +10,11 @@ public class JsonParser extends DefaultStringDomParser<DefaultDocument, JsonPars
     private DefaultDocument document = new DefaultDocument();
 
     public JsonParser() {
-        setReaders(new JsonReader());
+        this(false);
+    }
+
+    public JsonParser(boolean definitelyValid) {
+        setReaders(new JsonReader(definitelyValid));
     }
 
     @Override

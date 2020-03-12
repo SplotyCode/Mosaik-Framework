@@ -118,18 +118,21 @@ public abstract class DefaultStringDomParser<O extends Document, R extends DomPa
 
     @Override
     public void skip(int i) {
-        line += content.substring(index, index + i).split("\r\n|\r|\n").length;
+        line += StringUtil.countMatches(content.substring(index, index + i), '\n');
         index += i;
     }
 
     @Override
     public void skip() {
-        skip(1);
+        if (content.charAt(index) == '\n') {
+            line++;
+        }
+        index++;
     }
 
     @Override
     public boolean skipIfFollow(String next) {
-        return skipIfFollow(content, false);
+        return skipIfFollow(next, false);
     }
 
     @Override
