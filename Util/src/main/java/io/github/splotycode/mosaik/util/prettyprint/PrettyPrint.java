@@ -1,35 +1,62 @@
 package io.github.splotycode.mosaik.util.prettyprint;
 
+import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
+
 import java.io.File;
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.util.*;
 
 public class PrettyPrint {
 
+    public static void prettyPrint(Object object) {
+        prettyPrint(System.out, object);
+    }
+
+    private static void prettyPrint(PrintStream printStream, Object object) {
+        printStream.println(new PrettyPrint(object).prettyPrint());
+    }
+
+    public static void prettyPrintType(Object object) {
+        prettyPrintType(System.out, object);
+    }
+
+    private static void prettyPrintType(PrintStream printStream, Object object) {
+        printStream.println(new PrettyPrint(object).prettyPrintType());
+    }
+
     private Object object;
     private String prefix;
+    private int maxRecursion;
+    private int startStackDepth;
 
     public PrettyPrint(Object object) {
         this(object, "");
     }
 
     public PrettyPrint(Object object, String prefix) {
+        this(object, prefix, 120);
+    }
+
+    public PrettyPrint(Object object, String prefix, int maxRecursion) {
         this.object = object;
         this.prefix = prefix;
+        this.maxRecursion = maxRecursion;
     }
 
     public String prettyPrint() {
+        start();
         return prettyPrint(0);
     }
 
     public String prettyPrintType() {
-        try {
-            return getValue(object, 0);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
+        start();
+        return getValue(object, 0);
+    }
+
+    private void start() {
+        startStackDepth = Thread.currentThread().getStackTrace().length - 1;
     }
 
     private String prettyPrint(int tab) {
@@ -37,39 +64,47 @@ public class PrettyPrint {
         StringBuilder builder = new StringBuilder();
         builder.append(object.getClass().getSimpleName());
         builder.append("[\n").append(prefix);
-        if (object.getClass().isAnnotationPresent(IgnorePrint.class)) builder.append("Print Disabled");
-        else {
-            for (Field field : getFields(object.getClass())) {
-                for (int i = 0; i < tab; i++) builder.append("    ");
+        if (object.getClass().isAnnotationPresent(IgnorePrint.class)) {
+            builder.append("Print Disabled");
+        } else {
+            for (Field field : ReflectionUtil.getAllFields(object.getClass())) {
+                appendIntent(builder, tab);
                 field.setAccessible(true);
-                //System.out.println(field.getName() + " " + object.getClass().getSimpleName());
                 try {
-                    builder.append(field.getName()).append(": ").append(getValue(field, tab)).append("\n").append(prefix);
-                } catch (IllegalAccessException ex) {
+                    builder.append(field.getName()).append(": ")
+                            .append(getValue(field, tab))
+                            .append("\n").append(prefix);
+                } catch (Exception ex) {
                     builder.append("error");
                 }
             }
         }
-        for(int i = 0;i < tab-1;i++) builder.append("    ");
+        appendIntent(builder, tab - 1);
         builder.append(']');
         return builder.toString();
     }
 
+    private void appendIntent(StringBuilder builder, int tabs) {
+        for (int i = 0; i < tabs; i++) {
+            builder.append("    ");
+        }
+    }
+
     private String getValue(Field field, int tab) throws IllegalAccessException {
-        field.setAccessible(true);
         if (field.getAnnotation(IgnorePrint.class) != null) {
             return "Disabled";
         }
+        field.setAccessible(true);
         return getValue(field.get(object), tab);
     }
 
-    private String getValue(Object o, int tab) throws IllegalAccessException {
-        if (o == null)
+    private String getValue(Object o, int tab) {
+        if (o == null) {
             return "null";
-        if (Thread.currentThread().getStackTrace().length > 70) {
+        }
+        if (Thread.currentThread().getStackTrace().length - startStackDepth > maxRecursion) {
             return "[infinitive recursion]";
         }
-        //System.out.println(field.getName() + " : " + o.toString());
         Class<?> arrayType = o.getClass().getComponentType();
         if (arrayType != null && o.getClass().isArray()) {
             if (!arrayType.isPrimitive()) {
@@ -117,7 +152,7 @@ public class PrettyPrint {
             DateFormat f = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.UK);
             Calendar c = (Calendar) o;
             return f.format(c.getTime()) + " milliSecond=" + c.get(Calendar.MILLISECOND);
-        } else if (o instanceof String || o instanceof Number || o instanceof Boolean || o instanceof Character){
+        } else if (o instanceof String || o instanceof Number || o instanceof Boolean || o instanceof Character) {
             return o.toString();
         } else {
             PrettyPrint obj = new PrettyPrint(o, prefix);
@@ -125,12 +160,4 @@ public class PrettyPrint {
         }
     }
 
-    private List<Field> getFields(Class clazz) {
-        List<Field> fields = new ArrayList<>();
-        while (clazz != Object.class) {
-            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
-            clazz = clazz.getSuperclass();
-        }
-        return fields;
-    }
 }
