@@ -25,7 +25,7 @@
     <orderEntry type="library" name="Maven: io.netty:netty-all:4.1.37.Final" level="project" />
     <orderEntry type="module" module-name="Annotations" />
     <orderEntry type="module" module-name="Util" />
-    <orderEntry type="module" module-name="AnnotationProcessing" />
+    <orderEntry type="module" module-name="AnnotationProcessors" />
     <orderEntry type="module" module-name="Runtime" />
     <orderEntry type="module" module-name="ArgParser" />
     <orderEntry type="module" module-name="Automatisation" />

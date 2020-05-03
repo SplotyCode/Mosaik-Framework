@@ -19,10 +19,11 @@
         <module>DomParsing</module>
         <module>StartUp</module>
         <module>Util</module>
+        <module>AnnotationBase</module>
         <module>Runtime</module>
         <module>Annotations</module>
         <module>IUI</module>
-        <module>AnnotationProcessing</module>
+        <module>AnnotationProcessors</module>
         <module>Mosaik-All</module>
         <module>ArgParser-Impl</module>
         <module>DomParsing-Impl</module>

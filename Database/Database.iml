@@ -27,7 +27,7 @@
     <orderEntry type="module" module-name="IUI" />
     <orderEntry type="module" module-name="StartUp" scope="TEST" />
     <orderEntry type="module" module-name="Console" scope="TEST" />
-    <orderEntry type="module" module-name="AnnotationProcessing" scope="TEST" />
+    <orderEntry type="module" module-name="AnnotationProcessors" scope="TEST" />
     <orderEntry type="module" module-name="ArgParser" />
     <orderEntry type="module" module-name="DomParsing" />
     <orderEntry type="module" module-name="ArgParser-Impl" scope="TEST" />

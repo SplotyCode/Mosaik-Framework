@@ -4,7 +4,7 @@ import io.github.splotycode.mosaik.util.condition.ClassConditions;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.reflection.ClassCollector;
-import io.github.splotycode.mosaik.util.reflection.annotation.method.AddTransformer;
+import io.github.splotycode.mosaik.annotationbase.context.method.AddTransformer;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
 import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.handler.HandlerFinder;

@@ -2,7 +2,8 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/AnnotationProcessing" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/AnnotationBase" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/AnnotationProcessors" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Annotations" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ArgParser" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ArgParser-Impl" charset="UTF-8" />

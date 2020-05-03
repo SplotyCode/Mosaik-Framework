@@ -31,7 +31,7 @@
     <orderEntry type="module" module-name="Runtime" />
     <orderEntry type="module" module-name="StartUp" scope="TEST" />
     <orderEntry type="module" module-name="Console" scope="TEST" />
-    <orderEntry type="module" module-name="AnnotationProcessing" scope="TEST" />
+    <orderEntry type="module" module-name="AnnotationProcessors" scope="TEST" />
     <orderEntry type="module" module-name="DomParsing" />
     <orderEntry type="module" module-name="IUI" scope="TEST" />
     <orderEntry type="module" module-name="DomParsing-Impl" scope="TEST" />

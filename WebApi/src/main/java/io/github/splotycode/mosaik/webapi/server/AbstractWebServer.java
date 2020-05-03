@@ -5,7 +5,7 @@ import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.LinkedDataFactory;
 import io.github.splotycode.mosaik.util.init.InitialisedOnce;
 import io.github.splotycode.mosaik.util.logger.Logger;
-import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.annotationbase.context.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
 import io.github.splotycode.mosaik.webapi.WebApplicationType;

@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.webapi.server;
 
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
-import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.annotationbase.context.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 import io.github.splotycode.mosaik.webapi.WebApplicationType;
 import io.github.splotycode.mosaik.webapi.handler.HttpHandler;

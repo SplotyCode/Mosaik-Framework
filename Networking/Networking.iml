@@ -22,7 +22,7 @@
     <orderEntry type="module" module-name="IUI" />
     <orderEntry type="module" module-name="StartUp" />
     <orderEntry type="module" module-name="Console" />
-    <orderEntry type="module" module-name="AnnotationProcessing" />
+    <orderEntry type="module" module-name="AnnotationProcessors" />
     <orderEntry type="module" module-name="ArgParser" />
     <orderEntry type="module" module-name="DomParsing" />
     <orderEntry type="module" module-name="DomParsing-Impl" />

@@ -17,7 +17,7 @@
     <orderEntry type="module" module-name="Util" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="module" module-name="IUI" />
-    <orderEntry type="module" module-name="AnnotationProcessing" />
+    <orderEntry type="module" module-name="AnnotationProcessors" />
     <orderEntry type="module" module-name="Annotations" />
     <orderEntry type="module" module-name="ArgParser" />
     <orderEntry type="module" module-name="DomParsing" />

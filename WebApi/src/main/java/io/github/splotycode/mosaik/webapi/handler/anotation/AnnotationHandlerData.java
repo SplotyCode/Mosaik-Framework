@@ -1,9 +1,9 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation;
 
 import io.github.splotycode.mosaik.util.Pair;
-import io.github.splotycode.mosaik.util.reflection.annotation.data.AnnotationData;
-import io.github.splotycode.mosaik.util.reflection.annotation.data.IMethodData;
-import io.github.splotycode.mosaik.util.reflection.annotation.parameter.ParameterResolver;
+import io.github.splotycode.mosaik.annotationbase.context.data.AnnotationData;
+import io.github.splotycode.mosaik.annotationbase.context.data.IMethodData;
+import io.github.splotycode.mosaik.annotationbase.context.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.webapi.handler.UrlPattern;
 import io.github.splotycode.mosaik.webapi.handler.anotation.check.*;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.cache.Cache;

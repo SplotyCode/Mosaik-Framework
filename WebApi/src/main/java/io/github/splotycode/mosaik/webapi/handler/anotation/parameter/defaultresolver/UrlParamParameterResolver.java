@@ -1,8 +1,8 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation.parameter.defaultresolver;
 
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
-import io.github.splotycode.mosaik.util.reflection.annotation.parameter.AnnotatedParameterResolver;
-import io.github.splotycode.mosaik.util.reflection.annotation.exception.ParameterResolveException;
+import io.github.splotycode.mosaik.annotationbase.context.parameter.AnnotatedParameterResolver;
+import io.github.splotycode.mosaik.annotationbase.context.exception.ParameterResolveException;
 import io.github.splotycode.mosaik.webapi.handler.anotation.AnnotationHandlerData;
 import io.github.splotycode.mosaik.webapi.handler.anotation.AnnotationHttpHandler;
 import io.github.splotycode.mosaik.webapi.handler.anotation.handle.UrlParam;

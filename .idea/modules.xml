@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AnnotationProcessing/AnnotationProcessing.iml" filepath="$PROJECT_DIR$/AnnotationProcessing/AnnotationProcessing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AnnotationBase/AnnotationBase.iml" filepath="$PROJECT_DIR$/AnnotationBase/AnnotationBase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AnnotationProcessors/AnnotationProcessors.iml" filepath="$PROJECT_DIR$/AnnotationProcessors/AnnotationProcessors.iml" />
       <module fileurl="file://$PROJECT_DIR$/Annotations/Annotations.iml" filepath="$PROJECT_DIR$/Annotations/Annotations.iml" />
       <module fileurl="file://$PROJECT_DIR$/ArgParser/ArgParser.iml" filepath="$PROJECT_DIR$/ArgParser/ArgParser.iml" />
       <module fileurl="file://$PROJECT_DIR$/ArgParser-Impl/ArgParser-Impl.iml" filepath="$PROJECT_DIR$/ArgParser-Impl/ArgParser-Impl.iml" />
