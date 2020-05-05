@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.util.function.Predicate;
 
 /**
  * Helper Tools for Mosaik Annotations
@@ -79,13 +80,24 @@ public final class AnnotationHelper {
      * @return true if the element is visible
      */
     public static boolean isVisible(VisibilityLevel level, AnnotatedElement element) {
+        return isVisible(level, element, null);
+    }
+
+    /**
+     * Checks if a element is visible
+     * @param level on with level should we check te visibility
+     * @param element the element to check
+     * @param indicateVisibility checks if the element is visible by default
+     * @return true if the element is visible
+     */
+    public static boolean isVisible(VisibilityLevel level, AnnotatedElement element, Predicate<AnnotatedElement> indicateVisibility) {
         switch (level) {
             case FORCE_ALL:
                 return true;
             case NONE:
                 return false;
             case ONLY_VISIBLE:
-                return element.getAnnotation(Visible.class) != null;
+                return element.getAnnotation(Visible.class) != null || (indicateVisibility != null && indicateVisibility.test(element));
             case NOT_INVISIBLE:
                 return element.getAnnotation(Invisible.class) == null;
             default:

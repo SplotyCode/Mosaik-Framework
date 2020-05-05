@@ -11,7 +11,7 @@ import java.lang.reflect.AnnotatedElement;
  * @see io.github.splotycode.mosaik.annotations.AnnotationHelper#isVisible(VisibilityLevel, AnnotatedElement)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 public @interface Invisible {
 
 }

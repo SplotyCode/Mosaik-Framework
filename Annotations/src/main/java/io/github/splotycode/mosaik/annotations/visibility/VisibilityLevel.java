@@ -10,11 +10,11 @@ public enum VisibilityLevel {
      */
     FORCE_ALL,
     /**
-     * Includes {@link java.lang.reflect.AnnotatedElement} with have the {@link Visible} annotation
+     * Includes {@link java.lang.reflect.AnnotatedElement} witch have the {@link Visible} annotation
      */
     ONLY_VISIBLE,
     /**
-     * Includes {@link java.lang.reflect.AnnotatedElement} with have not the {@link Invisible} annotation
+     * Includes {@link java.lang.reflect.AnnotatedElement} witch have not the {@link Invisible} annotation
      */
     NOT_INVISIBLE,
     /**
