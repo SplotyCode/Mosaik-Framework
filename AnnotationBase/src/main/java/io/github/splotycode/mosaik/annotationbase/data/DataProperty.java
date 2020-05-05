@@ -7,25 +7,24 @@ import lombok.Getter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.Optional;
 
 @AllArgsConstructor
 @Getter
 public class DataProperty {
 
-    public static DataProperty fromMethod(DataEntity entity, Method method) {
-        return new DataProperty(entity, PropertyReader.fromMethod(method, entity.getObject()));
+    static DataProperty fromMethod(DataEntity entity, Method method) {
+        return new DataProperty(entity, PropertyReader.fromMethod(method));
     }
 
-    public static DataProperty fromField(DataEntity entity, String name, Field field, Property property) {
-        Object object = entity.getObject();
-
+    static DataProperty fromField(DataEntity entity, Field field, Property property) {
         Optional<Method> getter = property.useGetter() ? ReflectionUtil.findGetter(field) : Optional.empty();
         Optional<Method> setter = property.useSetter() ? ReflectionUtil.findSetter(field) : Optional.empty();
-        PropertyReader reader = getter.map(method -> PropertyReader.fromMethod(method, object))
-                .orElseGet(() -> PropertyReader.fromField(field, entity.getObject()));
-        PropertyWriter writer = setter.map(method -> PropertyWriter.writeToMethod(method, object))
-                .orElseGet(() -> PropertyWriter.fromField(field, entity.getObject()));
+        PropertyReader reader = getter.map(PropertyReader::fromMethod)
+                .orElseGet(() -> PropertyReader.fromField(field));
+        PropertyWriter writer = setter.map(PropertyWriter::writeToMethod)
+                .orElseGet(() -> PropertyWriter.fromField(field));
         return new DataProperty(entity, property.required(), reader, writer);
     }
 
@@ -41,19 +40,19 @@ public class DataProperty {
         this.reader = reader;
     }
 
-    public Object read() {
-        return reader.readValue();
+    public Object read(Object entity) {
+        return reader.readValue(Objects.requireNonNull(entity, "entity"));
     }
 
     public boolean isReadOnly() {
         return writer == null;
     }
 
-    public void write(Object value) {
+    public void write(Object entity, Object value) {
         if (isReadOnly()) {
             throw new UnsupportedOperationException("This Property is read only");
         }
-        writer.writeValue(value);
+        writer.writeValue(Objects.requireNonNull(entity, "entity"), value);
     }
 
 }

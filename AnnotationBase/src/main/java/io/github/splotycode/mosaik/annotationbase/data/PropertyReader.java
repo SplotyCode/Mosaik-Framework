@@ -6,11 +6,11 @@ import java.lang.reflect.Method;
 
 public interface PropertyReader {
 
-    static PropertyReader fromMethod(Method method, Object object) {
+    static PropertyReader fromMethod(Method method) {
         method.setAccessible(true);
-        return () -> {
+        return entity -> {
             try {
-                return method.invoke(object);
+                return method.invoke(entity);
             } catch (InvocationTargetException | ExceptionInInitializerError e) {
                 throw new PropertyReadException("Error while calling the underlying method", e);
             } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -19,11 +19,11 @@ public interface PropertyReader {
         };
     }
 
-    static PropertyReader fromField(Field field, Object object) {
+    static PropertyReader fromField(Field field) {
         field.setAccessible(true);
-        return () -> {
+        return entity -> {
             try {
-                return field.get(object);
+                return field.get(entity);
             } catch (ExceptionInInitializerError e) {
                 throw new PropertyReadException("Error initializing field", e);
             } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -43,6 +43,6 @@ public interface PropertyReader {
         }
     }
 
-    Object readValue();
+    Object readValue(Object entity);
 
 }

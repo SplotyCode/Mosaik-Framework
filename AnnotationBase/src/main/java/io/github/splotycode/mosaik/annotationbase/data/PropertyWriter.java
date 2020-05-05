@@ -6,11 +6,11 @@ import java.lang.reflect.Method;
 
 public interface PropertyWriter {
 
-    static PropertyWriter fromField(Field field, Object object) {
+    static PropertyWriter fromField(Field field) {
         field.setAccessible(true);
-        return value -> {
+        return (entity, value) -> {
             try {
-                field.set(object, value);
+                field.set(entity, value);
             } catch (IllegalAccessException | IllegalArgumentException e) {
                 throw new PropertyWriteException("Failed to write data from field", e);
             } catch (ExceptionInInitializerError e) {
@@ -19,11 +19,11 @@ public interface PropertyWriter {
         };
     }
 
-    static PropertyWriter writeToMethod(Method method, Object object) {
+    static PropertyWriter writeToMethod(Method method) {
         method.setAccessible(true);
-        return value -> {
+        return (entity, value) -> {
             try {
-                method.invoke(object, value);
+                method.invoke(entity, value);
             } catch (InvocationTargetException | ExceptionInInitializerError e) {
                 throw new PropertyReader.PropertyReadException("Error while calling the underlying method", e);
             } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -43,6 +43,6 @@ public interface PropertyWriter {
         }
     }
 
-    void writeValue(Object value);
+    void writeValue(Object entity, Object value);
 
 }

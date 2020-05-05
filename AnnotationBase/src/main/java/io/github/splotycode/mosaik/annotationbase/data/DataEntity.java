@@ -21,7 +21,6 @@ public class DataEntity {
     private Class serviceClass;
 
     private Class clazz;
-    private Object object;
 
     private String name;
     private HashMap<String, DataProperty> properties = new HashMap<>();
@@ -34,7 +33,6 @@ public class DataEntity {
     public DataEntity(String serviceName, Class serviceClass, Object object, VisibilityLevel fieldVisibility) {
         this.serviceName = serviceName;
         this.serviceClass = serviceClass;
-        this.object = object;
         this.fieldVisibility = fieldVisibility;
         clazz = object.getClass();
 
@@ -145,7 +143,7 @@ public class DataEntity {
                 if (AnnotationHelper.isVisible(fieldVisibility, field, propertyVisibilityCondition)) {
                     Property property = getFieldProperty(field);
                     String name = getFieldName(property, field);
-                    properties.putIfAbsent(name, DataProperty.fromField(this, name, field, property));
+                    properties.putIfAbsent(name, DataProperty.fromField(this, field, property));
                 }
             }
         });
