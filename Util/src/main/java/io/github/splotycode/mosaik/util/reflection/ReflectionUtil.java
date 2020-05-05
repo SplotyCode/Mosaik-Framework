@@ -3,6 +3,7 @@ package io.github.splotycode.mosaik.util.reflection;
 import io.github.splotycode.mosaik.annotations.HandleAsField;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
 import io.github.splotycode.mosaik.util.Pair;
+import io.github.splotycode.mosaik.util.StringUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import sun.misc.Unsafe;
@@ -196,4 +197,30 @@ public final class ReflectionUtil {
             return false;
         }
     }
+
+    public static Optional<Method> findSetter(Field field) {
+        String name = "set" + StringUtil.camelCase(field.getName());
+        try {
+            return Optional.of(field.getDeclaringClass().getMethod(name, field.getType()));
+        } catch (NoSuchMethodException e) {
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<Method> findGetter(Field field) {
+        Class type = field.getType();
+        String name = StringUtil.camelCase(field.getName());
+        String methodName = (type == boolean.class || type == Boolean.class ? "is" : "get") + name;
+
+        try {
+            Method method = field.getDeclaringClass().getMethod(methodName);
+            if (method.getReturnType().isAssignableFrom(type)) {
+                return Optional.of(method);
+            }
+        } catch (NoSuchMethodException e) {
+
+        }
+        return Optional.empty();
+    }
+
 }
