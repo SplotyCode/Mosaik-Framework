@@ -1,15 +1,13 @@
 package io.github.splotycode.mosaik.annotations;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * This Annotation represents an Object Head
  * Use {@link Entities} if you want so use multiple Entity configurations for one Object
  */
 @Target(ElementType.TYPE)
+@Repeatable(Entities.class)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Entity {
 

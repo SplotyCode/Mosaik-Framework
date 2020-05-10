@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Combines multiple {@link Entity} configurations to one {@link java.lang.Class}
  * @see Entity
  */
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Entities {
 

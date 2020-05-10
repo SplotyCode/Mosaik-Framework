@@ -20,7 +20,7 @@ public class DataEntity {
     private String serviceName;
     private Class serviceClass;
 
-    private Class clazz;
+    private Class<?> clazz;
 
     private String name;
     private HashMap<String, DataProperty> properties = new HashMap<>();
@@ -36,7 +36,7 @@ public class DataEntity {
         this.fieldVisibility = fieldVisibility;
         clazz = object.getClass();
 
-        collectEntityTags();
+        investigateEntityTags();
         name = computeName();
 
         generateVisibilityConditions();
@@ -47,31 +47,18 @@ public class DataEntity {
 
     private void generateVisibilityConditions() {
         propertyVisibilityCondition = element ->
-                element.getAnnotation(Property.class) != null ||
-                element.getAnnotation(Properties.class) != null ||
+                element.getAnnotationsByType(Property.class).length != 0 ||
                 (propertyAnnotationHandle != null && propertyAnnotationHandle.getAnnotation(element) != null);
     }
 
-    private void collectEntityTags() {
-        Entity entityTag = (Entity) clazz.getAnnotation(Entity.class);
-        if (entityTag != null) {
-            investigateEntityTag(entityTag);
-        }
-
-        Entities entityTags = (Entities) clazz.getAnnotation(Entities.class);
-        if (entityTags != null) {
-            for (Entity entity : entityTags.value()) {
-                investigateEntityTag(entity);
+    private void investigateEntityTags() {
+        for (Entity entity : clazz.getAnnotationsByType(Entity.class)) {
+            String displayName = "Entity '" + entity.value() + "'";
+            if (isForThisService(displayName,
+                    entity.services(), entity.servicesClasses(),
+                    entity.disabledServices(), entity.disabledServicesClasses())) {
+                entityTags.add(entity);
             }
-        }
-    }
-
-    private void investigateEntityTag(Entity entity) {
-        String displayName = "Entity '" + entity.value() + "'";
-        if (isForThisService(displayName,
-                entity.services(), entity.servicesClasses(),
-                entity.disabledServices(), entity.disabledServicesClasses())) {
-            entityTags.add(entity);
         }
     }
 
@@ -150,19 +137,9 @@ public class DataEntity {
     }
 
     private Property getFieldProperty(Field field) {
-        Property propertyTag = field.getAnnotation(Property.class);
-        if (propertyTag != null) {
-            if (isPropertyValid(propertyTag)) {
-                return propertyTag;
-            }
-        }
-
-        Properties properties = field.getAnnotation(Properties.class);
-        if (entityTags != null) {
-            for (Property property : properties.value()) {
-                if (isPropertyValid(property)) {
-                    return property;
-                }
+        for (Property property : field.getAnnotationsByType(Property.class)) {
+            if (isPropertyValid(property)) {
+                return property;
             }
         }
         return null;
