@@ -145,30 +145,27 @@ public final class IOUtil {
         return bytes;
     }
 
-    public static void copy(InputStream inputStream, OutputStream outputStream) {
+    public static long copy(InputStream inputStream, OutputStream outputStream) {
         try {
             if (inputStream instanceof FileInputStream && outputStream instanceof FileOutputStream) {
-                final FileChannel fromChannel = ((FileInputStream) inputStream).getChannel();
-                try {
-                    final FileChannel toChannel = ((FileOutputStream) outputStream).getChannel();
-                    try {
-                        fromChannel.transferTo(0, Long.MAX_VALUE, toChannel);
-                    } finally {
-                        toChannel.close();
+                try (FileChannel fromChannel = ((FileInputStream) inputStream).getChannel()) {
+                    try (FileChannel toChannel = ((FileOutputStream) outputStream).getChannel()) {
+                        return fromChannel.transferTo(0, Long.MAX_VALUE, toChannel);
                     }
-                } finally {
-                    fromChannel.close();
-                }
-            } else {
-                final byte[] buffer = BUFFER.get();
-                while (true) {
-                    int read = inputStream.read(buffer);
-                    if (read < 0) break;
-                    outputStream.write(buffer, 0, read);
                 }
             }
+            final byte[] buffer = BUFFER.get();
+            long total = 0;
+            while (true) {
+                int read = inputStream.read(buffer);
+                if (read < 0) break;
+                outputStream.write(buffer, 0, read);
+                total += read;
+            }
+            return total;
         } catch (IOException ex) {
             ExceptionUtil.throwRuntime(ex);
+            return 0;//TODO
         }
     }
 
