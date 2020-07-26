@@ -313,5 +313,17 @@ public final class CollectionUtil {
         }
         return null;
     }
+
+    public static String searchStartsWith(NavigableSet<String> set, String search) {
+        String entry = set.floor(search);
+        if (entry != null && search.startsWith(entry)) {
+            return entry;
+        }
+        return null;
+    }
+
+    public static boolean startsWith(NavigableSet<String> set, String search) {
+        return searchStartsWith(set, search) != null;
+    }
     
 }
