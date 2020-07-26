@@ -14,7 +14,6 @@ import java.util.jar.JarFile;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ClassPathUtil {
-
     private static final String MANIFEST_ATTRIBUTE_CLASS_PATH = Attributes.Name.CLASS_PATH.toString();
 
     public interface JarMetaPathCollector {
@@ -40,5 +39,4 @@ public final class ClassPathUtil {
             }
         }
     }
-
 }

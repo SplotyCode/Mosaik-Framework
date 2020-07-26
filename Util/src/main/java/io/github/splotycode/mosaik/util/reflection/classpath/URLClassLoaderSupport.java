@@ -7,7 +7,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 public class URLClassLoaderSupport implements ClassLoaderSupport {
-
+    public static final URLClassLoaderSupport INSTANCE = new URLClassLoaderSupport();
     private final Logger LOGGER = Logger.getInstance(URLClassLoaderSupport.class);
 
     @Override

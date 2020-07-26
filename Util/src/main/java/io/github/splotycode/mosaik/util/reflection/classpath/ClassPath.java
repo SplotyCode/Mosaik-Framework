@@ -1,33 +1,57 @@
 package io.github.splotycode.mosaik.util.reflection.classpath;
 
+import io.github.splotycode.mosaik.util.collection.FilteredIterator;
+import io.github.splotycode.mosaik.util.collection.SimpleIterator;
+import io.github.splotycode.mosaik.util.io.resource.ClassPathResource;
 import io.github.splotycode.mosaik.util.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class ClassPath {
+    public static ClassPath fromClassLoader(ClassLoader classLoader) {
+        return fromClassLoaders(classLoader);
+    }
+
+    public static ClassPath fromClassLoaders(ClassLoader... classLoaders) {
+        ClassPath classPath = new ClassPath();
+        for (ClassLoader classLoader : classLoaders) {
+            classPath.addClassLoader(classLoader, true);
+        }
+        return classPath;
+    }
 
     protected final Logger logger = Logger.getInstance(getClass());
-    protected final CopyOnWriteArrayList<ClassLoaderSupport> classLoaderSupports = new CopyOnWriteArrayList<>();
-    protected ArrayList<ClassLoader> classLoaders = new ArrayList<>();
-    protected HashMap<String, Resource> resources = new HashMap<>();
+    protected final LinkedBlockingDeque<ClassLoaderSupport> classLoaderSupports = new LinkedBlockingDeque<>();
+    protected HashSet<ClassLoader> classLoaders = new HashSet<>();
+    protected TreeMap<String, ClassPathResource> resources = new TreeMap<>();
     protected Loader loader = new Loader();
+    protected ClassPathStats stats = new ClassPathStats(this);
 
-    public class Loader {
+    {
+        addClassLoaderSupport(URLClassLoaderSupport.INSTANCE);
+        addClassLoaderSupport(BuiltinClassLoader9Support.INSTANCE);
+    }
 
+    class Loader {
         private HashSet<String> scannedClassPathEntries = new HashSet<>();
 
-        public void addResource(Resource resource) {
+        public void addResource(ClassPathResource resource) {
             resources.put(resource.getPath(), resource);
         }
 
         public void addResource(ClassLoader classLoader, String fullPath) {
-            addResource(new Resource(fullPath, classLoader));
+            ClassPathResource current = resources.get(fullPath);
+            if (current == null || current.getLoader() != classLoader) {
+                resources.put(fullPath, new ClassPathResource(classLoader, fullPath));
+            }
         }
 
         public boolean scanSourceDirectory(ClassPathVisitor visitor, File directory, ClassLoader loader) {
@@ -124,7 +148,7 @@ public class ClassPath {
     }
 
     public void addClassLoaderSupport(ClassLoaderSupport classLoaderSupport) {
-        classLoaderSupports.add(classLoaderSupport);
+        classLoaderSupports.addFirst(classLoaderSupport);
     }
 
     private Optional<ClassLoaderSupport> getCLSupport(ClassLoader loader) {
@@ -144,19 +168,21 @@ public class ClassPath {
         classLoaders.add(classLoader);
     }
 
-    public synchronized void load(ClassPathVisitor visitor) throws IOException {
+    public synchronized void load(ClassPathVisitor visitor) {
         for (ClassLoader loader : classLoaders) {
             Optional<ClassLoaderSupport> support = getCLSupport(loader);
             if (support.isPresent()) {
                 ClassLoaderSupport cls = support.get();
-                cls.load(this.loader, loader, visitor);
+                if (cls.load(this.loader, loader, visitor)) {
+                    stats.reset();
+                }
             } else {
                 logger.warn("Could not find ClassLoaderSupport for " + loader + " (" + loader.getClass().getSimpleName() + ")");
             }
         }
     }
 
-    public void loadPackage(String packageName) throws IOException {
+    public void loadPackage(String packageName) {
         load(new ClassPathVisitor() {
             @Override
             public VisitorAction visitPackage(String packagePath) {
@@ -170,7 +196,52 @@ public class ClassPath {
         });
     }
 
-    public void loadAll() throws IOException {
+    public ClassPathStats stats() {
+        return stats;
+    }
+
+    public void unloadAll() {
+        resources.clear();
+        stats.reset();
+    }
+
+    public void loadAll() {
         load(ClassPathVisitor.ACCEPT_ALL);
+    }
+
+    public void loadAllResources() {
+        load(ClassPathVisitor.ONLY_RESOURCES);
+    }
+
+    public Stream<ClassPathResource> resources() {
+        FilteredIterator<ClassPathResource> iterator = new FilteredIterator<>(resources.values().iterator(),
+                ClassPathResource::isResource);
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+                iterator, Spliterator.ORDERED | Spliterator.DISTINCT | Spliterator.NONNULL), false);
+    }
+
+    public Stream<ClassPathResource> classes() {
+        FilteredIterator<ClassPathResource> iterator = new FilteredIterator<>(resources.values().iterator(),
+                ClassPathResource::isResource);
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+                iterator, Spliterator.ORDERED | Spliterator.DISTINCT | Spliterator.NONNULL), false);
+    }
+
+    public Stream<ClassPathResource> search(String query) {
+        Iterator<ClassPathResource> iter = new SimpleIterator.NotNullSimpleIterator<ClassPathResource>() {
+            private Map.Entry<String, ClassPathResource> entry;
+
+            @Override
+            protected ClassPathResource provideNext0() {
+                if (entry == null) {
+                    entry = resources.ceilingEntry(query);
+                } else {
+                    entry = resources.higherEntry(entry.getKey());
+                }
+                return entry == null ? null : entry.getValue();
+            }
+        };
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+                iter, Spliterator.ORDERED | Spliterator.DISTINCT | Spliterator.NONNULL), false);
     }
 }

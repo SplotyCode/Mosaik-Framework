@@ -44,7 +44,7 @@ public class Resource {
         if (clazz == null) {
             try {
                 clazz = loader.loadClass(javaName());
-            } catch (ClassNotFoundException e) {
+           } catch (ClassNotFoundException e) {
                 ExceptionUtil.throwRuntime(e);
             }
         }

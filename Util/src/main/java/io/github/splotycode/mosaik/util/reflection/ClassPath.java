@@ -10,6 +10,7 @@ import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -18,8 +19,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+@Deprecated
 public class ClassPath {
-
     private Logger logger = Logger.getInstance(ClassPath.class);
 
     @Getter private HashMap<File, ClassLoader> paths = new HashMap<>();
@@ -27,7 +28,6 @@ public class ClassPath {
     private HashSet<String> scanned = new HashSet<>();
 
     public static class Resource {
-
         @Getter private final String path;
         @Getter private final ClassLoader loader;
         private Class<?> clazz;
@@ -35,6 +35,14 @@ public class ClassPath {
         public Resource(String path, ClassLoader loader) {
             this.path = path;
             this.loader = loader;
+        }
+
+        public InputStream openInputStream() {
+            return loader.getResourceAsStream(path);
+        }
+
+        public boolean isClass() {
+            return path.endsWith(".class");
         }
 
         public String javaName() {
@@ -65,17 +73,29 @@ public class ClassPath {
         }
     }
 
-    public static Set<File> getMetaPaths(File file, JarFile jarFile) throws IOException {
+    private static Set<File> getMetaPaths(File file, JarFile jarFile) throws IOException {
         String classpathAttribute = jarFile.getManifest().getMainAttributes().getValue(Attributes.Name.CLASS_PATH.toString());
         if (classpathAttribute == null) return Collections.emptySet();
-        Set<File> classpaths = new HashSet<>();
+        Set<File> classpath = new HashSet<>();
         for (String path : classpathAttribute.split(" ")) {
             if (!StringUtil.isEmptyDeep(path)) {
                 URL url = new URL(file.toURI().toURL(), path);
-                classpaths.add(new File(url.getFile()));
+                classpath.add(new File(url.getFile()));
             }
         }
-        return classpaths;
+        return classpath;
+    }
+
+    public ClassPath(ClassLoader loader) {
+        getClassPaths(loader);
+        for (Map.Entry<File, ClassLoader> pathEntry : paths.entrySet()) {
+            File file = pathEntry.getKey();
+            try {
+                scan(file, pathEntry.getValue());
+            } catch (IOException e) {
+                ExceptionUtil.throwRuntime(e);
+            }
+        }
     }
 
     protected void getClassPaths(ClassLoader loader) {
@@ -88,8 +108,12 @@ public class ClassPath {
             for (URL url : urlLoader.getURLs()) {
                 if (url.getProtocol().equalsIgnoreCase("file")) {
                     paths.putIfAbsent(new File(url.getFile()), loader);
+                } else {
+                    logger.debug("Unknown protocol type " + url.getProtocol() + " from classloader " + urlLoader);
                 }
             }
+        } else {
+            logger.warn("Unknown classloader type: " + loader  + " (" + loader.getClass().getSimpleName() + ")");
         }
     }
 
@@ -126,22 +150,10 @@ public class ClassPath {
         }
     }
 
-    public ClassPath(ClassLoader loader) {
-        getClassPaths(loader);
-        for (Map.Entry<File, ClassLoader> pathEntry : paths.entrySet()) {
-            File file = pathEntry.getKey();
-            try {
-                scan(file, pathEntry.getValue());
-            } catch (IOException e) {
-                ExceptionUtil.throwRuntime(e);
-            }
-        }
-    }
-
     public void resources(Consumer<Resource> consumer) {
         for (Iterator<Resource> it = resources.allValues(); it.hasNext(); ) {
             Resource resource = it.next();
-            if (!resource.path.endsWith(".class")) {
+            if (!resource.isClass()) {
                 consumer.accept(resource);
             }
         }
@@ -150,7 +162,7 @@ public class ClassPath {
     public void classes(Consumer<Resource> consumer) {
         for (Iterator<Resource> it = resources.allValues(); it.hasNext(); ) {
             Resource resource = it.next();
-            if (resource.path.endsWith(".class")) {
+            if (resource.isClass()) {
                 consumer.accept(resource);
             }
         }

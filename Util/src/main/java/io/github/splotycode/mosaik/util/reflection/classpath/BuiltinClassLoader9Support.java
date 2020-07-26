@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class BuiltinClassLoader9Support implements ClassLoaderSupport {
-
+    public static final BuiltinClassLoader9Support INSTANCE = new BuiltinClassLoader9Support();
     private static final Logger LOGGER = Logger.getInstance(BuiltinClassLoader9Support.class);
 
     private Class<?> builtinClassLoaderClass;
@@ -18,7 +18,7 @@ public class BuiltinClassLoader9Support implements ClassLoaderSupport {
     private Field ucpPathField;
     private boolean supported;
 
-    public BuiltinClassLoader9Support() {
+    private BuiltinClassLoader9Support() {
         try {
             builtinClassLoaderClass = Class.forName("jdk.internal.loader.BuiltinClassLoader");
             builtinClassLoaderUCPField = builtinClassLoaderClass.getDeclaredField("ucp");

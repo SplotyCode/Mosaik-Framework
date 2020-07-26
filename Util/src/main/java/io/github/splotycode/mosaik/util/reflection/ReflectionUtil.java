@@ -4,6 +4,7 @@ import io.github.splotycode.mosaik.annotations.HandleAsField;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
 import io.github.splotycode.mosaik.util.Pair;
 import io.github.splotycode.mosaik.util.StringUtil;
+import io.github.splotycode.mosaik.util.reflection.collector.ClassCollector;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import sun.misc.Unsafe;
@@ -222,5 +223,4 @@ public final class ReflectionUtil {
         }
         return Optional.empty();
     }
-
 }
