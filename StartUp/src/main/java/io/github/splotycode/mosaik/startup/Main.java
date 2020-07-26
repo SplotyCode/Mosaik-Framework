@@ -4,6 +4,7 @@ import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
 import io.github.splotycode.mosaik.runtime.application.IApplication;
 import io.github.splotycode.mosaik.runtime.logging.LoggingHelper;
+import io.github.splotycode.mosaik.runtime.module.MosaikModule;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.runtime.startup.StartUpConfiguration;
 import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
@@ -19,7 +20,6 @@ import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.logger.LoggerFactory;
 import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
-import io.github.splotycode.mosaik.util.reflection.modules.MosaikModule;
 import lombok.Getter;
 
 public class Main {
@@ -28,7 +28,7 @@ public class Main {
 
     @Getter private static BootContext bootData;
 
-    @Getter private static boolean initialised = false;
+    @Getter private volatile static boolean initialised = false;
 
     public static void main() throws Exception {
         mainImpl(new StartUpConfiguration());
@@ -59,10 +59,14 @@ public class Main {
         mainImpl(configuration);
     }
 
-    private static void mainImpl(StartUpConfiguration configuration) throws Exception {
-        long start = System.currentTimeMillis();
+    private static synchronized void checkInitialised() {
         if (initialised) throw new AlreadyInitailizedException("Main.main() already called");
         initialised = true;
+    }
+
+    private static void mainImpl(StartUpConfiguration configuration) throws Exception {
+        long start = System.currentTimeMillis();
+        checkInitialised();
 
         configuration.finish();
         if (configuration.hasBootLoggerFactory()) {
@@ -127,6 +131,7 @@ public class Main {
         StartUpProcessHandler.getInstance().end();
         logger.info("Started " + applicationManager.getLoadedApplicationsCount() + " Applications: " + StringUtil.join(applicationManager.getLoadedApplications(), IApplication::getName, ", "));
         LoggingHelper.endSection();
+
         startUpManager.finished();
     }
 
