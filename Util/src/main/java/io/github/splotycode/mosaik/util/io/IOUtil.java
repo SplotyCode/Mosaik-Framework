@@ -3,6 +3,8 @@ package io.github.splotycode.mosaik.util.io;
 import io.github.splotycode.mosaik.util.ExceptionUtil;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.exception.ResourceNotFoundException;
+import io.github.splotycode.mosaik.util.io.buffer.BufferProvider;
+import io.github.splotycode.mosaik.util.io.buffer.BufferProviders;
 import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,6 +14,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +27,11 @@ import java.util.function.Consumer;
 public final class IOUtil {
 
     public static final int THREAD_LOCAL_BUFFER_LENGTH = 1024 * 20;
-    private static final ThreadLocal<byte[]> BUFFER = ThreadLocal.withInitial(() -> new byte[THREAD_LOCAL_BUFFER_LENGTH]);
+    private static final BufferProvider BUFFER_PROVIDER = BufferProviders.createThreadLocal(THREAD_LOCAL_BUFFER_LENGTH);
+
+    public static ByteBuffer allocateBytebuf(boolean direct, int size) {
+        return direct ? ByteBuffer.allocateDirect(size) : ByteBuffer.allocate(size);
+    }
 
     public static String loadText(Reader reader, int length) {
         char[] chars = new char[length];
@@ -145,7 +152,7 @@ public final class IOUtil {
         return bytes;
     }
 
-    public static long copy(InputStream inputStream, OutputStream outputStream) {
+   public static long copy(InputStream inputStream, OutputStream outputStream) {
         try {
             if (inputStream instanceof FileInputStream && outputStream instanceof FileOutputStream) {
                 try (FileChannel fromChannel = ((FileInputStream) inputStream).getChannel()) {
@@ -154,7 +161,7 @@ public final class IOUtil {
                     }
                 }
             }
-            final byte[] buffer = BUFFER.get();
+            final byte[] buffer = BUFFER_PROVIDER.provideBuffer();
             long total = 0;
             while (true) {
                 int read = inputStream.read(buffer);
@@ -175,7 +182,7 @@ public final class IOUtil {
 
     public static String loadText(final InputStream input, final Charset encoding) {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
+        byte[] buffer = BUFFER_PROVIDER.provideBuffer();
         int length;
         try {
             while ((length = input.read(buffer)) != -1) {
@@ -203,7 +210,7 @@ public final class IOUtil {
     }
 
     public static void copy(InputStream inputStream, long maxSize, OutputStream outputStream) {
-        final byte[] buffer = BUFFER.get();
+        final byte[] buffer = BUFFER_PROVIDER.provideBuffer();
         long toRead = maxSize;
         try {
             while (toRead > 0) {
