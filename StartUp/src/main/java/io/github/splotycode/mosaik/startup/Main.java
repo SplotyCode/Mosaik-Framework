@@ -2,33 +2,22 @@ package io.github.splotycode.mosaik.startup;
 
 import io.github.splotycode.mosaik.runtime.LinkBase;
 import io.github.splotycode.mosaik.runtime.Links;
-import io.github.splotycode.mosaik.runtime.application.IApplication;
+import io.github.splotycode.mosaik.runtime.Runtime;
 import io.github.splotycode.mosaik.runtime.logging.LoggingHelper;
-import io.github.splotycode.mosaik.runtime.module.MosaikModule;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.runtime.startup.StartUpConfiguration;
-import io.github.splotycode.mosaik.runtime.startup.environment.StartUpEnvironmentChanger;
-import io.github.splotycode.mosaik.startup.application.ApplicationManager;
-import io.github.splotycode.mosaik.startup.envirementchanger.StartUpInvirementChangerImpl;
+import io.github.splotycode.mosaik.runtime.startup.condition.ConditionSignal;
+import io.github.splotycode.mosaik.runtime.startup.condition.StartupConditionRegistry;
 import io.github.splotycode.mosaik.startup.manager.StartUpManager;
-import io.github.splotycode.mosaik.startup.processbar.StartUpProcessHandler;
-import io.github.splotycode.mosaik.startup.starttask.StartTaskExecutor;
-import io.github.splotycode.mosaik.util.StringUtil;
+import io.github.splotycode.mosaik.startup.runtime.MosaikRuntime;
 import io.github.splotycode.mosaik.util.init.AlreadyInitailizedException;
-import io.github.splotycode.mosaik.util.io.IOUtil;
 import io.github.splotycode.mosaik.util.logger.Logger;
 import io.github.splotycode.mosaik.util.logger.LoggerFactory;
-import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
-import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
-import lombok.Getter;
+
+import java.time.Instant;
 
 public class Main {
-
-    @Getter private static Main instance;
-
-    @Getter private static BootContext bootData;
-
-    @Getter private volatile static boolean initialised = false;
+    private volatile static boolean initialised;
 
     public static void main() throws Exception {
         mainImpl(new StartUpConfiguration());
@@ -65,72 +54,49 @@ public class Main {
     }
 
     private static void mainImpl(StartUpConfiguration configuration) throws Exception {
-        long start = System.currentTimeMillis();
+        Instant start = Instant.now();
         checkInitialised();
 
         configuration.finish();
-        if (configuration.hasBootLoggerFactory()) {
-            Logger.setFactory(configuration.getBootLoggerFactory());
-        }
+        configuration.getBootLoggerFactory().ifPresent(Logger::setFactory);
 
-        bootData = configuration.getBootContext(start);
-        LinkBase.getInstance().registerLink(Links.BOOT_DATA, bootData);
+        BootContext bootCtx = configuration.getBootContext(start);
+        LinkBase.getInstance().registerLink(Links.BOOT_DATA, bootCtx);
 
-        MosaikModule.STARTUP.checkLoaded();
-        MosaikModule.DOM_PARSING_IMPL.checkLoaded();
-        MosaikModule.ARG_PARSER_IMPL.checkLoaded();
+        StartupConditionRegistry conditionRegistry = StartupConditionRegistry.fromConfiguration(configuration);
+        conditionRegistry.testSignal(ConditionSignal.PRE_INIT);
 
-        loadLinkBase(configuration.getLinkBasePath());
+        LinkBase.getInstance().loadLinkBaseFile(configuration.getLinkBasePath());
+
         setUpLogging(configuration.getRuntimeLoggerFactory());
         LoggingHelper.loggingStartUp();
 
-        if (!configuration.isSkipClassLoaderCheck()) {
-            checkClassLoader();
-        }
-        if (!configuration.isSkipInvokedCheck() && ReflectionUtil.getCallerClasses().length >= 4 + 1) {
-            logger.warn("Framework was not invoked by JVM! It was invoked by: " + ReflectionUtil.getCallerClass(1).getName());
-        }
+        conditionRegistry.testSignal(ConditionSignal.POST_INIT);
 
         logger.info("");
 
-        instance = new Main();
-    }
-
-    private static void loadLinkBase(String path) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        String[] lines = IOUtil.resourceToText(path).split("\n");
-        for (String line : lines) {
-            String[] lineSplit = line.split(": ");
-            LinkBase.getInstance().getLinkFactory().putData(lineSplit[0], null, Class.forName(lineSplit[1]).newInstance());
-        }
+        MosaikRuntime.create(bootCtx, configuration);
+        new Main();
     }
 
     private Main() {
-        ApplicationManager applicationManager = (ApplicationManager) LinkBase.getInstance().getLink(Links.APPLICATION_MANAGER);
-        StartUpManager startUpManager = (StartUpManager) LinkBase.getInstance().getLink(Links.STARTUP_MANAGER);
+        MosaikRuntime runtime = (MosaikRuntime) Runtime.getRuntime();
+        StartUpManager startUpManager = runtime.getStartUpManager();
+        runtime.prepareLinkage();
 
         /* Register StartUp Environment Changer */
-        StartUpEnvironmentChanger environmentChanger = new StartUpInvirementChangerImpl();
-        LinkBase.getInstance().registerLink(Links.STARTUP_ENVIRONMENT_CHANGER, environmentChanger);
+        startUpManager.prepairEnvironment();
+
+        /* Fully load global ClassPath */
+        runtime.loadClassPath();
 
         /* Running Startup Tasks*/
-        LoggingHelper.startSection("StartUp Tasks");
-        ClassLoader classLoader = bootData.getClassLoaderProvider().getClassLoader();
-        ClassFinderHelper.setClassLoader(classLoader);
-        StartTaskExecutor.getInstance().collectSkippedPaths(classLoader);
-        StartTaskExecutor.getInstance().findAll(false);
-        StartTaskExecutor.getInstance().runAll(environmentChanger);
-        LoggingHelper.endSection();
+        LoggingHelper.doSection("StartUp Tasks", startUpManager::runStartupTasks);
 
-        LoggingHelper.startSection("Environment Information");
-        LoggingHelper.printInfo();
-        LoggingHelper.endSection();
+        LoggingHelper.doSection("Environment Information", LoggingHelper::printInfo);
 
         /* Starting Applications */
-        LoggingHelper.startSection("Applications");
-        applicationManager.startUp();
-        StartUpProcessHandler.getInstance().end();
-        logger.info("Started " + applicationManager.getLoadedApplicationsCount() + " Applications: " + StringUtil.join(applicationManager.getLoadedApplications(), IApplication::getName, ", "));
-        LoggingHelper.endSection();
+        LoggingHelper.doSection("Applications", () -> runtime.getApplicationManager().start());
 
         startUpManager.finished();
     }
@@ -141,22 +107,4 @@ public class Main {
 
         LoggingHelper.registerShutdownLogging();
     }
-
-    private static void checkClassLoader() {
-        ClassLoader systemLoader = ClassLoader.getSystemClassLoader();
-        ClassLoader threadLoader = Thread.currentThread().getContextClassLoader();
-        ClassLoader thisLoader = Main.class.getClassLoader();
-
-        if (thisLoader.getClass() != threadLoader.getClass() || thisLoader.getClass() != systemLoader.getClass()) {
-            logger.warn(StringUtil.format("Invalid ClassLoader! ThisLoader: '{1}', SystemLoader: '{2}', ThisLoader: '{3}'",
-                    className(thisLoader),
-                    className(threadLoader),
-                    className(systemLoader)));
-        }
-    }
-
-    private static String className(Object obj) {
-        return obj == null ? "Null" : obj.getClass().getName();
-    }
-
 }

@@ -1,12 +1,12 @@
 package io.github.splotycode.mosaik.startup.application;
 
-import io.github.splotycode.mosaik.runtime.application.Application;
-import io.github.splotycode.mosaik.runtime.application.ApplicationHandle;
-import io.github.splotycode.mosaik.runtime.application.ApplicationState;
-import io.github.splotycode.mosaik.runtime.application.IApplicationManager;
+import io.github.splotycode.mosaik.runtime.Runtime;
+import io.github.splotycode.mosaik.runtime.application.*;
 import io.github.splotycode.mosaik.startup.processbar.StartUpProcessHandler;
+import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.collection.FilteredCollection;
 import io.github.splotycode.mosaik.util.collection.MappedCollection;
+import io.github.splotycode.mosaik.util.logger.Logger;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ApplicationManager implements IApplicationManager {
+    private final Logger logger = Logger.getInstance(getClass());
 
     List<ApplicationHandleImpl> handles = new ArrayList<>();
     private Collection<ApplicationHandle> unmodifiableHandles = Collections.unmodifiableList(handles);
@@ -25,15 +26,24 @@ public class ApplicationManager implements IApplicationManager {
                     handle -> handle.getApplication().getState() == ApplicationState.STARTED
             )
     );
-    @Getter private Collection<Application> loadedApplications= Collections.unmodifiableCollection(
+    @Getter private Collection<Application> loadedApplications = Collections.unmodifiableCollection(
             new FilteredCollection<>(applications,
                     application -> application.getState() == ApplicationState.STARTED
             )
     );
 
-    private ApplicationFinder applicationFinder = new ApplicationFinder(this);
+    private ApplicationFinder applicationFinder;
 
-    public void startUp() {
+    public ApplicationManager() {
+        applicationFinder = new ApplicationFinder(this, Runtime.getRuntime().getGlobalClassPath());
+    }
+
+    public void start() {
+        startApplications();
+        logger.info("Started " + getLoadedApplicationsCount() + " Applications: " + StringUtil.join(getLoadedApplications(), IApplication::getName, ", "));
+    }
+
+    private void startApplications() {
         applicationFinder.findAll();
         StartUpProcessHandler.getInstance().newProcess("Configurise Applications", handles.size());
         handles.forEach(handle -> {
@@ -45,6 +55,7 @@ public class ApplicationManager implements IApplicationManager {
             StartUpProcessHandler.getInstance().next();
             handle.start();
         });
+        StartUpProcessHandler.getInstance().end();
     }
 
     @Override

@@ -20,6 +20,12 @@ public final class LoggingHelper {
 
     private static Logger logger = Logger.getInstance(LoggingHelper.class);
 
+    public static void doSection(String section, Runnable runnable) {
+        startSection(section);
+        runnable.run();
+        endSection();
+    }
+
     public static void startSection(String section) {
         currentSection = section;
         printSection("Starting " + section);

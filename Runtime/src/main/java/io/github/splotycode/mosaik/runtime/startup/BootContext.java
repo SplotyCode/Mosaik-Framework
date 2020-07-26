@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 
 @EqualsAndHashCode
@@ -14,7 +16,7 @@ import java.util.Map;
 public class BootContext {
 
     private String[] args;
-    private long startTime;
+    private Instant startTime;
     private ClassLoaderProvider classLoaderProvider;
 
     public static ClassLoaderProvider createProvider(String[] args) {
@@ -45,8 +47,7 @@ public class BootContext {
         return LinkBase.getInstance().getLink(Links.ARG_PARSER).getParameters(label);
     }
 
-    public long getUpTime() {
-        return System.currentTimeMillis() - startTime;
+    public Duration getUpTime() {
+        return Duration.between(startTime, Instant.now());
     }
-
 }

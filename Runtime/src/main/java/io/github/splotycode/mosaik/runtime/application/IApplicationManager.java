@@ -3,7 +3,6 @@ package io.github.splotycode.mosaik.runtime.application;
 import java.util.Collection;
 
 public interface IApplicationManager {
-
     Collection<ApplicationHandle> getHandles();
     Collection<Application> getApplications();
 
@@ -15,5 +14,4 @@ public interface IApplicationManager {
     int getLoadedApplicationsCount();
     Collection<ApplicationHandle> getLoadedHandles();
     Collection<Application> getLoadedApplications();
-
 }

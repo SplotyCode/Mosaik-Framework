@@ -1,13 +1,15 @@
 package io.github.splotycode.mosaik.runtime.startup;
 
 import io.github.splotycode.mosaik.runtime.logging.MosaikLoggerFactory;
+import io.github.splotycode.mosaik.runtime.startup.condition.ConditionFailAction;
+import io.github.splotycode.mosaik.runtime.startup.condition.StartupCondition;
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 import io.github.splotycode.mosaik.util.logger.LoggerFactory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.time.Instant;
+import java.util.*;
 
 @Getter
 @EqualsAndHashCode
@@ -15,15 +17,15 @@ public class StartUpConfiguration {
 
     private ClassLoaderProvider classLoader;
 
-    private Class<? extends LoggerFactory> bootLoggerFactory;
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private Optional<Class<? extends LoggerFactory>> bootLoggerFactory = Optional.empty();
     private Class<? extends LoggerFactory> runtimeLoggerFactory;
 
     private String[] args;
     private ArrayList<String> argList;
 
     private String linkBasePath;
-    private boolean skipClassLoaderCheck;
-    private boolean skipInvokedCheck;
+    private Map<Class<? extends StartupCondition>, ConditionFailAction> conditionActions = new HashMap<>();
 
     public StartUpConfiguration withArgs(String[] args) {
         this.args = args;
@@ -39,7 +41,7 @@ public class StartUpConfiguration {
     }
 
     public StartUpConfiguration withBootLoggerFactory(Class<? extends LoggerFactory> bootLoggerFactory) {
-        this.bootLoggerFactory = bootLoggerFactory;
+        this.bootLoggerFactory = Optional.of(bootLoggerFactory);
         return this;
     }
 
@@ -58,13 +60,8 @@ public class StartUpConfiguration {
         return this;
     }
 
-    public StartUpConfiguration skipClassLoaderCheck() {
-        skipClassLoaderCheck = true;
-        return this;
-    }
-
-    public StartUpConfiguration skipInvokedCheck() {
-        skipInvokedCheck = true;
+    public StartUpConfiguration withConditionFailAction(Class<? extends StartupCondition> clazz, ConditionFailAction action) {
+        conditionActions.put(clazz, action);
         return this;
     }
 
@@ -88,12 +85,7 @@ public class StartUpConfiguration {
         }
     }
 
-    public boolean hasBootLoggerFactory() {
-        return bootLoggerFactory != null;
-    }
-
-    public BootContext getBootContext(long startTime) {
+    public BootContext getBootContext(Instant startTime) {
         return new BootContext(args, startTime, classLoader);
     }
-
 }

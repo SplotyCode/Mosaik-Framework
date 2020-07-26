@@ -7,8 +7,13 @@ import io.github.splotycode.mosaik.runtime.application.ApplicationState;
 import io.github.splotycode.mosaik.runtime.application.ApplicationType;
 import io.github.splotycode.mosaik.runtime.startup.BootException;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
-import io.github.splotycode.mosaik.util.reflection.ClassCollector;
+import io.github.splotycode.mosaik.util.reflection.classpath.ClassPath;
+import io.github.splotycode.mosaik.util.reflection.collector.ClassCollector;
+import lombok.RequiredArgsConstructor;
 
+import java.util.Collection;
+
+@RequiredArgsConstructor
 public class ApplicationFinder {
 
     private static ClassCollector classCollector = ClassCollector.newInstance()
@@ -18,15 +23,13 @@ public class ApplicationFinder {
                                                     .setAbstracation(AlmostBoolean.NO)
                                                     .setNeedAssignable(Application.class);
 
-    private ApplicationManager manager;
-
-    public ApplicationFinder(ApplicationManager manager) {
-        this.manager = manager;
-    }
+    private final ApplicationManager manager;
+    private final ClassPath classPath;
 
     public void findAll() {
-        StartUpProcessHandler.getInstance().newProcess("Finding Applications", classCollector.totalResults());
-        for (Class<?> clazz : classCollector.collectAll()) {
+        Collection<Class> classes = classCollector.collectAll(classPath);
+        StartUpProcessHandler.getInstance().newProcess("Finding Applications", classes.size());
+        for (Class<?> clazz : classes) {
             StartUpProcessHandler.getInstance().next();
             try {
                 Application application = (Application) clazz.newInstance();

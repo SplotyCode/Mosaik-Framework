@@ -2,6 +2,7 @@ package io.github.splotycode.mosaik.runtime;
 
 import io.github.splotycode.mosaik.runtime.application.IApplicationManager;
 import io.github.splotycode.mosaik.util.datafactory.DataFactoryComponent;
+import io.github.splotycode.mosaik.util.io.IOUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,16 @@ public class LinkBase implements DataFactoryComponent {
 
     public static IApplicationManager getApplicationManager() {
         return instance.getLink(Links.APPLICATION_MANAGER);
+    }
+
+    public void loadLinkBaseFile(String path) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        String[] lines = IOUtil.resourceToText(path).split("\n");
+        for (String line : lines) {
+            if (!line.startsWith("#")) {
+                String[] lineSplit = line.split(": ");
+                LinkBase.getInstance().getLinkFactory().putData(lineSplit[0], null, Class.forName(lineSplit[1]).newInstance());
+            }
+        }
     }
 
     @Override

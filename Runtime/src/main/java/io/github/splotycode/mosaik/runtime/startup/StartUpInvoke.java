@@ -6,7 +6,6 @@ import io.github.splotycode.mosaik.util.StringUtil;
 import java.lang.reflect.InvocationTargetException;
 
 public class StartUpInvoke {
-
     private static Class clazz;
 
     static {

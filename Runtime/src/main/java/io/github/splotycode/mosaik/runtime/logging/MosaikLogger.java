@@ -18,13 +18,12 @@ public class MosaikLogger extends Log4JLogger {
     @Override
     public void error(String message, Throwable t, String... details) {
         String detailString = StringUtil.join(details, "\n");
-
         if (!detailString.isEmpty()) {
             detailString = "\nDetails: " + detailString;
         }
 
         if (firstException == null) {
-            String mess = "Logger errors occurred. See IDEA logs for details. " +
+            String mess = "Logger errors occurred. See Mosaik logs for details. " +
                     (StringUtil.isEmpty(message) ? "" : "Error message is '" + message + "'");
             firstException = new Exception(mess + detailString, t);
         }
