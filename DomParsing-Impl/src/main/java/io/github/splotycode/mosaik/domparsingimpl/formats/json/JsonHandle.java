@@ -7,6 +7,8 @@ import io.github.splotycode.mosaik.domparsing.writing.DomWriter;
 
 public class JsonHandle implements ParsingHandle {
 
+    private JsonWriter writer = new JsonWriter();
+
     @Override
     public String[] getFileTypes() {
         return new String[] {"json"};
@@ -24,7 +26,7 @@ public class JsonHandle implements ParsingHandle {
 
     @Override
     public DomWriter getWriter() {
-        throw new UnsupportedOperationException();
+        return writer;
     }
 
 }

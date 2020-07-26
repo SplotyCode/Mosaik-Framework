@@ -15,6 +15,7 @@ import java.util.Stack;
  *  - Support arrays
  *  - Support numbers (also 2e2)
  *  - Support arrays without document
+ *  - Support escape in keys
  */
 public class JsonReader implements DomReader<JsonParser> {
 
@@ -60,6 +61,8 @@ public class JsonReader implements DomReader<JsonParser> {
                 if (c == '"') {
                     status = Status.KEY;
                     marker = parser.getIndex() + 1;
+                } else if (c == '}') {
+                    endObject();
                 } else if (!Character.isWhitespace(c)) {
                     throw new IllegalStateException("Expected identifier start ('\"')");
                 }
@@ -168,14 +171,7 @@ public class JsonReader implements DomReader<JsonParser> {
                 if (c == ',') {
                     status = Status.PRE_KEY;
                 } else if (c == '}') {
-                    int nodeSize = openNodes.size();
-                    if (nodeSize == 1) {
-                        status = Status.END;
-                    }
-                    if (openNodes.size() == 0) {
-                        throw new IllegalStateException("No Document to close");
-                    }
-                    openNodes.pop();
+                    endObject();
                 }  else if (!Character.isWhitespace(c)) {
                     throw new IllegalStateException("Expected document end ('}') or , got " + c);
                 }
@@ -186,6 +182,13 @@ public class JsonReader implements DomReader<JsonParser> {
                 }
                 break;
         }
+    }
+
+    private void endObject() {
+        if (openNodes.size() == 1) {
+            status = Status.END;
+        }
+        openNodes.pop();
     }
 
     private boolean mightCheckKeyword(String keyword, JsonParser parser) {
