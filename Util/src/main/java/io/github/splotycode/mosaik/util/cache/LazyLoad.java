@@ -15,13 +15,19 @@ public abstract class LazyLoad<T> extends SimpleCache<T> {
         };
     }
 
-    @SuppressWarnings("unchecked")
     public LazyLoad() {
+        //noinspection unchecked
         this((T) UNINITIALIZED);
     }
 
     public LazyLoad(T value) {
         super(value);
+    }
+
+    @Override
+    public void clear() {
+        //noinspection unchecked
+        value = (T) UNINITIALIZED;
     }
 
     protected abstract T initialize();
