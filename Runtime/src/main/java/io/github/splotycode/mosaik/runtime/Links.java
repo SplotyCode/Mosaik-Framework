@@ -15,9 +15,12 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Links {
+    @Deprecated
     public static final DataKey<IApplicationManager> APPLICATION_MANAGER = new DataKey<>("startup.applicationManager");
+    @Deprecated
     public static final DataKey<BootContext> BOOT_DATA = new DataKey<>("startup.bootContext");
     public static final DataKey<StartUpEnvironmentChanger> STARTUP_ENVIRONMENT_CHANGER = new DataKey<>("startup.environment_changer");
+    @Deprecated
     public static final DataKey<IStartUpManager> STARTUP_MANAGER = new DataKey<>("startup.manager");
     public static final DataKey<ParsingManager> PARSING_MANAGER = new DataKey<>("parsing.manager");
     public static final DataKey<FileSystemProvider> PARSING_FILEPROVIDER = new DataKey<>("parsing.file_system_provider");

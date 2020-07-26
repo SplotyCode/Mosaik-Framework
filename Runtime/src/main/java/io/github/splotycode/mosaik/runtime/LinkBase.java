@@ -29,10 +29,12 @@ public class LinkBase implements DataFactoryComponent {
         return linkFactory.getDataDefault(key, def);
     }
 
+    @Deprecated
     public static BootContext getBootContext() {
         return instance.getLink(Links.BOOT_DATA);
     }
 
+    @Deprecated
     public static IApplicationManager getApplicationManager() {
         return instance.getLink(Links.APPLICATION_MANAGER);
     }
