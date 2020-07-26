@@ -30,6 +30,15 @@ public class CompoundResource<D_B, D_C, S_B, S_C> implements BiResource<D_B, D_C
     }
 
     @Override
+    public NativeFormat nativeFormat() {
+        NativeFormat writeFormat = writableResource.nativeFormat(),
+                readFormat = readableResource.nativeFormat();
+        boolean bytes = writeFormat.hasBytes() && readFormat.hasBytes();
+        boolean chars = writeFormat.hasChars() && readFormat.hasChars();
+        return NativeFormat.select(bytes, chars);
+    }
+
+    @Override
     public ByteCopyDestination<D_B> byteDestination() {
         return writableResource.byteDestination();
     }

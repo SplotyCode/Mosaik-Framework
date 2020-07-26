@@ -83,6 +83,14 @@ public abstract class ReadableCopySourceBasedResource<S_B, S_C> extends Abstract
 
     @Override
     public <LD_B, LD_C> long copyTo(WritableResource<LD_B, LD_C> resource) throws IOException {
+        if (nativeFormat().hasChars() && resource.nativeFormat().hasChars()) {
+            char[] buffer = bufferProvider().provideCharBuffer();
+            int initialSize = (int) optimalInitialSize(buffer.length);
+
+            LD_C destination = resource.charDestination().create(initialSize);
+            return charSource().copyTo(openCharSource(), destination, resource.charDestination(), buffer);
+        }
+
         byte[] buffer = bufferProvider().provideBuffer();
         int initialSize = (int) optimalInitialSize(buffer.length);
 

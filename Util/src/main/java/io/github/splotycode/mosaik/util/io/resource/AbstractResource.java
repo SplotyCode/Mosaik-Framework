@@ -19,6 +19,11 @@ public abstract class AbstractResource implements Resource {
     protected BufferProvider bufferProvider;
 
     @Override
+    public NativeFormat nativeFormat() {
+        return NativeFormat.BYTES;
+    }
+
+    @Override
     public BufferProvider bufferProvider() {
         return bufferProvider;
     }
