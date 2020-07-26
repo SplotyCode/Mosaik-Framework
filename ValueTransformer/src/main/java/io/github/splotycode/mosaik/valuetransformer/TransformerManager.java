@@ -8,10 +8,14 @@ import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
+import io.github.splotycode.mosaik.valuetransformer.exception.TransformException;
+import io.github.splotycode.mosaik.valuetransformer.exception.TransformerNotFoundException;
+import io.github.splotycode.mosaik.valuetransformer.impl.ComplexRoute;
 
 import java.util.*;
 
 @SuppressWarnings("WeakerAccess")
+@Deprecated
 public class TransformerManager implements IListClassRegister<ValueTransformer> {
 
     public static final DataKey<TransformerManager> LINK = new DataKey<>("transformer.manager");
@@ -27,38 +31,8 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
         return ValueTransformer.class;
     }
 
-    //TODO: if we have a transformer that transforms int to string and a transformer that transforms string to short it should be possible to transform int to shorts
-
     public <T> T transform(Object input, Class<T> result, Collection<ValueTransformer> transformers) {
         return transform(DataFactories.EMPTY_DATA_FACTORY, input, result, transformers);
-    }
-
-    /* Makes sure we never return null when the user requests a primitive type */
-    protected Object saveNull(Class result) {
-        if (result == int.class) {
-            return 0;
-        }
-        if (result == long.class) {
-            return 0L;
-        }
-        if (result == short.class) {
-            return (short) 0;
-        }
-
-        if (result == float.class) {
-            return 0F;
-        }
-        if (result == double.class) {
-            return 0D;
-        }
-
-        if (result == boolean.class) {
-            return false;
-        }
-        if (result == char.class) {
-            return (char) 0;
-        }
-        return null;
     }
 
     public <T> T transform(DataFactory info, Object input, Class<T> result, Collection<ValueTransformer> transformers) {
@@ -66,7 +40,7 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
         Objects.requireNonNull(result, "result");
         if (input == null) {
             //noinspection unchecked
-            return (T) saveNull(result);
+            return (T) ComplexRoute.safeNull(result);
         }
 
         Class<?> inputClass = input.getClass();
@@ -85,7 +59,7 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
         ValueTransformer<Object, T> transformer = getTransformer(input, result, transformers);
         if (transformer != null) {
             try {
-                return transformer.transform(input, info);
+                return transformer.transform(input, result, info);
             } catch (Throwable throwable) {
                 throw new TransformException("Failed to transform with " + transformer.getClass().getName(), throwable);
             }

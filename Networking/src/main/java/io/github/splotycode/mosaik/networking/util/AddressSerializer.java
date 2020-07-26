@@ -1,7 +1,7 @@
 package io.github.splotycode.mosaik.networking.util;
 
-import io.github.splotycode.mosaik.valuetransformer.TransformException;
-import io.github.splotycode.mosaik.valuetransformer.io.SocketAddressToString;
+import io.github.splotycode.mosaik.valuetransformer.exception.TransformException;
+import io.github.splotycode.mosaik.valuetransformer.common.io.SocketAddressToString;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

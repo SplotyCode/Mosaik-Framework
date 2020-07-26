@@ -9,7 +9,6 @@ import java.lang.reflect.Type;
 
 @Getter
 public abstract class ValueTransformer<I, O> {
-
     private Class<I> inputClass;
     private Class<O> outputClass;
 
@@ -19,16 +18,17 @@ public abstract class ValueTransformer<I, O> {
      * @return the transformed object
      */
     public O transform(I input) throws Exception {
-        return transform(input, DataFactories.EMPTY_DATA_FACTORY);
+        return transform(input, null, DataFactories.EMPTY_DATA_FACTORY);
     }
 
     /**
      * Transforms a object
      * @param input the original object
+     * @param result the desired type of the result
      * @param info additionally transforming info
      * @return the transformed object
      */
-    public abstract O transform(I input, DataFactory info) throws Exception;
+    public abstract O transform(I input, Class<? extends O> result, DataFactory info) throws Exception;
 
     public ValueTransformer() {
         Type[] generics = ReflectionUtil.getGenerics(getClass());
@@ -46,4 +46,11 @@ public abstract class ValueTransformer<I, O> {
         return ReflectionUtil.isAssignable(inputClass, input.getClass()) && ReflectionUtil.isAssignable(outputClass, output);
     }
 
+    public boolean validInputType(Class<? extends I> input) {
+        return ReflectionUtil.isAssignable(inputClass, input);
+    }
+
+    public boolean validOutputType(Class<? extends O> output) {
+        return ReflectionUtil.isAssignable(outputClass, output);
+    }
 }

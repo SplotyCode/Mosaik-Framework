@@ -1,6 +1,6 @@
 package io.github.splotycode.mosaik.valuetransformer;
 
-import io.github.splotycode.mosaik.valuetransformer.stringtoprimary.StringToInt;
+import io.github.splotycode.mosaik.valuetransformer.common.stringtoprimary.StringToInt;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
