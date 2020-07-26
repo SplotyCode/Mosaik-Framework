@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.util.reflection.modules;
+package io.github.splotycode.mosaik.runtime.module;
 
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 
@@ -8,6 +8,9 @@ import java.util.Collection;
 
 public interface IModule {
 
+    /**
+     * Only holds dependencies that are required
+     */
     IModule[] getDependencies();
 
     String getDisplayName();
@@ -44,18 +47,26 @@ public interface IModule {
     }
 
     default void checkLoaded() {
+        String loadError = getLoadError();
+        if (loadError != null) {
+            throw new ModuleNotInClassPathException(loadError);
+        }
+    }
+
+    default String getLoadError() {
         for (String checker : loadChecker()) {
             if (!ReflectionUtil.clazzExists(checker)) {
-                throw new ModuleNotInClassPathException("Module: " + getDisplayName() + " is not in the classpath (" + checker + ")");
+                return "Module: " + getDisplayName() + " is not in the classpath (" + checker + ")";
             }
         }
         for (IModule dependency : getAllDependencies()) {
             for (String checker : dependency.loadChecker()) {
                 if (!ReflectionUtil.clazzExists(checker)) {
-                    throw new ModuleNotInClassPathException(getDisplayName() +  " could not be loaded because its dependency " + dependency.getDisplayName() + " is not in classpath (" + checker + ")");
+                    return getDisplayName() +  " could not be loaded because its dependency " + dependency.getDisplayName() + " is not in classpath (" + checker + ")";
                 }
             }
         }
+        return null;
     }
 
 }

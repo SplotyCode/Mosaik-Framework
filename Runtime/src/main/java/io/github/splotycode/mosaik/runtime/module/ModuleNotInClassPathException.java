@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.util.reflection.modules;
+package io.github.splotycode.mosaik.runtime.module;
 
 public class ModuleNotInClassPathException extends RuntimeException {
 

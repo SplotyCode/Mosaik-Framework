@@ -1,4 +1,4 @@
-package io.github.splotycode.mosaik.util.reflection.modules;
+package io.github.splotycode.mosaik.runtime.module;
 
 import io.github.splotycode.mosaik.util.collection.ArrayUtil;
 
@@ -32,6 +32,12 @@ public enum MosaikModule implements IModule {
             ARG_PARSER, AUTOMATISATION, CONSOLE, DATABASE, DOM_PARSING,
             DOM_PARSING_IMPL, IUI, NETTY, STARTUP, WEB_API),
     SPIGOT_LIB("io.github.splotycode.mosaik.spigotlib.SpigotApplicationType", UTIL, RUNTIME);
+
+    public static void ensureLoaded(MosaikModule... modules) {
+        for (MosaikModule module : modules) {
+            module.checkLoaded();
+        }
+    }
 
     private IModule[] dependencies;
 
