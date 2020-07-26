@@ -657,14 +657,14 @@ public final class StringUtil {
      * Removed the end of a StringBuilder
      * @param builder the source StringBuilder
      * @param end the end you want to remove
-     * @param onlyPossible is it possible that the source is long then the end AND is not the end
+     * @param onlyPossible is it possible that the source is longer then the end AND is not the end
      */
     public static void removeEnd(StringBuilder builder, String end, boolean onlyPossible) {
         Objects.requireNonNull(builder, "builder");
         Objects.requireNonNull(end, "end");
         int diff = builder.length() - end.length();
-        if (diff >= 0 && (onlyPossible || builder.subSequence(builder.length() - end.length(), builder.length()).equals(end))) {
-            builder.setLength(builder.length() - end.length());
+        if (diff >= 0 && (onlyPossible || builder.subSequence(diff, builder.length()).equals(end))) {
+            builder.setLength(diff);
         }
     }
 

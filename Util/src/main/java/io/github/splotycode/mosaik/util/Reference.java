@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Reference two another Object
+ * Reference to another Object
  */
 @Getter
 @NoArgsConstructor
