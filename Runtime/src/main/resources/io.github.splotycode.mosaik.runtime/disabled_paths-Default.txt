@@ -1,0 +1,43 @@
+#JRE
+javax
+javafx
+sun
+java
+jdk
+com.sun
+com.oracle
+org.ietf
+org.omg
+org.w3c
+org.xml
+org.jcp
+#org.relaxng only in JRE source | excluded in rt.jar
+
+#Special Java components
+module-info
+META-INF
+
+#Common libraries
+netscape.javascript
+org.eclipse
+io.undertow
+org.jboss
+org.xnio
+com.google
+io.netty
+org.apache
+lombok
+org.checkerframework
+com.intellij
+org.classpath
+org.GNOME
+org.codehaus
+org.junit
+junit.framework
+org.opentest4j
+org.apiguardian.api
+org.reflections
+com.avaje
+org.json
+org.slf4j
+org.hamcrest
