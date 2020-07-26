@@ -88,9 +88,10 @@ public class DataEntity {
     }
 
     private void iterateThroughClasses(BiConsumer<Class, Entity> consumer) {
-        Class currentClass = clazz;
+        Class<?> currentClass = clazz;
         Entity currentEntity;
-        while (currentClass != null && ((currentEntity = (Entity) currentClass.getAnnotation(Entity.class)) == null || !currentEntity.ignoreSuper())) {
+        while (currentClass != null &&
+                ((currentEntity = currentClass.getAnnotation(Entity.class)) == null || !currentEntity.ignoreSuper())) {
             consumer.accept(currentClass, currentEntity);
             currentClass = currentClass.getSuperclass();
         }

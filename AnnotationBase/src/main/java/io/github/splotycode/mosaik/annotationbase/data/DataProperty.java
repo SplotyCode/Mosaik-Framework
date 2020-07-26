@@ -19,13 +19,14 @@ public class DataProperty {
     }
 
     static DataProperty fromField(DataEntity entity, Field field, Property property) {
-        Optional<Method> getter = property.useGetter() ? ReflectionUtil.findGetter(field) : Optional.empty();
-        Optional<Method> setter = property.useSetter() ? ReflectionUtil.findSetter(field) : Optional.empty();
+        boolean hasProperty = property != null;
+        Optional<Method> getter = hasProperty && property.useGetter() ? ReflectionUtil.findGetter(field) : Optional.empty();
+        Optional<Method> setter = hasProperty && property.useSetter() ? ReflectionUtil.findSetter(field) : Optional.empty();
         PropertyReader reader = getter.map(PropertyReader::fromMethod)
                 .orElseGet(() -> PropertyReader.fromField(field));
         PropertyWriter writer = setter.map(PropertyWriter::writeToMethod)
                 .orElseGet(() -> PropertyWriter.fromField(field));
-        return new DataProperty(entity, property.required(), reader, writer);
+        return new DataProperty(entity, hasProperty && property.required(), reader, writer);
     }
 
     private DataEntity entity;
@@ -54,5 +55,4 @@ public class DataProperty {
         }
         writer.writeValue(Objects.requireNonNull(entity, "entity"), value);
     }
-
 }
