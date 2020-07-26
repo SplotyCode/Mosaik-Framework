@@ -1,7 +1,8 @@
 package io.github.splotycode.mosaik.util.reflection.classregister;
 
 import io.github.splotycode.mosaik.util.logger.Logger;
-import io.github.splotycode.mosaik.util.reflection.ClassCollector;
+import io.github.splotycode.mosaik.util.reflection.classpath.ClassPath;
+import io.github.splotycode.mosaik.util.reflection.collector.ClassCollector;
 import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
 import io.github.splotycode.mosaik.util.reflection.GenericGuesser;
 
@@ -69,8 +70,8 @@ public interface RawClassRegister<T extends Class> {
         unRegisterPackage(packageClass.getPackage().getName());
     }
 
-    default void registerAll(ClassCollector collector) {
-        for (Class clazz : collector.collectAll()) {
+    default void registerAll(ClassCollector collector, ClassPath classPath) {
+        for (Class clazz : collector.collectAll(classPath)) {
             if (getObjectClass().isAssignableFrom(clazz)) {
                 register((T) clazz);
             } else {

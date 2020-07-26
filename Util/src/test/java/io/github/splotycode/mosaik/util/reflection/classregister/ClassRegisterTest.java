@@ -1,6 +1,7 @@
 package io.github.splotycode.mosaik.util.reflection.classregister;
 
-import io.github.splotycode.mosaik.util.reflection.ClassCollector;
+import io.github.splotycode.mosaik.util.reflection.classpath.ClassPath;
+import io.github.splotycode.mosaik.util.reflection.collector.ClassCollector;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ public class ClassRegisterTest {
                 .setInPackage("io.github.splotycode.mosaik.util.reflection")
                 .setNeedAssignable(Object.class);
         ListClassRegister<Object> register = new ListClassRegister<>(new ArrayList<>(), Object.class);
-        register.registerAll(collector);
+        register.registerAll(collector, ClassPath.fromClassLoader(ClassRegisterTest.class.getClassLoader()));
         System.out.println(register.getList().size());
     }
 

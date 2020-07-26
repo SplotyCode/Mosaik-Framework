@@ -1,62 +1,53 @@
-package io.github.splotycode.mosaik.util.reflection;
+package io.github.splotycode.mosaik.util.reflection.collector;
 
 import io.github.splotycode.mosaik.annotations.visibility.VisibilityLevel;
-import io.github.splotycode.mosaik.util.condition.Conditions;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
 import io.github.splotycode.mosaik.util.condition.ClassConditions;
+import io.github.splotycode.mosaik.util.condition.Conditions;
+import io.github.splotycode.mosaik.util.io.resource.ClassPathResource;
+import io.github.splotycode.mosaik.util.reflection.classpath.ClassPath;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ClassCollector implements Predicate<Class> {
-
-    private Map<Integer, Predicate<? super Class>> conditions = new HashMap<>();
-    private Predicate<Class> lastCondition = null;
-    private Collection<Class> lastFetchedClasses = null;
-    private Collection<Object> lastFetchedInstances = null;
-
-    private int costomCounter = 0;
-
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ClassCollector implements Predicate<Class> {
     public static ClassCollector newInstance() {
         return new ClassCollector();
     }
 
-    public Class collectFirst() {
-        return ClassFinderHelper.getUserClasses().stream().filter(this::test).findFirst().orElse(null);
+    private Map<Integer, Predicate<? super Class>> conditions = new HashMap<>();
+    private Predicate<Class> lastCondition = null;
+    private int costomCounter = 0;
+
+    public Class collectFirst(ClassPath classPath) {
+        return streamClasses(classPath).findFirst().orElse(null);
     }
 
-    public Collection<Class> collectAll() {
-        if (lastFetchedClasses == null) {
-            lastFetchedClasses = collectAll0();
+    protected Stream<Class> streamClasses(ClassPath classPath) {
+        return classPath.classes().map(ClassPathResource::loadClass).filter(this);
+    }
+
+    public Collection<Class> collectAll(ClassPath classPath) {
+        return streamClasses(classPath).collect(Collectors.toList());
+    }
+
+    public Collection collectAllInstances(ClassPath classPath) {
+        return streamClasses(classPath).map(this::createInstance).collect(Collectors.toList());
+    }
+
+    Object createInstance(Class clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalStateException("Can not create instance", e);
         }
-        return lastFetchedClasses;
-    }
-
-    public Collection collectAllInstances() {
-        if (lastFetchedInstances == null) {
-            lastFetchedInstances = collectAllInstances0();
-        }
-        return lastFetchedInstances;
-    }
-
-    private Collection<Object> collectAllInstances0() {
-        return collectAll().stream().map(clazz -> {
-            try {
-                return clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new IllegalStateException("Can not create instance", e);
-            }
-        }).collect(Collectors.toList());
-    }
-
-    private Collection<Class> collectAll0() {
-        return ClassFinderHelper.getUserClasses().stream().filter(this).collect(Collectors.toList());
     }
 
     public Predicate<Class> buildCondition() {
@@ -70,10 +61,8 @@ public final class ClassCollector implements Predicate<Class> {
         return Conditions.and(conditions.values());
     }
 
-    private void reset() {
+    protected void reset() {
         lastCondition = null;
-        lastFetchedClasses = null;
-        lastFetchedInstances = null;
     }
 
     public ClassCollector setAbstracation(AlmostBoolean allow) {
@@ -144,13 +133,12 @@ public final class ClassCollector implements Predicate<Class> {
 
     public ClassCollector addCostom(Predicate<Class> condition) {
         reset();
-        conditions.put(100 + costomCounter, condition);
-        costomCounter++;
+        conditions.put(100 + costomCounter++, condition);
         return this;
     }
 
-    public int totalResults() {
-        return collectAll().size();
+    public long totalResults(ClassPath classPath) {
+        return streamClasses(classPath).count();
     }
 
     @Override

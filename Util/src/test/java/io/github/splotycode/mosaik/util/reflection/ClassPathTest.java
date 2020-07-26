@@ -1,9 +1,30 @@
 package io.github.splotycode.mosaik.util.reflection;
 
 import io.github.splotycode.mosaik.util.StringUtil;
+import io.github.splotycode.mosaik.util.reflection.classpath.ClassPathVisitor;
+import io.github.splotycode.mosaik.util.reflection.classpath.VisitorAction;
 import org.junit.Test;
 
+import java.io.IOException;
+
 public class ClassPathTest {
+
+    public static void main(String[] args) throws IOException {
+        System.out.println(ClassPathTest.class.getClassLoader());
+        io.github.splotycode.mosaik.util.reflection.classpath.ClassPath cp = new io.github.splotycode.mosaik.util.reflection.classpath.ClassPath();
+        cp.addClassLoader(ClassPathTest.class.getClassLoader(), false);
+        cp.load(new ClassPathVisitor() {
+            @Override
+            public VisitorAction visitPackage(String packagePath) {
+                return VisitorAction.CONTINUE;
+            }
+
+            @Override
+            public VisitorAction visitResource(String fullName) {
+                return VisitorAction.CONTINUE;
+            }
+        });
+    }
 
     @Test(expected = RuntimeException.class)
     public void test() {

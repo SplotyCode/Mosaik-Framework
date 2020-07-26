@@ -1,8 +1,6 @@
 package io.github.splotycode.mosaik.util.reflection.classregister;
 
 import io.github.splotycode.mosaik.util.logger.Logger;
-import io.github.splotycode.mosaik.util.reflection.ClassCollector;
-import io.github.splotycode.mosaik.util.reflection.ClassFinderHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
