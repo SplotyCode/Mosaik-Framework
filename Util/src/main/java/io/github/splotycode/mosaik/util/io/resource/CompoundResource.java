@@ -135,12 +135,12 @@ public class CompoundResource<D_B, D_C, S_B, S_C> implements BiResource<D_B, D_C
     }
 
     @Override
-    public ByteCopySource<S_B> byteSource() throws IOException {
+    public ByteCopySource<? super S_B> byteSource() throws IOException {
         return readableResource.byteSource();
     }
 
     @Override
-    public CharCopySource<S_C> charSource() throws IOException {
+    public CharCopySource<? super S_C> charSource() throws IOException {
         return readableResource.charSource();
     }
 
