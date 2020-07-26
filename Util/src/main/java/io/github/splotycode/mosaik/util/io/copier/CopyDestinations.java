@@ -11,22 +11,23 @@ import java.io.Writer;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CopyDestinations {
-    public static CopyDestination<Reference<Integer>, ?> COUNTER = new CopyDestination<Reference<Integer>, Object>() {
+
+    // ByteDestinations
+
+    public static ByteCopyDestination<Reference<Integer>> BYTE_COUNTER = new ByteCopyDestination<Reference<Integer>>() {
         @Override
         public Reference<Integer> create(int initialSize) throws IOException {
             return new Reference<>();
         }
 
         @Override
-        public void copyTo(Object source, Reference<Integer> destination, int length) throws IOException {
+        public void copyTo(byte[] source, Reference<Integer> destination, int length) throws IOException {
             destination.setValue(destination.getValue() + length);
         }
     };
 
-    // ByteDestinations
-
-    public static OutputStreamDestination<ByteArrayOutputStream> BYTE_ARRAY_OUTPUT_STREAM = OutputStreamDestination.BYTE_ARRAY;
-    public static OutputStreamDestination EMPTY_OUTPUT_STREAM = OutputStreamDestination.EMPTY;
+    public static final OutputStreamDestination EMPTY_OUTPUT_STREAM = OutputStreamDestination.EMPTY;
+    public static final OutputStreamDestination<ByteArrayOutputStream> BYTE_ARRAY_OUTPUT_STREAM = OutputStreamDestination.BYTE_ARRAY;
 
     public static <S extends OutputStream> OutputStreamDestination<S> emptyOutputStream() {
         return OutputStreamDestination.empty();
@@ -36,13 +37,25 @@ public final class CopyDestinations {
         return OutputStreamDestination.wrapStream(stream);
     }
 
-    public static ByteBufferDestination EMPTY_BYTE_BUFFER = ByteBufferDestination.EMPTY;
+    public static final ByteBufferDestination EMPTY_BYTE_BUFFER = ByteBufferDestination.EMPTY;
 
     public static ByteBufferDestination byteBuffer(boolean direct) {
         return ByteBufferDestination.create(direct);
     }
 
     // CharDestinations
+
+    public static CharCopyDestination<Reference<Integer>> CHAR_COUNTER = new CharCopyDestination<Reference<Integer>>() {
+        @Override
+        public Reference<Integer> create(int initialSize) throws IOException {
+            return new Reference<>();
+        }
+
+        @Override
+        public void copyTo(char[] source, Reference<Integer> destination, int length) throws IOException {
+            destination.setValue(destination.getValue() + length);
+        }
+    };
 
     public static CharCopyDestination<Appendable> APPENDALE = new CharCopyDestination<Appendable>() {
         @Override
