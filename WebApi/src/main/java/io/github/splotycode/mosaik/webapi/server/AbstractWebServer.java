@@ -1,5 +1,6 @@
 package io.github.splotycode.mosaik.webapi.server;
 
+import io.github.splotycode.mosaik.runtime.Runtime;
 import io.github.splotycode.mosaik.util.StringUtil;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.LinkedDataFactory;
@@ -54,8 +55,8 @@ public abstract class AbstractWebServer extends InitialisedOnce implements WebSe
         if (application == null) {
             config = new DataFactory();
             WebApplicationType.setDefaults(config);
-            contentHandlerRegister.registerAll(WebApplicationType.CONTENT_HANDLER_COLLECTOR);
-            parameterResolverRegister.registerAll(WebApplicationType.PARAMETER_RESOLVER_COLLECTOR);
+            contentHandlerRegister.registerAll(WebApplicationType.CONTENT_HANDLER_COLLECTOR, Runtime.getRuntime().getGlobalClassPath());
+            parameterResolverRegister.registerAll(WebApplicationType.PARAMETER_RESOLVER_COLLECTOR, Runtime.getRuntime().getGlobalClassPath());
         } else {
             config = new LinkedDataFactory(application.getConfig());
         }

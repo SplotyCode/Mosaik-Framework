@@ -1,9 +1,10 @@
 package io.github.splotycode.mosaik.webapi.handler.anotation;
 
+import io.github.splotycode.mosaik.runtime.Runtime;
 import io.github.splotycode.mosaik.util.condition.ClassConditions;
 import io.github.splotycode.mosaik.util.condition.Conditions;
 import io.github.splotycode.mosaik.util.logger.Logger;
-import io.github.splotycode.mosaik.util.reflection.ClassCollector;
+import io.github.splotycode.mosaik.util.reflection.collector.ClassCollector;
 import io.github.splotycode.mosaik.annotationbase.context.method.AddTransformer;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
 import io.github.splotycode.mosaik.webapi.config.WebConfig;
@@ -51,7 +52,7 @@ public class AnnotationHandlerFinder extends ListClassRegister<Object> implement
     public Collection<? extends HttpHandler> search() {
         List<AnnotationHttpHandler> handlers = new ArrayList<>();
         classCollector.setVisibility(webServer.getConfig().getData(WebConfig.SEARCH_ANNOTATION_HANDLERS_VISIBILITY));
-        for (Class clazz : classCollector.collectAll()) {
+        for (Class clazz : classCollector.collectAll(Runtime.getRuntime().getGlobalClassPath())) {
             handlers.add(new AnnotationHttpHandler(clazz, webServer));
         }
         for (Object obj : getAll()) {

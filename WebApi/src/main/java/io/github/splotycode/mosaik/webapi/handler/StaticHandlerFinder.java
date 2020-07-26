@@ -1,7 +1,8 @@
 package io.github.splotycode.mosaik.webapi.handler;
 
+import io.github.splotycode.mosaik.runtime.Runtime;
 import io.github.splotycode.mosaik.util.AlmostBoolean;
-import io.github.splotycode.mosaik.util.reflection.ClassCollector;
+import io.github.splotycode.mosaik.util.reflection.collector.ClassCollector;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
 import io.github.splotycode.mosaik.webapi.config.WebConfig;
 import io.github.splotycode.mosaik.webapi.server.WebServer;
@@ -28,7 +29,7 @@ public class StaticHandlerFinder extends ListClassRegister<HttpHandler> implemen
     @Override
     public Collection<HttpHandler> search() {
         collector.setVisibility(webServer.getConfig().getData(WebConfig.SEARCH_HANDLERS_VISIBILITY));
-        return combind(collector.collectAllInstances());
+        return combind(collector.collectAllInstances(Runtime.getRuntime().getGlobalClassPath()));
     }
 
 }

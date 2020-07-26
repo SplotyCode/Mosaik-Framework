@@ -1,11 +1,12 @@
 package io.github.splotycode.mosaik.webapi;
 
 import io.github.splotycode.mosaik.annotations.visibility.VisibilityLevel;
+import io.github.splotycode.mosaik.runtime.Runtime;
 import io.github.splotycode.mosaik.runtime.application.ApplicationType;
 import io.github.splotycode.mosaik.runtime.startup.BootContext;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.datafactory.DataKey;
-import io.github.splotycode.mosaik.util.reflection.ClassCollector;
+import io.github.splotycode.mosaik.util.reflection.collector.ClassCollector;
 import io.github.splotycode.mosaik.annotationbase.context.parameter.ParameterResolver;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 import io.github.splotycode.mosaik.util.reflection.classregister.ListClassRegister;
@@ -57,8 +58,8 @@ public interface WebApplicationType extends ApplicationType {
         getDataFactory().putData(CONTENT_HANDLER_REGISTER, new ListClassRegister<>(new ArrayList<>(), RequestContentHandler.class));
         getDataFactory().putData(ERROR_HANDLER, new ErrorHandler());
 
-        getContentHandlerRegister().registerAll(CONTENT_HANDLER_COLLECTOR);
-        getParameterResolveRegister().registerAll(PARAMETER_RESOLVER_COLLECTOR);
+        getContentHandlerRegister().registerAll(CONTENT_HANDLER_COLLECTOR, Runtime.getRuntime().getGlobalClassPath());
+        getParameterResolveRegister().registerAll(PARAMETER_RESOLVER_COLLECTOR, Runtime.getRuntime().getGlobalClassPath());
         getLogger().info("Registered " + getParameterResolveRegister().getAll().size() + " default Parameter Resolvers");
     }
 
