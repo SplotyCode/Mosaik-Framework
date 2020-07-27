@@ -4,24 +4,18 @@ import io.github.splotycode.mosaik.util.ValueTransformer;
 import io.github.splotycode.mosaik.util.datafactory.DataFactory;
 import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 
-import java.util.Collection;
-import java.util.LinkedList;
+public class DirectTransformerRoute<I, O> extends AbstractRoute<I, O> {
+    private final ValueTransformer<I, O> transformer;
 
-public class ComplexRoute<I, O> extends AbstractRoute<I, O> {
-    private final Collection<ValueTransformer> transformers;
-
-    public ComplexRoute(Class resultType, Collection<ValueTransformer> transformers) {
+    public DirectTransformerRoute(Class resultType, ValueTransformer<I, O> transformer) {
         super(resultType);
-        this.transformers = new LinkedList<>(transformers);
+        this.transformer = transformer;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public O convert(DataFactory info, I input) {
-        Object result = input;
-        for (ValueTransformer transformer : transformers) {
-            result = doTransform(transformer, result, resultType, info);
-        }
+        Object result = doTransform(transformer, input, resultType, info);
         if (result == null) {
             /* Makes sure we never return null when the user requests a primitive type */
             return (O) ReflectionUtil.primitiveSafeNull(resultType);

@@ -73,6 +73,11 @@ public class ValueConverterImpl implements ValueConverter {
     }
 
     @Override
+    public <I, O> Optional<ConverterRoute<I, O>> routeWithOriginal(Class<I> input, Class<O> result, Collection<ValueTransformer> original) {
+        return route(input, result, CollectionUtil.mergeCollections(transformers, original));
+    }
+
+    @Override
     public <T> Optional<ConverterRoute<T, String>> stringRoute(Class<T> input) {
         return route(input, String.class);
     }

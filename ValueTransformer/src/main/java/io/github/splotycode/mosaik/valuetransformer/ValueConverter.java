@@ -19,6 +19,7 @@ public interface ValueConverter extends IListClassRegister<ValueTransformer> {
     <I, O> Optional<ConverterRoute<I, O>> route(Class<I> input, Class<O> result);
     <I, O> Optional<ConverterRoute<I, O>> route(Class<I> input, Class<O> result, Collection<ValueTransformer> transformers);
     <I, O> Optional<ConverterRoute<I, O>> routeWithAdditional(Class<I> input, Class<O> result, Collection<ValueTransformer> additional);
+    <I, O> Optional<ConverterRoute<I, O>> routeWithOriginal(Class<I> input, Class<O> result, Collection<ValueTransformer> original);
 
     <T> Optional<ConverterRoute<T, String>> stringRoute(Class<T> input);
 }

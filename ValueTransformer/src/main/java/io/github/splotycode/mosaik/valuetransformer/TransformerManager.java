@@ -10,7 +10,6 @@ import io.github.splotycode.mosaik.util.reflection.ReflectionUtil;
 import io.github.splotycode.mosaik.util.reflection.classregister.IListClassRegister;
 import io.github.splotycode.mosaik.valuetransformer.exception.TransformException;
 import io.github.splotycode.mosaik.valuetransformer.exception.TransformerNotFoundException;
-import io.github.splotycode.mosaik.valuetransformer.impl.ComplexRoute;
 
 import java.util.*;
 
@@ -40,7 +39,7 @@ public class TransformerManager implements IListClassRegister<ValueTransformer> 
         Objects.requireNonNull(result, "result");
         if (input == null) {
             //noinspection unchecked
-            return (T) ComplexRoute.safeNull(result);
+            return (T) ReflectionUtil.primitiveSafeNull(result);
         }
 
         Class<?> inputClass = input.getClass();
