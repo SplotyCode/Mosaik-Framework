@@ -36,6 +36,32 @@ public final class ReflectionUtil {
         return unsafe;
     }
 
+    public static Object primitiveSafeNull(Class result) {
+        if (result == int.class) {
+            return 0;
+        }
+        if (result == long.class) {
+            return 0L;
+        }
+        if (result == short.class) {
+            return (short) 0;
+        }
+
+        if (result == float.class) {
+            return 0F;
+        }
+        if (result == double.class) {
+            return 0D;
+        }
+        if (result == boolean.class) {
+            return false;
+        }
+        if (result == char.class) {
+            return (char) 0;
+        }
+        return null;
+    }
+
     /**
      * @deprecated use {@link ClassCollector} instead
      */
