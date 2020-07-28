@@ -3,9 +3,9 @@ sudo: false
 jobs:
   include:
     - stage: build_test
-      install: mvn clean install
+      install: mvn clean install cobertura:cobertura
     - stage: deploy
-      script: mvn clean deploy cobertura:cobertura --settings .maven.xml -DskipTests=true -B -U -Prelease
+      script: mvn clean deploy --settings .maven.xml -DskipTests=true -B -U -Prelease
       before_install:
         - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
         - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
