@@ -3,7 +3,7 @@ sudo: false
 jobs:
   include:
     - stage: build_test
-      install: mvn clean install cobertura:cobertura
+      install: mvn clean install
     - stage: deploy
       script: mvn clean deploy --settings .maven.xml -DskipTests=true -B -U -Prelease
       before_install:
